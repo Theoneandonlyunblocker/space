@@ -109,6 +109,7 @@ const defaultOptionsValues: OptionsValues =
       saves: true,
       modules: true,
       init: true,
+      ui: false,
     },
   },
   display:

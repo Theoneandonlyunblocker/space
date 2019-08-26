@@ -5,9 +5,10 @@ import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import {applyMixins} from "../mixins/applyMixins";
 
 import {Item} from "../../../../src/Item";
+import * as debug from "../../../../src/debug";
 
 import {localize} from "../../localization/localize";
-import { getAssetSrc } from "modules/defaultui/assets";
+import { getAssetSrc } from "../../../../modules/defaultui/assets";
 
 
 export interface PropTypes extends React.Props<any>
@@ -54,10 +55,12 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
 
   onDragStart()
   {
+    debug.log("ui", `Start item drag ´${this.props.item.template.displayName}`);
     this.props.onDragStart(this.props.item);
   }
   onDragEnd()
   {
+    debug.log("ui", `end item drag ´${this.props.item.template.displayName}`);
     this.props.onDragEnd();
   }
   getTechIcon(techLevel: number)

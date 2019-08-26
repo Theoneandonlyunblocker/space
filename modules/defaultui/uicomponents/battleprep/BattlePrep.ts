@@ -19,6 +19,7 @@ import {options} from "../../../../src/Options";
 import {Unit} from "../../../../src/Unit";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import { extractFlagsFromFlagWord } from "../../../../src/utility";
+import * as debug from "../../../../src/debug";
 import {BattleBackgroundComponent, BattleBackground} from "../battle/BattleBackground";
 import {Formation} from "../battle/Formation";
 import {ListItem} from "../list/ListItem";
@@ -381,10 +382,13 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   private handleDragEnd(dropSuccessful: boolean = false)
   {
+    const unit = this.state.currentDragUnit;
+    debug.log("ui", `Unit drag end '${unit ? unit.name : null}'. Drop was ${!dropSuccessful ? "not " : ""}succesful`);
     if (!dropSuccessful && this.state.currentDragUnit)
     {
       if (this.props.battlePrep.humanFormation.hasUnit(this.state.currentDragUnit))
       {
+        debug.log("ui", `Removed unit '${unit ? unit.name : null}' from formation after drag end without succesful drop`);
         this.props.battlePrep.humanFormation.removeUnit(this.state.currentDragUnit);
       }
     }
@@ -399,10 +403,12 @@ export class BattlePrepComponent extends React.Component<PropTypes, StateType>
   }
   private handleDrop(position: number[])
   {
+    const unit = this.state.currentDragUnit;
+    debug.log("ui", `Drop unit '${unit ? unit.name : null}' at position ${position}`);
     const battlePrep = this.props.battlePrep;
-    if (this.state.currentDragUnit)
+    if (unit)
     {
-      battlePrep.humanFormation.assignUnit(this.state.currentDragUnit, position);
+      battlePrep.humanFormation.assignUnit(unit, position);
     }
 
     this.handleDragEnd(true);

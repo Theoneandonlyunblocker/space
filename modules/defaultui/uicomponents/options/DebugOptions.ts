@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
+import {options as optionsStrings} from "../../localization/en/options";
 import {eventManager} from "../../../../src/eventManager";
 import {options} from "../../../../src/Options";
 import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
@@ -136,13 +137,14 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
   {
     return Object.keys(options.debug.logging).map(category =>
     {
-      const keyForCategory =
+      const keyForCategory: {[K in keyof typeof options.debug.logging]: keyof typeof optionsStrings} =
       {
         ai: "aiLogging",
         graphics: "graphicsLogging",
         saves: "savesLogging",
         modules: "modulesLogging",
         init: "initLogging",
+        ui: "uiLogging",
       };
 
       const key = keyForCategory[category];
