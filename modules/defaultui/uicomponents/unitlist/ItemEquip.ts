@@ -58,11 +58,11 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
           MenuUnitInfo(
           {
             unit: this.state.selectedUnit,
-            onMouseUp: this.handleDrop,
+            onItemSlotMouseUp: this.handleDrop,
 
-            isDraggable: true,
-            onDragStart: this.handleDragStart,
-            onDragEnd: this.handleDragEnd,
+            itemsAreDraggable: true,
+            onItemDragStart: this.handleDragStart,
+            onItemDragEnd: this.handleDragEnd,
             currentDragItem: this.state.currentDragItem,
           }),
           ItemList(

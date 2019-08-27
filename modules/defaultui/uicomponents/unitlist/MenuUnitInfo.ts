@@ -12,12 +12,13 @@ import {UnitItemGroup} from "./UnitItemGroup";
 
 export interface PropTypes extends React.Props<any>
 {
-  onDragEnd?: (dropSuccessful?: boolean) => void;
-  onDragStart?: (item: Item) => void;
-  onMouseUp?: (index: number) => void;
-  currentDragItem?: Item | null;
   unit: Unit | null;
-  isDraggable?: boolean;
+
+  itemsAreDraggable: boolean;
+  currentDragItem?: Item | null;
+  onItemDragEnd?: (dropSuccessful?: boolean) => void;
+  onItemDragStart?: (item: Item) => void;
+  onItemSlotMouseUp?: (index: number) => void;
 }
 
 interface StateType
@@ -65,10 +66,10 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
         maxItems: unit.items.itemSlots[slot],
         items: itemsBySlot[slot],
 
-        onMouseUp: this.props.onMouseUp,
-        isDraggable: this.props.isDraggable,
-        onDragStart: this.props.onDragStart,
-        onDragEnd: this.props.onDragEnd,
+        onMouseUp: this.props.onItemSlotMouseUp,
+        isDraggable: this.props.itemsAreDraggable,
+        onDragStart: this.props.onItemDragStart,
+        onDragEnd: this.props.onItemDragEnd,
         currentDragItem: this.props.currentDragItem,
       }));
     }
