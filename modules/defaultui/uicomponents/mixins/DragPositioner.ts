@@ -298,19 +298,6 @@ export class DragPositioner<T extends React.Component<any, any>> implements Mixi
   }
   private handleMouseUp(e: NormalizedEvent)
   {
-    // if (this.touchEventTarget)
-    // {
-    //   const touch = e.changedTouches[0];
-
-    //   const dropTarget = getDropTargetAtLocation(touch.clientX, touch.clientY);
-    //   console.log(dropTarget);
-    //   if (dropTarget)
-    //   {
-    //     const reactid = dropTarget.getAttribute("data-reactid");
-    //     eventManager.dispatchEvent("drop" + reactid);
-    //   }
-    // }
-
     e.stopPropagation();
     e.preventDefault();
 
