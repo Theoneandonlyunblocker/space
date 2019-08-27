@@ -32,7 +32,7 @@
       "private-static-method"
     ]}],
     "no-any": true,
-    "typedef": [true, "call-signature", "parameter", "member-variable-declaration"],
+    "typedef": [true, "parameter", "member-variable-declaration"],
     "prefer-function-over-method": true,
 
     "no-internal-module": true,
@@ -61,7 +61,7 @@
     // "no-default-export": true,
     "no-mergeable-namespace": true,
     "no-require-imports": true,
-    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore"],
+    "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
     "prefer-const": true,
 
     // too strict. means we can't do stuff like randInt(2, 5)
