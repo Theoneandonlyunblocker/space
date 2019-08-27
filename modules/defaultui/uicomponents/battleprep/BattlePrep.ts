@@ -22,14 +22,12 @@ import { extractFlagsFromFlagWord } from "../../../../src/utility";
 import * as debug from "../../../../src/debug";
 import {BattleBackgroundComponent, BattleBackground} from "../battle/BattleBackground";
 import {Formation} from "../battle/Formation";
-import {ListItem} from "../list/ListItem";
 import {ItemList} from "../unitlist/ItemList";
-import {PropTypes as ItemListItemPropTypes} from "../unitlist/ItemListItem";
 import {MenuUnitInfo} from "../unitlist/MenuUnitInfo";
 import {UnitList} from "../unitlist/UnitList";
-import {PropTypes as UnitListItemPropTypes} from "../unitlist/UnitListItem";
 
 import {BattleInfo} from "./BattleInfo";
+import { Player } from "../../../../src/Player";
 
 
 export interface PropTypes extends React.Props<any>
@@ -37,545 +35,461 @@ export interface PropTypes extends React.Props<any>
   battlePrep: BattlePrepObj;
 }
 
-interface StateType
+type LeftLowerElementKey = "playerFormation" | "enemyFormation" | "itemEquip";
+
+// TODO 2019.08.27 | equip item on MenuUnitInfo.Item => Formation.Unit drop
+const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
 {
-  hoveredUnit: Unit | null;
-  currentDragUnit: Unit | null;
-  leftLowerElement: "playerFormation" | "enemyFormation" | "itemEquip";
-  currentDragItem: Item | null;
-  selectedUnit: Unit | null;
-}
+  const forceUpdateDummyReducer = React.useReducer(x => x + 1, 0);
+  const forceUpdate = <() => void>forceUpdateDummyReducer[1];
 
-export class BattlePrepComponent extends React.Component<PropTypes, StateType>
-{
-  public displayName = "BattlePrep";
-  public state: StateType;
+  const [hoveredUnit, setHoveredUnit] = React.useState<Unit | null>(null);
+  const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(null);
 
-  private readonly backgroundComponent = React.createRef<BattleBackgroundComponent>();
-
-  constructor(props: PropTypes)
+  const [currentlyDraggingUnit, setCurrentlyDraggingUnit] = React.useState<Unit | null>(null);
+  // TODO 2019.08.27 | rename param to dropWasOutsideTarget or something
+  function handleUnitDragEnd(dropWasSuccessful: boolean = false): boolean
   {
-    super(props);
-
-    this.state =
+    debug.log("ui", `Unit drag end '${currentlyDraggingUnit ? currentlyDraggingUnit.name : null}'. Drop was ${!dropWasSuccessful ? "not " : ""}succesful`);
+    if (!dropWasSuccessful && currentlyDraggingUnit)
     {
-      currentDragUnit: null,
-      hoveredUnit: null,
-      selectedUnit: null,
-      currentDragItem: null,
-
-      leftLowerElement: "playerFormation",
-    };
-
-    this.handleMouseEnterUnit = this.handleMouseEnterUnit.bind(this);
-    this.handleDragEnd = this.handleDragEnd.bind(this);
-    this.handleItemDragStart = this.handleItemDragStart.bind(this);
-    this.setLeftLowerElement = this.setLeftLowerElement.bind(this);
-    this.handleItemDragEnd = this.handleItemDragEnd.bind(this);
-    this.handleItemDrop = this.handleItemDrop.bind(this);
-    this.setSelectedUnit = this.setSelectedUnit.bind(this);
-    this.handleMouseLeaveUnit = this.handleMouseLeaveUnit.bind(this);
-    this.clearSelectedUnit = this.clearSelectedUnit.bind(this);
-    this.autoMakeFormation = this.autoMakeFormation.bind(this);
-    this.handleSelectUnitListRow = this.handleSelectUnitListRow.bind(this);
-    this.handleSelectItemListRow = this.handleSelectItemListRow.bind(this);
-    this.handleDragStart = this.handleDragStart.bind(this);
-    this.handleDrop = this.handleDrop.bind(this);
-    this.getBackgroundBlurArea = this.getBackgroundBlurArea.bind(this);
-  }
-
-  public componentDidMount()
-  {
-    this.backgroundComponent.current.handleResize();
-  }
-  public render()
-  {
-    const battlePrep = this.props.battlePrep;
-    const player = battlePrep.humanPlayer;
-
-    // priority: hovered unit > selected unit > battle info
-    let leftUpperElement: React.ReactElement<any>;
-
-    const hoveredUnit = this.state.currentDragUnit || this.state.hoveredUnit;
-    if (hoveredUnit)
-    {
-      leftUpperElement = MenuUnitInfo(
+      if (props.battlePrep.humanFormation.hasUnit(currentlyDraggingUnit))
       {
-        unit: hoveredUnit,
-      });
+        debug.log("ui", `Removed unit '${currentlyDraggingUnit ? currentlyDraggingUnit.name : null}' from formation after drag end without succesful drop`);
+        props.battlePrep.humanFormation.removeUnit(currentlyDraggingUnit);
+      }
     }
-    else if (this.state.selectedUnit)
+
+    setCurrentlyDraggingUnit(null);
+    setHoveredUnit(null); // TODO 2019.08.27 | try removing this to see if its necessary
+
+    return dropWasSuccessful;
+  }
+  function handleUnitDrop(position: number[]): void
+  {
+    debug.log("ui", `Drop unit '${currentlyDraggingUnit ? currentlyDraggingUnit.name : null}' at position ${position}`);
+    if (currentlyDraggingUnit)
     {
-      const selectedUnitIsFriendly = battlePrep.humanUnits.some(unit => unit === this.state.selectedUnit);
+      props.battlePrep.humanFormation.assignUnit(currentlyDraggingUnit, position);
+    }
 
-      leftUpperElement = MenuUnitInfo(
+    handleUnitDragEnd(true);
+  }
+
+  const [currentlyDraggingItem, setCurrentlyDraggingItem] = React.useState<Item | null>(null);
+  // TODO 2019.08.27 | rename param to dropWasOutsideTarget or something
+  function handleItemDragEnd(dropWasSuccessful: boolean = false): boolean
+  {
+    if (!dropWasSuccessful && currentlyDraggingItem && currentlyDraggingItem.unit)
+    {
+      currentlyDraggingItem.unequip();
+    }
+
+    setCurrentlyDraggingItem(null);
+
+    return dropWasSuccessful;
+  }
+  function handleItemDropOnUnit(unit: Unit): void
+  {
+    if (currentlyDraggingItem)
+    {
+      const isAlreadyEquippedOnTargetUnit = currentlyDraggingItem.unit === unit;
+      if (!isAlreadyEquippedOnTargetUnit)
       {
-        unit: this.state.selectedUnit,
-        onMouseUp: this.handleItemDrop,
+        unit.items.addItem(currentlyDraggingItem);
+        setSelectedUnit(unit);
+      }
+    }
 
-        isDraggable: selectedUnitIsFriendly,
-        onDragStart: this.handleItemDragStart,
-        onDragEnd: this.handleItemDragEnd,
-        currentDragItem: this.state.currentDragItem,
+    handleItemDragEnd(true);
+  }
+  function handleItemDropOnItemSlot(slotIndex: number): void
+  {
+    if (selectedUnit && currentlyDraggingItem)
+    {
+      selectedUnit.items.addItemAtPosition(currentlyDraggingItem, slotIndex);
+    }
+
+    handleItemDragEnd(true);
+  }
+
+  const highlightedUnit = (() =>
+  {
+    // need this currenlty because unmounting unitinfo when item being dragged is child of unitinfo messes up the drag handlers
+    if (currentlyDraggingItem && currentlyDraggingItem.unit)
+    {
+      return currentlyDraggingItem.unit;
+    }
+    else
+    {
+      return currentlyDraggingUnit || hoveredUnit || selectedUnit;
+    }
+  })();
+
+  const canInspectEnemyFormation: boolean = React.useMemo(() =>
+  {
+    const player = props.battlePrep.humanPlayer;
+    const location = props.battlePrep.battleData.location;
+
+    return player.starIsDetected(location);
+  }, [props.battlePrep.battleData.location, props.battlePrep.humanPlayer]);
+  const playerIsDefending = props.battlePrep.humanPlayer === props.battlePrep.defender;
+
+  const humanFormationValidity = props.battlePrep.humanFormation.getFormationValidity();
+
+  // TODO 2019.08.27 | don't think this belongs here
+  const backgroundComponent = React.useRef<BattleBackgroundComponent | null>(null);
+  React.useLayoutEffect(function resizeBackgroundOnMount()
+  {
+    backgroundComponent.current.handleResize();
+  }, []);
+
+
+
+  const leftUpperElement = (() =>
+  {
+    if (highlightedUnit)
+    {
+      debug.log("ui", `Render left upper element for highlighted unit '${highlightedUnit.name}'`);
+
+      const highlightedUnitIsFriendly = highlightedUnit.fleet.player === props.battlePrep.humanPlayer;
+
+      return MenuUnitInfo(
+      {
+        unit: highlightedUnit,
+        onItemSlotMouseUp: handleItemDropOnItemSlot,
+
+        itemsAreDraggable: highlightedUnitIsFriendly,
+        onItemDragStart: setCurrentlyDraggingItem,
+        onItemDragEnd: handleItemDragEnd,
+        currentDragItem: currentlyDraggingItem,
       });
     }
     else
     {
-      leftUpperElement = BattleInfo(
+      debug.log("ui", `Render left upper element for battle info`);
+
+      return BattleInfo(
       {
-        battlePrep: battlePrep,
+        battlePrep: props.battlePrep,
       });
     }
+  })();
 
-
-    let leftLowerElement: React.ReactElement<any>;
-    switch (this.state.leftLowerElement)
+  const [leftLowerElementKey, setLeftLowerElementKey] = React.useState<LeftLowerElementKey>("playerFormation");
+  const leftLowerElement = (() =>
+  {
+    switch (leftLowerElementKey)
     {
       case "playerFormation":
       {
-        leftLowerElement = Formation(
+        return Formation(
         {
           key: "playerFormation",
-          formation: battlePrep.humanFormation.formation,
+          formation: props.battlePrep.humanFormation.formation,
           facesLeft: false,
-          unitDisplayDataById: battlePrep.humanFormation.getDisplayData(),
+          unitDisplayDataById: props.battlePrep.humanFormation.getDisplayData(),
 
           isInBattlePrep: true,
 
-          hoveredUnit: this.state.hoveredUnit,
-          activeUnit: this.state.selectedUnit,
+          hoveredUnit: hoveredUnit,
+          activeUnit: selectedUnit,
           abilityTargetDisplayDataById: {},
 
-          onMouseUp: this.handleDrop,
-          onUnitClick: this.setSelectedUnit,
-          handleMouseEnterUnit: this.handleMouseEnterUnit,
-          handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+          onMouseUp: handleUnitDrop,
+          onUnitClick: setSelectedUnit,
+          handleMouseEnterUnit: setHoveredUnit,
+          handleMouseLeaveUnit: () => setHoveredUnit(null),
 
           unitStrengthAnimateDuration: undefined,
 
           isDraggable: true,
-          onDragStart: this.handleDragStart.bind(null, false),
-          onDragEnd: this.handleDragEnd,
+          onDragStart: setCurrentlyDraggingUnit,
+          onDragEnd: handleUnitDragEnd,
         });
-        break;
       }
       case "enemyFormation":
       {
-        leftLowerElement = Formation(
+        return Formation(
         {
           key: "enemyFormation",
-          formation: battlePrep.enemyFormation.formation,
+          formation: props.battlePrep.enemyFormation.formation,
           facesLeft: true,
-          unitDisplayDataById: battlePrep.enemyFormation.getDisplayData(),
+          unitDisplayDataById: props.battlePrep.enemyFormation.getDisplayData(),
 
           isInBattlePrep: true,
 
-          hoveredUnit: this.state.hoveredUnit,
-          activeUnit: this.state.selectedUnit,
+          hoveredUnit: hoveredUnit,
+          activeUnit: selectedUnit,
           abilityTargetDisplayDataById: {},
 
-          onUnitClick: this.setSelectedUnit,
-          handleMouseEnterUnit: this.handleMouseEnterUnit,
-          handleMouseLeaveUnit: this.handleMouseLeaveUnit,
+          onUnitClick: setSelectedUnit,
+          handleMouseEnterUnit: setHoveredUnit,
+          handleMouseLeaveUnit: () => setHoveredUnit(null),
 
           unitStrengthAnimateDuration: undefined,
 
           isDraggable: false,
         });
-        break;
       }
       case "itemEquip":
       {
-        leftLowerElement = ItemList(
+        return ItemList(
         {
           key: "itemEquip",
-          items: player.items,
+          items: props.battlePrep.humanPlayer.items,
           isDraggable: true,
-          onDragStart: this.handleItemDragStart,
-          onDragEnd: this.handleItemDragEnd,
-          onRowChange: this.handleSelectItemListRow,
+          onDragStart: setCurrentlyDraggingItem,
+          onDragEnd: handleItemDragEnd,
+          onRowChange: (row) =>
+          {
+            const unitEquippedTo = row.content.props.unit;
+            if (unitEquippedTo)
+            {
+              setSelectedUnit(unitEquippedTo);
+            }
+          },
         });
-        break;
       }
     }
+  })();
 
-    const playerIsDefending = player === battlePrep.defender;
-    const humanFormationValidity = battlePrep.humanFormation.getFormationValidity();
-    const canInspectEnemyFormation = this.canInspectEnemyFormation();
-
-    return(
-      ReactDOMElements.div({className: "battle-prep"},
-        ReactDOMElements.div({className: "battle-prep-left"},
-          ReactDOMElements.div({className: "battle-prep-left-upper-wrapper"},
-            BattleBackground(
-            {
-              getBlurArea: this.getBackgroundBlurArea,
-              backgroundSeed: battlePrep.battleData.location.seed,
-              backgroundDrawingFunction: activeModuleData.starBackgroundDrawingFunction,
-              ref: this.backgroundComponent,
-            },
-              ReactDOMElements.div({className: "battle-prep-left-upper-inner"},
-                leftUpperElement,
-              ),
+  return(
+    ReactDOMElements.div({className: "battle-prep"},
+      ReactDOMElements.div({className: "battle-prep-left"},
+        ReactDOMElements.div({className: "battle-prep-left-upper-wrapper"},
+          BattleBackground(
+          {
+            getBlurArea: () => backgroundComponent.current.pixiContainer.current.getBoundingClientRect(),
+            backgroundSeed: props.battlePrep.battleData.location.seed,
+            backgroundDrawingFunction: activeModuleData.starBackgroundDrawingFunction,
+            ref: backgroundComponent,
+          },
+            ReactDOMElements.div({className: "battle-prep-left-upper-inner"},
+              leftUpperElement,
             ),
           ),
-          ReactDOMElements.div({className: "battle-prep-left-controls"},
-            ReactDOMElements.button(
-            {
-              className: "battle-prep-controls-button",
-              onClick: this.setLeftLowerElement.bind(this, "itemEquip"),
-              disabled: this.state.leftLowerElement === "itemEquip",
-            }, localize("equip")()),
-            ReactDOMElements.button(
-            {
-              className: "battle-prep-controls-button",
-              onClick: this.setLeftLowerElement.bind(this, "playerFormation"),
-              disabled: this.state.leftLowerElement === "playerFormation",
-            }, localize("ownFormation")()),
-            ReactDOMElements.button(
-            {
-              className: "battle-prep-controls-button",
-              onClick: this.setLeftLowerElement.bind(this, "enemyFormation"),
-              disabled: this.state.leftLowerElement === "enemyFormation" || !canInspectEnemyFormation,
-              title: canInspectEnemyFormation ?
-                undefined :
-                localize("cantInspectEnemyFormationAsStarIsNotInDetectionRadius")(),
-            }, localize("enemy")()),
-            ReactDOMElements.button(
-            {
-              onClick: this.autoMakeFormation,
-            }, localize("autoFormation")()),
-            ReactDOMElements.button(
-            {
-              onClick: () =>
-              {
-                app.reactUI.switchScene("galaxyMap");
-              },
-              disabled: playerIsDefending,
-            }, localize("cancel")()),
-            ReactDOMElements.button(
-            {
-              className: "battle-prep-controls-button",
-              disabled: !humanFormationValidity.isValid,
-              title: humanFormationValidity.isValid ? "" : this.localizeInvalidFormationExplanation(
-                battlePrep.humanFormation,
-                humanFormationValidity,
-              ),
-              onClick: () =>
-              {
-                const battle = battlePrep.makeBattle();
-                app.reactUI.battle = battle;
-                app.reactUI.switchScene("battle");
-              },
-            }, localize("startBattle")()),
-            !options.debug.enabled ? null : ReactDOMElements.button(
-            {
-              className: "battle-prep-controls-button",
-              onClick: () =>
-              {
-                const battle = battlePrep.makeBattle();
-                const simulator = new BattleSimulator(battle);
-                simulator.simulateBattle();
-                battle.isSimulated = false;
-                simulator.finishBattle();
-              },
-            }, localize("simulateBattle")()),
-          ),
-          ReactDOMElements.div({className: "battle-prep-left-lower"}, leftLowerElement),
         ),
-        UnitList(
-        {
-          units: battlePrep.humanFormation.units,
-          selectedUnit: this.state.selectedUnit,
-          reservedUnits: battlePrep.humanFormation.getPlacedUnits(),
-          unavailableUnits: battlePrep.humanPlayer === battlePrep.attacker ?
-            battlePrep.humanUnits.filter(unit => !unit.canFightOffensiveBattle()) :
-            [],
-          hoveredUnit: this.state.hoveredUnit,
-
-          isDraggable: this.state.leftLowerElement === "playerFormation",
-          onDragStart: this.handleDragStart.bind(null, true),
-          onDragEnd: this.handleDragEnd,
-
-          onRowChange: this.handleSelectUnitListRow,
-
-          onMouseEnterUnit: this.handleMouseEnterUnit,
-          onMouseLeaveUnit: this.handleMouseLeaveUnit,
-        }),
-      )
-    );
-  }
-
-  private canInspectEnemyFormation(): boolean
-  {
-    const player = this.props.battlePrep.humanPlayer;
-
-    return player.starIsDetected(this.props.battlePrep.battleData.location);
-  }
-  private autoMakeFormation()
-  {
-    this.props.battlePrep.humanFormation.clearFormation();
-    this.props.battlePrep.humanFormation.setAutoFormation(
-      this.props.battlePrep.enemyUnits, this.props.battlePrep.enemyFormation.formation);
-
-    this.setLeftLowerElement("playerFormation");
-    this.forceUpdate();
-  }
-  private handleSelectUnitListRow(row: ListItem<UnitListItemPropTypes>): void
-  {
-    this.setSelectedUnit(row.content.props.unit);
-  }
-  private handleSelectItemListRow(row: ListItem<ItemListItemPropTypes>): void
-  {
-    if (row.content.props.unit)
-    {
-      this.setSelectedUnit(row.content.props.unit);
-    }
-  }
-  private clearSelectedUnit()
-  {
-    this.setState(
-    {
-      selectedUnit: null,
-    });
-  }
-  private setSelectedUnit(unit: Unit)
-  {
-    if (unit === this.state.selectedUnit)
-    {
-      this.clearSelectedUnit();
-
-      return;
-    }
-
-    this.setState(
-    {
-      selectedUnit: unit,
-      hoveredUnit: null,
-    });
-  }
-  private handleMouseEnterUnit(unit: Unit)
-  {
-    this.setState(
-    {
-      hoveredUnit: unit,
-    });
-  }
-  private handleMouseLeaveUnit()
-  {
-    this.setState(
-    {
-      hoveredUnit: null,
-    });
-  }
-  private handleDragStart(cameFromUnitList: boolean, unit: Unit)
-  {
-    if (cameFromUnitList && this.props.battlePrep.humanFormation.hasUnit(unit))
-    {
-      this.props.battlePrep.humanFormation.removeUnit(unit);
-    }
-
-    this.setState(
-    {
-      currentDragUnit: unit,
-    });
-  }
-  private handleDragEnd(dropSuccessful: boolean = false)
-  {
-    const unit = this.state.currentDragUnit;
-    debug.log("ui", `Unit drag end '${unit ? unit.name : null}'. Drop was ${!dropSuccessful ? "not " : ""}succesful`);
-    if (!dropSuccessful && this.state.currentDragUnit)
-    {
-      if (this.props.battlePrep.humanFormation.hasUnit(this.state.currentDragUnit))
-      {
-        debug.log("ui", `Removed unit '${unit ? unit.name : null}' from formation after drag end without succesful drop`);
-        this.props.battlePrep.humanFormation.removeUnit(this.state.currentDragUnit);
-      }
-    }
-
-    this.setState(
-    {
-      currentDragUnit: null,
-      hoveredUnit: null,
-    });
-
-    return dropSuccessful;
-  }
-  private handleDrop(position: number[])
-  {
-    const unit = this.state.currentDragUnit;
-    debug.log("ui", `Drop unit '${unit ? unit.name : null}' at position ${position}`);
-    const battlePrep = this.props.battlePrep;
-    if (unit)
-    {
-      battlePrep.humanFormation.assignUnit(unit, position);
-    }
-
-    this.handleDragEnd(true);
-  }
-  private handleItemDragStart(item: Item)
-  {
-    this.setState(
-    {
-      currentDragItem: item,
-    });
-  }
-  private setLeftLowerElement(newElement: string)
-  {
-    const oldElement = this.state.leftLowerElement;
-    const newState: any =
-    {
-      leftLowerElement: newElement,
-    };
-
-    if (oldElement === "enemyFormation" || newElement === "enemyFormation")
-    {
-      newState.selectedUnit = null;
-    }
-
-    this.setState(newState);
-  }
-  private handleItemDragEnd(dropSuccessful: boolean = false)
-  {
-    if (!dropSuccessful && this.state.currentDragItem && this.state.selectedUnit)
-    {
-      const item = this.state.currentDragItem;
-      if (this.state.selectedUnit.items.hasItem(item))
-      {
-        this.state.selectedUnit.items.removeItem(item);
-      }
-    }
-
-    this.setState(
-    {
-      currentDragItem: null,
-    });
-  }
-  private handleItemDrop(index: number)
-  {
-    const item = this.state.currentDragItem;
-    const unit = this.state.selectedUnit;
-    if (unit && item)
-    {
-      unit.items.addItemAtPosition(item, index);
-    }
-
-    this.handleItemDragEnd(true);
-  }
-  private getBackgroundBlurArea()
-  {
-    if (!this.backgroundComponent.current)
-    {
-      throw new Error("Battle prep background element hasn't mounted yet");
-    }
-
-    return this.backgroundComponent.current.pixiContainer.current.getBoundingClientRect();
-  }
-  private localizeFormationInvalidityReason(formation: BattlePrepFormation, reason: FormationInvalidityReason): string
-  {
-    switch (reason)
-    {
-      case FormationInvalidityReason.Valid:
-      {
-        throw new Error("Tried to display reason for formation invalidity when formation wasn't invalid.");
-      }
-      case FormationInvalidityReason.NotEnoughUnits:
-      {
-        return localize("notEnoughUnitsPlaced")(
-        {
-          minUnits: formation.getValidityRestriction().minUnits,
-        });
-      }
-    }
-  }
-  private localizeModifierEffect(effect: FormationValidityModifierEffect): string
-  {
-    const sortOrder: Required<{[K in keyof FormationValidityModifierEffect]: number}> =
-    {
-      minUnits: 0,
-    };
-
-    const allKeys = <(keyof FormationValidityModifierEffect)[]> Object.keys(effect);
-
-    return allKeys.sort((a, b) =>
-    {
-      return sortOrder[a] - sortOrder[b];
-    }).map(prop =>
-    {
-      switch (prop)
-      {
-        case "minUnits":
-        {
-          return localize("battlePrepValidityModifierEffect_minUnits")({minUnits: effect.minUnits});
-        }
-      }
-    }).join(localize("listItemSeparator")());
-  }
-  private localizeFormationValidityModifierSource(
-    formation: BattlePrepFormation,
-    modifier: FormationValidityModifier,
-  ): string
-  {
-    switch (modifier.sourceType)
-    {
-      case FormationValidityModifierSourceType.OffensiveBattle:
-      {
-        return localize("battlePrepValidityModifierSource_offensiveBattle")();
-      }
-      case FormationValidityModifierSourceType.AttackedInEnemyTerritory:
-      {
-        return localize("battlePrepValidityModifierSource_attackedInEnemyTerritory")();
-      }
-      case FormationValidityModifierSourceType.AttackedInNeutralTerritory:
-      {
-        return localize("battlePrepValidityModifierSource_attackedInNeutralTerritory")();
-      }
-      case FormationValidityModifierSourceType.PassiveAbility:
-      {
-        const humanPlayer = this.props.battlePrep.humanPlayer;
-
-        const sourceAbility = modifier.sourcePassiveAbility.abilityTemplate;
-        const sourceUnit = modifier.sourcePassiveAbility.unit;
-        const sourceUnitIsKnown = sourceUnit.fleet.player === humanPlayer || this.canInspectEnemyFormation();
-
-        if (sourceUnitIsKnown)
-        {
-          return localize("battlePrepValidityModifierSource_passiveAbility_known")(
+        ReactDOMElements.div({className: "battle-prep-left-controls"},
+          ReactDOMElements.button(
           {
-            abilityName: sourceAbility.displayName,
-            unitName: sourceUnit.name,
-          });
-        }
-        else
+            className: "battle-prep-controls-button",
+            onClick: () => setLeftLowerElementKey("itemEquip"),
+            disabled: leftLowerElementKey === "itemEquip",
+          }, localize("equip")()),
+          ReactDOMElements.button(
+          {
+            className: "battle-prep-controls-button",
+            onClick: () => setLeftLowerElementKey("playerFormation"),
+            disabled: leftLowerElementKey === "playerFormation",
+          }, localize("ownFormation")()),
+          ReactDOMElements.button(
+          {
+            className: "battle-prep-controls-button",
+            onClick: () => setLeftLowerElementKey("enemyFormation"),
+            disabled: leftLowerElementKey === "enemyFormation" || !canInspectEnemyFormation,
+            title: canInspectEnemyFormation ?
+              undefined :
+              localize("cantInspectEnemyFormationAsStarIsNotInDetectionRadius")(),
+          }, localize("enemy")()),
+          ReactDOMElements.button(
+          {
+            onClick: () =>
+            {
+              props.battlePrep.humanFormation.clearFormation();
+              props.battlePrep.humanFormation.setAutoFormation(
+                props.battlePrep.enemyUnits,
+                props.battlePrep.enemyFormation.formation,
+              );
+
+              setLeftLowerElementKey("playerFormation");
+              forceUpdate();
+            },
+          }, localize("autoFormation")()),
+          ReactDOMElements.button(
+          {
+            onClick: () =>
+            {
+              app.reactUI.switchScene("galaxyMap");
+            },
+            disabled: playerIsDefending,
+          }, localize("cancel")()),
+          ReactDOMElements.button(
+          {
+            className: "battle-prep-controls-button",
+            disabled: !humanFormationValidity.isValid,
+            title: humanFormationValidity.isValid ? "" : localizeInvalidFormationExplanation(
+              props.battlePrep.humanFormation,
+              humanFormationValidity,
+              props.battlePrep.humanPlayer,
+              canInspectEnemyFormation,
+            ),
+            onClick: () =>
+            {
+              const battle = props.battlePrep.makeBattle();
+              app.reactUI.battle = battle;
+              app.reactUI.switchScene("battle");
+            },
+          }, localize("startBattle")()),
+          !options.debug.enabled ? null : ReactDOMElements.button(
+          {
+            className: "battle-prep-controls-button",
+            onClick: () =>
+            {
+              const battle = props.battlePrep.makeBattle();
+              const simulator = new BattleSimulator(battle);
+              simulator.simulateBattle();
+              battle.isSimulated = false;
+              simulator.finishBattle();
+            },
+          }, localize("simulateBattle")()),
+        ),
+        ReactDOMElements.div({className: "battle-prep-left-lower"}, leftLowerElement),
+      ),
+      UnitList(
+      {
+        units: props.battlePrep.humanFormation.units,
+        selectedUnit: selectedUnit,
+        reservedUnits: props.battlePrep.humanFormation.getPlacedUnits(),
+        unavailableUnits: props.battlePrep.humanPlayer === props.battlePrep.attacker ?
+          props.battlePrep.humanUnits.filter(unit => !unit.canFightOffensiveBattle()) :
+          [],
+        hoveredUnit: hoveredUnit,
+
+        isDraggable: leftLowerElementKey === "playerFormation",
+        onDragStart: (unit) =>
         {
-          return localize("battlePrepValidityModifierSource_passiveAbility_unknown")();
-        }
-      }
-    }
-  }
-  private localizeInvalidFormationExplanation(formation: BattlePrepFormation, validity: FormationValidity): string
+          if (props.battlePrep.humanFormation.hasUnit(unit))
+          {
+            props.battlePrep.humanFormation.removeUnit(unit);
+          }
+
+          setCurrentlyDraggingUnit(unit);
+        },
+        onDragEnd: handleUnitDragEnd,
+
+        onRowChange: (row) => setSelectedUnit(row.content.props.unit),
+        onMouseUp: handleItemDropOnUnit,
+
+        onMouseEnterUnit: setHoveredUnit,
+        onMouseLeaveUnit: () => setHoveredUnit(null),
+      }),
+    )
+  );
+};
+
+function localizeFormationInvalidityReason(formation: BattlePrepFormation, reason: FormationInvalidityReason): string
+{
+  switch (reason)
   {
-    const allReasons = extractFlagsFromFlagWord(validity.reasons, FormationInvalidityReason);
-
-    const reasonString = allReasons.sort().map(reason =>
+    case FormationInvalidityReason.Valid:
     {
-      return this.localizeFormationInvalidityReason(formation, reason);
-    }).join("\n");
-
-    const modifiersString = validity.modifiers.map(modifier =>
+      throw new Error("Tried to display reason for formation invalidity when formation wasn't invalid.");
+    }
+    case FormationInvalidityReason.NotEnoughUnits:
     {
-      const modifierEffectString = this.localizeModifierEffect(modifier.effect);
-
-      const modifierSourceString = this.localizeFormationValidityModifierSource(
-        formation,
-        modifier,
-      );
-
-      return `${modifierEffectString} ${modifierSourceString}`;
-    }).join("\n");
-
-    return `${reasonString}\n\n${modifiersString}`;
+      return localize("notEnoughUnitsPlaced")(
+      {
+        minUnits: formation.getValidityRestriction().minUnits,
+      });
+    }
   }
 }
+function localizeModifierEffect(effect: FormationValidityModifierEffect): string
+{
+  const sortOrder: Required<{[K in keyof FormationValidityModifierEffect]: number}> =
+  {
+    minUnits: 0,
+  };
 
-export const BattlePrep: React.Factory<PropTypes> = React.createFactory(BattlePrepComponent);
+  const allKeys = <(keyof FormationValidityModifierEffect)[]> Object.keys(effect);
+
+  return allKeys.sort((a, b) =>
+  {
+    return sortOrder[a] - sortOrder[b];
+  }).map(prop =>
+  {
+    switch (prop)
+    {
+      case "minUnits":
+      {
+        return localize("battlePrepValidityModifierEffect_minUnits")({minUnits: effect.minUnits});
+      }
+    }
+  }).join(localize("listItemSeparator")());
+}
+function localizeFormationValidityModifierSource(
+  formation: BattlePrepFormation,
+  modifier: FormationValidityModifier,
+  humanPlayer: Player,
+  canInspectEnemyFormation: boolean,
+): string
+{
+  switch (modifier.sourceType)
+  {
+    case FormationValidityModifierSourceType.OffensiveBattle:
+    {
+      return localize("battlePrepValidityModifierSource_offensiveBattle")();
+    }
+    case FormationValidityModifierSourceType.AttackedInEnemyTerritory:
+    {
+      return localize("battlePrepValidityModifierSource_attackedInEnemyTerritory")();
+    }
+    case FormationValidityModifierSourceType.AttackedInNeutralTerritory:
+    {
+      return localize("battlePrepValidityModifierSource_attackedInNeutralTerritory")();
+    }
+    case FormationValidityModifierSourceType.PassiveAbility:
+    {
+      // const humanPlayer = this.props.battlePrep.humanPlayer;
+      const sourceAbility = modifier.sourcePassiveAbility.abilityTemplate;
+      const sourceUnit = modifier.sourcePassiveAbility.unit;
+      const sourceUnitIsKnown = sourceUnit.fleet.player === humanPlayer || canInspectEnemyFormation;
+
+      if (sourceUnitIsKnown)
+      {
+        return localize("battlePrepValidityModifierSource_passiveAbility_known")(
+        {
+          abilityName: sourceAbility.displayName,
+          unitName: sourceUnit.name,
+        });
+      }
+      else
+      {
+        return localize("battlePrepValidityModifierSource_passiveAbility_unknown")();
+      }
+    }
+  }
+}
+function localizeInvalidFormationExplanation(
+  formation: BattlePrepFormation,
+  validity: FormationValidity,
+  humanPlayer: Player,
+  canInspectEnemyFormation: boolean,
+): string
+{
+  const allReasons = extractFlagsFromFlagWord(validity.reasons, FormationInvalidityReason);
+
+  const reasonString = allReasons.sort().map(reason =>
+  {
+    return localizeFormationInvalidityReason(formation, reason);
+  }).join("\n");
+
+  const modifiersString = validity.modifiers.map(modifier =>
+  {
+    const modifierEffectString = localizeModifierEffect(modifier.effect);
+
+    const modifierSourceString = localizeFormationValidityModifierSource(
+      formation,
+      modifier,
+      humanPlayer,
+      canInspectEnemyFormation,
+    );
+
+    return `${modifierEffectString} ${modifierSourceString}`;
+  }).join("\n");
+
+  return `${reasonString}\n\n${modifiersString}`;
+}
+
+export const BattlePrep: React.FunctionComponentFactory<PropTypes> = React.createFactory(BattlePrepComponent);
