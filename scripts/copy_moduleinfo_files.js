@@ -23,7 +23,7 @@ glob("**/moduleInfo.json", (err, filePaths) =>
     {
       if (err) {throw err};
 
-      cpr(filePath, destination, err =>
+      cpr(filePath, destination, {overwrite: true}, err =>
       {
         if (err) {throw err};
 
