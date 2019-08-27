@@ -10,7 +10,7 @@ const glob = require("glob").glob;
 const path = require("path").posix;
 
 
-glob("**/moduleInfo.json", (err, filePaths) =>
+glob("modules/**/moduleInfo.json", (err, filePaths) =>
 {
   if (err) {throw err};
 
