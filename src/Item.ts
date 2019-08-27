@@ -37,4 +37,12 @@ export class Item
 
     return data;
   }
+  public unequip(): void
+  {
+    if (!this.unit)
+    {
+      throw new Error(`Tried to unequip item '${this.template.displayName}' that wasn't equipped`);
+    }
+    this.unit.items.removeItem(this);
+  }
 }
