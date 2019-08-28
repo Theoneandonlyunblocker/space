@@ -216,14 +216,14 @@ export class BattlePrepFormation
       this.validityModifiers.splice(index, 1);
     }
   }
+  public getUnitAtPosition(position: number[]): Unit
+  {
+    return this.formation[position[0]][position[1]];
+  }
 
   private getUnitPosition(unit: Unit): number[]
   {
     return this.placedUnitPositionsById[unit.id];
-  }
-  private getUnitAtPosition(position: number[]): Unit
-  {
-    return this.formation[position[0]][position[1]];
   }
   private cleanUpUnitPosition(unit: Unit): void
   {

@@ -37,7 +37,6 @@ export interface PropTypes extends React.Props<any>
 
 type LeftLowerElementKey = "playerFormation" | "enemyFormation" | "itemEquip";
 
-// TODO 2019.08.27 | equip item on MenuUnitInfo.Item => Formation.Unit drop
 const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const forceUpdateDummyReducer = React.useReducer(x => x + 1, 0);
@@ -63,17 +62,26 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
   }
   function handleMouseUpOnUnitSlot(position: number[]): void
   {
-    if (!currentlyDraggingUnit)
+    if (currentlyDraggingUnit)
     {
-      return;
+      debug.log("ui", `Drop unit '${currentlyDraggingUnit ? currentlyDraggingUnit.name : null}' at position ${position}`);
+
+      props.battlePrep.humanFormation.assignUnit(currentlyDraggingUnit, position);
+      setHoveredUnit(currentlyDraggingUnit);
+      handleUnitDragEnd(true);
     }
-
-    debug.log("ui", `Drop unit '${currentlyDraggingUnit ? currentlyDraggingUnit.name : null}' at position ${position}`);
-
-    props.battlePrep.humanFormation.assignUnit(currentlyDraggingUnit, position);
-    setHoveredUnit(currentlyDraggingUnit);
-
-    handleUnitDragEnd(true);
+    else if (currentlyDraggingItem && leftLowerElementKey === "playerFormation")
+    {
+      const unitAtSlot = props.battlePrep.humanFormation.getUnitAtPosition(position);
+      if (unitAtSlot)
+      {
+        handleItemDropOnUnit(unitAtSlot);
+      }
+      else
+      {
+        handleItemDragEnd(false);
+      }
+    }
   }
 
   const [currentlyDraggingItem, setCurrentlyDraggingItem] = React.useState<Item | null>(null);
