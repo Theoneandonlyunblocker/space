@@ -112,10 +112,10 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
 
   const highlightedUnit = (() =>
   {
-    // need this currenlty because unmounting unitinfo when item being dragged is child of unitinfo messes up the drag handlers
-    if (currentlyDraggingItem && currentlyDraggingItem.unit)
+    // need this because unmounting unitinfo when item being dragged is child of unitinfo messes up the drag handlers
+    if (currentlyDraggingItem && selectedUnit)
     {
-      return currentlyDraggingItem.unit;
+      return selectedUnit;
     }
     else
     {
