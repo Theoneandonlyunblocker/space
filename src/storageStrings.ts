@@ -1,4 +1,4 @@
-const basePrefix = "Rance.";
+const basePrefix = "SpaceGame.";
 
 export const storageStrings =
 {
@@ -16,4 +16,5 @@ export const storageStrings =
   deprecated_language: `${basePrefix}language`,
   deprecated_options: `${basePrefix}Options.0`,
   deprecated_notificationFilter: `${basePrefix}NotificationFilter.0`,
+  deprecated_basePrefix: "Rance.",
 };

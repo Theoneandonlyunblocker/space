@@ -459,7 +459,31 @@ class App
               });
             });
           }
-        ]
+        ],
+        "0.4.0":
+        [
+          function renameStorageKeys()
+          {
+            localForage.keys().then(keys =>
+            {
+              const keysWithOldPrefix = keys.filter(key => key.indexOf(storageStrings.deprecated_basePrefix) === 0);
+
+              keysWithOldPrefix.forEach(oldKey =>
+              {
+                const keyWithoutPrefix = oldKey.slice(storageStrings.deprecated_basePrefix.length);
+                const newKey = storageStrings.basePrefix + keyWithoutPrefix;
+
+                localForage.getItem(oldKey).then(storedData =>
+                {
+                  localForage.setItem(newKey, storedData).then(() =>
+                  {
+                    localForage.removeItem(oldKey);
+                  });
+                });
+              });
+            });
+          }
+        ],
       };
 
       const reviversToExecute = fetchNeededReviversForData(

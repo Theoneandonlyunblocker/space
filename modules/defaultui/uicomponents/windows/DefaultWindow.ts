@@ -10,7 +10,7 @@ import
 } from "./WindowContainer";
 
 
-const cssPropertyPrefix = "--rance-window-";
+const cssPropertyPrefix = "--spacegame-window-";
 const prefixedCssPropertyMap =
 {
   minWidth: cssPropertyPrefix + "min-width",
