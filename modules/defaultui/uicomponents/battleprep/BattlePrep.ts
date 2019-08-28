@@ -14,8 +14,8 @@ import
   FormationValidityModifierSourceType,
 } from "../../../../src/BattlePrepFormationValidity";
 import {BattleSimulator} from "../../../../src/BattleSimulator";
-import {Item} from "../../../../src/Item";
 import {options} from "../../../../src/Options";
+import {Item} from "../../../../src/Item";
 import {Unit} from "../../../../src/Unit";
 import {activeModuleData} from "../../../../src/activeModuleData";
 import { extractFlagsFromFlagWord } from "../../../../src/utility";
@@ -47,11 +47,10 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
   const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(null);
 
   const [currentlyDraggingUnit, setCurrentlyDraggingUnit] = React.useState<Unit | null>(null);
-  // TODO 2019.08.27 | rename param to dropWasOutsideTarget or something
-  function handleUnitDragEnd(dropWasSuccessful: boolean = false): boolean
+  function handleUnitDragEnd(dropWasInsideTarget: boolean = false): void
   {
-    debug.log("ui", `Unit drag end '${currentlyDraggingUnit ? currentlyDraggingUnit.name : null}'. Drop was ${!dropWasSuccessful ? "not " : ""}succesful`);
-    if (!dropWasSuccessful && currentlyDraggingUnit)
+    debug.log("ui", `Unit drag end '${currentlyDraggingUnit ? currentlyDraggingUnit.name : null}'. Drop was ${dropWasInsideTarget ? "inside" : "outside"} unit slot`);
+    if (!dropWasInsideTarget && currentlyDraggingUnit)
     {
       if (props.battlePrep.humanFormation.hasUnit(currentlyDraggingUnit))
       {
@@ -61,33 +60,31 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
     }
 
     setCurrentlyDraggingUnit(null);
-    setHoveredUnit(null); // TODO 2019.08.27 | try removing this to see if its necessary
-
-    return dropWasSuccessful;
   }
-  function handleUnitDrop(position: number[]): void
+  function handleMouseUpOnUnitSlot(position: number[]): void
   {
-    debug.log("ui", `Drop unit '${currentlyDraggingUnit ? currentlyDraggingUnit.name : null}' at position ${position}`);
-    if (currentlyDraggingUnit)
+    if (!currentlyDraggingUnit)
     {
-      props.battlePrep.humanFormation.assignUnit(currentlyDraggingUnit, position);
+      return;
     }
+
+    debug.log("ui", `Drop unit '${currentlyDraggingUnit ? currentlyDraggingUnit.name : null}' at position ${position}`);
+
+    props.battlePrep.humanFormation.assignUnit(currentlyDraggingUnit, position);
+    setHoveredUnit(currentlyDraggingUnit);
 
     handleUnitDragEnd(true);
   }
 
   const [currentlyDraggingItem, setCurrentlyDraggingItem] = React.useState<Item | null>(null);
-  // TODO 2019.08.27 | rename param to dropWasOutsideTarget or something
-  function handleItemDragEnd(dropWasSuccessful: boolean = false): boolean
+  function handleItemDragEnd(dropWasInsideTarget: boolean = false): void
   {
-    if (!dropWasSuccessful && currentlyDraggingItem && currentlyDraggingItem.unit)
+    if (!dropWasInsideTarget && currentlyDraggingItem && currentlyDraggingItem.unit)
     {
       currentlyDraggingItem.unequip();
     }
 
     setCurrentlyDraggingItem(null);
-
-    return dropWasSuccessful;
   }
   function handleItemDropOnUnit(unit: Unit): void
   {
@@ -142,8 +139,7 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
   React.useLayoutEffect(function resizeBackgroundOnMount()
   {
     backgroundComponent.current.handleResize();
-  }, []);
-
+  }, [backgroundComponent.current]);
 
 
   const leftUpperElement = (() =>
@@ -196,7 +192,7 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
           activeUnit: selectedUnit,
           abilityTargetDisplayDataById: {},
 
-          onMouseUp: handleUnitDrop,
+          onMouseUp: handleMouseUpOnUnitSlot,
           onUnitClick: setSelectedUnit,
           handleMouseEnterUnit: setHoveredUnit,
           handleMouseLeaveUnit: () => setHoveredUnit(null),
