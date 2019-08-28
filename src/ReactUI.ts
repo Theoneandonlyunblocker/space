@@ -78,14 +78,12 @@ export class ReactUI
     const elementToRender = this.getElementToRender();
 
     ReactDOM.render(
-      React.createElement(React.StrictMode, null,
-        activeModuleData.uiScenes.topLevelErrorBoundary(
-        {
-          errorReportingMode: options.system.errorReporting,
-          errorMessage: this.errorMessage,
-        },
-          elementToRender,
-        ),
+      activeModuleData.uiScenes.topLevelErrorBoundary(
+      {
+        errorReportingMode: options.system.errorReporting,
+        errorMessage: this.errorMessage,
+      },
+        elementToRender,
       ),
       this.container,
     );
