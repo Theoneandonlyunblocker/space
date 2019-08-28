@@ -8,7 +8,7 @@ import {convertClientRectToPixiRect} from "../../../../src/pixiWrapperFunctions"
 
 export interface PropTypes extends React.Props<any>
 {
-  getBlurArea: () => ClientRect;
+  getBlurArea?: () => ClientRect;
   backgroundSeed: string;
   backgroundDrawingFunction: BackgroundDrawingFunction;
 }
@@ -54,11 +54,14 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   }
   public handleResize()
   {
-
     // TODO 2017.04.01 | this seems to trigger before any breakpoints,
     // leading to 1 px immediately after breakpoint where blurArea isnt correctly determined
-    const blurarea = this.props.getBlurArea();
-    this.backgroundDrawer.blurArea = convertClientRectToPixiRect(blurarea);
+    if (this.props.getBlurArea)
+    {
+      const blurarea = this.props.getBlurArea();
+      this.backgroundDrawer.blurArea = convertClientRectToPixiRect(blurarea);
+    }
+
     this.backgroundDrawer.handleResize();
   }
   public componentDidMount()

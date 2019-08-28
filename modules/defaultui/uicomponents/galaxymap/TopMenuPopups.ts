@@ -51,7 +51,14 @@ export interface PropTypes extends React.Props<any>
   setSelectedStar: (star: Star | null) => void;
 }
 
-type StateType = Partial<ValuesByPopup<boolean>>;
+type OwnState =
+{
+  currentDragItem: Item | null;
+  currentDragUnit: Unit | null;
+};
+type OpenedPopupsState = ValuesByPopup<boolean>;
+
+type StateType = OpenedPopupsState;
 
 export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType>
 {
@@ -134,7 +141,19 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      production: false,
+      equipItems: false,
+      economySummary: false,
+      saveGame: false,
+      loadGame: false,
+      options: false,
+      diplomacy: false,
+      technologies: false,
+      currentDragItem: null,
+      currentDragUnit: null,
+    };
 
     this.bindMethods();
 
@@ -222,20 +241,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     this.cacheAllWindowPositions = this.cacheAllWindowPositions.bind(this);
     this.storeWindowPositions = this.storeWindowPositions.bind(this);
   }
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      production: false,
-      equipItems: false,
-      economySummary: false,
-      saveGame: false,
-      loadGame: false,
-      options: false,
-      diplomacy: false,
-      technologies: false,
-    });
-  }
   private closePopup(popupType: PopupType)
   {
     this.cacheWindowPosition(popupType);
@@ -248,15 +253,13 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
 
     this.popupComponents[popupType] = null;
 
-    const stateObj: StateType = {};
-    stateObj[popupType] = false;
-    this.setState(stateObj);
+    const changedState = <Pick<OpenedPopupsState, PopupType>> {[popupType]: false};
+    this.setState(changedState);
   }
   private openPopup(popupType: PopupType)
   {
-    const stateObj: StateType = {};
-    stateObj[popupType] = true;
-    this.setState(stateObj);
+    const changedState = <Pick<OpenedPopupsState, PopupType>> {[popupType]: true};
+    this.setState(changedState);
   }
   private makePopup(popupType: PopupType): React.ReactElement<any>
   {

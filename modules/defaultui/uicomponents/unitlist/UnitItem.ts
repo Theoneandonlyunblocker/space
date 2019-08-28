@@ -60,7 +60,7 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
   }
   onDragEnd()
   {
-    debug.log("ui", `end item drag ´${this.props.item.template.displayName}`);
+    debug.log("ui", `End item drag ´${this.props.item.template.displayName}`);
     this.props.onDragEnd();
   }
   getTechIcon(techLevel: number)
