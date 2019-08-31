@@ -1,4 +1,4 @@
-import {GuardCoverage} from "../../../../src/GuardCoverage";
+import {GuardCoverage} from "../../../../src/unit/GuardCoverage";
 
 
 export const battle =

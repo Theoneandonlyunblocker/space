@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import {GameModule} from "../../../src/GameModule";
-import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
+import {GameModule} from "../../../src/modules/GameModule";
+import {GameModuleInitializationPhase} from "../../../src/modules/GameModuleInitializationPhase";
 
 import {unitArchetypes} from "../../common/unitArchetypes";
 import {unitTemplates} from "./unitTemplates";

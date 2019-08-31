@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import {GameLoader} from "../GameLoader";
+import {GameLoader} from "../saves/GameLoader";
 
 import {NotificationFilterState} from "../notifications/NotificationFilterState";
 import {NotificationWitnessCriterion} from "../notifications/NotificationWitnessCriterion";

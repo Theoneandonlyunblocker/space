@@ -1,4 +1,4 @@
-import { VfxDrawingFunction } from "../../../../src/VfxDrawingFunction";
+import { VfxDrawingFunction } from "../../../../src/templateinterfaces/VfxDrawingFunction";
 import { VfxParams } from "../../../../src/templateinterfaces/VfxParams";
 
 import { AbsorbParticlesFromTarget } from "../../../space/battlevfx/drawingfunctions/vfxfragments/AbsorbParticlesFromTarget";

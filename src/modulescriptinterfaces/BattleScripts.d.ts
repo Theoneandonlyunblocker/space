@@ -1,4 +1,4 @@
-import {Battle} from "../Battle";
+import {Battle} from "../battle/Battle";
 
 export interface BattleScripts
 {

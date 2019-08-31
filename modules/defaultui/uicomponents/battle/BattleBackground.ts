@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {BackgroundDrawer} from "../../../../src/BackgroundDrawer";
-import {BackgroundDrawingFunction} from "../../../../src/BackgroundDrawingFunction";
-import {convertClientRectToPixiRect} from "../../../../src/pixiWrapperFunctions";
+import {BackgroundDrawer} from "../../../../src/graphics/BackgroundDrawer";
+import {BackgroundDrawingFunction} from "../../../../src/graphics/BackgroundDrawingFunction";
+import {convertClientRectToPixiRect} from "../../../../src/graphics/pixiWrapperFunctions";
 
 
 export interface PropTypes extends React.Props<any>

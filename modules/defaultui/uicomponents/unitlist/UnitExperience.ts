@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Unit} from "../../../../src/Unit";
+import {Unit} from "../../../../src/unit/Unit";
 import {DefaultWindow} from "../windows/DefaultWindow";
 
 import {UpgradeUnit} from "./UpgradeUnit";

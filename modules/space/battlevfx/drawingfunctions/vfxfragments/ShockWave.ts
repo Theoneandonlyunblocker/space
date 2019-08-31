@@ -1,11 +1,11 @@
 import * as TWEEN from "@tweenjs/tween.js";
 
-import {Color} from "../../../../../src/Color";
-import {Point} from "../../../../../src/Point";
+import {Color} from "../../../../../src/color/Color";
+import {Point} from "../../../../../src/math/Point";
 import
 {
   makeShaderSprite,
-} from "../../../../../src/pixiWrapperFunctions";
+} from "../../../../../src/graphics/pixiWrapperFunctions";
 import {IntersectingEllipsesShader} from "../shaders/IntersectingEllipsesShader";
 
 import {RampingValue} from "./RampingValue";

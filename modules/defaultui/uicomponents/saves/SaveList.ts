@@ -3,13 +3,13 @@ import * as ReactDOMElements from "react-dom-factories";
 import * as localForage from "localforage";
 
 import {localize} from "../../localization/localize";
-import {prettifyDate} from "../../../../src/utility";
+import {prettifyDate} from "../../../../src/generic/utility";
 import {List} from "../list/List";
 import {ListColumn} from "../list/ListColumn";
 import {ListItem} from "../list/ListItem";
 
 import {SaveListItem, PropTypes as SaveListItemProps} from "./SaveListItem";
-import { storageStrings } from "../../../../src/storageStrings";
+import { storageStrings } from "../../../../src/saves/storageStrings";
 import {FullSaveData} from "../../../../src/savedata/FullSaveData";
 
 

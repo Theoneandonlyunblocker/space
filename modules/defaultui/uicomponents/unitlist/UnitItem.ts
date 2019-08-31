@@ -4,8 +4,8 @@ import * as ReactDOMElements from "react-dom-factories";
 import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import {applyMixins} from "../mixins/applyMixins";
 
-import {Item} from "../../../../src/Item";
-import * as debug from "../../../../src/debug";
+import {Item} from "../../../../src/items/Item";
+import * as debug from "../../../../src/app/debug";
 
 import {localize} from "../../localization/localize";
 import { getAssetSrc } from "../../../../modules/defaultui/assets";

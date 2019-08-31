@@ -1,5 +1,5 @@
-import {Color as ColorType} from "../../../../../../src/Color";
-import {Point as PointType} from "../../../../../../src/Point";
+import {Color as ColorType} from "../../../../../../src/color/Color";
+import {Point as PointType} from "../../../../../../src/math/Point";
 import {RampingValue as RampingValueType} from "../RampingValue";
 
 import

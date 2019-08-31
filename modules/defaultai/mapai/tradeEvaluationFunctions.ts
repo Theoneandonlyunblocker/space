@@ -3,7 +3,7 @@ import
   Trade,
   TradeableItem,
   TradeableItemType,
-} from "../../../src/Trade";
+} from "../../../src/trade/Trade";
 
 
 export function evaluateValueOfTrade(trade: Trade): number

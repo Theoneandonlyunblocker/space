@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 
-import {MapRenderer} from "../../../../src/MapRenderer";
+import {MapRenderer} from "../../../../src/maprenderer/MapRenderer";
 
 
 export interface PropTypes extends React.Props<any>

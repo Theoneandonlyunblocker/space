@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Unit} from "../../../../src/Unit";
-import {UpgradableAbilitiesData} from "../../../../src/UpgradableAbilitiesData";
+import {Unit} from "../../../../src/unit/Unit";
+import {UpgradableAbilitiesData} from "../../../../src/abilities/UpgradableAbilitiesData";
 import {AbilityBase} from "../../../../src/templateinterfaces/AbilityBase";
 import {DefaultWindow} from "../windows/DefaultWindow";
 

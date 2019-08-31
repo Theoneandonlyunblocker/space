@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
-import {GalaxyMap} from "../GalaxyMap";
-import {Player} from "../Player";
+import {GalaxyMap} from "../map/GalaxyMap";
+import {Player} from "../player/Player";
 
 export interface MapRendererLayerTemplate
 {

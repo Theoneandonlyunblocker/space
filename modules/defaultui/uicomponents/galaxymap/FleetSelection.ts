@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Fleet} from "../../../../src/Fleet";
-import {Player} from "../../../../src/Player";
-import {Star} from "../../../../src/Star";
-import {eventManager} from "../../../../src/eventManager";
+import {Fleet} from "../../../../src/fleets/Fleet";
+import {Player} from "../../../../src/player/Player";
+import {Star} from "../../../../src/map/Star";
+import {eventManager} from "../../../../src/app/eventManager";
 
 import {FleetContents} from "./FleetContents";
 import {FleetInfo} from "./FleetInfo";

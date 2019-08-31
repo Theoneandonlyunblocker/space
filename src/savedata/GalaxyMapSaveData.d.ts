@@ -1,4 +1,4 @@
-import {Point} from "../Point";
+import {Point} from "../math/Point";
 
 import {StarSaveData} from "./StarSaveData";
 

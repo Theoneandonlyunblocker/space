@@ -1,8 +1,8 @@
 import * as localForage from "localforage";
 
 import {TutorialVisibility} from "./TutorialVisibility";
-import * as debug from "../debug";
-import { storageStrings } from "../storageStrings";
+import * as debug from "../app/debug";
+import { storageStrings } from "../saves/storageStrings";
 
 
 interface TutorialStatusValues

@@ -5,7 +5,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {NotificationFilter} from "../../../../src/notifications/NotificationFilter";
 import {NotificationFilterState} from "../../../../src/notifications/NotificationFilterState";
 
-import {eventManager} from "../../../../src/eventManager";
+import {eventManager} from "../../../../src/app/eventManager";
 
 
 export interface PropTypes extends React.Props<any>

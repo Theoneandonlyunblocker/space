@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import {app} from "../../../../src/App"; // TODO global
-import {activeModuleData} from "../../../../src/activeModuleData";
-import {options} from "../../../../src/Options";
+import {app} from "../../../../src/app/App"; // TODO global
+import {activeModuleData} from "../../../../src/app/activeModuleData";
+import {options} from "../../../../src/app/Options";
 import {Language} from "../../../../src/localization/Language";
 import
 {

@@ -39,11 +39,11 @@ diplo
 econ
 */
 
-import {IdDictionary} from "../../../src/IdDictionary";
+import {IdDictionary} from "../../../src/generic/IdDictionary";
 import
 {
   getRelativeValue,
-} from "../../../src/utility";
+} from "../../../src/generic/utility";
 import {FrontObjective} from "../objectives/common/FrontObjective";
 import {Objective} from "../objectives/common/Objective";
 import {ObjectiveCreatorTemplate} from "../objectives/common/ObjectiveCreatorTemplate";

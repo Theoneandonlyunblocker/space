@@ -5,7 +5,7 @@ import
 {
   getRandomProperty,
   randInt,
-} from "../../src/utility";
+} from "../../src/generic/utility";
 import {distributionGroups} from "../common/distributionGroups";
 import {generateIndependentFleets} from "../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../common/generateIndependentPlayer";

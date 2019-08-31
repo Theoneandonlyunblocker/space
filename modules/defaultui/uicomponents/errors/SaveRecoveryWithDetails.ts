@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import { ErrorDetails } from "./ErrorDetails";
 import { SaveRecovery } from "./SaveRecovery";
-import {Game} from "../../../../src/Game";
+import {Game} from "../../../../src/game/Game";
 
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>

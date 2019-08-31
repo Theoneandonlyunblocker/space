@@ -1,5 +1,5 @@
-import {GuardCoverage} from "../GuardCoverage";
-import {UnitBattleSide} from "../UnitBattleSide";
+import {GuardCoverage} from "../unit/GuardCoverage";
+import {UnitBattleSide} from "../unit/UnitBattleSide";
 
 import {QueuedActionSaveData} from "./QueuedActionSaveData";
 import {StatusEffectSaveData} from "./StatusEffectSaveData";

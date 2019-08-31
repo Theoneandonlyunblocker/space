@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {TurnOrderDisplayData} from "../../../../src/TurnOrderDisplayData";
-import {Unit} from "../../../../src/Unit";
+import {TurnOrderDisplayData} from "../../../../src/battle/TurnOrderDisplayData";
+import {Unit} from "../../../../src/unit/Unit";
 
 import
 {

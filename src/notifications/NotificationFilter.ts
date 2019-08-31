@@ -1,16 +1,16 @@
 import * as localForage from "localforage";
 
-import {activeModuleData} from "../activeModuleData";
-import {activePlayer} from "../activePlayer";
+import {activeModuleData} from "../app/activeModuleData";
+import {activePlayer} from "../app/activePlayer";
 import {NotificationTemplate} from "../templateinterfaces/NotificationTemplate";
 import
 {
   extendObject,
-} from "../utility";
+} from "../generic/utility";
 
 import {Notification} from "./Notification";
 import {NotificationFilterState} from "./NotificationFilterState";
-import { storageStrings } from "../storageStrings";
+import { storageStrings } from "../saves/storageStrings";
 
 
 export class NotificationFilter

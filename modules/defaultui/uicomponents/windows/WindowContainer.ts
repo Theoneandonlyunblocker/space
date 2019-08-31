@@ -3,12 +3,12 @@ import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {Direction} from "../../../../src/Direction";
-import {Rect} from "../../../../src/Rect";
+import {Rect} from "../../../../src/math/Rect";
 import
 {
   clamp,
   mergeReactAttributes,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 import {DragPositioner} from "../mixins/DragPositioner";
 import {applyMixins} from "../mixins/applyMixins";
 

@@ -1,6 +1,6 @@
-import {Personality} from "../Personality";
-import {TradeOffer} from "../TradeOffer";
-import {Unit} from "../Unit";
+import {Personality} from "../ai/Personality";
+import {TradeOffer} from "../trade/TradeOffer";
+import {Unit} from "../unit/Unit";
 
 export interface AiTemplate<SaveData>
 {

@@ -5,7 +5,7 @@ import {MapGenOption as MapGenOptionObj} from "../../../../src/templateinterface
 import
 {
   clamp,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 import { NumberInput } from "../generic/NumberInput";
 
 

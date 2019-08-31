@@ -1,5 +1,5 @@
-import {Player} from "../Player";
-import {Star} from "../Star";
+import {Player} from "../player/Player";
+import {Star} from "../map/Star";
 
 import {Notification} from "./Notification";
 import {NotificationSubscriber} from "./NotificationSubscriber";

@@ -1,7 +1,7 @@
 import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 
-import {UnitAttribute, getUnitAttributesObjectKeyForAttribute} from "../../../src/UnitAttributes";
-import { FlatAndMultiplierAdjustment } from "../../../src/FlatAndMultiplierAdjustment";
+import {UnitAttribute, getUnitAttributesObjectKeyForAttribute} from "../../../src/unit/UnitAttributes";
+import { FlatAndMultiplierAdjustment } from "../../../src/generic/FlatAndMultiplierAdjustment";
 
 
 function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate

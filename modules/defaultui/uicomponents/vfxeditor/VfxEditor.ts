@@ -12,7 +12,7 @@ import {ProjectileWithImpact} from "../../../../modules/space/battlevfx/drawingf
 import
 {
   clamp,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 
 import
 {

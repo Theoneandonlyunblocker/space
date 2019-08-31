@@ -1,32 +1,32 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {AbilityTargetDisplayDataById} from "../../../../src/AbilityTargetDisplayData";
-import {AbilityUseEffectQueue} from "../../../../src/AbilityUseEffectQueue";
-import {Battle as BattleObj} from "../../../../src/Battle";
-import {BattleScene as BattleSceneObj} from "../../../../src/BattleScene";
-import {MCTree} from "../../../../src/MCTree";
-import {options} from "../../../../src/Options";
-import {Player} from "../../../../src/Player";
-import {Unit} from "../../../../src/Unit";
-import {UnitDisplayData} from "../../../../src/UnitDisplayData";
-import {activeModuleData} from "../../../../src/activeModuleData";
+import {AbilityTargetDisplayDataById} from "../../../../src/abilities/AbilityTargetDisplayData";
+import {AbilityUseEffectQueue} from "../../../../src/abilities/AbilityUseEffectQueue";
+import {Battle as BattleObj} from "../../../../src/battle/Battle";
+import {BattleScene as BattleSceneObj} from "../../../../src/battle/BattleScene";
+import {MCTree} from "../../../../src/ai/MCTree";
+import {options} from "../../../../src/app/Options";
+import {Player} from "../../../../src/player/Player";
+import {Unit} from "../../../../src/unit/Unit";
+import {UnitDisplayData} from "../../../../src/unit/UnitDisplayData";
+import {activeModuleData} from "../../../../src/app/activeModuleData";
 import
 {
   getAbilityTargetDisplayData,
   getTargetsForAllAbilities,
-} from "../../../../src/battleAbilityDisplay";
+} from "../../../../src/abilities/battleAbilityDisplay";
 import
 {
   useAbilityAndGetUseEffects,
-} from "../../../../src/battleAbilityUsage";
-import {AbilityUseEffect} from "../../../../src/AbilityUseEffect";
+} from "../../../../src/abilities/battleAbilityUsage";
+import {AbilityUseEffect} from "../../../../src/abilities/AbilityUseEffect";
 import {AbilityTemplate} from "../../../../src/templateinterfaces/AbilityTemplate";
 import
 {
   shallowCopy,
   shallowExtend,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 
 import
 {

@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {PlayerFlag} from "../PlayerFlag";
 import {TerritoryBuildingList} from "../galaxymap/TerritoryBuildingList";
 
-import {BattlePrep} from "../../../../src/BattlePrep";
+import {BattlePrep} from "../../../../src/battleprep/BattlePrep";
 
 import {localize} from "../../localization/localize";
 

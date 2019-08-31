@@ -4,14 +4,14 @@ import
 {
   AbilityTargetEffect,
   AbilityTargetType,
-} from "../../../src/AbilityTargetDisplayData";
+} from "../../../src/abilities/AbilityTargetDisplayData";
 import {DamageType} from "../../../src/DamageType";
 import
 {
   makeGetAbilityTargetDisplayDataFN,
   areaSingle,
   targetEnemies,
-} from "../../../src/targeting";
+} from "../../../src/abilities/targeting";
 
 import {ResultType} from "../../space/effectactions/ResultType";
 import * as EffectActions from "../../space/effectactions/effectActions";

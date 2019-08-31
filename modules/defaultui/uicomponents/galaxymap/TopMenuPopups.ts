@@ -3,11 +3,11 @@ import * as ReactDOMElements from "react-dom-factories";
 import * as localForage from "localforage";
 
 import {localize} from "../../localization/localize";
-import {Game} from "../../../../src/Game";
-import {options} from "../../../../src/Options";
-import {Player} from "../../../../src/Player";
-import {Rect} from "../../../../src/Rect";
-import {Star} from "../../../../src/Star";
+import {Game} from "../../../../src/game/Game";
+import {options} from "../../../../src/app/Options";
+import {Player} from "../../../../src/player/Player";
+import {Rect} from "../../../../src/math/Rect";
+import {Star} from "../../../../src/map/Star";
 import {Language} from "../../../../src/localization/Language";
 import {DiplomacyOverview} from "../diplomacy/DiplomacyOverview";
 import {ProductionOverview} from "../production/ProductionOverview";
@@ -19,7 +19,7 @@ import {DefaultWindow, DefaultWindowComponent} from "../windows/DefaultWindow";
 
 import {EconomySummary} from "./EconomySummary";
 import {FullOptionsList} from "../options/FullOptionsList";
-import { storageStrings } from "../../../../src/storageStrings";
+import { storageStrings } from "../../../../src/saves/storageStrings";
 
 
 interface ValuesByPopup<T>
@@ -51,11 +51,6 @@ export interface PropTypes extends React.Props<any>
   setSelectedStar: (star: Star | null) => void;
 }
 
-type OwnState =
-{
-  currentDragItem: Item | null;
-  currentDragUnit: Unit | null;
-};
 type OpenedPopupsState = ValuesByPopup<boolean>;
 
 type StateType = OpenedPopupsState;
@@ -151,8 +146,6 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       options: false,
       diplomacy: false,
       technologies: false,
-      currentDragItem: null,
-      currentDragUnit: null,
     };
 
     this.bindMethods();

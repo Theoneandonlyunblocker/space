@@ -3,14 +3,14 @@ import * as PIXI from "pixi.js";
 import {UnitDrawingFunction} from "../../../src/templateinterfaces/UnitDrawingFunction";
 
 
-import {UnitDrawingFunctionData} from "../../../src/UnitDrawingFunctionData";
-import {Point} from "../../../src/Point";
+import {UnitDrawingFunctionData} from "../../../src/unit/UnitDrawingFunctionData";
+import {Point} from "../../../src/math/Point";
 import
 {
   clamp,
   transformMat3,
-} from "../../../src/utility";
-import {Unit} from "../../../src/Unit";
+} from "../../../src/generic/utility";
+import {Unit} from "../../../src/unit/Unit";
 import {VfxParams} from "../../../src/templateinterfaces/VfxParams";
 
 export interface UnitSpriteData

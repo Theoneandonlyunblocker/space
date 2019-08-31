@@ -1,4 +1,4 @@
-import {UnitAttributeAdjustments} from "../UnitAttributes";
+import {UnitAttributeAdjustments} from "../unit/UnitAttributes";
 
 import {AbilityTemplate} from "./AbilityTemplate";
 import {ManufacturableThing} from "./ManufacturableThing";

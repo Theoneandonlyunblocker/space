@@ -1,5 +1,5 @@
-import {GameModule} from "../../../src/GameModule";
-import {GameModuleInitializationPhase} from "../../../src/GameModuleInitializationPhase";
+import {GameModule} from "../../../src/modules/GameModule";
+import {GameModuleInitializationPhase} from "../../../src/modules/GameModuleInitializationPhase";
 
 import * as battleVfxResources from "./resources";
 import * as BattleVfxTemplates from  "./templates/battleVfx";

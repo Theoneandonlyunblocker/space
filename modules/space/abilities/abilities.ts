@@ -4,11 +4,11 @@ import
 {
   AbilityTargetEffect,
   AbilityTargetType,
-} from "../../../src/AbilityTargetDisplayData";
+} from "../../../src/abilities/AbilityTargetDisplayData";
 import {DamageType} from "../../../src/DamageType";
-import {GuardCoverage} from "../../../src/GuardCoverage";
-import {Unit} from "../../../src/Unit";
-import {UnitAttribute} from "../../../src/UnitAttributes";
+import {GuardCoverage} from "../../../src/unit/GuardCoverage";
+import {Unit} from "../../../src/unit/Unit";
+import {UnitAttribute} from "../../../src/unit/UnitAttributes";
 import
 {
   areaColumn,
@@ -22,7 +22,7 @@ import
   targetEnemies,
   targetNextRow,
   targetSelf,
-} from "../../../src/targeting";
+} from "../../../src/abilities/targeting";
 
 import * as BattleVfx from "../battlevfx/templates/battleVfx";
 

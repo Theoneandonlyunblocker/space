@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactMotion from "react-motion";
 
-import {Player} from "../../../../src/Player";
+import {Player} from "../../../../src/player/Player";
 import {PlayerFlag} from "../PlayerFlag";
-import { fixedDurationSpring } from "../../../../src/utility";
+import { fixedDurationSpring } from "../../../../src/generic/utility";
 import { getAssetSrc } from "../../assets";
 
 

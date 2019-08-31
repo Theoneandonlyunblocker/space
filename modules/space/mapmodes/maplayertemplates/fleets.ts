@@ -2,9 +2,9 @@ import * as PIXI from "pixi.js";
 
 import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
-import {app} from "../../../../src/App";
-import {Fleet} from "../../../../src/Fleet";
-import {eventManager} from "../../../../src/eventManager";
+import {app} from "../../../../src/app/App";
+import {Fleet} from "../../../../src/fleets/Fleet";
+import {eventManager} from "../../../../src/app/eventManager";
 
 
 export const fleets: MapRendererLayerTemplate =

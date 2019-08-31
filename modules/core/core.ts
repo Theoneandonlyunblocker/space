@@ -1,6 +1,6 @@
-import {ModuleData} from "../../src/ModuleData";
-import {GameModule} from "../../src/GameModule";
-import {GameModuleInitializationPhase} from "../../src/GameModuleInitializationPhase";
+import {ModuleData} from "../../src/modules/ModuleData";
+import {GameModule} from "../../src/modules/GameModule";
+import {GameModuleInitializationPhase} from "../../src/modules/GameModuleInitializationPhase";
 
 import {allScripts} from "./modulescripts/allScripts";
 

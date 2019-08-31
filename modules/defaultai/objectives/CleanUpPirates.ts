@@ -1,5 +1,5 @@
-import {Star} from "../../../src/Star";
-import {Unit} from "../../../src/Unit";
+import {Star} from "../../../src/map/Star";
+import {Unit} from "../../../src/unit/Unit";
 import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
 import {MapEvaluator} from "../mapai/MapEvaluator";
 import {UnitEvaluator} from "../mapai/UnitEvaluator";

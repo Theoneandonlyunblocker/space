@@ -1,4 +1,4 @@
-import {PlayerDiplomacy} from "../../../../src/PlayerDiplomacy";
+import {PlayerDiplomacy} from "../../../../src/diplomacy/PlayerDiplomacy";
 
 import {Objective} from "./Objective";
 import {ObjectiveFamily} from "./ObjectiveFamily";

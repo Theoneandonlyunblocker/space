@@ -1,19 +1,19 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Color} from "../../../../src/Color";
-import {Flag} from "../../../../src/Flag";
-import {Player} from "../../../../src/Player";
-import {activeModuleData} from "../../../../src/activeModuleData";
+import {Color} from "../../../../src/color/Color";
+import {Flag} from "../../../../src/flag/Flag";
+import {Player} from "../../../../src/player/Player";
+import {activeModuleData} from "../../../../src/app/activeModuleData";
 import
 {
   generateMainColor,
   generateSecondaryColor,
-} from "../../../../src/colorGeneration";
+} from "../../../../src/color/colorGeneration";
 import
 {
   getRandomArrayItem,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 
 import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
 

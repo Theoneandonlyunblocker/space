@@ -1,3 +1,5 @@
+// TODO 2019.08.29 | unused
+
 interface SpriteSheetFrame
 {
   x: number;

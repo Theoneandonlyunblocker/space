@@ -1,7 +1,7 @@
 import * as Proton from "proton-js";
 import { PixiParticle } from "./PixiParticle";
-import { Point } from "../../../../../src/Point";
-import { getAngleBetweenPoints } from "../../../../../src/utility";
+import { Point } from "../../../../../src/math/Point";
+import { getAngleBetweenPoints } from "../../../../../src/generic/utility";
 
 
 export class PolarVelocityInitialize<P extends Proton.Particle = PixiParticle> extends Proton.Initialize

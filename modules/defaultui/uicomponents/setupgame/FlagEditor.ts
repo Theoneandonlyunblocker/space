@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Color} from "../../../../src/Color";
-import {Emblem} from "../../../../src/Emblem";
-import {Flag} from "../../../../src/Flag";
+import {Color} from "../../../../src/color/Color";
+import {Emblem} from "../../../../src/flag/Emblem";
+import {Flag} from "../../../../src/flag/Flag";
 import {SubEmblemTemplate} from "../../../../src/templateinterfaces/SubEmblemTemplate";
 import {EmblemProps} from "../Emblem";
 import

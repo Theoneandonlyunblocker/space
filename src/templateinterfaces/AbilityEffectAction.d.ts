@@ -1,6 +1,6 @@
-import {Battle} from "../Battle";
-import {StatusEffect} from "../StatusEffect";
-import {Unit} from "../Unit";
+import {Battle} from "../battle/Battle";
+import {StatusEffect} from "../unit/StatusEffect";
+import {Unit} from "../unit/Unit";
 import {ExecutedEffectsResult} from "./ExecutedEffectsResult";
 
 

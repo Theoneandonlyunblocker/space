@@ -5,7 +5,7 @@ import
 {
   mergeReactAttributes,
   stringIsSignedFloat,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 
 import {Spinner} from "./Spinner";
 

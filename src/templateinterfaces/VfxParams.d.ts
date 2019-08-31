@@ -2,9 +2,9 @@
 // also move other stuff that isn't used for templates from here
 import * as PIXI from "pixi.js";
 
-import {Point} from "../Point";
-import {Unit} from "../Unit";
-import {AbilityUseEffectsForVfx} from "../AbilityUseEffectsForVfx";
+import {Point} from "../math/Point";
+import {Unit} from "../unit/Unit";
+import {AbilityUseEffectsForVfx} from "../abilities/AbilityUseEffectsForVfx";
 import { ExecutedEffectsResult } from "./ExecutedEffectsResult";
 
 

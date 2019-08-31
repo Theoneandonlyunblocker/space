@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Range} from "../../../../src/Range";
+import {Range} from "../../../../src/math/Range";
 import {MapGenOptionValues} from "../../../../src/templateinterfaces/MapGenOptionValues";
 import {MapGenOptions as MapGenOptionsObj} from "../../../../src/templateinterfaces/MapGenOptions";
 import {MapGenTemplate} from "../../../../src/templateinterfaces/MapGenTemplate";
@@ -13,7 +13,7 @@ import
   getRelativeValue,
   randInt,
   roundToNearestMultiple,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 import {OptionsGroup} from "../options/OptionsGroup";
 
 import {MapGenOption} from "./MapGenOption";

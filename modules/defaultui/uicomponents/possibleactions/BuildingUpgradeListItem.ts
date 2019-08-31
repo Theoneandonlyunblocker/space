@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {BuildingUpgradeData} from "../../../../src/BuildingUpgradeData";
-import {Player} from "../../../../src/Player";
+import {BuildingUpgradeData} from "../../../../src/building/BuildingUpgradeData";
+import {Player} from "../../../../src/player/Player";
 
 import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";
 import {applyMixins} from "../mixins/applyMixins";

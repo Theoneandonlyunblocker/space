@@ -8,7 +8,7 @@ import
 {
   clamp,
   splitMultilineText,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 
 import {DontShowAgain} from "./DontShowAgain";
 

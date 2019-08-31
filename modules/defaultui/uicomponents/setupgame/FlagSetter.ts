@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Color} from "../../../../src/Color";
-import {Flag} from "../../../../src/Flag";
+import {Color} from "../../../../src/color/Color";
+import {Flag} from "../../../../src/flag/Flag";
 import {PlayerFlag, PlayerFlagComponent} from "../PlayerFlag";
 import {DefaultWindow} from "../windows/DefaultWindow";
 

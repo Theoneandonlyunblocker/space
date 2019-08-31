@@ -5,13 +5,13 @@ import
 {
   AbilityTargetEffect,
   AbilityTargetType,
-} from "../../../src/AbilityTargetDisplayData";
+} from "../../../src/abilities/AbilityTargetDisplayData";
 import
 {
   makeGetAbilityTargetDisplayDataFN,
   areaSingle,
   targetOtherAllies,
-} from "../../../src/targeting";
+} from "../../../src/abilities/targeting";
 
 import {ResultType} from "../../space/effectactions/ResultType";
 import * as EffectActions from "../../space/effectactions/effectActions";

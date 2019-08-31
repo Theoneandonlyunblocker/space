@@ -1,6 +1,6 @@
-import {Game} from "../Game";
-import {Personality} from "../Personality";
-import {Player} from "../Player";
+import {Game} from "../game/Game";
+import {Personality} from "../ai/Personality";
+import {Player} from "../player/Player";
 
 import {AiTemplate} from "./AiTemplate";
 

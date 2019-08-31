@@ -5,7 +5,7 @@ import {activeNotificationFilter, NotificationFilter} from "../../../../src/noti
 
 import {localize} from "../../localization/localize";
 
-import {eventManager} from "../../../../src/eventManager";
+import {eventManager} from "../../../../src/app/eventManager";
 
 import {OptionsGroup} from "../options/OptionsGroup";
 

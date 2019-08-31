@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {options} from "../../../../src/Options";
+import {options} from "../../../../src/app/Options";
 import {OptionsGroup} from "./OptionsGroup";
 import {OptionsNumericField} from "./OptionsNumericField";
 

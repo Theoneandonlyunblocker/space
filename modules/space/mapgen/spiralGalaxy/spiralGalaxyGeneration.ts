@@ -1,16 +1,16 @@
 import * as RNG from "rng-js";
 
-import {FillerPoint} from "../../../../src/FillerPoint";
-import {MapGenResult} from "../../../../src/MapGenResult";
-import {Player} from "../../../../src/Player";
-import {Region} from "../../../../src/Region";
-import {Star} from "../../../../src/Star";
-import {templateIndexes} from "../../../../src/TemplateIndexes";
-import {activeModuleData} from "../../../../src/activeModuleData";
+import {FillerPoint} from "../../../../src/map/FillerPoint";
+import {MapGenResult} from "../../../../src/map/MapGenResult";
+import {Player} from "../../../../src/player/Player";
+import {Region} from "../../../../src/map/Region";
+import {Star} from "../../../../src/map/Star";
+import {templateIndexes} from "../../../../src/app/TemplateIndexes";
+import {activeModuleData} from "../../../../src/app/activeModuleData";
 import
 {
   randInt,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 
 import {MapGenFunction} from "../../../../src/templateinterfaces/MapGenFunction";
 import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
@@ -21,7 +21,7 @@ import
   makeVoronoi,
   relaxVoronoi,
   setVoronoiCells,
-} from "../../../../src/voronoi";
+} from "../../../../src/math/voronoi";
 
 import * as Terrains from "../../terrains/terrains";
 

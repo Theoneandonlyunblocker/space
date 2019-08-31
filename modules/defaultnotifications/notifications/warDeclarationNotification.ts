@@ -1,8 +1,8 @@
-import {GameLoader} from "../../../src/GameLoader";
-import {Player} from "../../../src/Player";
+import {GameLoader} from "../../../src/saves/GameLoader";
+import {Player} from "../../../src/player/Player";
 import {NotificationFilterState} from "../../../src/notifications/NotificationFilterState";
 import {NotificationWitnessCriterion} from "../../../src/notifications/NotificationWitnessCriterion";
-import {activeNotificationStore} from "../../../src/notifications/activeNotificationStore";
+import {activeNotificationStore} from "../../../src/app/activeNotificationStore";
 import {NotificationTemplate} from "../../../src/templateinterfaces/NotificationTemplate";
 import {localize} from "../localization/localize";
 

@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
 import {PropInfo} from "./props/PropInfo";
-import {Point} from "../../../../../src/Point";
-import { linearStep } from "../../../../../src/utility";
+import {Point} from "../../../../../src/math/Point";
+import { linearStep } from "../../../../../src/generic/utility";
 
 
 let idGenerator = 0;

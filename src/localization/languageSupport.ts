@@ -1,4 +1,4 @@
-import {GameModule} from "../GameModule";
+import {GameModule} from "../modules/GameModule";
 
 import {Language} from "./Language";
 

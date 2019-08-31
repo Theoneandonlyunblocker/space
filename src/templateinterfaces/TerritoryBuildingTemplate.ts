@@ -1,5 +1,5 @@
 import {BuildingTemplate} from "./BuildingTemplate";
-import {Color} from "../Color";
+import {Color} from "../color/Color";
 
 export interface TerritoryBuildingTemplate extends BuildingTemplate
 {

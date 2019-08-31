@@ -1,16 +1,16 @@
 import * as PIXI from "pixi.js";
 
-import {Color} from "../../../../../src/Color";
-import {Point} from "../../../../../src/Point";
+import {Color} from "../../../../../src/color/Color";
+import {Point} from "../../../../../src/math/Point";
 import
 {
   makeShaderSprite,
-} from "../../../../../src/pixiWrapperFunctions";
+} from "../../../../../src/graphics/pixiWrapperFunctions";
 import {LightBurstShader} from "../shaders/LightBurstShader";
 
 import {VfxFragment} from "./VfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
-import { getRelativeValue } from "../../../../../src/utility";
+import { getRelativeValue } from "../../../../../src/generic/utility";
 
 
 interface LightBurstProps

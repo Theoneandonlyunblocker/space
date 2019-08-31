@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import {VfxDrawingFunction} from "../../../../src/VfxDrawingFunction";
+import {VfxDrawingFunction} from "../../../../src/templateinterfaces/VfxDrawingFunction";
 
 import {ProjectileAttack} from "./vfxfragments/ProjectileAttack";
 import {resources} from "../resources";

@@ -1,6 +1,6 @@
-import {Point} from "../Point";
-import {IdGeneratorValues} from "../idGenerators";
-import {ModuleSaveData} from "../GameModule";
+import {Point} from "../math/Point";
+import {IdGeneratorValues} from "../app/idGenerators";
+import {ModuleSaveData} from "../modules/GameModule";
 
 import {GameSaveData} from "./GameSaveData";
 

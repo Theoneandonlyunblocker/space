@@ -1,13 +1,13 @@
 import {PassiveSkillTemplate} from "../../../src/templateinterfaces/PassiveSkillTemplate";
 
-import {BattlePrep} from "../../../src/BattlePrep";
-import {GuardCoverage} from "../../../src/GuardCoverage";
-import {Unit} from "../../../src/Unit";
+import {BattlePrep} from "../../../src/battleprep/BattlePrep";
+import {GuardCoverage} from "../../../src/unit/GuardCoverage";
+import {Unit} from "../../../src/unit/Unit";
 
 import {autoHeal as autoHealStatusEffect} from "../uniteffects/autoHeal";
 import {poisoned as poisonedStatusEffect} from "../uniteffects/poisoned";
 
-import { FormationValidityModifierSourceType } from "../../../src/BattlePrepFormationValidity";
+import { FormationValidityModifierSourceType } from "../../../src/battleprep/BattlePrepFormationValidity";
 import * as EffectActions from "../effectactions/effectActions";
 
 

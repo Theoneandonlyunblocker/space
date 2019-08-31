@@ -1,9 +1,9 @@
-import {BuildingUpgradeData} from "../BuildingUpgradeData";
-import {Fleet} from "../Fleet";
+import {BuildingUpgradeData} from "../building/BuildingUpgradeData";
+import {Fleet} from "../fleets/Fleet";
 import {Name} from "../Name";
-import {Player} from "../Player";
-import {Star} from "../Star";
-import {Unit} from "../Unit";
+import {Player} from "../player/Player";
+import {Star} from "../map/Star";
+import {Unit} from "../unit/Unit";
 
 import {AiTemplateConstructor} from "./AiTemplateConstructor";
 import {BuildingTemplate} from "./BuildingTemplate";
@@ -14,7 +14,7 @@ import {RaceTechnologyValue} from "./RaceTechnologyValue";
 import {SubEmblemTemplate} from "./SubEmblemTemplate";
 import {TemplateCollection} from "./TemplateCollection";
 import {UnitTemplate} from "./UnitTemplate";
-import { Building } from "../Building";
+import { Building } from "../building/Building";
 
 export interface RaceTemplate
 {

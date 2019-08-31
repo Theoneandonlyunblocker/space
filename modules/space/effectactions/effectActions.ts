@@ -1,10 +1,10 @@
-import {Battle} from "../../../src/Battle";
+import {Battle} from "../../../src/battle/Battle";
 import {DamageType} from "../../../src/DamageType";
-import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments, getBaseAdjustment} from "../../../src/FlatAndMultiplierAdjustment";
-import {GuardCoverage} from "../../../src/GuardCoverage";
-import {StatusEffect} from "../../../src/StatusEffect";
-import {Unit} from "../../../src/Unit";
-import {UnitAttributeAdjustments} from "../../../src/UnitAttributes";
+import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments, getBaseAdjustment} from "../../../src/generic/FlatAndMultiplierAdjustment";
+import {GuardCoverage} from "../../../src/unit/GuardCoverage";
+import {StatusEffect} from "../../../src/unit/StatusEffect";
+import {Unit} from "../../../src/unit/Unit";
+import {UnitAttributeAdjustments} from "../../../src/unit/UnitAttributes";
 import
 {
   ExecutedEffectsResult,
@@ -13,7 +13,7 @@ import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemp
 import
 {
   clamp,
-} from "../../../src/utility";
+} from "../../../src/generic/utility";
 
 import {ResultType} from "./ResultType";
 import

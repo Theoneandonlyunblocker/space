@@ -1,4 +1,4 @@
-import {Unit} from "../../../src/Unit";
+import {Unit} from "../../../src/unit/Unit";
 
 
 export class UnitEvaluator

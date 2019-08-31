@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Game} from "../../../../src/Game";
-import {Player} from "../../../../src/Player";
-import {eventManager} from "../../../../src/eventManager";
+import {Game} from "../../../../src/game/Game";
+import {Player} from "../../../../src/player/Player";
+import {eventManager} from "../../../../src/app/eventManager";
 import {PlayerFlag} from "../PlayerFlag";
 
 import {PlayerMoney} from "./PlayerMoney";

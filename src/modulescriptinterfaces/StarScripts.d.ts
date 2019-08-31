@@ -1,5 +1,5 @@
-import {Star} from "../Star";
-import {Player} from "../Player";
+import {Star} from "../map/Star";
+import {Player} from "../player/Player";
 
 export interface StarScripts
 {

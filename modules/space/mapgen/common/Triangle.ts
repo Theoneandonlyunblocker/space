@@ -1,4 +1,4 @@
-import {Point} from "../../../../src/Point";
+import {Point} from "../../../../src/math/Point";
 
 
 export class Triangle<T extends Point>

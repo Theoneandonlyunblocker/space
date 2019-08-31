@@ -1,7 +1,7 @@
 import
 {
   GetBattleTargetsFN,
-} from "../targeting";
+} from "../abilities/targeting";
 
 import {AbilityBase} from "./AbilityBase";
 import

@@ -3,12 +3,12 @@ import * as Proton from "proton-js";
 
 import {VfxParams} from "../../../../src/templateinterfaces/VfxParams";
 
-import {Color} from "../../../../src/Color";
-import {UnitAttribute} from "../../../../src/UnitAttributes";
+import {Color} from "../../../../src/color/Color";
+import {UnitAttribute} from "../../../../src/unit/UnitAttributes";
 import
 {
   generateTextureWithBounds,
-} from "../../../../src/pixiWrapperFunctions";
+} from "../../../../src/graphics/pixiWrapperFunctions";
 
 import {FocusingBeam} from "./vfxfragments/FocusingBeam";
 import {RampingValue} from "./vfxfragments/RampingValue";
@@ -20,7 +20,7 @@ import { FunctionInitialize } from "./proton/FunctionInitialize";
 import { PixiParticle } from "./proton/PixiParticle";
 import { ProjectileWithImpact } from "./vfxfragments/ProjectileWithImpact";
 import { Projectile } from "./vfxfragments/Projectile";
-import { getRelativeValue } from "../../../../src/utility";
+import { getRelativeValue } from "../../../../src/generic/utility";
 
 
 const colors =

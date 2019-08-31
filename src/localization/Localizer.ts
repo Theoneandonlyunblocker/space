@@ -5,10 +5,10 @@ import {formatters} from "./formatters";
 import
 {
   getRandomArrayItem,
-} from "../utility";
+} from "../generic/utility";
 
 import {Language} from "./Language";
-import {options} from "../Options";
+import {options} from "../app/Options";
 
 
 // messageformat.js requires positional arguments to be wrapped in an array.

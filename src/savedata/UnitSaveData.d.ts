@@ -1,8 +1,8 @@
-import {UnitAttributesObject} from "../UnitAttributes";
+import {UnitAttributesObject} from "../unit/UnitAttributes";
 
 import {UnitBattleStatsSaveData} from "./UnitBattleStatsSaveData";
 import {UnitItemsSaveData} from "./UnitItemsSaveData";
-import { AbilityUpgradeSaveData } from "../UpgradableAbilitiesData";
+import { AbilityUpgradeSaveData } from "../abilities/UpgradableAbilitiesData";
 
 export interface UnitSaveData
 {

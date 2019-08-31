@@ -1,4 +1,4 @@
-import {UnitAttributeAdjustments} from "../UnitAttributes";
+import {UnitAttributeAdjustments} from "../unit/UnitAttributes";
 
 import {AbilityEffectTemplate} from "./AbilityEffectTemplate";
 import {BattlePrepEffect} from "./BattlePrepEffect";

@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {app} from "../../../../src/App"; // TODO global
-import {GameModuleInitializationPhase} from "../../../../src/GameModuleInitializationPhase";
+import {app} from "../../../../src/app/App"; // TODO global
+import {GameModuleInitializationPhase} from "../../../../src/modules/GameModuleInitializationPhase";
 import {MapGenFunction} from "../../../../src/templateinterfaces/MapGenFunction";
 
 import {MapSetup, MapSetupComponent} from "./MapSetup";

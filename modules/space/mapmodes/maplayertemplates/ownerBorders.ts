@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
-import {Player} from "../../../../src/Player";
-import {getRevealedBorderEdges, borderWidth} from "../../../../src/borderPolygon";
+import {Player} from "../../../../src/player/Player";
+import {getRevealedBorderEdges, borderWidth} from "../../../../src/maprenderer/borderPolygon";
 import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
   makePolygonFromPoints,
-} from "../../../../src/pixiWrapperFunctions";
+} from "../../../../src/graphics/pixiWrapperFunctions";
 
 
 export const ownerBorders: MapRendererLayerTemplate =

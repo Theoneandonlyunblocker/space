@@ -5,7 +5,7 @@ import {Name} from "../../../../src/Name";
 import
 {
   getRandomProperty,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 
 import {generateIndependentFleets} from "../../../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../../../common/generateIndependentPlayer";

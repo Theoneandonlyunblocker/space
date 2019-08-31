@@ -4,13 +4,13 @@ import
 {
   AbilityTargetEffect,
   AbilityTargetType,
-} from "../../../src/AbilityTargetDisplayData";
+} from "../../../src/abilities/AbilityTargetDisplayData";
 import
 {
   makeGetAbilityTargetDisplayDataFN,
   areaSingle,
   targetEnemies,
-} from "../../../src/targeting";
+} from "../../../src/abilities/targeting";
 
 import {makePlaceholderVfx} from "../../common/makePlaceholderVfx";
 import * as EffectActions from "../../space/effectactions/effectActions";

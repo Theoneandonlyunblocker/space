@@ -3,12 +3,12 @@ import * as ReactDOMElements from "react-dom-factories";
 import * as ReactMotion from "react-motion";
 
 import {localize} from "../../localization/localize";
-import {GuardCoverage} from "../../../../src/GuardCoverage";
+import {GuardCoverage} from "../../../../src/unit/GuardCoverage";
 
 import {UnitActions} from "./UnitActions";
 import {UnitStatus} from "./UnitStatus";
 import {UnitStrength} from "./UnitStrength";
-import { fixedDurationSpring } from "../../../../src/utility";
+import { fixedDurationSpring } from "../../../../src/generic/utility";
 
 
 export interface PropTypes extends React.Props<any>

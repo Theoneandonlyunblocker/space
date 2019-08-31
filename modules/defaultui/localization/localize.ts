@@ -2,7 +2,7 @@ import {Localizer} from "../../../src/localization/Localizer";
 import
 {
   shallowExtend,
-} from "../../../src/utility";
+} from "../../../src/generic/utility";
 
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
 

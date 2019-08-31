@@ -1,4 +1,4 @@
-import {Unit} from "../../../src/Unit";
+import {Unit} from "../../../src/unit/Unit";
 import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
 import {MapEvaluator} from "../mapai/MapEvaluator";
 import {UnitEvaluator} from "../mapai/UnitEvaluator";

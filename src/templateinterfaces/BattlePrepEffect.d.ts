@@ -1,6 +1,6 @@
-import {BattlePrep} from "../BattlePrep";
-import {BattlePrepFormation} from "../BattlePrepFormation";
-import {Unit} from "../Unit";
+import {BattlePrep} from "../battleprep/BattlePrep";
+import {BattlePrepFormation} from "../battleprep/BattlePrepFormation";
+import {Unit} from "../unit/Unit";
 
 
 export type BaseBattlePrepEffect = (

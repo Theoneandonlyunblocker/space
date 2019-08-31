@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import {VfxDrawingFunction} from "../VfxDrawingFunction";
+import {VfxDrawingFunction} from "./VfxDrawingFunction";
 import {ExecutedEffectsResult} from "./ExecutedEffectsResult";
 
 

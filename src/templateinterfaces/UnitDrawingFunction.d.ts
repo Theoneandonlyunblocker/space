@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
-import {Unit} from "../Unit";
+import {Unit} from "../unit/Unit";
 
 import {VfxParams} from "./VfxParams";
-import { UnitDrawingFunctionData } from "../UnitDrawingFunctionData";
+import { UnitDrawingFunctionData } from "../unit/UnitDrawingFunctionData";
 
 
 // needs to call params.triggerStart()

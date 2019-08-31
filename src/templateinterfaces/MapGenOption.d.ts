@@ -1,4 +1,4 @@
-import {Range} from "../Range";
+import {Range} from "../math/Range";
 
 export interface MapGenOption
 {

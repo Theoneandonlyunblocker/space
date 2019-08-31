@@ -1,4 +1,4 @@
-import {DiplomacyState} from "../DiplomacyState";
+import {DiplomacyState} from "../diplomacy/DiplomacyState";
 
 import {AttitudeModifierSaveData} from "./AttitudeModifierSaveData";
 

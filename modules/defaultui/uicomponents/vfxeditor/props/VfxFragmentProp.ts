@@ -8,9 +8,9 @@ import
   PropInfoType,
 } from "../../../../space/battlevfx/drawingfunctions/vfxfragments/props/PropInfoType";
 
-import {Color} from "../../../../../src/Color";
-import {Point} from "../../../../../src/Point";
-import {Range} from "../../../../../src/Range";
+import {Color} from "../../../../../src/color/Color";
+import {Point} from "../../../../../src/math/Point";
+import {Range} from "../../../../../src/math/Range";
 
 import {VfxFragmentPropColor} from "./Color";
 import {VfxFragmentPropNumber} from "./Number";

@@ -1,4 +1,4 @@
-import {DiplomacyEvaluation} from "../DiplomacyEvaluation";
+import {DiplomacyEvaluation} from "../diplomacy/DiplomacyEvaluation";
 
 export interface AttitudeModifierTemplate
 {

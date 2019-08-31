@@ -1,5 +1,5 @@
-import {Player} from "../Player";
-import {Unit} from "../Unit";
+import {Player} from "../player/Player";
+import {Unit} from "../unit/Unit";
 
 export interface UnitScripts
 {

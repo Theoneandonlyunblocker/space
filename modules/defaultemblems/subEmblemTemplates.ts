@@ -1,6 +1,6 @@
 import {SubEmblemTemplate} from "../../src/templateinterfaces/SubEmblemTemplate";
 import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
-import {Color} from "../../src/Color";
+import {Color} from "../../src/color/Color";
 import {getSvgElementClone} from "./assets";
 
 // tslint:disable:variable-name

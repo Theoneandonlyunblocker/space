@@ -1,5 +1,5 @@
-import {MapGenResult} from "../MapGenResult";
-import {Player} from "../Player";
+import {MapGenResult} from "../map/MapGenResult";
+import {Player} from "../player/Player";
 
 import {MapGenOptionValues} from "./MapGenOptionValues";
 

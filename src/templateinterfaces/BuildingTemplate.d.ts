@@ -1,7 +1,7 @@
-import {PartialBuildingEffect} from "../BuildingEffect";
+import {PartialBuildingEffect} from "../building/BuildingEffect";
 import {UnitEffectTemplate} from "./UnitEffectTemplate";
-import {Star} from "../Star";
-import {Player} from "../Player";
+import {Star} from "../map/Star";
+import {Player} from "../player/Player";
 import { UnlockableThing } from "./UnlockableThing";
 import { BuildingFamily } from "./BuildingFamily";
 

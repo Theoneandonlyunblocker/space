@@ -1,4 +1,4 @@
-import {Personality} from "../Personality";
+import {Personality} from "../ai/Personality";
 
 export interface AiControllerSaveData<TemplateSaveData>
 {

@@ -1,15 +1,15 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {AttitudeModifier} from "../../../../src/AttitudeModifier";
-import {Flag} from "../../../../src/Flag";
-import {Player} from "../../../../src/Player";
+import {AttitudeModifier} from "../../../../src/diplomacy/AttitudeModifier";
+import {Flag} from "../../../../src/flag/Flag";
+import {Player} from "../../../../src/player/Player";
 import {PlayerFlag} from "../PlayerFlag";
 import {ListItemProps} from "../list/ListItemProps";
 
 import {Opinion} from "./Opinion";
 import { localize } from "../../localization/localize";
-import { DiplomacyState } from "../../../../src/DiplomacyState";
+import { DiplomacyState } from "../../../../src/diplomacy/DiplomacyState";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>

@@ -1,16 +1,16 @@
 import * as PIXI from "pixi.js";
 import * as Proton from "proton-js";
 
-import { VfxDrawingFunction } from "../../../../src/VfxDrawingFunction";
-import { solveAcceleration } from "../../../../src/kinematics";
-import { extractImageData } from "../../../../src/pixiWrapperFunctions";
+import { VfxDrawingFunction } from "../../../../src/templateinterfaces/VfxDrawingFunction";
+import { solveAcceleration } from "../../../../src/math/kinematics";
+import { extractImageData } from "../../../../src/graphics/pixiWrapperFunctions";
 
 import { ParticleBurst } from "../../../space/battlevfx/drawingfunctions/vfxfragments/ParticleBurst";
 import { ArcZone } from "../../../space/battlevfx/drawingfunctions/proton/ArcZone";
 import { CollisionRectZone } from "../../../space/battlevfx/drawingfunctions/proton/CollisionRectZone";
 import { AbsorbParticles } from "../../../space/battlevfx/drawingfunctions/vfxfragments/AbsorbParticles";
-import { Color } from "../../../../src/Color";
-import { Point } from "../../../../src/Point";
+import { Color } from "../../../../src/color/Color";
+import { Point } from "../../../../src/math/Point";
 
 
 const baseParticleCount = 200;

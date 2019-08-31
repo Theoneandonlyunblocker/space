@@ -1,16 +1,16 @@
-import {Building} from "../../../../src/Building";
-import {Region} from "../../../../src/Region";
-import {Star} from "../../../../src/Star";
+import {Building} from "../../../../src/building/Building";
+import {Region} from "../../../../src/map/Region";
+import {Star} from "../../../../src/map/Star";
 import
 {
   aStar,
-} from "../../../../src/pathFinding";
-import {Distributable} from "../../../../src/templateinterfaces/Distributable";
+} from "../../../../src/map/pathFinding";
+import {Distributable} from "../../../../src/generic/Distributable";
 import
 {
   getRandomKeyWithWeights,
   getRelativeWeightsFromObject,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 import
 {
   sectorCommand,

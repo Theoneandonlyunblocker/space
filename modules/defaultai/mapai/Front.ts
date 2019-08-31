@@ -1,6 +1,6 @@
-import {ArchetypeValues} from "../../../src/ArchetypeValues";
-import {Fleet} from "../../../src/Fleet";
-import {Unit} from "../../../src/Unit";
+import {ArchetypeValues} from "../../../src/ai/ArchetypeValues";
+import {Fleet} from "../../../src/fleets/Fleet";
+import {Unit} from "../../../src/unit/Unit";
 
 import {attachedUnitData} from "../attachedUnitData";
 

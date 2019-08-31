@@ -1,17 +1,17 @@
-import {ArchetypeValues} from "../../../src/ArchetypeValues";
-import {GalaxyMap} from "../../../src/GalaxyMap";
-import {Game} from "../../../src/Game";
-import {Personality} from "../../../src/Personality";
-import {Player} from "../../../src/Player";
-import {TradeOffer} from "../../../src/TradeOffer";
-import {Unit} from "../../../src/Unit";
-import {activeModuleData} from "../../../src/activeModuleData";
-import {getNullFormation} from "../../../src/getNullFormation";
+import {ArchetypeValues} from "../../../src/ai/ArchetypeValues";
+import {GalaxyMap} from "../../../src/map/GalaxyMap";
+import {Game} from "../../../src/game/Game";
+import {Personality} from "../../../src/ai/Personality";
+import {Player} from "../../../src/player/Player";
+import {TradeOffer} from "../../../src/trade/TradeOffer";
+import {Unit} from "../../../src/unit/Unit";
+import {activeModuleData} from "../../../src/app/activeModuleData";
+import {getNullFormation} from "../../../src/battleprep/getNullFormation";
 import {AiTemplate} from "../../../src/templateinterfaces/AiTemplate";
 import
 {
   makeRandomPersonality,
-} from "../../../src/utility";
+} from "../../../src/generic/utility";
 
 import {DefaultAiSaveData} from "./DefaultAiSaveData";
 import {DiplomacyAi} from "./DiplomacyAi";

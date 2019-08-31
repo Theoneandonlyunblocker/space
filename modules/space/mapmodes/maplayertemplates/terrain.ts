@@ -5,14 +5,14 @@ import * as Terrains from "../../terrains/terrains";
 
 import {triangulate} from "../../mapgen/common/triangulate";
 
-import {GalaxyMap} from "../../../../src/GalaxyMap";
-import {Player} from "../../../../src/Player";
-import {Point} from "../../../../src/Point";
+import {GalaxyMap} from "../../../../src/map/GalaxyMap";
+import {Player} from "../../../../src/player/Player";
+import {Point} from "../../../../src/math/Point";
 import
 {
   getRandomArrayItemWithWeights,
   randInt,
-} from "../../../../src/utility";
+} from "../../../../src/generic/utility";
 
 import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
 

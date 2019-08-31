@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Player} from "../../../../src/Player";
-import {Star} from "../../../../src/Star";
+import {Player} from "../../../../src/player/Player";
+import {Star} from "../../../../src/map/Star";
 import {BuildingTemplate} from "../../../../src/templateinterfaces/BuildingTemplate";
 import {List} from "../list/List";
 import {ListColumn} from "../list/ListColumn";

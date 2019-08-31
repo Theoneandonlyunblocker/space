@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Building} from "../../../../src/Building";
-import {BuildingUpgradeData} from "../../../../src/BuildingUpgradeData";
-import {Player} from "../../../../src/Player";
-import {Star} from "../../../../src/Star";
+import {Building} from "../../../../src/building/Building";
+import {BuildingUpgradeData} from "../../../../src/building/BuildingUpgradeData";
+import {Player} from "../../../../src/player/Player";
+import {Star} from "../../../../src/map/Star";
 
 import {BuildingUpgradeListItem} from "./BuildingUpgradeListItem";
 

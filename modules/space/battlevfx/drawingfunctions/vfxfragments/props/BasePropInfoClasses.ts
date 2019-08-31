@@ -1,7 +1,7 @@
 import
 {
   shallowCopy,
-} from "../../../../../../src/utility";
+} from "../../../../../../src/generic/utility";
 
 import {PropInfo} from "./PropInfo";
 
