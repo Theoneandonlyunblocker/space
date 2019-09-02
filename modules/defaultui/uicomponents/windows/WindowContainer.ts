@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
-import {Direction} from "../../../../src/Direction";
+import {Direction} from "./Direction";
 import {Rect} from "../../../../src/math/Rect";
 import
 {
