@@ -114,7 +114,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
         },
           TradeableItems(
           {
-            header: this.props.selfPlayer.name.fullName,
+            header: this.props.selfPlayer.name.baseName,
             tradeableItems: selfAvailableItems,
             isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
             onDragStart: this.handleAvailableDragStart.bind(this, "self"),
@@ -124,7 +124,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
           }),
           TradeableItems(
           {
-            header: this.props.otherPlayer.name.fullName,
+            header: this.props.otherPlayer.name.baseName,
             tradeableItems: otherAvailableItems,
             isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
             onDragStart: this.handleAvailableDragStart.bind(this, "other"),

@@ -52,7 +52,7 @@ export class TerritoryBuildingComponent extends React.PureComponent<PropTypes, S
           props:
           {
             className: "territory-building-controller",
-            title: this.props.building.controller.name.fullName,
+            title: this.props.building.controller.name.baseName,
           },
           key: "flag",
           flag: this.props.building.controller.flag,

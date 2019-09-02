@@ -8,6 +8,7 @@ export interface UnitSaveData
 {
   templateType: string;
   id: number;
+  // TODO 2019.09.02 | convert to name
   name: string;
   maxHealth: number;
   currentHealth: number;

@@ -10,7 +10,7 @@ import {FleetAttackTarget} from "../map/FleetAttackTarget";
 import {Game} from "../game/Game";
 import {Item} from "../items/Item";
 import {Manufactory} from "../production/Manufactory";
-import {Name} from "../Name";
+import {Name} from "../localization/Name";
 import {options} from "../app/Options";
 import {PlayerDiplomacy} from "../diplomacy/PlayerDiplomacy";
 import {PlayerTechnology} from "./PlayerTechnology";
@@ -123,7 +123,7 @@ export class Player
     money: number;
 
     id?: number;
-    name?: string | Name;
+    name?: Name;
 
     color?:
     {
@@ -147,24 +147,6 @@ export class Player
     this.money = props.money;
 
     this.id = isFinite(props.id) ? props.id : idGenerators.player++;
-
-    if (props.name)
-    {
-      if (typeof props.name === "string")
-      {
-        const castedStringName = <string> props.name;
-        this.name = new Name(castedStringName);
-      }
-      else
-      {
-        const castedName = <Name> props.name;
-        this.name = castedName;
-      }
-    }
-    else
-    {
-      this.name = new Name(`Player ${this.id}`);
-    }
 
     if (props.color)
     {
@@ -204,6 +186,14 @@ export class Player
       this.initTechnologies(props.technologyData);
     }
 
+    if (props.name)
+    {
+      this.name = props.name;
+    }
+    else
+    {
+      this.name = this.race.getPlayerName(this);
+    }
   }
   public static createDummyPlayer(): Player
   {
@@ -212,7 +202,7 @@ export class Player
       isAi: false,
       isIndependent: false,
       id: -9999,
-      name: "Dummy",
+      name: null,
 
       race:
       {
@@ -227,15 +217,17 @@ export class Player
           distributionGroups: [],
         },
 
-        getBuildableBuildings: () => [],
-        getBuildableUnits: () => [],
-        getBuildableItems: () => [],
-        getUnitName: () => "",
-        getUnitPortrait: () => null,
-        generateIndependentPlayer: () => null,
-        generateIndependentFleets: () => null,
+        getBuildableBuildings: undefined,
+        getBuildableUnits: undefined,
+        getBuildableItems: undefined,
+        getFleetName: undefined,
+        getPlayerName: undefined,
+        getUnitName: undefined,
+        getUnitPortrait: undefined,
+        generateIndependentPlayer: undefined,
+        generateIndependentFleets: undefined,
 
-        getAiTemplateConstructor: () => null,
+        getAiTemplateConstructor: undefined,
       },
       money: 0,
     });
@@ -330,7 +322,6 @@ export class Player
       return;
     }
 
-    fleet.player = this;
     this.fleets.push(fleet);
     this.visionIsDirty = true;
   }

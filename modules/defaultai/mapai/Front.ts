@@ -196,7 +196,7 @@ export class Front
         unitToRemove.fleet.removeUnit(unitToRemove);
       });
 
-      const fleets = Fleet.createFleetsFromUnits(units);
+      const fleets = Fleet.createFleetsFromUnits(units, player);
       fleets.forEach(fleet =>
       {
         player.addFleet(fleet);

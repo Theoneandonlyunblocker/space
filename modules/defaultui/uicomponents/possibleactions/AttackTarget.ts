@@ -49,7 +49,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
         onClick: this.handleAttack,
         title: localize("attackTargetTooltip")(
         {
-          enemyName: target.enemy.name.getPossessive(),
+          enemyName: target.enemy.name,
           targetType: target.type,
         }),
       },

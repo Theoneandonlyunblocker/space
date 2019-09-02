@@ -125,6 +125,14 @@ export class Localizer<Messages extends {[K in keyof Messages]: (string | string
 
     return wrapMessageFunction(missingLocalizationMessageFunction);
   }
+  public addFormatters(language: Language, formatters: {[key: string]: MessageFormat.FormatterFunction}): void
+  {
+    if (!this.languageHasBeenInit(language))
+    {
+      this.initLanguage(language);
+    }
+    this.messageFormattersByLanguageCode[language.code].addFormatters(formatters);
+  }
 
   private languageHasBeenInit(language: Language): boolean
   {

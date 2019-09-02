@@ -1,6 +1,6 @@
 import {app} from "../app/App"; // TODO global
 
-import {Name} from "../Name";
+import {Name} from "../localization/Name";
 import {Player} from "../player/Player";
 import {Star} from "../map/Star";
 import {Unit} from "../unit/Unit";
@@ -33,19 +33,21 @@ export class Fleet
   private detectedStars: Star[] = [];
 
 
-  private constructor(units: Unit[], id?: number)
+  private constructor(units: Unit[], player: Player, id?: number)
   {
     this.id = isFinite(id) ? id : idGenerators.fleet++;
-    this.name = new Name("Fleet " + this.id);
+    this.player = player;
 
     units.forEach(unitToAdd =>
     {
       this.addUnit(unitToAdd);
     });
 
+    this.name = player.race.getFleetName(this);
     eventManager.dispatchEvent("renderLayer", "fleets", this.location);
   }
-  public static createFleetsFromUnits(units: Unit[]): Fleet[]
+
+  public static createFleetsFromUnits(units: Unit[], player: Player): Fleet[]
   {
     const stealthyUnits = units.filter(unit => unit.isStealthy());
     const nonStealthyUnits = units.filter(unit => !unit.isStealthy());
@@ -55,7 +57,7 @@ export class Fleet
       return unitsInGroup.length > 0;
     }).map(unitsInGroup =>
     {
-      return new Fleet(unitsInGroup);
+      return new Fleet(unitsInGroup, player);
     });
 
     return fleets;
@@ -63,9 +65,9 @@ export class Fleet
   /**
    * only use if you know units don't have stealthy and non-stealthy units mixed
    */
-  public static createFleet(units: Unit[], id?: number): Fleet
+  public static createFleet(units: Unit[], player: Player, id?: number): Fleet
   {
-    return new Fleet(units, id);
+    return new Fleet(units, player, id);
   }
 
   public static sortByImportance(a: Fleet, b: Fleet): number
@@ -170,7 +172,7 @@ export class Fleet
   }
   public split(): Fleet
   {
-    const newFleet = new Fleet([]);
+    const newFleet = new Fleet([], this.player);
     this.player.addFleet(newFleet);
     this.location.addFleet(newFleet);
 

@@ -22,6 +22,7 @@ import {FlagSetter} from "./FlagSetter";
 import {SetterComponentBase} from "./SetterComponentBase";
 import {RacePicker} from "./RacePicker";
 import { localize } from "../../localization/localize";
+import { options } from "src/app/Options";
 
 
 export interface PropTypes extends React.Props<any>
@@ -195,7 +196,8 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       race: this.state.race,
       money: 1000,
 
-      name: this.state.name,
+      // TODO 2019.09.02 | should allow player to define plurality etc
+      name: options.display.language.constructName(this.state.name),
 
       color:
       {

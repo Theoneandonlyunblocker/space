@@ -1,6 +1,6 @@
 import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
 
-import {Name} from "../../../../src/Name";
+import {Name} from "../../../../src/localization/Name";
 
 import
 {

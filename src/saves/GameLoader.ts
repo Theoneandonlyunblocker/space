@@ -12,7 +12,7 @@ import {Game} from "../game/Game";
 import {Item} from "../items/Item";
 import {Manufactory} from "../production/Manufactory";
 import {MapGenResult} from "../map/MapGenResult";
-import {Name} from "../Name";
+import {Name} from "../localization/Name";
 import {Player} from "../player/Player";
 import {Star} from "../map/Star";
 import {StatusEffect} from "../unit/StatusEffect";
@@ -40,6 +40,7 @@ import {PlayerSaveData} from "../savedata/PlayerSaveData";
 import {StarSaveData} from "../savedata/StarSaveData";
 import {StatusEffectSaveData} from "../savedata/StatusEffectSaveData";
 import {UnitSaveData} from "../savedata/UnitSaveData";
+import { NameSaveData } from "src/savedata/NameSaveData";
 
 
 export class GameLoader
@@ -319,7 +320,7 @@ export class GameLoader
       money: data.money,
 
       id: data.id,
-      name: Name.fromData(data.name),
+      name: this.deserializeName(data.name),
       color:
       {
         main: Color.deserialize(data.color),
@@ -428,12 +429,12 @@ export class GameLoader
     const units = data.unitIds.map(unitId => this.unitsById[unitId]);
     const location = this.starsById[data.locationId];
 
-    const fleet = Fleet.createFleet(units, data.id);
+    const fleet = Fleet.createFleet(units, player, data.id);
 
     player.addFleet(fleet);
     location.addFleet(fleet);
 
-    fleet.name = Name.fromData(data.name);
+    fleet.name = this.deserializeName(data.name);
 
     return fleet;
   }
@@ -488,6 +489,19 @@ export class GameLoader
       turnsHasBeenActiveFor: data.turnsHasBeenActiveFor,
       sourceUnit: this.unitsById[data.sourceUnitId],
     });
+  }
+  private deserializeName(data: NameSaveData): Name
+  {
+    const language = activeModuleData.templates.Languages[data.languageCode];
+    if (!language)
+    {
+      throw new Error(`Saved name '${data.baseName}' was defined with language code '${data.languageCode}', but said language was not available when trying to load name.`);
+    }
+
+    const name = language.constructName(data.baseName);
+    name.copyFromData(data);
+
+    return name;
   }
 }
 

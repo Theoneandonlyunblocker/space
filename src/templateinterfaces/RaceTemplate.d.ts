@@ -1,6 +1,6 @@
 import {BuildingUpgradeData} from "../building/BuildingUpgradeData";
 import {Fleet} from "../fleets/Fleet";
-import {Name} from "../Name";
+import {Name} from "../localization/Name";
 import {Player} from "../player/Player";
 import {Star} from "../map/Star";
 import {Unit} from "../unit/Unit";
@@ -34,7 +34,9 @@ export interface RaceTemplate
   getBuildableBuildings: () => BuildingTemplate[];
   getSpecialBuildingUpgrades?: (buildings: Building[], location: Star, player: Player) => BuildingUpgradeData[];
 
-  // TODO 2016.10.19 | return Name instead
+  getPlayerName: (player: Player) => Name;
+  getFleetName: (fleet: Fleet) => Name;
+  // TODO 2019.09.02 | return Name instead
   getUnitName: (unitTemplate: UnitTemplate) => string;
   getUnitPortrait: (
     unitTemplate: UnitTemplate,

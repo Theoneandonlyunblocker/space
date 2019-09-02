@@ -451,8 +451,8 @@ export class MapEvaluator
   {
     if (!this.player.diplomacy.hasMetPlayer(player))
     {
-      throw new Error(this.player.name.fullName +
-        " tried to call getPerceivedThreatOfPlayer on unmet player " + player.name.fullName);
+      throw new Error(this.player.name.baseName +
+        " tried to call getPerceivedThreatOfPlayer on unmet player " + player.name.baseName);
     }
 
     const otherInfluenceMap = this.getPlayerInfluenceMap(player);

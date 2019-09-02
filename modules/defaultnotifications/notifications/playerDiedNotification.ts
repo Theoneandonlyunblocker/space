@@ -73,7 +73,7 @@ export const playerDiedNotificationCreationScripts =
             template: playerDiedNotification,
             props:
             {
-              deadPlayerName: player.name.fullName,
+              deadPlayerName: player.name.baseName,
             },
             involvedPlayers: [player],
             location: null,

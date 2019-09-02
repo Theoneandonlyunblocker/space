@@ -25,7 +25,7 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
   setFleetName(e: React.FormEvent<HTMLInputElement>)
   {
     const target = e.currentTarget;
-    this.props.fleet.name.customizeName(target.value);
+    this.props.fleet.name.customize(target.value, undefined);
     this.forceUpdate();
   }
 
@@ -80,8 +80,8 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
           ReactDOMElements.input(
           {
             className: "fleet-info-name",
-            value: isNotDetected ? localize("unidentifiedFleet")() : fleet.name.fullName,
-            title: isNotDetected ? localize("unidentifiedFleet")() : fleet.name.fullName,
+            value: isNotDetected ? localize("unidentifiedFleet")() : fleet.name.baseName,
+            title: isNotDetected ? localize("unidentifiedFleet")() : fleet.name.baseName,
             onChange: isNotDetected ? null : this.setFleetName,
             readOnly: isNotDetected,
           }),

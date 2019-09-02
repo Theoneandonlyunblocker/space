@@ -5,6 +5,7 @@ import
 } from "../../../src/generic/utility";
 
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
+import {formatters as englishFormatters} from "../../englishlanguage/formatters";
 
 import {battle as en_battle} from "./en/battle";
 import {diplomacy as en_diplomacy} from "./en/diplomacy";
@@ -47,6 +48,7 @@ export type AllMessages =
   typeof en_unitUpgrade;
 
 export const localizer = new Localizer<AllMessages>("ui");
+localizer.addFormatters(englishLanguage, englishFormatters);
 
 const mergedMessages = shallowExtend<AllMessages>(
   en_battle,

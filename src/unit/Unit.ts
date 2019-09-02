@@ -841,7 +841,7 @@ export class Unit
 
     newPlayer.addUnit(this);
 
-    const fleet = Fleet.createFleet([this]);
+    const fleet = Fleet.createFleet([this], newPlayer);
     newPlayer.addFleet(fleet);
     location.addFleet(fleet);
   }

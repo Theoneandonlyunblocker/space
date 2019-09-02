@@ -1,5 +1,4 @@
 import {Fleet} from "../../src/fleets/Fleet";
-import {Name} from "../../src/Name";
 import {Player} from "../../src/player/Player";
 import {Star} from "../../src/map/Star";
 import {Unit} from "../../src/unit/Unit";
@@ -134,12 +133,11 @@ export function generateIndependentFleets(
     player.addUnit(unit);
   }
 
-  const fleets = Fleet.createFleetsFromUnits(units);
+  const fleets = Fleet.createFleetsFromUnits(units, player);
   fleets.forEach(fleet =>
   {
     player.addFleet(fleet);
     location.addFleet(fleet);
-    fleet.name = new Name(`Independent ${race.displayName} Fleet`, false);
   });
 
   return fleets;

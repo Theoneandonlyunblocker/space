@@ -148,7 +148,7 @@ export class Manufactory
 
     if (units.length > 0)
     {
-      const fleets = Fleet.createFleetsFromUnits(units);
+      const fleets = Fleet.createFleetsFromUnits(units, this.owner);
       fleets.forEach(fleet =>
       {
         this.owner.addFleet(fleet);

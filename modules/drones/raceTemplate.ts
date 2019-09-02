@@ -1,4 +1,4 @@
-import {Name} from "../../src/Name";
+import {Name} from "../../src/localization/name";
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
 import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
 import

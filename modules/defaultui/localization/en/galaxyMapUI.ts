@@ -14,7 +14,7 @@ export const galaxyMapUI =
   buildingCost: "Cost",
   buildingTypeName: "Name",
   attackTarget_action: "attack",
-  attackTargetTooltip: "Attack {enemyName} {targetType}",
+  attackTargetTooltip: "Attack {enemyName, possessiveName} {targetType}",
 
   topMenuButtonActionExplanation: "Left click to open. Right click to close",
   topMenuButtonTooltip_production: "Produce units and items",
