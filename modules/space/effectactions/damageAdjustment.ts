@@ -1,4 +1,4 @@
-import {DamageType} from "../../../src/DamageType";
+import {DamageType} from "./DamageType";
 import {Unit} from "../../../src/unit/Unit";
 
 

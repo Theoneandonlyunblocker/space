@@ -1,5 +1,5 @@
 import {Battle} from "../../../src/battle/Battle";
-import {DamageType} from "../../../src/DamageType";
+import {DamageType} from "./DamageType";
 import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments, getBaseAdjustment} from "../../../src/generic/FlatAndMultiplierAdjustment";
 import {GuardCoverage} from "../../../src/unit/GuardCoverage";
 import {StatusEffect} from "../../../src/unit/StatusEffect";

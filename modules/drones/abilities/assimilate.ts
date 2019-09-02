@@ -5,7 +5,7 @@ import
   AbilityTargetEffect,
   AbilityTargetType,
 } from "../../../src/abilities/AbilityTargetDisplayData";
-import {DamageType} from "../../../src/DamageType";
+import {DamageType} from "../../space/effectactions/DamageType";
 import
 {
   makeGetAbilityTargetDisplayDataFN,

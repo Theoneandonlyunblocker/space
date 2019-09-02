@@ -5,7 +5,7 @@ import
   AbilityTargetEffect,
   AbilityTargetType,
 } from "../../../src/abilities/AbilityTargetDisplayData";
-import {DamageType} from "../../../src/DamageType";
+import {DamageType} from "../effectactions/DamageType";
 import {GuardCoverage} from "../../../src/unit/GuardCoverage";
 import {Unit} from "../../../src/unit/Unit";
 import {UnitAttribute} from "../../../src/unit/UnitAttributes";
