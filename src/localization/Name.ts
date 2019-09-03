@@ -36,6 +36,10 @@ export abstract class Name<
     this.baseName = newName;
     this.languageSpecificTags = {...this.languageSpecificTags, ...tags};
   }
+  public toString(): string
+  {
+    return this.baseName;
+  }
 
   protected abstract serializeTags(): TagsSaveData;
 }
