@@ -33,12 +33,17 @@ export class Fleet
   private detectedStars: Star[] = [];
 
 
-  private constructor(units: Unit[], player: Player, id?: number)
+  private constructor(props:
   {
-    this.id = isFinite(id) ? id : idGenerators.fleet++;
-    this.player = player;
+    units: Unit[];
+    player: Player;
+    id?: number;
+  })
+  {
+    this.id = isFinite(props.id) ? props.id : idGenerators.fleet++;
+    this.player = props.player;
 
-    units.forEach(unitToAdd =>
+    props.units.forEach(unitToAdd =>
     {
       this.addUnit(unitToAdd);
     });
@@ -57,7 +62,11 @@ export class Fleet
       return unitsInGroup.length > 0;
     }).map(unitsInGroup =>
     {
-      return new Fleet(unitsInGroup, player);
+      return new Fleet(
+      {
+        units: unitsInGroup,
+        player: player,
+      });
     });
 
     return fleets;
@@ -65,9 +74,14 @@ export class Fleet
   /**
    * only use if you know units don't have stealthy and non-stealthy units mixed
    */
-  public static createFleet(units: Unit[], player: Player, id?: number): Fleet
+  public static createFleet(props:
   {
-    return new Fleet(units, player, id);
+    units: Unit[];
+    player: Player;
+    id?: number;
+  }): Fleet
+  {
+    return new Fleet(props);
   }
 
   public static sortByImportance(a: Fleet, b: Fleet): number
@@ -172,7 +186,11 @@ export class Fleet
   }
   public split(): Fleet
   {
-    const newFleet = new Fleet([], this.player);
+    const newFleet = new Fleet(
+    {
+      units: [],
+      player: this.player,
+    });
     this.player.addFleet(newFleet);
     this.location.addFleet(newFleet);
 
