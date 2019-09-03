@@ -17,7 +17,6 @@ import
   snipeSpeed,
   standBy,
 } from "../../abilities/abilities";
-import {distributionGroups} from "../../../common/distributionGroups";
 import {itemSlot} from "../../items/itemSlot";
 
 import
@@ -136,6 +135,6 @@ export const debugShip: UnitTemplate =
   distributionData:
   {
     weight: 0,
-    distributionGroups: [distributionGroups.debugModeOnly],
+    distributionGroups: [],
   },
 };
