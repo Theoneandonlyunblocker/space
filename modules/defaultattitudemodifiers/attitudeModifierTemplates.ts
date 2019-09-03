@@ -3,12 +3,16 @@ import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollectio
 
 import {DiplomacyEvaluation} from "../../src/diplomacy/DiplomacyEvaluation";
 import {DiplomacyState} from "../../src/diplomacy/DiplomacyState";
+import {localize} from "./localization/localize";
 
 
 export const neighborStars: AttitudeModifierTemplate =
 {
   type: "neighborStars",
-  displayName: "neighborStars",
+  get displayName()
+  {
+    return localize("neighborStars_displayName")();
+  },
   duration: Infinity,
 
   startCondition: (evaluation: DiplomacyEvaluation) =>
@@ -25,7 +29,10 @@ export const neighborStars: AttitudeModifierTemplate =
 export const atWar: AttitudeModifierTemplate =
 {
   type: "atWar",
-  displayName: "At war",
+  get displayName()
+  {
+    return localize("atWar_displayName")();
+  },
   duration: Infinity,
 
   startCondition: (evaluation: DiplomacyEvaluation) =>
@@ -40,14 +47,20 @@ export const atWar: AttitudeModifierTemplate =
 export const baseOpinion: AttitudeModifierTemplate =
 {
   type: "baseOpinion",
-  displayName: "Base opinion",
+  get displayName()
+  {
+    return localize("baseOpinion_displayName")();
+  },
   duration: Infinity,
 };
 
 export const declaredWar: AttitudeModifierTemplate =
 {
   type: "declaredWar",
-  displayName: "Declared war",
+  get displayName()
+  {
+    return localize("declaredWar_displayName")();
+  },
   duration: 15,
 
   baseEffect: -35,
