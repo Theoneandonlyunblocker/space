@@ -38,6 +38,7 @@ export class Fleet
     units: Unit[];
     player: Player;
     id?: number;
+    name?: Name;
   })
   {
     this.id = isFinite(props.id) ? props.id : idGenerators.fleet++;
@@ -48,7 +49,7 @@ export class Fleet
       this.addUnit(unitToAdd);
     });
 
-    this.name = player.race.getFleetName(this);
+    this.name = props.name || props.player.race.getFleetName(this);
     eventManager.dispatchEvent("renderLayer", "fleets", this.location);
   }
 
@@ -79,6 +80,7 @@ export class Fleet
     units: Unit[];
     player: Player;
     id?: number;
+    name?: Name;
   }): Fleet
   {
     return new Fleet(props);

@@ -8,6 +8,7 @@ import
 {
   getLanguagesByCodeFromGameModules,
   getLanguageSupportLevelForGameModules,
+  LanguageSupportLevel,
 } from "../../../../src/localization/languageSupport";
 
 import {LanguageSelect} from "./LanguageSelect";
@@ -37,12 +38,26 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
 
   public render()
   {
+    const availableLanguagesByCode = getLanguagesByCodeFromGameModules(...activeModuleData.gameModules);
+    const languageSupportLevelByCode = getLanguageSupportLevelForGameModules(...activeModuleData.gameModules);
+
+    if (options.debug.enabled)
+    {
+      availableLanguagesByCode["_"] =
+      {
+        code: "_",
+        displayName: "empty",
+        constructName: undefined,
+      };
+      languageSupportLevelByCode.empty = LanguageSupportLevel.None;
+    }
+
     return(
       LanguageSelect(
       {
         activeLanguage: this.props.activeLanguage,
-        availableLanguagesByCode: getLanguagesByCodeFromGameModules(...activeModuleData.gameModules),
-        languageSupportLevelByCode: getLanguageSupportLevelForGameModules(...activeModuleData.gameModules),
+        availableLanguagesByCode: availableLanguagesByCode,
+        languageSupportLevelByCode: languageSupportLevelByCode,
         onChange: this.handleLanguageChange,
       })
     );

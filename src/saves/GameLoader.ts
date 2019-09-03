@@ -434,12 +434,11 @@ export class GameLoader
       units: units,
       player: player,
       id: data.id,
+      name: this.deserializeName(data.name),
     });
 
     player.addFleet(fleet);
     location.addFleet(fleet);
-
-    fleet.name = this.deserializeName(data.name);
 
     return fleet;
   }
