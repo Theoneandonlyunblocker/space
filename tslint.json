@@ -87,7 +87,6 @@
     "prefer-object-spread": true,
     "no-this-assignment": true,
     "no-duplicate-imports": true,
-    "no-submodule-imports": true,
     "no-parameter-reassignment": true,
     "no-return-await": true,
     "no-duplicate-switch-case": true,
