@@ -83,11 +83,6 @@ export class ModuleInitializer
 
     this.gameModulesByPhase[gameModule.phaseToInitializeBefore].push(gameModule);
     this.dependencyGraph.addModule(gameModule.info);
-
-    if (gameModule.subModules)
-    {
-      gameModule.subModules.forEach(subModule => this.addGameModule(subModule));
-    }
   }
   private initGameModule(gameModule: GameModule): Promise<void>
   {

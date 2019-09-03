@@ -16,11 +16,6 @@ export interface GameModule<SaveData = any>
   info: ModuleInfo;
   phaseToInitializeBefore: GameModuleInitializationPhase;
   supportedLanguages: Language[] | "all";
-  // not guaranteed to be loaded after main module. use GameModule.info.modsToLoadBefore/After to set order
-  subModules?: GameModule[];
-  /**
-   * @param baseUrl base url of module file
-   */
   initialize?: (baseUrl: string) => Promise<void>;
   addToModuleData?: (moduleData: ModuleData) => void;
   serializeModuleSpecificData?: () => SaveData;

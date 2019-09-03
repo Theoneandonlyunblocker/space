@@ -36,11 +36,6 @@ export class ModuleStore
     }
 
     this.loadedModules[toAdd.info.key] = toAdd.info;
-
-    if (toAdd.subModules)
-    {
-      toAdd.subModules.forEach(subModule => this.add(subModule));
-    }
   }
   public getModules(...requestedModules: ModuleInfo[]): Promise<GameModule[]>
   {
