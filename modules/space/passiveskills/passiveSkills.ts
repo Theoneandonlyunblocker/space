@@ -9,13 +9,20 @@ import {poisoned as poisonedStatusEffect} from "../uniteffects/poisoned";
 
 import { FormationValidityModifierSourceType } from "../../../src/battleprep/BattlePrepFormationValidity";
 import * as EffectActions from "../effectactions/effectActions";
+import { localize } from "./localization/localize";
 
 
 export const autoHeal: PassiveSkillTemplate =
 {
   type: "autoHeal",
-  displayName: "Auto heal",
-  description: "Restore 50 health after every action",
+  get displayName()
+  {
+    return localize("autoHeal_displayName")();
+  },
+  get description()
+  {
+    return localize("autoHeal_description")();
+  },
 
   atBattleStart:
   [
@@ -33,8 +40,14 @@ export const autoHeal: PassiveSkillTemplate =
 export const overdrive: PassiveSkillTemplate =
 {
   type: "overdrive",
-  displayName: "Overdrive",
-  description: "Gives buffs at battle start but become poisoned",
+  get displayName()
+  {
+    return localize("overdrive_displayName")();
+  },
+  get description()
+  {
+    return localize("overdrive_description")();
+  },
 
   atBattleStart:
   [
@@ -54,8 +67,14 @@ const initialGuardStrength = 50;
 export const initialGuard: PassiveSkillTemplate =
 {
   type: "initialGuard",
-  displayName: "Initial Guard",
-  description: "Adds initial guard",
+  get displayName()
+  {
+    return localize("initialGuard_displayName")();
+  },
+  get description()
+  {
+    return localize("initialGuard_description")();
+  },
   isHidden: true,
 
   atBattleStart:
@@ -92,8 +111,14 @@ export const initialGuard: PassiveSkillTemplate =
 export const medic: PassiveSkillTemplate =
 {
   type: "medic",
-  displayName: "Medic",
-  description: "Heals all units in same star to full at turn start",
+  get displayName()
+  {
+    return localize("medic_displayName")();
+  },
+  get description()
+  {
+    return localize("medic_description")();
+  },
 
   atTurnStart:
   [
@@ -127,8 +152,14 @@ function makeWarpJammerValidityModifier(user: Unit)
 export const warpJammer: PassiveSkillTemplate =
 {
   type: "warpJammer",
-  displayName: "Warp Jammer",
-  description: "Forces an extra unit to defend when starting a battle",
+  get displayName()
+  {
+    return localize("warpJammer_displayName")();
+  },
+  get description()
+  {
+    return localize("warpJammer_description")();
+  },
 
   inBattlePrep:
   [

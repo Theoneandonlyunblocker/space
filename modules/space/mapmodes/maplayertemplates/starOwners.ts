@@ -12,12 +12,16 @@ import
 } from "../../../../src/graphics/pixiWrapperFunctions";
 
 import {OccupationFilter} from "./shaders/OccupationFilter";
+import { localize } from "../localization/localize";
 
 
 export const starOwners: MapRendererLayerTemplate =
 {
   key: "starOwners",
-  displayName: "Star owners",
+  get displayName()
+  {
+    return localize("starOwners_displayName")();
+  },
   interactive: false,
   isUsedForCameraBounds: true,
   initialAlpha: 0.5,

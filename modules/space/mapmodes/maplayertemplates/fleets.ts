@@ -5,12 +5,16 @@ import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRe
 import {app} from "../../../../src/app/App";
 import {Fleet} from "../../../../src/fleets/Fleet";
 import {eventManager} from "../../../../src/app/eventManager";
+import { localize } from "../localization/localize";
 
 
 export const fleets: MapRendererLayerTemplate =
 {
   key: "fleets",
-  displayName: "Fleets",
+  get displayName()
+  {
+    return localize("fleets_displayName")();
+  },
   interactive: true,
   isUsedForCameraBounds: false,
   destroy: () =>

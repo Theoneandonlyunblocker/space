@@ -1,12 +1,16 @@
 import * as PIXI from "pixi.js";
 
 import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import { localize } from "../localization/localize";
 
 
 export const starLinks: MapRendererLayerTemplate =
 {
   key: "starLinks",
-  displayName: "Links",
+  get displayName()
+  {
+    return localize("starLinks_displayName")();
+  },
   interactive: false,
   isUsedForCameraBounds: false,
   drawingFunction: (map, perspectivePlayer) =>

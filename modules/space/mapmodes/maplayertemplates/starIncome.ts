@@ -8,12 +8,16 @@ import
   makePolygonFromPoints,
 } from "../../../../src/graphics/pixiWrapperFunctions";
 import { clamp } from "../../../../src/generic/utility";
+import { localize } from "../localization/localize";
 
 
 export const starIncome: MapRendererLayerTemplate =
 {
   key: "starIncome",
-  displayName: "Income",
+  get displayName()
+  {
+    return localize("starIncome_displayName")();
+  },
   initialAlpha: 0.6,
   interactive: false,
   isUsedForCameraBounds: true,

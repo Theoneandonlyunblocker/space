@@ -17,13 +17,20 @@ import
   initialGuard,
 } from "../../passiveskills/passiveSkills";
 import {getIconSrc} from "../resources";
+import { localize } from "../localization/localize";
 
 
 export const shieldBoat: UnitTemplate =
 {
   type: "shieldBoat",
-  displayName: "Shield Boat",
-  description: "Great defence and ability to protect allies in same row",
+  get displayName()
+  {
+    return localize("shieldBoat_displayName")();
+  },
+  get description()
+  {
+    return localize("shieldBoat_description")();
+  },
   archetype: unitArchetypes.defence,
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {

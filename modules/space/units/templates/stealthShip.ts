@@ -13,13 +13,20 @@ import {itemSlot} from "../../items/itemSlot";
 
 import * as technologies from "../../technologies/technologyTemplates";
 import {getIconSrc} from "../resources";
+import { localize } from "../localization/localize";
 
 
 export const stealthShip: UnitTemplate =
 {
   type: "stealthShip",
-  displayName: "Stealth Ship",
-  description: "Weak ship that is undetectable by regular vision",
+  get displayName()
+  {
+    return localize("stealthShip_displayName")();
+  },
+  get description()
+  {
+    return localize("stealthShip_description")();
+  },
   archetype: unitArchetypes.scouting,
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {

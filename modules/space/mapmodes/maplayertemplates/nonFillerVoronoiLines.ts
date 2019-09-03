@@ -1,12 +1,16 @@
 import * as PIXI from "pixi.js";
 
 import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import { localize } from "../localization/localize";
 
 
 export const nonFillerVoronoiLines: MapRendererLayerTemplate =
 {
   key: "nonFillerVoronoiLines",
-  displayName: "Star borders",
+  get displayName()
+  {
+    return localize("nonFillerVoronoiLines_displayName")();
+  },
   interactive: false,
   isUsedForCameraBounds: true,
   drawingFunction: (map, perspectivePlayer) =>

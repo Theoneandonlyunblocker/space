@@ -6,6 +6,7 @@ import
 {
   territoryBuildings, sectorCommandFamily,
 } from "./buildingFamilies";
+import { localize } from "../localization/localize";
 
 
 export const sectorCommand: TerritoryBuildingTemplate =
@@ -14,10 +15,14 @@ export const sectorCommand: TerritoryBuildingTemplate =
   isTerritoryBuilding: true,
   kind: "building",
   families: [territoryBuildings, sectorCommandFamily],
-  displayName: "Sector Command",
-  description: "Defence building with slight defender advantage. (All defence buildings must " +
-    "be captured to gain control of area)",
-
+  get displayName()
+  {
+    return localize("sectorCommand_displayName")();
+  },
+  get description()
+  {
+    return localize("sectorCommand_description")();
+  },
   getIconElement: getIconElement.bind(null, "sectorCommand"),
   buildCost: 200,
 
@@ -36,9 +41,14 @@ export const sectorCommand1: TerritoryBuildingTemplate =
   isTerritoryBuilding: true,
   kind: "building",
   families: [territoryBuildings, sectorCommandFamily],
-  displayName: "Sector Command1",
-  description: "just testing upgrade paths",
-
+  get displayName()
+  {
+    return localize("sectorCommand1_displayName")();
+  },
+  get description()
+  {
+    return localize("sectorCommand1_description")();
+  },
   getIconElement: getIconElement.bind(null, "sectorCommand"),
   buildCost: 100,
 
@@ -52,9 +62,14 @@ export const sectorCommand2: TerritoryBuildingTemplate =
   isTerritoryBuilding: true,
   kind: "building",
   families: [territoryBuildings, sectorCommandFamily],
-  displayName: "Sector Command2",
-  description: "just testing upgrade paths",
-
+  get displayName()
+  {
+    return localize("sectorCommand2_displayName")();
+  },
+  get description()
+  {
+    return localize("sectorCommand2_description")();
+  },
   getIconElement: getIconElement.bind(null, "sectorCommand"),
   buildCost: 200,
 
@@ -68,10 +83,14 @@ export const starBase: TerritoryBuildingTemplate =
   isTerritoryBuilding: true,
   kind: "building",
   families: [territoryBuildings],
-  displayName: "Starbase",
-  description: "Defence building with no defender advantage. (All defence buildings must " +
-    "be captured to gain control of area)",
-
+  get displayName()
+  {
+    return localize("starBase_displayName")();
+  },
+  get description()
+  {
+    return localize("starBase_description")();
+  },
   getIconElement: getIconElement.bind(null, "starBase"),
   buildCost: 200,
 

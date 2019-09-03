@@ -8,20 +8,22 @@ import
 } from "../../../../src/graphics/pixiWrapperFunctions";
 
 import {resources} from "../resources";
+import { localize } from "../localization/localize";
 
-
-type Asd = PIXI.TilingSprite;
 
 const fogOfWarMeshesByStarId:
 {
-  [starId: number]: Asd;
+  [starId: number]: PIXI.TilingSprite;
 } = {};
 
 
 export const fogOfWar: MapRendererLayerTemplate =
 {
   key: "fogOfWar",
-  displayName: "Fog of war",
+  get displayName()
+  {
+    return localize("fogOfWar_displayName")();
+  },
   interactive: false,
   isUsedForCameraBounds: false,
   initialAlpha: 0.6,
@@ -53,7 +55,7 @@ export const fogOfWar: MapRendererLayerTemplate =
   },
 };
 
-function getFogOfWarMeshForStar(star: Star): Asd
+function getFogOfWarMeshForStar(star: Star): PIXI.TilingSprite
 {
   if (!fogOfWarMeshesByStarId[star.id])
   {
@@ -62,7 +64,7 @@ function getFogOfWarMeshForStar(star: Star): Asd
 
   return fogOfWarMeshesByStarId[star.id]!;
 }
-function makeFogOfWarMeshForStar(star: Star): Asd
+function makeFogOfWarMeshForStar(star: Star): PIXI.TilingSprite
 {
   const bbox = star.voronoiCell.getBbox();
 

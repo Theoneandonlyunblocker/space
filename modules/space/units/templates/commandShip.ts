@@ -16,13 +16,20 @@ import
   initialGuard,
 } from "../../passiveskills/passiveSkills";
 import {getIconSrc} from "../resources";
+import { localize } from "../localization/localize";
 
 
 export const commandShip: UnitTemplate =
 {
   type: "commandShip",
-  displayName: "Command Ship",
-  description: "todo",
+  get displayName()
+  {
+    return localize("commandShip_displayName")();
+  },
+  get description()
+  {
+    return localize("commandShip_description")();
+  },
   archetype: unitArchetypes.utility,
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {

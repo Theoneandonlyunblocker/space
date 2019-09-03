@@ -3,15 +3,12 @@ import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import {attitudeModifiers as en_attitudeModifiers} from "./en/attitudeModifiers";
 
 
-export type AllMessages =
-typeof en_attitudeModifiers;
-
-const mergedMessages: AllMessages =
+const allMessages =
 {
-
+  ...en_attitudeModifiers,
 };
 
-export const localizer = new Localizer<AllMessages>("attitudeModifiers");
-localizer.setAllMessages(mergedMessages, englishLanguage);
+export const localizer = new Localizer<typeof allMessages>("attitudeModifiers");
+localizer.setAllMessages(allMessages, englishLanguage);
 
 export const localize = <typeof localizer.localize> localizer.localize.bind(localizer);

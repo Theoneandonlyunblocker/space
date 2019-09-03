@@ -15,6 +15,7 @@ import
 } from "../../../../src/generic/utility";
 
 import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import { localize } from "../localization/localize";
 
 
 // TODO 2017.08.18 | doesn't belong here
@@ -58,7 +59,10 @@ function generatePointsInPolygon(polygon: Point[], density: number, margin: numb
 export const terrain: MapRendererLayerTemplate =
 {
   key: "terrain",
-  displayName: "Terrain",
+  get displayName()
+  {
+    return localize("terrain_displayName")();
+  },
   interactive: false,
   isUsedForCameraBounds: false,
   drawingFunction: (map: GalaxyMap, perspectivePlayer: Player) =>

@@ -26,13 +26,20 @@ import
   warpJammer,
 } from "../../passiveskills/passiveSkills";
 import {getIconSrc} from "../resources";
+import { localize } from "../localization/localize";
 
 
 export const debugShip: UnitTemplate =
 {
   type: "debugShip",
-  displayName: "Debug Ship",
-  description: "debug",
+  get displayName()
+  {
+    return localize("debugShip_displayName")();
+  },
+  get description()
+  {
+    return localize("debugShip_description")();
+  },
   archetype: unitArchetypes.combat,
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {

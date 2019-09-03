@@ -73,6 +73,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "star-info-terrain",
         },
+          // TODO 2019.09.03 | localize
           `Terrain: ${star.terrain.displayName}`,
         ),
         ReactDOMElements.div(

@@ -8,12 +8,16 @@ import
 {
   makePolygonFromPoints,
 } from "../../../../src/graphics/pixiWrapperFunctions";
+import { localize } from "../localization/localize";
 
 
 export const nonFillerStars: MapRendererLayerTemplate =
 {
   key: "nonFillerStars",
-  displayName: "Stars",
+  get displayName()
+  {
+    return localize("nonFillerStars_displayName")();
+  },
   interactive: true,
   isUsedForCameraBounds: false,
   drawingFunction: (map, perspectivePlayer) =>

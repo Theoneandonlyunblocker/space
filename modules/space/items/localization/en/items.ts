@@ -1,0 +1,21 @@
+export const items =
+{
+  bombLauncher1_displayName: "Bomb Launcher 1",
+  bombLauncher1_description: "",
+  bombLauncher2_displayName: "Bomb Launcher 2",
+  bombLauncher2_description: "",
+  bombLauncher3_displayName: "Bomb Launcher 3",
+  bombLauncher3_description: "",
+  afterBurner1_displayName: "Afterburner 1",
+  afterBurner1_description: "",
+  afterBurner2_displayName: "Afterburner 2",
+  afterBurner2_description: "",
+  afterBurner3_displayName: "Afterburner 3",
+  afterBurner3_description: "",
+  shieldPlating1_displayName: "Shield Plating 1",
+  shieldPlating1_description: "",
+  shieldPlating2_displayName: "Shield Plating 2",
+  shieldPlating2_description: "",
+  shieldPlating3_displayName: "Shield Plating 3",
+  shieldPlating3_description: "",
+};

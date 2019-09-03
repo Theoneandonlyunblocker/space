@@ -12,13 +12,20 @@ import
 import {distributionGroups} from "../../../common/distributionGroups";
 import {itemSlot} from "../../items/itemSlot";
 import {getIconSrc} from "../resources";
+import { localize } from "../localization/localize";
 
 
 export const bomberSquadron: UnitTemplate =
 {
   type: "bomberSquadron",
-  displayName: "Bomber Squadron",
-  description: "Can damage multiple targets with special bomb attack",
+  get displayName()
+  {
+    return localize("bomberSquadron_displayName")();
+  },
+  get description()
+  {
+    return localize("bomberSquadron_description")();
+  },
   archetype: unitArchetypes.combat,
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {

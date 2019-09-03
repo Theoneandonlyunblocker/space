@@ -1,14 +1,21 @@
 import {TerrainTemplate} from "../../../src/templateinterfaces/TerrainTemplate";
+import { localize } from "./localization/localize";
 
 
 export const noneTerrain: TerrainTemplate =
 {
   type: "noneTerrain",
-  displayName: "None",
+  get displayName()
+  {
+    return localize("noneTerrain_displayName")();
+  },
 };
 
 export const asteroidsTerrain: TerrainTemplate =
 {
   type: "asteroidsTerrain",
-  displayName: "Asteroids",
+  get displayName()
+  {
+    return localize("asteroidsTerrain_displayName")();
+  },
 };

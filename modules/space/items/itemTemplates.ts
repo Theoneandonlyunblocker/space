@@ -12,13 +12,20 @@ import
 } from "../passiveskills/passiveSkills";
 
 import {getIconSrc} from "./resources";
+import { localize } from "./localization/localize";
 
 
 export const bombLauncher1: ItemTemplate =
 {
   type: "bombLauncher1",
-  displayName: "Bomb Launcher 1",
-  description: "",
+  get displayName()
+  {
+    return localize("bombLauncher1_displayName")();
+  },
+  get description()
+  {
+    return localize("bombLauncher1_description")();
+  },
   getIconSrc: getIconSrc.bind(null, "cannon"),
 
   techLevel: 1,
@@ -31,8 +38,14 @@ export const bombLauncher1: ItemTemplate =
 export const bombLauncher2: ItemTemplate =
 {
   type: "bombLauncher2",
-  displayName: "Bomb Launcher 2",
-  description: "",
+  get displayName()
+  {
+    return localize("bombLauncher2_displayName")();
+  },
+  get description()
+  {
+    return localize("bombLauncher2_description")();
+  },
   getIconSrc: getIconSrc.bind(null, "cannon"),
 
   techLevel: 2,
@@ -50,8 +63,14 @@ export const bombLauncher2: ItemTemplate =
 export const bombLauncher3: ItemTemplate =
 {
   type: "bombLauncher3",
-  displayName: "Bomb Launcher 3",
-  description: "",
+  get displayName()
+  {
+    return localize("bombLauncher3_displayName")();
+  },
+  get description()
+  {
+    return localize("bombLauncher3_description")();
+  },
   getIconSrc: getIconSrc.bind(null, "cannon"),
 
   techLevel: 3,
@@ -70,8 +89,14 @@ export const bombLauncher3: ItemTemplate =
 export const afterBurner1: ItemTemplate =
 {
   type: "afterBurner1",
-  displayName: "Afterburner 1",
-  description: "",
+  get displayName()
+  {
+    return localize("afterBurner1_displayName")();
+  },
+  get description()
+  {
+    return localize("afterBurner1_description")();
+  },
   getIconSrc: getIconSrc.bind(null, "blueThing"),
 
   techLevel: 1,
@@ -89,8 +114,14 @@ export const afterBurner1: ItemTemplate =
 export const afterBurner2: ItemTemplate =
 {
   type: "afterBurner2",
-  displayName: "Afterburner 2",
-  description: "",
+  get displayName()
+  {
+    return localize("afterBurner2_displayName")();
+  },
+  get description()
+  {
+    return localize("afterBurner2_description")();
+  },
   getIconSrc: getIconSrc.bind(null, "blueThing"),
 
   techLevel: 2,
@@ -107,8 +138,14 @@ export const afterBurner2: ItemTemplate =
 export const afterBurner3: ItemTemplate =
 {
   type: "afterBurner3",
-  displayName: "Afterburner 3",
-  description: "",
+  get displayName()
+  {
+    return localize("afterBurner3_displayName")();
+  },
+  get description()
+  {
+    return localize("afterBurner3_description")();
+  },
   getIconSrc: getIconSrc.bind(null, "blueThing"),
 
   techLevel: 3,
@@ -126,8 +163,14 @@ export const afterBurner3: ItemTemplate =
 export const shieldPlating1: ItemTemplate =
 {
   type: "shieldPlating1",
-  displayName: "Shield Plating 1",
-  description: "",
+  get displayName()
+  {
+    return localize("shieldPlating1_displayName")();
+  },
+  get description()
+  {
+    return localize("shieldPlating1_description")();
+  },
   getIconSrc: getIconSrc.bind(null, "armor"),
 
   techLevel: 1,
@@ -144,8 +187,14 @@ export const shieldPlating1: ItemTemplate =
 export const shieldPlating2: ItemTemplate =
 {
   type: "shieldPlating2",
-  displayName: "Shield Plating 2",
-  description: "",
+  get displayName()
+  {
+    return localize("shieldPlating2_displayName")();
+  },
+  get description()
+  {
+    return localize("shieldPlating2_description")();
+  },
   getIconSrc: getIconSrc.bind(null, "armor"),
 
   techLevel: 2,
@@ -162,8 +211,14 @@ export const shieldPlating2: ItemTemplate =
 export const shieldPlating3: ItemTemplate =
 {
   type: "shieldPlating3",
-  displayName: "Shield Plating 3",
-  description: "",
+  get displayName()
+  {
+    return localize("shieldPlating3_displayName")();
+  },
+  get description()
+  {
+    return localize("shieldPlating3_description")();
+  },
   getIconSrc: getIconSrc.bind(null, "armor"),
 
   techLevel: 3,

@@ -8,12 +8,16 @@ import
 {
   makePolygonFromPoints,
 } from "../../../../src/graphics/pixiWrapperFunctions";
+import { localize } from "../localization/localize";
 
 
 export const ownerBorders: MapRendererLayerTemplate =
 {
   key: "ownerBorders",
-  displayName: "Owner borders",
+  get displayName()
+  {
+    return localize("ownerBorders_displayName")();
+  },
   interactive: false,
   isUsedForCameraBounds: true,
   initialAlpha: 0.7,

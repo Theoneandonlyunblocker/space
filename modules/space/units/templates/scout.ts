@@ -11,13 +11,20 @@ import
 import {distributionGroups} from "../../../common/distributionGroups";
 import {itemSlot} from "../../items/itemSlot";
 import {getIconSrc} from "../resources";
+import { localize } from "../localization/localize";
 
 
 export const scout: UnitTemplate =
 {
   type: "scout",
-  displayName: "Scout",
-  description: "Weak in combat, but has high vision and can reveal stealthy units and details of units in same star",
+  get displayName()
+  {
+    return localize("scout_displayName")();
+  },
+  get description()
+  {
+    return localize("scout_description")();
+  },
   archetype: unitArchetypes.scouting,
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {

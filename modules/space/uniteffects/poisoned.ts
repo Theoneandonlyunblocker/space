@@ -1,12 +1,19 @@
 import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactions/effectActions";
+import { localize } from "./localization/localize";
 
 
 export const poisoned: UnitEffectTemplate =
 {
   type: "poisoned",
-  displayName: "Poisoned",
-  description: "-10% max health per turn",
+  get displayName()
+  {
+    return localize("poisoned_displayName")();
+  },
+  get description()
+  {
+    return localize("poisoned_description")();
+  },
   attributes:
   {
     attack:

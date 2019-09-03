@@ -1,14 +1,21 @@
 import {BuildingTemplate} from "../../../../src/templateinterfaces/BuildingTemplate";
 
 import * as technologies from "../../technologies/technologyTemplates";
+import { localize } from "../localization/localize";
 
 
 export const commercialPort: BuildingTemplate =
 {
   type: "commercialPort",
   kind: "building",
-  displayName: "Commercial Spaceport",
-  description: "Increase star income by 20",
+  get displayName()
+  {
+    return localize("commercialPort_displayName")();
+  },
+  get description()
+  {
+    return localize("commercialPort_description")();
+  },
   families: [],
 
   buildCost: 200,
@@ -26,8 +33,14 @@ export const deepSpaceRadar: BuildingTemplate =
 {
   type: "deepSpaceRadar",
   kind: "building",
-  displayName: "Deep Space Radar",
-  description: "Increase star vision and detection radius by 1",
+  get displayName()
+  {
+    return localize("deepSpaceRadar_displayName")();
+  },
+  get description()
+  {
+    return localize("deepSpaceRadar_description")();
+  },
   families: [],
 
   buildCost: 200,
@@ -54,8 +67,14 @@ export const resourceMine: BuildingTemplate =
 {
   type: "resourceMine",
   kind: "building",
-  displayName: "Mine",
-  description: "Gathers 1 resource per turn from current star",
+  get displayName()
+  {
+    return localize("resourceMine_displayName")();
+  },
+  get description()
+  {
+    return localize("resourceMine_description")();
+  },
   families: [],
 
   buildCost: 500,
@@ -81,8 +100,14 @@ export const reserachLab: BuildingTemplate =
 {
   type: "reserachLab",
   kind: "building",
-  displayName: "Research Lab",
-  description: "Increase research speed by 10",
+  get displayName()
+  {
+    return localize("reserachLab_displayName")();
+  },
+  get description()
+  {
+    return localize("reserachLab_description")();
+  },
   families: [],
 
   buildCost: 300,
@@ -101,8 +126,14 @@ export const thePyramids: BuildingTemplate =
 {
   type: "thePyramids",
   kind: "building",
-  displayName: "The Pyramids",
-  description: "testing globally limited buildings, +1000 money on build",
+  get displayName()
+  {
+    return localize("thePyramids_displayName")();
+  },
+  get description()
+  {
+    return localize("thePyramids_description")();
+  },
   families: [],
 
   onBuild: (star, player) =>
@@ -119,8 +150,14 @@ export const nationalEpic: BuildingTemplate =
 {
   type: "nationalEpic",
   kind: "building",
-  displayName: "National Epic",
-  description: "testing player limited buildings, +999 money on build",
+  get displayName()
+  {
+    return localize("nationalEpic_displayName")();
+  },
+  get description()
+  {
+    return localize("nationalEpic_description")();
+  },
   families: [],
 
   onBuild: (star, player) =>

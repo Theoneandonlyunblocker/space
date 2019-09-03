@@ -29,6 +29,7 @@ import * as BattleVfx from "../battlevfx/templates/battleVfx";
 import * as EffectActions from "../effectactions/effectActions";
 
 import * as SnipeStatusEffects from "../uniteffects/snipe";
+import { localize } from "./localization/localize";
 
 
 // tslint:disable:no-any
@@ -50,8 +51,14 @@ function activeUnitsFilter(unit: Unit | null): unit is Unit
 export const closeAttack: AbilityTemplate =
 {
   type: "closeAttack",
-  displayName: "Close Attack",
-  description: "Close range attack that hits adjacent targets in the same row",
+  get displayName()
+  {
+    return localize("closeAttack_displayName")();
+  },
+  get description()
+  {
+    return localize("closeAttack_description")();
+  },
   moveDelay: 90,
   actionsUse: 2,
   getPossibleTargets: (user, battle) =>
@@ -82,8 +89,14 @@ export const closeAttack: AbilityTemplate =
 export const beamAttack: AbilityTemplate =
 {
   type: "beamAttack",
-  displayName: "Beam Attack",
-  description: "Attack units in a line",
+  get displayName()
+  {
+    return localize("beamAttack_displayName")();
+  },
+  get description()
+  {
+    return localize("beamAttack_description")();
+  },
   moveDelay: 300,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,
@@ -118,8 +131,14 @@ const bombAttackAreaFN: GetUnitsInAreaFN = (user, target, battle) =>
 export const bombAttack: AbilityTemplate =
 {
   type: "bombAttack",
-  displayName: "Bomb Attack",
-  description: "Ranged attack that hits all adjacent enemy units",
+  get displayName()
+  {
+    return localize("bombAttack_displayName")();
+  },
+  get description()
+  {
+    return localize("bombAttack_description")();
+  },
   moveDelay: 120,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,
@@ -144,8 +163,14 @@ export const bombAttack: AbilityTemplate =
 export const guardRow: AbilityTemplate =
 {
   type: "guardRow",
-  displayName: "Guard Row",
-  description: "Protect allies in the same row and boost defence against physical attacks",
+  get displayName()
+  {
+    return localize("guardRow_displayName")();
+  },
+  get description()
+  {
+    return localize("guardRow_description")();
+  },
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetSelf,
@@ -175,8 +200,14 @@ export const guardRow: AbilityTemplate =
 export const boardingHook: AbilityTemplate =
 {
   type: "boardingHook",
-  displayName: "Boarding Hook",
-  description: "0.8x damage but increases target capture chance",
+  get displayName()
+  {
+    return localize("boardingHook_displayName")();
+  },
+  get description()
+  {
+    return localize("boardingHook_description")();
+  },
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,
@@ -221,8 +252,14 @@ export const boardingHook: AbilityTemplate =
 export const debugAbility: AbilityTemplate =
 {
   type: "debugAbility",
-  displayName: "Debug Ability",
-  description: "who knows what its going to do today",
+  get displayName()
+  {
+    return localize("debugAbility_displayName")();
+  },
+  get description()
+  {
+    return localize("debugAbility_description")();
+  },
   moveDelay: 0,
   actionsUse: 1,
   getPossibleTargets: targetAll,
@@ -247,8 +284,14 @@ export const debugAbility: AbilityTemplate =
 export const rangedAttack: AbilityTemplate =
 {
   type: "rangedAttack",
-  displayName: "Ranged Attack",
-  description: "Standard ranged attack",
+  get displayName()
+  {
+    return localize("rangedAttack_displayName")();
+  },
+  get description()
+  {
+    return localize("rangedAttack_description")();
+  },
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,
@@ -357,8 +400,14 @@ export const snipeSpeed = makeSnipeTemplate(UnitAttribute.Speed);
 export const standBy: AbilityTemplate =
 {
   type: "standBy",
-  displayName: "Standby",
-  description: "Skip a turn but next one comes faster",
+  get displayName()
+  {
+    return localize("standBy_displayName")();
+  },
+  get description()
+  {
+    return localize("standBy_description")();
+  },
   moveDelay: 50,
   actionsUse: 1,
   getPossibleTargets: targetSelf,

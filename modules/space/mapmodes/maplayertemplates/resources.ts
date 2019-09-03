@@ -1,12 +1,16 @@
 import * as PIXI from "pixi.js";
 
 import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import { localize } from "../localization/localize";
 
 
 export const resources: MapRendererLayerTemplate =
 {
   key: "resources",
-  displayName: "Resources",
+  get displayName()
+  {
+    return localize("resources_displayName")();
+  },
   interactive: false,
   isUsedForCameraBounds: false,
   drawingFunction: (map, perspectivePlayer) =>

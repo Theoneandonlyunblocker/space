@@ -12,13 +12,20 @@ import
 import {distributionGroups} from "../../../common/distributionGroups";
 import {itemSlot} from "../../items/itemSlot";
 import {getIconSrc} from "../resources";
+import { localize } from "../localization/localize";
 
 
 export const battleCruiser: UnitTemplate =
 {
   type: "battleCruiser",
-  displayName: "Battlecruiser",
-  description: "Strong combat ship with low speed",
+  get displayName()
+  {
+    return localize("battleCruiser_displayName")();
+  },
+  get description()
+  {
+    return localize("battleCruiser_description")();
+  },
   archetype: unitArchetypes.combat,
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {

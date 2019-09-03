@@ -1,12 +1,19 @@
 import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactions/effectActions";
+import { localize } from "./localization/localize";
 
 
 export const autoHeal: UnitEffectTemplate =
 {
   type: "autoHeal",
-  displayName: "Auto heal",
-  description: "Restore 50 health after every action",
+  get displayName()
+  {
+    return localize("autoHeal_displayName")();
+  },
+  get description()
+  {
+    return localize("autoHeal_description")();
+  },
 
   afterAbilityUse:
   [

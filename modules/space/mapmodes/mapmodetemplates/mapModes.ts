@@ -1,12 +1,16 @@
 import {MapRendererMapModeTemplate} from "../../../../src/templateinterfaces/MapRendererMapModeTemplate";
 
 import * as MapLayers from "../allMapLayerTemplates";
+import { localize } from "../localization/localize";
 
 
 export const defaultMapMode: MapRendererMapModeTemplate =
 {
   key: "defaultMapMode",
-  displayName: "Default",
+  get displayName()
+  {
+    return localize("defaultMapMode_displayName")();
+  },
   layers:
   [
     MapLayers.nonFillerVoronoiLines,
@@ -21,7 +25,10 @@ export const defaultMapMode: MapRendererMapModeTemplate =
 export const noStatic: MapRendererMapModeTemplate =
 {
   key: "noStatic",
-  displayName: "No Static Layers",
+  get displayName()
+  {
+    return localize("noStatic_displayName")();
+  },
   layers:
   [
     MapLayers.starOwners,
@@ -34,7 +41,10 @@ export const noStatic: MapRendererMapModeTemplate =
 export const income: MapRendererMapModeTemplate =
 {
   key: "income",
-  displayName: "Income",
+  get displayName()
+  {
+    return localize("income_displayName")();
+  },
   layers:
   [
     MapLayers.starIncome,
@@ -47,7 +57,10 @@ export const income: MapRendererMapModeTemplate =
 export const resources: MapRendererMapModeTemplate =
 {
   key: "resources",
-  displayName: "Resources",
+  get displayName()
+  {
+    return localize("resources_displayName")();
+  },
   layers:
   [
     MapLayers.nonFillerVoronoiLines,

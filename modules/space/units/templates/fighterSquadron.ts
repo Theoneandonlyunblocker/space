@@ -12,13 +12,20 @@ import
 import {distributionGroups} from "../../../common/distributionGroups";
 import {itemSlot} from "../../items/itemSlot";
 import {getIconSrc} from "../resources";
+import { localize } from "../localization/localize";
 
 
 export const fighterSquadron: UnitTemplate =
 {
   type: "fighterSquadron",
-  displayName: "Fighter Squadron",
-  description: "Fast and cheap unit with good attack and speed but low defence",
+  get displayName()
+  {
+    return localize("fighterSquadron_displayName")();
+  },
+  get description()
+  {
+    return localize("fighterSquadron_description")();
+  },
   archetype: unitArchetypes.combat,
   unitDrawingFN: makeDefaultUnitDrawingFunction(
   {

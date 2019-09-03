@@ -2,15 +2,13 @@ import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemp
 
 import {UnitAttribute, getUnitAttributesObjectKeyForAttribute} from "../../../src/unit/UnitAttributes";
 import { FlatAndMultiplierAdjustment } from "../../../src/generic/FlatAndMultiplierAdjustment";
+import { localize } from "./localization/localize";
 
 
 function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
 {
   const attributeName = UnitAttribute[attribute];
   const capitalizedAttributeName = attributeName[0].toUpperCase() + attributeName.slice(1);
-
-  const key = `snipe${capitalizedAttributeName}`;
-  const displayName = `Snipe: ${capitalizedAttributeName}`;
 
   const attributeAdjustment: Partial<FlatAndMultiplierAdjustment> =
   {
@@ -19,8 +17,11 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
 
   return(
   {
-    type: key,
-    displayName: displayName,
+    type: `snipe${capitalizedAttributeName}`,
+    get displayName()
+    {
+      return localize("snipe_displayName")(attribute);
+    },
     attributes:
     {
       [getUnitAttributesObjectKeyForAttribute(attribute)]: attributeAdjustment,

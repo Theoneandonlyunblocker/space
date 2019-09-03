@@ -1,13 +1,20 @@
 import {MapGenTemplate} from "../../../../src/templateinterfaces/MapGenTemplate";
 
 import {spiralGalaxyGeneration} from "../spiralGalaxy/spiralGalaxyGeneration";
+import { localize } from "../localization/localize";
 
 
 export const spiralGalaxy: MapGenTemplate =
 {
   key: "spiralGalaxy",
-  displayName: "Spiral galaxy",
-  description: "Create a spiral galaxy with arms",
+  get displayName()
+  {
+  return localize("spiralGalaxy_displayName")();
+  },
+  get description()
+  {
+  return localize("spiralGalaxy_description")();
+  },
 
   minPlayers: 2,
   maxPlayers: 5,
@@ -20,7 +27,10 @@ export const spiralGalaxy: MapGenTemplate =
     {
       height:
       {
-        displayName: "Height",
+        get displayName()
+        {
+          return localize("height")();
+        },
         range:
         {
           min: 800,
@@ -30,7 +40,10 @@ export const spiralGalaxy: MapGenTemplate =
       },
       width:
       {
-        displayName: "Width",
+        get displayName()
+        {
+          return localize("width")();
+        },
         range:
         {
           min: 800,
@@ -40,7 +53,10 @@ export const spiralGalaxy: MapGenTemplate =
       },
       starCount:
       {
-        displayName: "Star count",
+        get displayName()
+        {
+          return localize("starCount")();
+        },
         range:
         {
           min: 20,
@@ -53,7 +69,10 @@ export const spiralGalaxy: MapGenTemplate =
     {
       arms:
       {
-        displayName: "Arms",
+        get displayName()
+        {
+          return localize("arms")();
+        },
         range:
         {
           min: 3,
@@ -64,7 +83,10 @@ export const spiralGalaxy: MapGenTemplate =
       },
       starSizeRegularity:
       {
-        displayName: "Star size regularity",
+        get displayName()
+        {
+          return localize("starSizeRegularity")();
+        },
         range:
         {
           min: 1,
@@ -75,7 +97,10 @@ export const spiralGalaxy: MapGenTemplate =
       },
       centerDensity:
       {
-        displayName: "Center density",
+        get displayName()
+        {
+          return localize("centerDensity")();
+        },
         range:
         {
           min: 1,

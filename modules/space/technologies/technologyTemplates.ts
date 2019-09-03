@@ -1,40 +1,71 @@
 import {TechnologyTemplate} from "../../../src/templateinterfaces/TechnologyTemplate";
 import {TemplateCollection} from "../../../src/templateinterfaces/TemplateCollection";
+import { localize } from "./localization/localize";
 
 
 export const stealth: TechnologyTemplate =
 {
   key: "stealth",
-  displayName: "Stealth",
-  description: "stealthy stuff",
+  get displayName()
+  {
+    return localize("stealth_displayName")();
+  },
+  get description()
+  {
+    return localize("stealth_description")();
+  },
   maxLevel: 9,
 };
 export const lasers: TechnologyTemplate =
 {
   key: "lasers",
-  displayName: "Lasers",
-  description: "pew pew",
+  get displayName()
+  {
+    return localize("lasers_displayName")();
+  },
+  get description()
+  {
+    return localize("lasers_description")();
+  },
   maxLevel: 9,
 };
 export const missiles: TechnologyTemplate =
 {
   key: "missiles",
-  displayName: "Missiles",
-  description: "boom",
+  get displayName()
+  {
+    return localize("missiles_displayName")();
+  },
+  get description()
+  {
+    return localize("missiles_description")();
+  },
   maxLevel: 9,
 };
 export const test1: TechnologyTemplate =
 {
   key: "test1",
-  displayName: "test1",
-  description: "test1",
+  get displayName()
+  {
+    return localize("test1_displayName")();
+  },
+  get description()
+  {
+    return localize("test1_description")();
+  },
   maxLevel: 1,
 };
 export const test2: TechnologyTemplate =
 {
   key: "test2",
-  displayName: "test2",
-  description: "test2",
+  get displayName()
+  {
+    return localize("test2_displayName")();
+  },
+  get description()
+  {
+    return localize("test2_description")();
+  },
   maxLevel: 2,
 };
 
