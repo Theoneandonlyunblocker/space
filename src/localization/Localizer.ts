@@ -11,6 +11,47 @@ import {Language} from "./Language";
 import {options} from "../app/Options";
 
 
+export class SimpleLocalizer<Items extends {[K in keyof Items]: any}>
+{
+  public readonly key: string;
+
+  private readonly itemsByLanguageCode:
+  {
+    [languageCode: string]: Items;
+  } = {};
+
+  constructor(key: string)
+  {
+    this.key = key;
+  }
+
+  public setAll(items: Items, language: Language): void
+  {
+    this.set(items, language);
+  }
+  public set(items: Partial<Items>, language: Language): void
+  {
+    this.itemsByLanguageCode[language.code] =
+    {
+      ...this.itemsByLanguageCode[language.code],
+      ...items,
+    };
+  }
+  public localize<K extends keyof Items>(key: K): Items[K]
+  {
+    const activeLanguage = options.display.language;
+    const itemsForLanguage = this.itemsByLanguageCode[activeLanguage.code];
+    if (itemsForLanguage && itemsForLanguage[key])
+    {
+      return itemsForLanguage[key];
+    }
+    else
+    {
+      throw new Error(`Missing localization for '${this.key}.${activeLanguage.code}.${key}'`);
+    }
+  }
+}
+
 // messageformat.js requires positional arguments to be wrapped in an array.
 // create wrapper function that packs up args in an array if needed
 function wrapMessageFunction(messageFN: MessageFormat.MessageFunction<any>): MessageFormat.MessageFunction<any>
@@ -28,6 +69,9 @@ function wrapMessageFunction(messageFN: MessageFormat.MessageFunction<any>): Mes
   };
 }
 
+
+// TODO 2019.09.02 | rename MessageFormatLocalizer
+// this has so little in common with SimpleLocalizer, it's kept separate
 export class Localizer<Messages extends {[K in keyof Messages]: (string | string[])}>
 {
   public readonly key: string;

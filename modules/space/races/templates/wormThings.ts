@@ -1,7 +1,5 @@
 import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
 
-import {Name} from "../../../../src/localization/Name";
-
 import
 {
   getRandomProperty,
@@ -20,12 +18,16 @@ import {getDefaultBuildableItems} from "../common/getDefaultBuildableItems";
 import {getDefaultBuildableUnits} from "../common/getDefaultBuildableUnits";
 import {defaultRaceTechnologyValues} from "../common/defaultRaceTechnologyValues";
 import {mergeTechnologyValues} from "../common/utility";
+import { localizeName } from "../localization/localize";
 
 
 export const wormThings: RaceTemplate =
 {
   type: "wormThings",
-  displayName: new Name("Worm Things", true),
+  get displayName()
+  {
+    return localizeName("wormThings");
+  },
   description: "The gross guys",
   distributionData:
   {
@@ -53,14 +55,12 @@ export const wormThings: RaceTemplate =
       units.fighterSquadron,
     ];
   },
-  getUnitName: unitTemplate =>
-  {
-    return `Infested ${unitTemplate.displayName}`;
-  },
-  getUnitPortrait: (unitTemplate, allTemplates) =>
-  {
-    return getRandomProperty(allTemplates);
-  },
+  getPlayerName: player => player.isIndependent ?
+    localizeName("wormThingsIndependents") :
+    localizeName("genericPlayer")(player.id),
+  getFleetName: fleet => localizeName("genericFleet")(fleet.id),
+  getUnitName: unitTemplate => `Infested ${unitTemplate.displayName}`,
+  getUnitPortrait: (unitTemplate, allPortraits) => getRandomProperty(allPortraits),
   generateIndependentPlayer: emblemTemplates =>
   {
     return generateIndependentPlayer(wormThings);

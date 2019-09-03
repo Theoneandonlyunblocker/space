@@ -1,4 +1,3 @@
-import {Name} from "../../src/localization/name";
 import {RaceTemplate} from "../../src/templateinterfaces/RaceTemplate";
 import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
 import
@@ -14,12 +13,16 @@ import {defaultAiConstructor} from "../defaultai/mapai/DefaultAiConstructor";
 import {droneBase} from  "./units/droneBase";
 import {droneCommander} from  "./units/droneCommander";
 import {droneSwarm} from  "./units/droneSwarm";
+import { localizeName } from "./localization/localize";
 
 
 export const drones: RaceTemplate =
 {
   type: "drones",
-  displayName: new Name("Drones", true),
+  get displayName()
+  {
+    return localizeName("drones");
+  },
   description: "",
   distributionData:
   {
@@ -35,6 +38,8 @@ export const drones: RaceTemplate =
     droneCommander,
     droneBase,
   ],
+  getPlayerName: player => localizeName("droneHost")(randInt(0, 20000)),
+  getFleetName: fleet => localizeName("swarm")(fleet.id),
   getUnitName: unitTemplate =>
   {
     return `${unitTemplate.displayName} #${randInt(0, 20000)}`;

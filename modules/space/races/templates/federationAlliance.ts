@@ -1,7 +1,5 @@
 import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
 
-import {Name} from "../../../../src/localization/Name";
-
 import
 {
   getRandomProperty,
@@ -20,12 +18,16 @@ import {getDefaultBuildableItems} from "../common/getDefaultBuildableItems";
 import {getDefaultBuildableUnits} from "../common/getDefaultBuildableUnits";
 import {defaultRaceTechnologyValues} from "../common/defaultRaceTechnologyValues";
 import {mergeTechnologyValues} from "../common/utility";
+import { localizeName } from "../localization/localize";
 
 
 export const federationAlliance: RaceTemplate =
 {
   type: "federationAlliance",
-  displayName: new Name("Federation Alliance", false),
+  get displayName()
+  {
+    return localizeName("federationAlliance");
+  },
   description: "The good guys",
   distributionData:
   {
@@ -53,19 +55,18 @@ export const federationAlliance: RaceTemplate =
       units.commandShip,
     ];
   },
+  getPlayerName: player => player.isIndependent ?
+    localizeName("federationAllianceIndependents") :
+    localizeName("genericPlayer")(player.id),
+  getFleetName: fleet => localizeName("genericFleet")(fleet.id),
   getUnitName: unitTemplate =>
   {
     return `Federation ${unitTemplate.displayName}`;
   },
-  getUnitPortrait: (unitTemplate, allTemplates) =>
-  {
-    return getRandomProperty(allTemplates);
-  },
+  getUnitPortrait: (unitTemplate, allPortraits) => getRandomProperty(allPortraits),
   generateIndependentPlayer: emblemTemplates =>
   {
     const player = generateIndependentPlayer(federationAlliance);
-
-    player.name = new Name(`${federationAlliance.displayName} Independents`, true);
 
     return player;
   },

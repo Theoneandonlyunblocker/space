@@ -10,6 +10,7 @@
     {"path": "../../modules/common"},
     {"path": "../../modules/space"},
     {"path": "../../modules/defaultai"},
+    {"path": "../../modules/englishlanguage"},
   ],
   "include": [
     "**/*",
