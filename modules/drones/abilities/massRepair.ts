@@ -14,13 +14,20 @@ import
 
 import {makePlaceholderVfx} from "../../common/makePlaceholderVfx";
 import * as EffectActions from "../../space/effectactions/effectActions";
+import { localize } from "../localization/localize";
 
 
 export const massRepair: AbilityTemplate =
 {
   type: "massRepair",
-  displayName: "Mass Repair",
-  description: "Restore health to all allies",
+  get displayName()
+  {
+    return localize("massRepair_displayName")();
+  },
+  get description()
+  {
+    return localize("massRepair_description")();
+  },
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetAllAllies,

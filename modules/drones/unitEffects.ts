@@ -7,13 +7,20 @@ import
 } from "../space/effectactions/effectActions";
 
 import {makePlaceholderVfx} from "../common/makePlaceholderVfx";
+import { localize } from "./localization/localize";
 
 
 export const infest: UnitEffectTemplate =
 {
   type: "infest",
-  displayName: "Infest",
-  description: "Deal increasing damage at the end of every turn",
+  get displayName()
+  {
+    return localize("infest_effect_displayName")();
+  },
+  get description()
+  {
+    return localize("infest_effect_description")();
+  },
   afterAbilityUse:
   [
     {
@@ -38,7 +45,10 @@ export const infest: UnitEffectTemplate =
 export const merge: UnitEffectTemplate =
 {
   type: "merge",
-  displayName: "Merge",
+  get displayName()
+  {
+    return localize("merge_effect_displayName")();
+  },
   attributes:
   {
     attack: {flat: 1},

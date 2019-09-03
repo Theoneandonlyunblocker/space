@@ -17,13 +17,20 @@ import {ResultType} from "../../space/effectactions/ResultType";
 import * as EffectActions from "../../space/effectactions/effectActions";
 
 import * as DroneBattleVfx from "../battlevfx/templates";
+import { localize } from "../localization/localize";
 
 
 export const assimilate: AbilityTemplate =
 {
   type: "assimilate",
-  displayName: "Assimilate",
-  description: "Deal damage and increase own troop size by 10% of damage dealt",
+  get displayName()
+  {
+    return localize("assimilate_displayName")();
+  },
+  get description()
+  {
+    return localize("assimilate_description")();
+  },
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,

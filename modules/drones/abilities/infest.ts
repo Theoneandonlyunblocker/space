@@ -16,13 +16,20 @@ import {makePlaceholderVfx} from "../../common/makePlaceholderVfx";
 import * as EffectActions from "../../space/effectactions/effectActions";
 
 import * as DroneStatusEffects from "../unitEffects";
+import { localize } from "../localization/localize";
 
 
 export const infest: AbilityTemplate =
 {
   type: "infest",
-  displayName: "Infest",
-  description: "Increase target capture chance and deal damage over time",
+  get displayName()
+  {
+    return localize("infest_displayName")();
+  },
+  get description()
+  {
+    return localize("infest_description")();
+  },
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,

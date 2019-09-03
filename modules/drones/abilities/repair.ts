@@ -14,13 +14,20 @@ import
 
 import {makePlaceholderVfx} from "../../common/makePlaceholderVfx";
 import * as EffectActions from "../../space/effectactions/effectActions";
+import { localize } from "../localization/localize";
 
 
 export const repair: AbilityTemplate =
 {
   type: "repair",
-  displayName: "Repair",
-  description: "Restore health to one ally",
+  get displayName()
+  {
+    return localize("repair_displayName")();
+  },
+  get description()
+  {
+    return localize("repair_description")();
+  },
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetAllAllies,

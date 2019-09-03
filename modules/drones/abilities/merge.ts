@@ -18,13 +18,20 @@ import * as EffectActions from "../../space/effectactions/effectActions";
 
 import * as DroneStatusEffects from "../unitEffects";
 import * as DroneBattleVfx from "../battlevfx/templates";
+import { localize } from "../localization/localize";
 
 
 export const merge: AbilityTemplate =
 {
   type: "merge",
-  displayName: "Merge",
-  description: "Transfer up to 25% of own current health to repair target ally and increase target stats",
+  get displayName()
+  {
+    return localize("merge_displayName")();
+  },
+  get description()
+  {
+    return localize("merge_description")();
+  },
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetOtherAllies,

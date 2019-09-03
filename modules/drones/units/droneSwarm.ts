@@ -9,14 +9,20 @@ import {getAssetSrc} from "../../common/assets";
 
 import {assimilate} from "../abilities/assimilate";
 import {merge} from "../abilities/merge";
+import { localize } from "../localization/localize";
 
 
 export const droneSwarm: UnitTemplate =
 {
   type: "droneSwarm",
-  displayName: "Drone Swarm",
-  description: "Swarm o drones",
-
+  get displayName()
+  {
+    return localize("droneCommander_displayName")();
+  },
+  get description()
+  {
+    return localize("droneCommander_description")();
+  },
   archetype: unitArchetypes.combat,
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),
   unitDrawingFN: makeDefaultUnitDrawingFunctionForPlaceholder(

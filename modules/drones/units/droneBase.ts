@@ -10,14 +10,20 @@ import {getAssetSrc} from "../../common/assets";
 import {assimilate} from "../abilities/assimilate";
 import {repair} from "../abilities/repair";
 import {massRepair} from "../abilities/massRepair";
+import { localize } from "../localization/localize";
 
 
 export const droneBase: UnitTemplate =
 {
   type: "droneBase",
-  displayName: "Drone Base",
-  description: "Base o drones",
-
+  get displayName()
+  {
+    return localize("droneBase_displayName")();
+  },
+  get description()
+  {
+    return localize("droneBase_description")();
+  },
   archetype: unitArchetypes.utility,
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),
   unitDrawingFN: makeDefaultUnitDrawingFunctionForPlaceholder(
