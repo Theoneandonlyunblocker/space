@@ -106,7 +106,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
         }
         case "status":
         {
-          props.title = localize("diplomacyStateDescription")({diplomacyState: this.props.status});
+          props.title = localize("diplomacyStateDescription").format({diplomacyState: this.props.status});
 
           break;
         }
@@ -144,11 +144,11 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
         {
           if (this.props.status === "dead")
           {
-            return localize("deadPlayer")();
+            return localize("deadPlayer").toString();
           }
           else
           {
-            return localize("diplomacyState")({diplomacyState: this.props.status});
+            return localize("diplomacyState").format({diplomacyState: this.props.status});
           }
         }
         case "opinion":

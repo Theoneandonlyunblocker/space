@@ -8,11 +8,11 @@ export const autoHeal: UnitEffectTemplate =
   type: "autoHeal",
   get displayName()
   {
-    return localize("autoHeal_displayName")();
+    return localize("autoHeal_displayName").toString();
   },
   get description()
   {
-    return localize("autoHeal_description")();
+    return localize("autoHeal_description").toString();
   },
 
   afterAbilityUse:

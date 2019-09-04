@@ -35,10 +35,10 @@ class WarDeclarationNotificationComponent extends React.Component<PropTypes, {}>
       {
         className: "war-declaration-notification",
       },
-        localize("warDeclarationText")(
+        localize("warDeclarationText").format(
         {
-          aggressorName: notification.props.aggressor.name.toString(),
-          defenderName: notification.props.defender.name.toString(),
+          aggressorName: notification.props.aggressor.name,
+          defenderName: notification.props.defender.name,
         }),
       )
     );

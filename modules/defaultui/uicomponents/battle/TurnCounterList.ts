@@ -49,7 +49,7 @@ export class TurnCounterListComponent extends React.PureComponent<PropTypes, Sta
       ReactDOMElements.div(
       {
         className: "turns-container",
-        title: localize("turnsLeft_tooltip")(this.props.turnsLeft),
+        title: localize("turnsLeft_tooltip").format(this.props.turnsLeft),
       },
         turnElements,
       )

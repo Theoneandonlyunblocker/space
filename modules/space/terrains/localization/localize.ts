@@ -9,6 +9,6 @@ const allMessages =
 };
 
 export const localizer = new Localizer<typeof allMessages>("spaceTerrains");
-localizer.setAllMessages(allMessages, englishLanguage);
+localizer.setAll(allMessages, englishLanguage);
 
 export const localize = localizer.localize.bind(localizer);

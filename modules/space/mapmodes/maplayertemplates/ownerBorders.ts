@@ -16,7 +16,7 @@ export const ownerBorders: MapRendererLayerTemplate =
   key: "ownerBorders",
   get displayName()
   {
-    return localize("ownerBorders_displayName")();
+    return localize("ownerBorders_displayName").toString();
   },
   interactive: false,
   isUsedForCameraBounds: true,

@@ -9,6 +9,6 @@ const allMessages =
 };
 
 export const localizer = new Localizer<typeof allMessages>("attitudeModifiers");
-localizer.setAllMessages(allMessages, englishLanguage);
+localizer.setAll(allMessages, englishLanguage);
 
-export const localize = <typeof localizer.localize> localizer.localize.bind(localizer);
+export const localize = localizer.localize.bind(localizer);

@@ -74,6 +74,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         {
           player: player,
           name: player.name.baseName,
+          // TODO 2019.09.05 | missing localization
           status: "dead",
           opinion: null,
           flag: player.flag,
@@ -91,12 +92,12 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         notSortable: true,
       },
       {
-        label: localize("displayName")(),
+        label: localize("displayName").toString(),
         key: "name",
         defaultOrder: "asc",
       },
       {
-        label: localize("diplomaticStatus")(),
+        label: localize("diplomaticStatus").toString(),
         key: "status",
         defaultOrder: "desc",
         // most peaceful == highest
@@ -112,7 +113,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         propToSortBy: "statusSortingNumber",
       },
       {
-        label: localize("opinion")(),
+        label: localize("opinion").toString(),
         key: "opinion",
         defaultOrder: "desc",
       },

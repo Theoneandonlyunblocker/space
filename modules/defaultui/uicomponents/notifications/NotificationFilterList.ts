@@ -125,15 +125,15 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
           {
             className: "notification-filter-list-item-label",
           },
-            localize("show")(),
+            localize("show").toString(),
           ),
           ReactDOMElements.div(
           {
             className: "notification-filter-list-item-filters",
           },
-            localize("alwaysShow_short")(),
-            localize("showIfInvolved_short")(),
-            localize("neverShow_short")(),
+            localize("alwaysShow_short").toString(),
+            localize("showIfInvolved_short").toString(),
+            localize("neverShow_short").toString(),
           ),
         ),
         ReactDOMElements.div(

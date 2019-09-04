@@ -54,7 +54,7 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
       ReactDOMElements.input(
       {
         className: "fleet-unit-info-name",
-        value: this.props.isNotDetected ? localize("unidentifiedShip")() : this.state.inputElementValue,
+        value: this.props.isNotDetected ? localize("unidentifiedShip").toString() : this.state.inputElementValue,
         onChange: this.props.isNotDetected ? null :  this.onChange,
         readOnly: this.props.isNotDetected,
       })

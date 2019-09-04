@@ -22,11 +22,11 @@ export const massRepair: AbilityTemplate =
   type: "massRepair",
   get displayName()
   {
-    return localize("massRepair_displayName")();
+    return localize("massRepair_displayName").toString();
   },
   get description()
   {
-    return localize("massRepair_description")();
+    return localize("massRepair_description").toString();
   },
   moveDelay: 100,
   actionsUse: 1,

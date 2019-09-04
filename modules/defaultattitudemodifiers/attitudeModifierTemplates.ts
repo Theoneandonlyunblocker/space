@@ -11,7 +11,7 @@ export const neighborStars: AttitudeModifierTemplate =
   type: "neighborStars",
   get displayName()
   {
-    return localize("neighborStars_displayName")();
+    return localize("neighborStars_displayName").toString();
   },
   duration: Infinity,
 
@@ -31,7 +31,7 @@ export const atWar: AttitudeModifierTemplate =
   type: "atWar",
   get displayName()
   {
-    return localize("atWar_displayName")();
+    return localize("atWar_displayName").toString();
   },
   duration: Infinity,
 
@@ -49,7 +49,7 @@ export const baseOpinion: AttitudeModifierTemplate =
   type: "baseOpinion",
   get displayName()
   {
-    return localize("baseOpinion_displayName")();
+    return localize("baseOpinion_displayName").toString();
   },
   duration: Infinity,
 };
@@ -59,7 +59,7 @@ export const declaredWar: AttitudeModifierTemplate =
   type: "declaredWar",
   get displayName()
   {
-    return localize("declaredWar_displayName")();
+    return localize("declaredWar_displayName").toString();
   },
   duration: 15,
 

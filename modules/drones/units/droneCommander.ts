@@ -18,11 +18,11 @@ export const droneCommander: UnitTemplate =
   type: "droneCommander",
   get displayName()
   {
-    return localize("droneCommander_displayName")();
+    return localize("droneCommander_displayName").toString();
   },
   get description()
   {
-    return localize("droneCommander_description")();
+    return localize("droneCommander_description").toString();
   },
   archetype: unitArchetypes.utility,
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),

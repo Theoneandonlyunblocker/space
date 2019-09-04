@@ -1,8 +1,4 @@
-import {Localizer} from "../../../src/localization/Localizer";
-import
-{
-  shallowExtend,
-} from "../../../src/generic/utility";
+import {MessageFormatLocalizer} from "../../../src/localization/MessageFormatLocalizer";
 
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
 import {formatters as englishFormatters} from "../../englishlanguage/formatters";
@@ -26,51 +22,70 @@ import {technology as en_technology} from "./en/technology";
 import {unit as en_unit} from "./en/unit";
 import {unitUpgrade as en_unitUpgrade} from "./en/unitUpgrade";
 
+import {Battle as Battle_args} from "./messageArgs/battle";
+import {Diplomacy as Diplomacy_args} from "./messageArgs/diplomacy";
+import {Errors as Errors_args} from "./messageArgs/errors";
+import {Fleet as Fleet_args} from "./messageArgs/fleet";
+import {GalaxyMapUI as GalaxyMapUI_args} from "./messageArgs/galaxyMapUI";
+import {GameOver as GameOver_args} from "./messageArgs/gameOver";
+import {General as General_args} from "./messageArgs/general";
+import {Items as Items_args} from "./messageArgs/items";
+import {Notifications as Notifications_args} from "./messageArgs/notifications";
+import {Options as Options_args} from "./messageArgs/options";
+import {Player as Player_args} from "./messageArgs/player";
+import {Production as Production_args} from "./messageArgs/production";
+import {Saves as Saves_args} from "./messageArgs/saves";
+import {SetupGame as SetupGame_args} from "./messageArgs/setupGame";
+import {Trade as Trade_args} from "./messageArgs/trade";
+import {Technology as Technology_args} from "./messageArgs/technology";
+import {Unit as Unit_args} from "./messageArgs/unit";
+import {UnitUpgrade as UnitUpgrade_args} from "./messageArgs/unitUpgrade";
 
-export type AllMessages =
-  typeof en_battle &
-  typeof en_diplomacy &
-  typeof en_errors &
-  typeof en_fleet &
-  typeof en_galaxyMapUI &
-  typeof en_gameOver &
-  typeof en_general &
-  typeof en_items &
-  typeof en_notifications &
-  typeof en_options &
-  typeof en_player &
-  typeof en_production &
-  typeof en_saves &
-  typeof en_setupGame &
-  typeof en_trade &
-  typeof en_technology &
-  typeof en_unit &
-  typeof en_unitUpgrade;
 
-export const localizer = new Localizer<AllMessages>("ui");
-localizer.addFormatters(englishLanguage, englishFormatters);
+export type UiMessageArgs =
+  Battle_args &
+  Diplomacy_args &
+  Errors_args &
+  Fleet_args &
+  GalaxyMapUI_args &
+  GameOver_args &
+  General_args &
+  Items_args &
+  Notifications_args &
+  Options_args &
+  Player_args &
+  Production_args &
+  Saves_args &
+  SetupGame_args &
+  Trade_args &
+  Technology_args &
+  Unit_args &
+  UnitUpgrade_args ;
 
-const mergedMessages = shallowExtend<AllMessages>(
-  en_battle,
-  en_diplomacy,
-  en_errors,
-  en_fleet,
-  en_galaxyMapUI,
-  en_gameOver,
-  en_general,
-  en_items,
-  en_notifications,
-  en_options,
-  en_player,
-  en_production,
-  en_saves,
-  en_setupGame,
-  en_trade,
-  en_technology,
-  en_unit,
-  en_unitUpgrade,
-);
+const mergedMessages =
+{
+  ...en_battle,
+  ...en_diplomacy,
+  ...en_errors,
+  ...en_fleet,
+  ...en_galaxyMapUI,
+  ...en_gameOver,
+  ...en_general,
+  ...en_items,
+  ...en_notifications,
+  ...en_options,
+  ...en_player,
+  ...en_production,
+  ...en_saves,
+  ...en_setupGame,
+  ...en_trade,
+  ...en_technology,
+  ...en_unit,
+  ...en_unitUpgrade,
+};
 
-localizer.setAllMessages(mergedMessages, englishLanguage);
+export const localizer = new MessageFormatLocalizer<UiMessageArgs>("ui");
+localizer.addFormatters(englishFormatters, englishLanguage);
+localizer.setAll(mergedMessages, englishLanguage);
 
-export const localize = <typeof localizer.localize> localizer.localize.bind(localizer);
+export const localize = localizer.localize.bind(localizer);

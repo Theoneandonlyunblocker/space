@@ -1,33 +1,32 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize, AllMessages as LocalizationKeys} from "../../localization/localize";
+import {localize} from "../../localization/localize";
 import {options} from "../../../../src/app/Options";
 import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
 import { errorReportingModes, ErrorReportingMode } from "../../../../src/app/ErrorReportingMode";
 
 
-const localizationKeyForErrorReportingMode:
+function localizeErrorReportingModeName(mode: ErrorReportingMode): string
 {
-  [K in ErrorReportingMode]: keyof LocalizationKeys;
-} =
+  switch (mode)
+  {
+    case "ignore":    return localize("errorReportingMode_ignore").toString();
+    case "panic":     return localize("errorReportingMode_panic").toString();
+    case "alert":     return localize("errorReportingMode_alert").toString();
+    case "alertOnce": return localize("errorReportingMode_alertOnce").toString();
+  }
+}
+function localizeErrorReportingModeDescription(mode: ErrorReportingMode): string
 {
-  ignore: "errorReportingMode_ignore",
-  panic: "errorReportingMode_panic",
-  alert: "errorReportingMode_alert",
-  alertOnce : "errorReportingMode_alertOnce",
-};
-
-const localizationKeyForErrorReportingModeDescription:
-{
-  [K in ErrorReportingMode]: keyof LocalizationKeys;
-} =
-{
-  ignore: "errorReportingModeDescription_ignore",
-  panic: "errorReportingModeDescription_panic",
-  alert: "errorReportingModeDescription_alert",
-  alertOnce : "errorReportingModeDescription_alert",
-};
+  switch (mode)
+  {
+    case "ignore":    return localize("errorReportingModeDescription_ignore").toString();
+    case "panic":     return localize("errorReportingModeDescription_panic").toString();
+    case "alert":     return localize("errorReportingModeDescription_alert").toString();
+    case "alertOnce": return localize("errorReportingModeDescription_alert").toString();
+  }
+}
 
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
@@ -58,7 +57,7 @@ export class SystemOptionsComponent extends React.Component<PropTypes, StateType
       },
         OptionsGroup(
         {
-          headerTitle: localize("system")(),
+          headerTitle: localize("system").toString(),
           options: this.getOptions(),
           resetFN: () =>
           {
@@ -85,7 +84,7 @@ export class SystemOptionsComponent extends React.Component<PropTypes, StateType
             className: "error-reporting-mode-select",
             id: "system-options-error-reporting-mode-select",
             value: options.system.errorReporting,
-            title: localize(localizationKeyForErrorReportingModeDescription[options.system.errorReporting])(),
+            title: localizeErrorReportingModeDescription(options.system.errorReporting),
             onChange: (e) =>
             {
               const target = e.currentTarget;
@@ -101,9 +100,9 @@ export class SystemOptionsComponent extends React.Component<PropTypes, StateType
               className: "error-reporting-mode-select-item",
               value: mode,
               key: mode,
-              title: localize(localizationKeyForErrorReportingModeDescription[mode])(),
+              title: localizeErrorReportingModeDescription(mode),
             },
-              localize(localizationKeyForErrorReportingMode[mode])(),
+              localizeErrorReportingModeName(mode),
             )),
           ),
           ReactDOMElements.label(
@@ -111,7 +110,7 @@ export class SystemOptionsComponent extends React.Component<PropTypes, StateType
             className: "error-reporting-mode-select-label",
             htmlFor: "system-options-error-reporting-mode-select",
           },
-            localize("errorReportingMode")(),
+            localize("errorReportingMode").toString(),
           ),
         ),
       },

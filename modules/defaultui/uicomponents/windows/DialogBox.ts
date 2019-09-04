@@ -69,13 +69,13 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
               className: "dialog-box-button ok-button",
               onClick: this.props.handleOk,
               ref: this.okButtonElement,
-            }, this.props.okText || localize("ok")()),
+            }, this.props.okText || localize("ok").toString()),
             this.props.extraButtons,
             ReactDOMElements.button(
             {
               className: "dialog-box-button cancel-button",
               onClick: this.props.handleCancel,
-            }, this.props.cancelText || localize("cancel")()),
+            }, this.props.cancelText || localize("cancel").toString()),
           ),
         ),
       )

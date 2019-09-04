@@ -77,21 +77,21 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
         className: "fleet-controls",
       },
         ReactDOMElements.button(splitButtonProps,
-          localize("split_fleet")(),
+          localize("split_fleet").toString(),
         ),
         ReactDOMElements.button(
         {
           className: "fleet-controls-deselect",
           onClick: this.deselectFleet,
         },
-          localize("deselect_fleet")(),
+          localize("deselect_fleet").toString(),
         ),
         !this.props.hasMultipleSelected ? null : ReactDOMElements.button(
         {
           className: "fleet-controls-select",
           onClick: this.selectFleet,
         },
-          localize("select_fleet")(),
+          localize("select_fleet").toString(),
         ),
       )
     );

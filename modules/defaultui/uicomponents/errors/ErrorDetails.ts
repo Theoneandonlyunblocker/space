@@ -35,19 +35,19 @@ export class ErrorDetailsComponent extends React.Component<PropTypes, StateType>
         {
           className: "error-header"
         },
-          localize("genericError")(),
+          localize("genericError").toString(),
         ),
         ReactDOMElements.h2(
         {
           className: "error-description",
         },
-          localize("genericErrorDescription")(),
+          localize("genericErrorDescription").toString(),
         ),
         ReactDOMElements.h3(
         {
           className: "error-cause-description",
         },
-          localize("genericErrorCauseDescription")(),
+          localize("genericErrorCauseDescription").toString(),
         ),
         !this.props.customMessage ? null :
           ReactDOMElements.h3(
@@ -60,7 +60,7 @@ export class ErrorDetailsComponent extends React.Component<PropTypes, StateType>
         {
           className: "error-instructions",
         },
-          `${localize("checkConsolePrompt")()} (${localize("openConsoleInstructions")()})`,
+          `${localize("checkConsolePrompt")} (${localize("openConsoleInstructions")})`,
         )
       )
     );

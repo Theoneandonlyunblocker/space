@@ -8,11 +8,11 @@ export const stealth: TechnologyTemplate =
   key: "stealth",
   get displayName()
   {
-    return localize("stealth_displayName")();
+    return localize("stealth_displayName").toString();
   },
   get description()
   {
-    return localize("stealth_description")();
+    return localize("stealth_description").toString();
   },
   maxLevel: 9,
 };
@@ -21,11 +21,11 @@ export const lasers: TechnologyTemplate =
   key: "lasers",
   get displayName()
   {
-    return localize("lasers_displayName")();
+    return localize("lasers_displayName").toString();
   },
   get description()
   {
-    return localize("lasers_description")();
+    return localize("lasers_description").toString();
   },
   maxLevel: 9,
 };
@@ -34,11 +34,11 @@ export const missiles: TechnologyTemplate =
   key: "missiles",
   get displayName()
   {
-    return localize("missiles_displayName")();
+    return localize("missiles_displayName").toString();
   },
   get description()
   {
-    return localize("missiles_description")();
+    return localize("missiles_description").toString();
   },
   maxLevel: 9,
 };
@@ -47,11 +47,11 @@ export const test1: TechnologyTemplate =
   key: "test1",
   get displayName()
   {
-    return localize("test1_displayName")();
+    return localize("test1_displayName").toString();
   },
   get description()
   {
-    return localize("test1_description")();
+    return localize("test1_description").toString();
   },
   maxLevel: 1,
 };
@@ -60,11 +60,11 @@ export const test2: TechnologyTemplate =
   key: "test2",
   get displayName()
   {
-    return localize("test2_displayName")();
+    return localize("test2_displayName").toString();
   },
   get description()
   {
-    return localize("test2_description")();
+    return localize("test2_description").toString();
   },
   maxLevel: 2,
 };

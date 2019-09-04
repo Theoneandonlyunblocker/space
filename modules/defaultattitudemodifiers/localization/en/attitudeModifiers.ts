@@ -1,3 +1,5 @@
+
+
 export const attitudeModifiers =
 {
   neighborStars_displayName: "Border friction",

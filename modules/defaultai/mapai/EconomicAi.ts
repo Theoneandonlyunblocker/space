@@ -30,15 +30,15 @@ export class EconomicAi
 
       if (incomingOffer.tradeWasAccepted)
       {
-        message = localize("afterAcceptedOffer")();
+        message = localize("afterAcceptedOffer");
       }
       else if (incomingOffer.isInitialOffer)
       {
-        message = localize("initialOffer")();
+        message = localize("initialOffer");
       }
       else
       {
-        message = localize("requestOffer")();
+        message = localize("requestOffer");
       }
 
       return(
@@ -76,8 +76,8 @@ export class EconomicAi
       willingnessToTradeItems: this.getWillingnessToTradeItems(tradeBeingDemanded),
 
       message: willingToAccept ?
-      localize("willingToAcceptOffer")() :
-      localize("notWillingToAcceptOffer")(),
+      localize("willingToAcceptOffer") :
+      localize("notWillingToAcceptOffer"),
       willingToAccept: willingToAccept,
       willingToKeepNegotiating: true,
     });
@@ -95,7 +95,7 @@ export class EconomicAi
 
       willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
 
-      message: localize("notWillingToAcceptDemand")(),
+      message: localize("notWillingToAcceptDemand"),
       willingToAccept: false,
       willingToKeepNegotiating: true,
     });
@@ -112,7 +112,7 @@ export class EconomicAi
 
       willingnessToTradeItems: this.getWillingnessToTradeItems(ownTrade),
 
-      message: localize("willingToAcceptGift")(),
+      message: localize("willingToAcceptGift"),
       willingToAccept: true,
       willingToKeepNegotiating: true,
     });

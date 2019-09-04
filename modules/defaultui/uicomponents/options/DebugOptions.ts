@@ -39,7 +39,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
       },
         OptionsGroup(
         {
-          headerTitle: localize("debug")(),
+          headerTitle: localize("debug").toString(),
           options: this.getDebugOptions(),
           resetFN: () =>
           {
@@ -50,7 +50,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         !options.debug.enabled ? null : OptionsGroup(
         {
           key: "loggingOptions",
-          headerTitle: localize("logging")(),
+          headerTitle: localize("logging").toString(),
           options: this.getLoggingOptions(),
           resetFN: () =>
           {
@@ -82,7 +82,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         content: OptionsCheckbox(
         {
           isChecked: options.debug.enabled,
-          label: localize("debugMode")(),
+          label: localize("debugMode").toString(),
           onChangeFN: () =>
           {
             options.debug.enabled = !options.debug.enabled;
@@ -101,7 +101,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         key: "aiVsAiBattleSimulationDepth",
         content: OptionsNumericField(
         {
-          label: localize("aiVsAiBattleSimulationDepth")(),
+          label: localize("aiVsAiBattleSimulationDepth").toString(),
           id: "ai-battle-simulation-depth-input",
           value: options.debug.aiVsAiBattleSimulationDepth,
           min: 1,
@@ -118,7 +118,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         key: "aiVsPlayerBattleSimulationDepth",
         content: OptionsNumericField(
         {
-          label: localize("aiVsPlayerBattleSimulationDepth")(),
+          label: localize("aiVsPlayerBattleSimulationDepth").toString(),
           id: "player-battle-simulation-depth-input",
           value: options.debug.aiVsPlayerBattleSimulationDepth,
           min: 1,
@@ -155,7 +155,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         content: OptionsCheckbox(
         {
           isChecked: options.debug.logging[category],
-          label: localize(key)(),
+          label: localize(key).toString(),
           onChangeFN: () =>
           {
             options.debug.logging[category] = !options.debug.logging[category];

@@ -16,7 +16,7 @@ export const starIncome: MapRendererLayerTemplate =
   key: "starIncome",
   get displayName()
   {
-    return localize("starIncome_displayName")();
+    return localize("starIncome_displayName").toString();
   },
   initialAlpha: 0.6,
   interactive: false,

@@ -6,7 +6,7 @@ export abstract class BaseLocalizer<
   InputItems extends {[K in keyof InputItems]: any},
   OutputItems extends {[K in keyof InputItems]: any} = InputItems,
   StoredItems extends {[K in keyof InputItems]: any} = InputItems,
-  FallbackOutput = void,
+  FallbackOutput = never,
 >
 {
   public readonly key: string;

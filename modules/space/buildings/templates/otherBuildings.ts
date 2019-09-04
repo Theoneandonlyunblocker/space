@@ -10,11 +10,11 @@ export const commercialPort: BuildingTemplate =
   kind: "building",
   get displayName()
   {
-    return localize("commercialPort_displayName")();
+    return localize("commercialPort_displayName").toString();
   },
   get description()
   {
-    return localize("commercialPort_description")();
+    return localize("commercialPort_description").toString();
   },
   families: [],
 
@@ -35,11 +35,11 @@ export const deepSpaceRadar: BuildingTemplate =
   kind: "building",
   get displayName()
   {
-    return localize("deepSpaceRadar_displayName")();
+    return localize("deepSpaceRadar_displayName").toString();
   },
   get description()
   {
-    return localize("deepSpaceRadar_description")();
+    return localize("deepSpaceRadar_description").toString();
   },
   families: [],
 
@@ -69,11 +69,11 @@ export const resourceMine: BuildingTemplate =
   kind: "building",
   get displayName()
   {
-    return localize("resourceMine_displayName")();
+    return localize("resourceMine_displayName").toString();
   },
   get description()
   {
-    return localize("resourceMine_description")();
+    return localize("resourceMine_description").toString();
   },
   families: [],
 
@@ -102,11 +102,11 @@ export const reserachLab: BuildingTemplate =
   kind: "building",
   get displayName()
   {
-    return localize("reserachLab_displayName")();
+    return localize("reserachLab_displayName").toString();
   },
   get description()
   {
-    return localize("reserachLab_description")();
+    return localize("reserachLab_description").toString();
   },
   families: [],
 
@@ -128,11 +128,11 @@ export const thePyramids: BuildingTemplate =
   kind: "building",
   get displayName()
   {
-    return localize("thePyramids_displayName")();
+    return localize("thePyramids_displayName").toString();
   },
   get description()
   {
-    return localize("thePyramids_description")();
+    return localize("thePyramids_description").toString();
   },
   families: [],
 
@@ -152,11 +152,11 @@ export const nationalEpic: BuildingTemplate =
   kind: "building",
   get displayName()
   {
-    return localize("nationalEpic_displayName")();
+    return localize("nationalEpic_displayName").toString();
   },
   get description()
   {
-    return localize("nationalEpic_description")();
+    return localize("nationalEpic_description").toString();
   },
   families: [],
 

@@ -5,13 +5,21 @@ import { NameSaveData } from "src/savedata/NameSaveData";
 export type EnglishNameTags =
 {
   definiteArticle: string;
+  pronouns:
+  {
+    thirdPerson: string;
+  };
   isPlural: boolean;
 };
 export type EnglishNameTagsSaveData = EnglishNameTags;
 
-const defaultTags: EnglishNameTags =
+export const defaultEnglishNameTags: EnglishNameTags =
 {
   definiteArticle: "",
+  pronouns:
+  {
+    thirdPerson: "they",
+  },
   isPlural: false,
 };
 
@@ -21,7 +29,7 @@ export class EnglishName extends Name<EnglishNameTags, EnglishNameTagsSaveData>
 
   constructor(name: string, tags?: Partial<EnglishNameTags>)
   {
-    super(name, {...defaultTags, ...tags});
+    super(name, {...defaultEnglishNameTags, ...tags});
   }
 
   public copyFromData(data: NameSaveData<EnglishNameTagsSaveData>)

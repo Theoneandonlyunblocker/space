@@ -9,11 +9,11 @@ export const spiralGalaxy: MapGenTemplate =
   key: "spiralGalaxy",
   get displayName()
   {
-  return localize("spiralGalaxy_displayName")();
+  return localize("spiralGalaxy_displayName").toString().toString();
   },
   get description()
   {
-  return localize("spiralGalaxy_description")();
+  return localize("spiralGalaxy_description").toString().toString();
   },
 
   minPlayers: 2,
@@ -29,7 +29,7 @@ export const spiralGalaxy: MapGenTemplate =
       {
         get displayName()
         {
-          return localize("height")();
+          return localize("height").toString();
         },
         range:
         {
@@ -42,7 +42,7 @@ export const spiralGalaxy: MapGenTemplate =
       {
         get displayName()
         {
-          return localize("width")();
+          return localize("width").toString();
         },
         range:
         {
@@ -55,7 +55,7 @@ export const spiralGalaxy: MapGenTemplate =
       {
         get displayName()
         {
-          return localize("starCount")();
+          return localize("starCount").toString();
         },
         range:
         {
@@ -71,7 +71,7 @@ export const spiralGalaxy: MapGenTemplate =
       {
         get displayName()
         {
-          return localize("arms")();
+          return localize("arms").toString();
         },
         range:
         {
@@ -85,7 +85,7 @@ export const spiralGalaxy: MapGenTemplate =
       {
         get displayName()
         {
-          return localize("starSizeRegularity")();
+          return localize("starSizeRegularity").toString();
         },
         range:
         {
@@ -99,7 +99,7 @@ export const spiralGalaxy: MapGenTemplate =
       {
         get displayName()
         {
-          return localize("centerDensity")();
+          return localize("centerDensity").toString();
         },
         range:
         {

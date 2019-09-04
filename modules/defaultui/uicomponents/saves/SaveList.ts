@@ -120,12 +120,12 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
     const columns: ListColumn<SaveListItemProps>[] =
     [
       {
-        label: localize("saveName")(),
+        label: localize("saveName").toString(),
         key: "name",
         defaultOrder: "asc",
       },
       {
-        label: localize("date")(),
+        label: localize("date").toString(),
         key: "date",
         defaultOrder: "desc",
         propToSortBy: "accurateDate",
@@ -136,9 +136,9 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
     {
       columns.push(
       {
-        label: localize("del")(),
+        label: localize("del").toString(),
         key: "delete",
-        title: localize("markForDeletion")(),
+        title: localize("markForDeletion").toString(),
         defaultOrder: "asc",
         notSortable: true,
       });

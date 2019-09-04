@@ -61,7 +61,7 @@ export const terrain: MapRendererLayerTemplate =
   key: "terrain",
   get displayName()
   {
-    return localize("terrain_displayName")();
+    return localize("terrain_displayName").toString();
   },
   interactive: false,
   isUsedForCameraBounds: false,

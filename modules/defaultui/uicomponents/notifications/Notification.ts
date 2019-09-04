@@ -61,7 +61,7 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
         className: "notification",
         onClick: this.handleClick,
         onContextMenu: this.handleRightClick,
-        title: localize("notificationToolTip")(),
+        title: localize("notificationToolTip").toString(),
       },
         ReactDOMElements.img(
         {

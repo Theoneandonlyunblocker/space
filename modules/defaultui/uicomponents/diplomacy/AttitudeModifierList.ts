@@ -68,7 +68,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
     const columns: ListColumn<AttitudeModifierInfoProps>[] =
     [
       {
-        label: localize("displayName")(),
+        label: localize("displayName").toString(),
         key: "name",
         defaultOrder: "asc",
         sortingFunction: (a, b) =>
@@ -87,12 +87,12 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
         },
       },
       {
-        label: localize("attitudeModifierEffect")(),
+        label: localize("attitudeModifierEffect").toString(),
         key: "strength",
         defaultOrder: "desc",
       },
       {
-        label: localize("endsOn")(),
+        label: localize("endsOn").toString(),
         key: "endTurn",
         defaultOrder: "asc",
       },

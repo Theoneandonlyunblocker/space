@@ -80,7 +80,7 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
             {
               className: "top-bar-turn-number",
             },
-              `${localize("turnCounter")()} ${this.props.game.turnNumber}`,
+              `${localize("turnCounter")} ${this.props.game.turnNumber}`,
             ),
           ),
           ReactDOMElements.div(

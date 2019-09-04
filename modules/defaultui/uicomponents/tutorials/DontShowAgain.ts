@@ -85,7 +85,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
             checked: this.state.isChecked,
             onChange: this.toggleState,
           }),
-          localize("dontShowAgain")(),
+          localize("dontShowAgain").toString(),
         ),
       )
     );

@@ -70,7 +70,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType> i
         },
           DefaultWindow(
           {
-            title: localize("editFlag")(),
+            title: localize("editFlag").toString(),
             handleClose: this.setAsInactive,
             isResizable: false,
             attributes: {className: "force-auto-dimensions"},

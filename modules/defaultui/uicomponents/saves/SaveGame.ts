@@ -67,11 +67,11 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
         !this.state.hasConfirmOverwritePopup ? null :
           DialogBox(
           {
-            title: localize("confirmOverwrite")(),
+            title: localize("confirmOverwrite").toString(),
             handleOk: this.saveGame,
             handleCancel: this.closeConfirmOverwritePopup,
           },
-            localize("promptOverwrite")(
+            localize("promptOverwrite").format(
             {
               toOverWrite: this.state.saveName,
             }),
@@ -93,7 +93,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             className: "save-game-name-label",
             htmlFor: saveNameInputHtmlName,
           },
-            `${localize("saveName")()}:`,
+            `${localize("saveName")}:`,
           ),
           ReactDOMElements.input(
           {
@@ -116,12 +116,12 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
             onClick: this.handleSave,
             disabled: !this.state.saveName,
             ref: this.okButtonElement,
-          }, localize("save_action")()),
+          }, localize("save_action").toString()),
           ReactDOMElements.button(
           {
             className: "save-game-button",
             onClick: this.handleClose,
-          }, localize("cancel")()),
+          }, localize("cancel").toString()),
         ),
       )
     );

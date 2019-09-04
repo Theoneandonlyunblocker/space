@@ -4,8 +4,12 @@ import {Message, ErrorMessage} from "./Message";
 import { BaseLocalizer } from "./Localizer";
 import { Language } from "./Language";
 import { options } from "src/app/Options";
+import { universalFormatters } from "./universalFormatters";
 
 
+/**
+ * language code must be in https://github.com/eemeli/make-plural/blob/master/packages/plurals/plurals.js to work
+ */
 export class MessageFormatLocalizer<
   ItemArgs extends {[K in keyof ItemArgs]: any[]}
 >
@@ -20,7 +24,7 @@ export class MessageFormatLocalizer<
   {
     [languageCode: string]: MessageFormat;
   } = {};
-  private readonly errorMessageFormatter: MessageFormat = new MessageFormat("__error");
+  private readonly errorMessageFormatter: MessageFormat = new MessageFormat("en");
 
   constructor(key: string)
   {
@@ -53,7 +57,7 @@ export class MessageFormatLocalizer<
       return this.getMissingLocalizationMessage(key, activeLanguage);
     }
   }
-  public addFormatters(language: Language, formatters: {[key: string]: MessageFormat.FormatterFunction}): void
+  public addFormatters(formatters: {[key: string]: MessageFormat.FormatterFunction}, language: Language): void
   {
     if (!this.languageHasBeenInit(language))
     {
@@ -68,7 +72,8 @@ export class MessageFormatLocalizer<
   }
   private initLanguage(language: Language): void
   {
-    this.messageFormattersByLanguageCode[language.code] = new MessageFormat(language.code);
+    const mf = this.messageFormattersByLanguageCode[language.code] = new MessageFormat(language.code);
+    mf.addFormatters(universalFormatters);
   }
   private compileRawMessages(
     rawMessages: Partial<Record<keyof ItemArgs, string>>,

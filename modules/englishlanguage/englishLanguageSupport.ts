@@ -5,7 +5,7 @@ import * as semver from "src/app/versions";
 import {englishLanguage} from "./englishLanguage";
 
 import * as moduleInfo from "./moduleInfo.json";
-import { EnglishNameTagsSaveData } from "./EnglishName";
+import { EnglishNameTagsSaveData, defaultEnglishNameTags } from "./EnglishName";
 import { NameSaveData } from "src/savedata/NameSaveData";
 
 
@@ -57,9 +57,8 @@ export const englishLanguageSupport: GameModule =
           baseName: legacyData.fullName,
           languageSpecificTags:
           {
-            isPlural: legacyData.isPlural,
-            definiteArticle: "",
-          }
+            ...defaultEnglishNameTags,
+          },
         });
       }
     }

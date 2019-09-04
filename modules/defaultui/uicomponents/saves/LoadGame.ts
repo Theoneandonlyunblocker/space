@@ -62,7 +62,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
         !this.state.hasConfirmDeleteSavePopup ? null :
           DialogBox(
           {
-            title: localize("confirmDeletion")(),
+            title: localize("confirmDeletion").toString(),
             handleOk: () =>
             {
               this.deleteSelectedKeys();
@@ -104,7 +104,7 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
             className: "save-game-name-label",
             htmlFor: saveNameInputHtmlName,
           },
-            `${localize("saveName")()}:`,
+            `${localize("saveName")}:`,
           ),
           ReactDOMElements.input(
           {
@@ -125,19 +125,19 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
             onClick: this.handleLoad,
             disabled: !this.state.selectedSaveKey,
             ref: this.loadButtonElement,
-          }, localize("load_action")()),
+          }, localize("load_action").toString()),
           ReactDOMElements.button(
           {
             className: "save-game-button",
             onClick: this.handleClose.bind(this, true, null),
-          }, localize("cancel")()),
+          }, localize("cancel").toString()),
           ReactDOMElements.button(
           {
             className: "save-game-button",
             onClick: this.openConfirmDeleteSavesPopup,
             disabled: this.state.saveKeysToDelete.length < 1,
           },
-            localize("delete")(),
+            localize("delete").toString(),
           ),
         ),
       )

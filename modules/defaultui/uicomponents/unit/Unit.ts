@@ -222,7 +222,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     {
       bodyElements.push(
         ReactDOMElements.div({key: "overlay", className: "unit-annihilated-overlay"},
-          localize("unitAnnihilated")(),
+          localize("unitAnnihilated").toString(),
         ),
       );
     }

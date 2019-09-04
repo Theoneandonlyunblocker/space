@@ -24,11 +24,11 @@ export const commandShip: UnitTemplate =
   type: "commandShip",
   get displayName()
   {
-    return localize("commandShip_displayName")();
+    return localize("commandShip_displayName").toString();
   },
   get description()
   {
-    return localize("commandShip_description")();
+    return localize("commandShip_description").toString();
   },
   archetype: unitArchetypes.utility,
   unitDrawingFN: makeDefaultUnitDrawingFunction(

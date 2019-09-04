@@ -89,17 +89,17 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
     const columns: ListColumn<UnitListItemProps>[] =
     [
       {
-        label: localize("unitName")(),
+        label: localize("unitName").toString(),
         key: "unitName",
         defaultOrder: "asc",
       },
       {
-        label: localize("unitType")(),
+        label: localize("unitType").toString(),
         key: "unitTypeName",
         defaultOrder: "asc",
       },
       {
-        label: localize("unitStrength")(),
+        label: localize("unitStrength").toString(),
         key: "strength",
         defaultOrder: "desc",
         sortingFunction: (a, b) =>
@@ -108,32 +108,32 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
         },
       },
       {
-        label: localize("act")(),
-        title: `${localize("maxActionPoints")()}\n\n${localize("maxActionPoints_description")()}`,
+        label: localize("act").toString(),
+        title: `${localize("maxActionPoints")}\n\n${localize("maxActionPoints_description")}`,
         key: "maxActionPoints",
         defaultOrder: "desc",
       },
       {
-        label: localize("atk")(),
-        title: `${localize("attack")()}\n\n${localize("attack_description")()}`,
+        label: localize("atk").toString(),
+        title: `${localize("attack")}\n\n${localize("attack_description")}`,
         key: "attack",
         defaultOrder: "desc",
       },
       {
-        label: localize("def")(),
-        title: `${localize("defence")()}\n\n${localize("defence_description")()}`,
+        label: localize("def").toString(),
+        title: `${localize("defence")}\n\n${localize("defence_description")}`,
         key: "defence",
         defaultOrder: "desc",
       },
       {
-        label: localize("int")(),
-        title: `${localize("intelligence")()}\n\n${localize("intelligence_description")()}`,
+        label: localize("int").toString(),
+        title: `${localize("intelligence")}\n\n${localize("intelligence_description")}`,
         key: "intelligence",
         defaultOrder: "desc",
       },
       {
-        label: localize("spd")(),
-        title: `${localize("speed")()}\n\n${localize("speed_description")()}`,
+        label: localize("spd").toString(),
+        title: `${localize("speed")}\n\n${localize("speed_description")}`,
         key: "speed",
         defaultOrder: "desc",
       },

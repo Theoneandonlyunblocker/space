@@ -20,11 +20,11 @@ export const fighterSquadron: UnitTemplate =
   type: "fighterSquadron",
   get displayName()
   {
-    return localize("fighterSquadron_displayName")();
+    return localize("fighterSquadron_displayName").toString();
   },
   get description()
   {
-    return localize("fighterSquadron_description")();
+    return localize("fighterSquadron_description").toString();
   },
   archetype: unitArchetypes.combat,
   unitDrawingFN: makeDefaultUnitDrawingFunction(

@@ -217,7 +217,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             tabIndex: -1,
             onClick: this.toggleMapModeSettingsExpanded,
           },
-            localize("mapMode")(),
+            localize("mapMode").toString(),
           ),
           NotificationLog(
           {
@@ -226,7 +226,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
             notifications: this.props.notifications,
             notificationLog: this.props.notificationLog,
           }),
-          ReactDOMElements.button(endTurnButtonProps, localize("endTurn")()),
+          ReactDOMElements.button(endTurnButtonProps, localize("endTurn").toString()),
         ),
       )
     );

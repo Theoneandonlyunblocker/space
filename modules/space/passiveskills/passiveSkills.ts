@@ -17,11 +17,11 @@ export const autoHeal: PassiveSkillTemplate =
   type: "autoHeal",
   get displayName()
   {
-    return localize("autoHeal_displayName")();
+    return localize("autoHeal_displayName").toString();
   },
   get description()
   {
-    return localize("autoHeal_description")();
+    return localize("autoHeal_description").toString();
   },
 
   atBattleStart:
@@ -42,11 +42,11 @@ export const overdrive: PassiveSkillTemplate =
   type: "overdrive",
   get displayName()
   {
-    return localize("overdrive_displayName")();
+    return localize("overdrive_displayName").toString();
   },
   get description()
   {
-    return localize("overdrive_description")();
+    return localize("overdrive_description").toString();
   },
 
   atBattleStart:
@@ -69,11 +69,11 @@ export const initialGuard: PassiveSkillTemplate =
   type: "initialGuard",
   get displayName()
   {
-    return localize("initialGuard_displayName")();
+    return localize("initialGuard_displayName").toString();
   },
   get description()
   {
-    return localize("initialGuard_description")();
+    return localize("initialGuard_description").toString();
   },
   isHidden: true,
 
@@ -113,11 +113,11 @@ export const medic: PassiveSkillTemplate =
   type: "medic",
   get displayName()
   {
-    return localize("medic_displayName")();
+    return localize("medic_displayName").toString();
   },
   get description()
   {
-    return localize("medic_description")();
+    return localize("medic_description").toString();
   },
 
   atTurnStart:
@@ -154,11 +154,11 @@ export const warpJammer: PassiveSkillTemplate =
   type: "warpJammer",
   get displayName()
   {
-    return localize("warpJammer_displayName")();
+    return localize("warpJammer_displayName").toString();
   },
   get description()
   {
-    return localize("warpJammer_description")();
+    return localize("warpJammer_description").toString();
   },
 
   inBattlePrep:

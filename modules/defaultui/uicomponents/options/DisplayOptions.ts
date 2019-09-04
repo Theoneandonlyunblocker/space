@@ -42,7 +42,7 @@ export class DisplayOptionsComponent extends React.Component<PropTypes, StateTyp
         OptionsGroup(
         {
           key: "language",
-          headerTitle: localize("language")(),
+          headerTitle: localize("language").toString(),
           options:
           [
             {
@@ -57,7 +57,7 @@ export class DisplayOptionsComponent extends React.Component<PropTypes, StateTyp
         OptionsGroup(
         {
           key: "ui",
-          headerTitle: localize("ui")(),
+          headerTitle: localize("ui").toString(),
           options: this.getUIOptions(),
           resetFN: () =>
           {
@@ -78,7 +78,7 @@ export class DisplayOptionsComponent extends React.Component<PropTypes, StateTyp
         content: OptionsCheckbox(
         {
           isChecked: options.display.noHamburger,
-          label: localize("alwaysExpandTopRightMenuOnLowResolution")(),
+          label: localize("alwaysExpandTopRightMenuOnLowResolution").toString(),
           onChangeFN: () =>
           {
             options.display.noHamburger = !options.display.noHamburger;
@@ -91,7 +91,7 @@ export class DisplayOptionsComponent extends React.Component<PropTypes, StateTyp
         key: "notificationLogFilter",
         content: NotificationFilterButton(
         {
-          text: localize("messageSettings")(),
+          text: localize("messageSettings").toString(),
           highlightedOptionKey: null,
         }),
       },
@@ -102,7 +102,7 @@ export class DisplayOptionsComponent extends React.Component<PropTypes, StateTyp
           className: "reset-tutorials-button",
           onClick: tutorialStatus.reset,
         },
-          localize("resetTutorials")(),
+          localize("resetTutorials").toString(),
         ),
       }
     ]);

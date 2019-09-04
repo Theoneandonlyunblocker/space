@@ -128,10 +128,10 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         className: "fleet-selection-controls",
       },
         ReactDOMElements.button(reorganizeProps,
-          localize("reorganize")(),
+          localize("reorganize").toString(),
         ),
         ReactDOMElements.button(mergeProps,
-          localize("merge")(),
+          localize("merge").toString(),
         ),
       );
     }
@@ -167,7 +167,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
         !isReorganizing ? null :
           DefaultWindow(
           {
-            title: localize("reorganizeFleets")(),
+            title: localize("reorganizeFleets").toString(),
             handleClose: this.props.closeReorganization,
             isResizable: false,
           },

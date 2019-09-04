@@ -47,7 +47,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
       {
         className: "attack-target-button possible-action",
         onClick: this.handleAttack,
-        title: localize("attackTargetTooltip")(
+        title: localize("attackTargetTooltip").format(
         {
           enemyName: target.enemy.name,
           targetType: target.type,
@@ -57,7 +57,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
         {
           className: "possible-action-title",
         },
-          localize("attackTarget_action")(),
+          localize("attackTarget_action").toString(),
         ),
         PlayerFlag(
         {

@@ -280,13 +280,13 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
             className: "battle-prep-controls-button",
             onClick: () => setLeftLowerElementKey("itemEquip"),
             disabled: leftLowerElementKey === "itemEquip",
-          }, localize("equip")()),
+          }, localize("equip").toString()),
           ReactDOMElements.button(
           {
             className: "battle-prep-controls-button",
             onClick: () => setLeftLowerElementKey("playerFormation"),
             disabled: leftLowerElementKey === "playerFormation",
-          }, localize("ownFormation")()),
+          }, localize("ownFormation").toString()),
           ReactDOMElements.button(
           {
             className: "battle-prep-controls-button",
@@ -294,8 +294,8 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
             disabled: leftLowerElementKey === "enemyFormation" || !canInspectEnemyFormation,
             title: canInspectEnemyFormation ?
               undefined :
-              localize("cantInspectEnemyFormationAsStarIsNotInDetectionRadius")(),
-          }, localize("enemy")()),
+              localize("cantInspectEnemyFormationAsStarIsNotInDetectionRadius").toString(),
+          }, localize("enemy").toString()),
           ReactDOMElements.button(
           {
             onClick: () =>
@@ -309,7 +309,7 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
               setLeftLowerElementKey("playerFormation");
               forceUpdate();
             },
-          }, localize("autoFormation")()),
+          }, localize("autoFormation").toString()),
           ReactDOMElements.button(
           {
             onClick: () =>
@@ -317,7 +317,7 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
               app.reactUI.switchScene("galaxyMap");
             },
             disabled: playerIsDefending,
-          }, localize("cancel")()),
+          }, localize("cancel").toString()),
           ReactDOMElements.button(
           {
             className: "battle-prep-controls-button",
@@ -334,7 +334,7 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
               app.reactUI.battle = battle;
               app.reactUI.switchScene("battle");
             },
-          }, localize("startBattle")()),
+          }, localize("startBattle").toString()),
           !options.debug.enabled ? null : ReactDOMElements.button(
           {
             className: "battle-prep-controls-button",
@@ -346,7 +346,7 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
               battle.isSimulated = false;
               simulator.finishBattle();
             },
-          }, localize("simulateBattle")()),
+          }, localize("simulateBattle").toString()),
         ),
         ReactDOMElements.div({className: "battle-prep-left-lower"}, leftLowerElement),
       ),
@@ -392,7 +392,7 @@ function localizeFormationInvalidityReason(formation: BattlePrepFormation, reaso
     }
     case FormationInvalidityReason.NotEnoughUnits:
     {
-      return localize("notEnoughUnitsPlaced")(
+      return localize("notEnoughUnitsPlaced").format(
       {
         minUnits: formation.getValidityRestriction().minUnits,
       });
@@ -417,10 +417,10 @@ function localizeModifierEffect(effect: FormationValidityModifierEffect): string
     {
       case "minUnits":
       {
-        return localize("battlePrepValidityModifierEffect_minUnits")({minUnits: effect.minUnits});
+        return localize("battlePrepValidityModifierEffect_minUnits").format({minUnits: effect.minUnits});
       }
     }
-  }).join(localize("listItemSeparator")());
+  }).join(localize("listItemSeparator").toString());
 }
 function localizeFormationValidityModifierSource(
   formation: BattlePrepFormation,
@@ -433,15 +433,15 @@ function localizeFormationValidityModifierSource(
   {
     case FormationValidityModifierSourceType.OffensiveBattle:
     {
-      return localize("battlePrepValidityModifierSource_offensiveBattle")();
+      return localize("battlePrepValidityModifierSource_offensiveBattle").toString();
     }
     case FormationValidityModifierSourceType.AttackedInEnemyTerritory:
     {
-      return localize("battlePrepValidityModifierSource_attackedInEnemyTerritory")();
+      return localize("battlePrepValidityModifierSource_attackedInEnemyTerritory").toString();
     }
     case FormationValidityModifierSourceType.AttackedInNeutralTerritory:
     {
-      return localize("battlePrepValidityModifierSource_attackedInNeutralTerritory")();
+      return localize("battlePrepValidityModifierSource_attackedInNeutralTerritory").toString();
     }
     case FormationValidityModifierSourceType.PassiveAbility:
     {
@@ -452,7 +452,7 @@ function localizeFormationValidityModifierSource(
 
       if (sourceUnitIsKnown)
       {
-        return localize("battlePrepValidityModifierSource_passiveAbility_known")(
+        return localize("battlePrepValidityModifierSource_passiveAbility_known").format(
         {
           abilityName: sourceAbility.displayName,
           unitName: sourceUnit.name,
@@ -460,7 +460,7 @@ function localizeFormationValidityModifierSource(
       }
       else
       {
-        return localize("battlePrepValidityModifierSource_passiveAbility_unknown")();
+        return localize("battlePrepValidityModifierSource_passiveAbility_unknown").toString();
       }
     }
   }

@@ -68,7 +68,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
   public render()
   {
     const menuItemTabIndex = this.state.opened ? -1 : 0;
-    const buttonActionExplanation = localize("topMenuButtonActionExplanation")();
+    const buttonActionExplanation = localize("topMenuButtonActionExplanation").toString();
 
     const topMenuButtons =
     [
@@ -76,74 +76,74 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-items-button-production",
         key: "production",
-        title: `${localize("topMenuButtonTooltip_production")()}\n\n${buttonActionExplanation}`,
+        title: `${localize("topMenuButtonTooltip_production")}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "production"),
         onContextMenu: this.closePopup.bind(this, "production"),
         tabIndex: menuItemTabIndex,
-      }, localize("production")()),
+      }, localize("production").toString()),
       ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-equip",
         key: "equipItems",
-        title: `${localize("topMenuButtonTooltip_equip")()}\n\n${buttonActionExplanation}`,
+        title: `${localize("topMenuButtonTooltip_equip")}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "equipItems"),
         onContextMenu: this.closePopup.bind(this, "equipItems"),
         tabIndex: menuItemTabIndex,
-      }, localize("equip")()),
+      }, localize("equip").toString()),
       // ReactDOMElements.button(
       // {
       //   className: "top-menu-items-button top-menu-items-button-economy",
       //   key: "economySummary",
-      //   title: `${localize("topMenuButtonTooltip_economy")()}\n\n${buttonActionExplanation}`,
+      //   title: `${localize("topMenuButtonTooltip_economy")}\n\n${buttonActionExplanation}`,
       //   onClick: this.toggleOrBringPopupToTop.bind(this, "economySummary"),
       //   onContextMenu: this.closePopup.bind(this, "economySummary"),
       //   tabIndex: menuItemTabIndex,
-      // }, localize("economy")()),
+      // }, localize("economy").toString()),
       ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-diplomacy",
         key: "diplomacy",
-        title: `${localize("topMenuButtonTooltip_diplomacy")()}\n\n${buttonActionExplanation}`,
+        title: `${localize("topMenuButtonTooltip_diplomacy")}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "diplomacy"),
         onContextMenu: this.closePopup.bind(this, "diplomacy"),
         tabIndex: menuItemTabIndex,
-      }, localize("diplomacy")()),
+      }, localize("diplomacy").toString()),
       ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-technology",
         key: "technologies",
-        title: `${localize("topMenuButtonTooltip_technology")()}\n\n${buttonActionExplanation}`,
+        title: `${localize("topMenuButtonTooltip_technology")}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "technologies"),
         onContextMenu: this.closePopup.bind(this, "technologies"),
         tabIndex: menuItemTabIndex,
-      }, localize("technology")()),
+      }, localize("technology").toString()),
       ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-load",
         key: "loadGame",
-        title: `${localize("topMenuButtonTooltip_load")()}\n\n${buttonActionExplanation}`,
+        title: `${localize("topMenuButtonTooltip_load")}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "loadGame"),
         onContextMenu: this.closePopup.bind(this, "loadGame"),
         tabIndex: menuItemTabIndex,
-      }, localize("load_action")()),
+      }, localize("load_action").toString()),
       ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-save",
         key: "saveGame",
-        title: `${localize("topMenuButtonTooltip_save")()}\n\n${buttonActionExplanation}`,
+        title: `${localize("topMenuButtonTooltip_save")}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "saveGame"),
         onContextMenu: this.closePopup.bind(this, "saveGame"),
         tabIndex: menuItemTabIndex,
-      }, localize("save_action")()),
+      }, localize("save_action").toString()),
       ReactDOMElements.button(
       {
         className: "top-menu-items-button top-menu-items-button-options",
         key: "options",
-        title: `${localize("topMenuButtonTooltip_options")()}\n\n${buttonActionExplanation}`,
+        title: `${localize("topMenuButtonTooltip_options")}\n\n${buttonActionExplanation}`,
         onClick: this.toggleOrBringPopupToTop.bind(this, "options"),
         onContextMenu: this.closePopup.bind(this, "options"),
         tabIndex: menuItemTabIndex,
-      }, localize("options")()),
+      }, localize("options").toString()),
     ];
 
     const topMenuItems = topMenuButtons.slice(0, this.state.buttonsToPlace);
@@ -155,7 +155,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
       {
         className: "top-menu-items-button top-menu-open-condensed-button",
         key: "openCondensedMenu",
-        title: localize("topMenuButtonTooltip_openCondensedMenu")(),
+        title: localize("topMenuButtonTooltip_openCondensedMenu").toString(),
         onClick: this.toggleCondensedMenu,
         onContextMenu: e =>
         {

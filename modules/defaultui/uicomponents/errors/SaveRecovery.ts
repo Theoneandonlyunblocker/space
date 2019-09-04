@@ -50,7 +50,7 @@ export class SaveRecoveryComponent extends React.Component<PropTypes, StateType>
         {
           className: "save-recovery-possible-message",
         },
-          localize("canTryToRecoverGame")(),
+          localize("canTryToRecoverGame").toString(),
         ),
         ReactDOMElements.div(
         {
@@ -61,14 +61,14 @@ export class SaveRecoveryComponent extends React.Component<PropTypes, StateType>
             className: "save-recovery-button",
             onClick: () => this.handleExpandButtonClick("save"),
           },
-            localize("save_action")(),
+            localize("save_action").toString(),
           ),
           ReactDOMElements.button(
           {
             className: "save-recovery-button",
             onClick: () => this.handleExpandButtonClick("load"),
           },
-            localize("load_action")(),
+            localize("load_action").toString(),
           ),
         ),
         ErrorBoundary(
@@ -85,7 +85,7 @@ export class SaveRecoveryComponent extends React.Component<PropTypes, StateType>
                 {
                   className: "error-in-save-recovery-title",
                 },
-                  localize("errorWithGameRecovery")(),
+                  localize("errorWithGameRecovery").toString(),
                 ),
                 EmergencySaveGame(),
               )

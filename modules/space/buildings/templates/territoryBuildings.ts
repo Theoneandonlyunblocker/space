@@ -17,11 +17,11 @@ export const sectorCommand: TerritoryBuildingTemplate =
   families: [territoryBuildings, sectorCommandFamily],
   get displayName()
   {
-    return localize("sectorCommand_displayName")();
+    return localize("sectorCommand_displayName").toString();
   },
   get description()
   {
-    return localize("sectorCommand_description")();
+    return localize("sectorCommand_description").toString();
   },
   getIconElement: getIconElement.bind(null, "sectorCommand"),
   buildCost: 200,
@@ -43,11 +43,11 @@ export const sectorCommand1: TerritoryBuildingTemplate =
   families: [territoryBuildings, sectorCommandFamily],
   get displayName()
   {
-    return localize("sectorCommand1_displayName")();
+    return localize("sectorCommand1_displayName").toString();
   },
   get description()
   {
-    return localize("sectorCommand1_description")();
+    return localize("sectorCommand1_description").toString();
   },
   getIconElement: getIconElement.bind(null, "sectorCommand"),
   buildCost: 100,
@@ -64,11 +64,11 @@ export const sectorCommand2: TerritoryBuildingTemplate =
   families: [territoryBuildings, sectorCommandFamily],
   get displayName()
   {
-    return localize("sectorCommand2_displayName")();
+    return localize("sectorCommand2_displayName").toString();
   },
   get description()
   {
-    return localize("sectorCommand2_description")();
+    return localize("sectorCommand2_description").toString();
   },
   getIconElement: getIconElement.bind(null, "sectorCommand"),
   buildCost: 200,
@@ -85,11 +85,11 @@ export const starBase: TerritoryBuildingTemplate =
   families: [territoryBuildings],
   get displayName()
   {
-    return localize("starBase_displayName")();
+    return localize("starBase_displayName").toString();
   },
   get description()
   {
-    return localize("starBase_description")();
+    return localize("starBase_description").toString();
   },
   getIconElement: getIconElement.bind(null, "starBase"),
   buildCost: 200,

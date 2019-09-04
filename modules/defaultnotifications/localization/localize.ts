@@ -1,11 +1,13 @@
 import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import {Localizer} from "../../../src/localization/Localizer";
+import {formatters as englishFormatters} from "../../englishlanguage/formatters";
+import {MessageFormatLocalizer} from "../../../src/localization/MessageFormatLocalizer";
 
-import {notificationMessages} from "./en/notificationMessages";
+import {notificationMessages as en_notificationMessages} from "./en/notificationMessages";
+import {NotificationMessageArgs} from "./NotificationMessageArgs";
 
 
-export const localizer = new Localizer<typeof notificationMessages>("notificationMessages");
+export const localizer = new MessageFormatLocalizer<NotificationMessageArgs>("notificationMessages");
+localizer.addFormatters(englishFormatters, englishLanguage);
+localizer.setAll(en_notificationMessages, englishLanguage);
 
-localizer.setAllMessages(notificationMessages, englishLanguage);
-
-export const localize = <typeof localizer.localize> localizer.localize.bind(localizer);
+export const localize = localizer.localize.bind(localizer);

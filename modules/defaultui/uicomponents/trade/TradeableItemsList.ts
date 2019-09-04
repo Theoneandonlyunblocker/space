@@ -56,7 +56,7 @@ export class TradeableItemsListComponent extends React.Component<PropTypes, Stat
           content: TradeMoney(
           {
             keyTODO: "money",
-            title: localize("money")(),
+            title: localize("money").toString(),
             moneyAmount: item.amount,
             onDragStart: this.props.onDragStart,
             onDragEnd: this.props.onDragEnd,

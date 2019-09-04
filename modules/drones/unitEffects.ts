@@ -15,11 +15,11 @@ export const infest: UnitEffectTemplate =
   type: "infest",
   get displayName()
   {
-    return localize("infest_effect_displayName")();
+    return localize("infest_effect_displayName").toString();
   },
   get description()
   {
-    return localize("infest_effect_description")();
+    return localize("infest_effect_description").toString();
   },
   afterAbilityUse:
   [
@@ -47,7 +47,7 @@ export const merge: UnitEffectTemplate =
   type: "merge",
   get displayName()
   {
-    return localize("merge_effect_displayName")();
+    return localize("merge_effect_displayName").toString();
   },
   attributes:
   {

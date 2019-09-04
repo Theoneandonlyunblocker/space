@@ -62,7 +62,7 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
         {
           className: "add-new-emblem-button",
           onClick: this.props.addEmblem,
-          title: localize("addNewEmblem")(),
+          title: localize("addNewEmblem").toString(),
           disabled: !canAddNewEmblem,
         }),
 

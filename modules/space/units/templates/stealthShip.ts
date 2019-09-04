@@ -21,11 +21,11 @@ export const stealthShip: UnitTemplate =
   type: "stealthShip",
   get displayName()
   {
-    return localize("stealthShip_displayName")();
+    return localize("stealthShip_displayName").toString();
   },
   get description()
   {
-    return localize("stealthShip_description")();
+    return localize("stealthShip_description").toString();
   },
   archetype: unitArchetypes.scouting,
   unitDrawingFN: makeDefaultUnitDrawingFunction(

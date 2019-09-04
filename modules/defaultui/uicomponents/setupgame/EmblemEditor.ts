@@ -57,7 +57,7 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
           className: "flag-picker-title"  + (this.state.colorPickerIsCollapsed ? " collapsed" : " collapsible"),
           onClick: this.toggleColorPickerCollapse,
         },
-          localize("emblemColor")(),
+          localize("emblemColor").toString(),
         ),
         this.state.colorPickerIsCollapsed ?
           null :
@@ -82,7 +82,7 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
           className: "flag-picker-title" + (this.state.emblemPickerIsCollapsed ? " collapsed" : " collapsible"),
           onClick: this.toggleEmblemPickerCollapse,
         },
-          localize("emblems")(),
+          localize("emblems").toString(),
         ),
         this.state.emblemPickerIsCollapsed ?
           null :

@@ -222,32 +222,32 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
           ReactDOMElements.div(
           {
             className: "player-setup-is-human",
-            title: localize("setAsHumanPlayer")(),
+            title: localize("setAsHumanPlayer").toString(),
           }),
           ReactDOMElements.div(
           {
             className: "player-setup-name",
-          }, localize("playerName")()),
+          }, localize("playerName").toString()),
           ReactDOMElements.div(
           {
             className: "player-setup-race-picker",
-          }, localize("race")()),
+          }, localize("race").toString()),
           ReactDOMElements.div(
           {
             className: "color-setter",
-          }, localize("color_1")()),
+          }, localize("color_1").toString()),
           ReactDOMElements.div(
           {
             className: "color-setter",
-          }, localize("color_2")()),
+          }, localize("color_2").toString()),
           ReactDOMElements.div(
           {
             className: "flag-setter",
-          }, localize("flag")()),
+          }, localize("flag").toString()),
           ReactDOMElements.div(
           {
             className: "player-setup-remove-player",
-          }, localize("remove")()),
+          }, localize("remove").toString()),
         ),
         ReactDOMElements.div(
         {
@@ -264,7 +264,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
             className: "setup-game-button",
             onClick: this.randomizeAllPlayers,
           },
-            localize("randomize")(),
+            localize("randomize").toString(),
           ),
           ReactDOMElements.button(
           {
@@ -272,7 +272,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
             onClick: this.makeNewPlayers.bind(this, 1, true),
             disabled: !canAddPlayers,
           },
-            localize("addNewPlayer")(),
+            localize("addNewPlayer").toString(),
           ),
         ),
       )

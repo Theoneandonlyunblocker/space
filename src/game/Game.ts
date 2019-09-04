@@ -190,7 +190,7 @@ export class Game
       });
     }
   }
-  // after each player has has a go
+  // after each player has had a go
   private processNewRoundOfPlayStart(): void
   {
     this.turnNumber++;

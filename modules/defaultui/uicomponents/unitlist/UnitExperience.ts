@@ -89,7 +89,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     const barProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "unit-experience-bar",
-      title: localize("EXPReadOut")(
+      title: localize("EXPReadOut").format(
       {
         currentEXP: this.props.experienceForCurrentLevel,
         EXPToNextLevel: this.props.experienceToNextLevel,
@@ -109,7 +109,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
         !this.state.hasUpgradePopup ? null :
         DefaultWindow(
         {
-          title: localize("upgradeUnit")(),
+          title: localize("upgradeUnit").toString(),
           handleClose: this.closePopup,
           isResizable: false,
         },
@@ -127,7 +127,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
           {
             className: "ready-to-level-up-message",
           },
-            localize("clickToLevelUp")(),
+            localize("clickToLevelUp").toString(),
           ),
         ),
       )

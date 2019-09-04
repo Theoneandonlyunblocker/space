@@ -18,11 +18,11 @@ export const droneBase: UnitTemplate =
   type: "droneBase",
   get displayName()
   {
-    return localize("droneBase_displayName")();
+    return localize("droneBase_displayName").toString();
   },
   get description()
   {
-    return localize("droneBase_description")();
+    return localize("droneBase_description").toString();
   },
   archetype: unitArchetypes.utility,
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),

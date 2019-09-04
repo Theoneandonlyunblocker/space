@@ -95,12 +95,12 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     {
       case "units":
       {
-        displayString = localize("manufactureUnitsButton")();
+        displayString = localize("manufactureUnitsButton").toString();
         break;
       }
       case "items":
       {
-        displayString = localize("manufactureItemsButton")();
+        displayString = localize("manufactureItemsButton").toString();
         break;
       }
     }

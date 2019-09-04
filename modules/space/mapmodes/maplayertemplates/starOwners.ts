@@ -20,7 +20,7 @@ export const starOwners: MapRendererLayerTemplate =
   key: "starOwners",
   get displayName()
   {
-    return localize("starOwners_displayName")();
+    return localize("starOwners_displayName").toString();
   },
   interactive: false,
   isUsedForCameraBounds: true,

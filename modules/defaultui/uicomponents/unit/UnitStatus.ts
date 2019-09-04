@@ -42,12 +42,12 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
       const guard = this.props.guardAmount;
       const damageReduction = Math.min(50, guard / 2);
 
-      const protectString = localize("guard_chanceToProtect")(
+      const protectString = localize("guard_chanceToProtect").format(
       {
         protChance: guard,
         guardCoverage: this.props.guardCoverage,
       });
-      const damageReductionString = localize("reducedPhysicalDamage")({damageReduction: damageReduction});
+      const damageReductionString = localize("reducedPhysicalDamage").format({damageReduction: damageReduction});
 
       const guardText = `${protectString}` +
         `\n${damageReductionString}`;
@@ -76,7 +76,7 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
             ReactDOMElements.div(
             {
               className: "guard-text status-text",
-            }, localize("guard_statusText")()),
+            }, localize("guard_statusText").toString()),
             ReactDOMElements.div(
             {
               className: "guard-text-value status-text",
@@ -98,9 +98,9 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
           ReactDOMElements.div(
           {
             className: "preparation-text-container status-inner",
-            title: localize("preparing_tooltip")(),
+            title: localize("preparing_tooltip").toString(),
           },
-            localize("preparing_statusText")(),
+            localize("preparing_statusText").toString(),
           ),
         ),
       );

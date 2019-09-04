@@ -26,11 +26,11 @@ export const merge: AbilityTemplate =
   type: "merge",
   get displayName()
   {
-    return localize("merge_displayName")();
+    return localize("merge_displayName").toString();
   },
   get description()
   {
-    return localize("merge_description")();
+    return localize("merge_description").toString();
   },
   moveDelay: 100,
   actionsUse: 1,

@@ -9,7 +9,7 @@ export const resources: MapRendererLayerTemplate =
   key: "resources",
   get displayName()
   {
-    return localize("resources_displayName")();
+    return localize("resources_displayName").toString();
   },
   interactive: false,
   isUsedForCameraBounds: false,

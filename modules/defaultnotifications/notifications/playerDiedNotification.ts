@@ -14,17 +14,18 @@ import {getIconSrc} from "../assets";
 
 export interface PropTypes
 {
-  deadPlayerName: string;
+  player: Player;
 }
 
 export interface SerializedPropTypes
 {
-  deadPlayerName: string;
+  playerId: number;
 }
 
 export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "playerDiedNotification",
+  // TODO 2019.09.05 | missing localization
   displayName: "Player died",
   category: "game",
   defaultFilterState: [NotificationFilterState.AlwaysShow],
@@ -33,26 +34,24 @@ export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedP
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
-    return localize("playerDiedMessage")(
+    return localize("playerDiedMessage").format(
     {
-      playerName: props.deadPlayerName,
-      // TODO 2017.12.08 | plural names
-      count: 1,
+      playerName: props.player.name,
     });
   },
-  getTitle: (props: PropTypes) => localize("playerDiedTitle")(),
+  getTitle: (props: PropTypes) => localize("playerDiedTitle").toString(),
   serializeProps: (props: PropTypes) =>
   {
     return(
     {
-      deadPlayerName: props.deadPlayerName,
+      playerId: props.player.id,
     });
   },
   deserializeProps: (props: SerializedPropTypes, gameLoader: GameLoader) =>
   {
     return(
     {
-      deadPlayerName: props.deadPlayerName,
+      player: gameLoader.playersById[props.playerId],
     });
   },
 };
@@ -73,7 +72,7 @@ export const playerDiedNotificationCreationScripts =
             template: playerDiedNotification,
             props:
             {
-              deadPlayerName: player.name.baseName,
+              player: player,
             },
             involvedPlayers: [player],
             location: null,

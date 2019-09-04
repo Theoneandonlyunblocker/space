@@ -25,11 +25,11 @@ export const shieldBoat: UnitTemplate =
   type: "shieldBoat",
   get displayName()
   {
-    return localize("shieldBoat_displayName")();
+    return localize("shieldBoat_displayName").toString();
   },
   get description()
   {
-    return localize("shieldBoat_description")();
+    return localize("shieldBoat_description").toString();
   },
   archetype: unitArchetypes.defence,
   unitDrawingFN: makeDefaultUnitDrawingFunction(

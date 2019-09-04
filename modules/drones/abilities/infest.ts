@@ -24,11 +24,11 @@ export const infest: AbilityTemplate =
   type: "infest",
   get displayName()
   {
-    return localize("infest_displayName")();
+    return localize("infest_displayName").toString();
   },
   get description()
   {
-    return localize("infest_description")();
+    return localize("infest_description").toString();
   },
   moveDelay: 100,
   actionsUse: 1,

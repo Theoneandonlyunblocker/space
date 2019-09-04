@@ -1,22 +1,23 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {AllMessages, localize} from "../../localization/localize";
+import {localize} from "../../localization/localize";
 
 import {UnlockableThing, UnlockableThingKind} from "../../../../src/templateinterfaces/UnlockableThing";
 
 import {TechnologyUnlock} from "./TechnologyUnlock";
 
 
-const localizationKeyForUnlockableThingKind:
+
+function localizeUnlockableThingKind(unlockableThingKind: UnlockableThingKind)
 {
-  [K in UnlockableThingKind]: keyof AllMessages;
-} =
-{
-  building: "techUnlock_buildings",
-  item: "techUnlock_items",
-  unit: "techUnlock_units",
-};
+  switch (unlockableThingKind)
+  {
+    case "building": return localize("techUnlock_buildings").toString();
+    case "item":     return localize("techUnlock_items").toString();
+    case "unit":     return localize("techUnlock_units").toString();
+  }
+}
 
 export interface PropTypes extends React.Props<any>
 {
@@ -40,8 +41,6 @@ export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes
 
   public render()
   {
-    const localizationKey = localizationKeyForUnlockableThingKind[this.props.kind];
-
     return ReactDOMElements.div(
     {
       className: "technology-unlocks-for-type",
@@ -50,7 +49,7 @@ export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes
       {
         className: "technology-unlocks-for-type-header",
       },
-        localize(localizationKey)(),
+        localizeUnlockableThingKind(this.props.kind),
       ),
       ReactDOMElements.ol(
       {

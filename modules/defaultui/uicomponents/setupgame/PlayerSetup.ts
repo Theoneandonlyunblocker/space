@@ -227,7 +227,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         ReactDOMElements.input(
         {
           className: "player-setup-is-human",
-          title: localize("setAsHumanPlayer")(),
+          title: localize("setAsHumanPlayer").toString(),
           type: "checkbox",
           checked: this.props.isHuman,
           onChange: this.handleSetHuman,

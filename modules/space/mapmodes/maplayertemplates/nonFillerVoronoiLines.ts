@@ -9,7 +9,7 @@ export const nonFillerVoronoiLines: MapRendererLayerTemplate =
   key: "nonFillerVoronoiLines",
   get displayName()
   {
-    return localize("nonFillerVoronoiLines_displayName")();
+    return localize("nonFillerVoronoiLines_displayName").toString();
   },
   interactive: false,
   isUsedForCameraBounds: true,

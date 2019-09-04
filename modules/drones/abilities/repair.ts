@@ -22,11 +22,11 @@ export const repair: AbilityTemplate =
   type: "repair",
   get displayName()
   {
-    return localize("repair_displayName")();
+    return localize("repair_displayName").toString();
   },
   get description()
   {
-    return localize("repair_description")();
+    return localize("repair_description").toString();
   },
   moveDelay: 100,
   actionsUse: 1,

@@ -16,7 +16,7 @@ export const nonFillerStars: MapRendererLayerTemplate =
   key: "nonFillerStars",
   get displayName()
   {
-    return localize("nonFillerStars_displayName")();
+    return localize("nonFillerStars_displayName").toString();
   },
   interactive: true,
   isUsedForCameraBounds: false,

@@ -22,7 +22,7 @@ export const fogOfWar: MapRendererLayerTemplate =
   key: "fogOfWar",
   get displayName()
   {
-    return localize("fogOfWar_displayName")();
+    return localize("fogOfWar_displayName").toString();
   },
   interactive: false,
   isUsedForCameraBounds: false,

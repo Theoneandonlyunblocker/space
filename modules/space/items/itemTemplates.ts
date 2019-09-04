@@ -20,11 +20,11 @@ export const bombLauncher1: ItemTemplate =
   type: "bombLauncher1",
   get displayName()
   {
-    return localize("bombLauncher1_displayName")();
+    return localize("bombLauncher1_displayName").toString();
   },
   get description()
   {
-    return localize("bombLauncher1_description")();
+    return localize("bombLauncher1_description").toString();
   },
   getIconSrc: getIconSrc.bind(null, "cannon"),
 
@@ -40,11 +40,11 @@ export const bombLauncher2: ItemTemplate =
   type: "bombLauncher2",
   get displayName()
   {
-    return localize("bombLauncher2_displayName")();
+    return localize("bombLauncher2_displayName").toString();
   },
   get description()
   {
-    return localize("bombLauncher2_description")();
+    return localize("bombLauncher2_description").toString();
   },
   getIconSrc: getIconSrc.bind(null, "cannon"),
 
@@ -65,11 +65,11 @@ export const bombLauncher3: ItemTemplate =
   type: "bombLauncher3",
   get displayName()
   {
-    return localize("bombLauncher3_displayName")();
+    return localize("bombLauncher3_displayName").toString();
   },
   get description()
   {
-    return localize("bombLauncher3_description")();
+    return localize("bombLauncher3_description").toString();
   },
   getIconSrc: getIconSrc.bind(null, "cannon"),
 
@@ -91,11 +91,11 @@ export const afterBurner1: ItemTemplate =
   type: "afterBurner1",
   get displayName()
   {
-    return localize("afterBurner1_displayName")();
+    return localize("afterBurner1_displayName").toString();
   },
   get description()
   {
-    return localize("afterBurner1_description")();
+    return localize("afterBurner1_description").toString();
   },
   getIconSrc: getIconSrc.bind(null, "blueThing"),
 
@@ -116,11 +116,11 @@ export const afterBurner2: ItemTemplate =
   type: "afterBurner2",
   get displayName()
   {
-    return localize("afterBurner2_displayName")();
+    return localize("afterBurner2_displayName").toString();
   },
   get description()
   {
-    return localize("afterBurner2_description")();
+    return localize("afterBurner2_description").toString();
   },
   getIconSrc: getIconSrc.bind(null, "blueThing"),
 
@@ -140,11 +140,11 @@ export const afterBurner3: ItemTemplate =
   type: "afterBurner3",
   get displayName()
   {
-    return localize("afterBurner3_displayName")();
+    return localize("afterBurner3_displayName").toString();
   },
   get description()
   {
-    return localize("afterBurner3_description")();
+    return localize("afterBurner3_description").toString();
   },
   getIconSrc: getIconSrc.bind(null, "blueThing"),
 
@@ -165,11 +165,11 @@ export const shieldPlating1: ItemTemplate =
   type: "shieldPlating1",
   get displayName()
   {
-    return localize("shieldPlating1_displayName")();
+    return localize("shieldPlating1_displayName").toString();
   },
   get description()
   {
-    return localize("shieldPlating1_description")();
+    return localize("shieldPlating1_description").toString();
   },
   getIconSrc: getIconSrc.bind(null, "armor"),
 
@@ -189,11 +189,11 @@ export const shieldPlating2: ItemTemplate =
   type: "shieldPlating2",
   get displayName()
   {
-    return localize("shieldPlating2_displayName")();
+    return localize("shieldPlating2_displayName").toString();
   },
   get description()
   {
-    return localize("shieldPlating2_description")();
+    return localize("shieldPlating2_description").toString();
   },
   getIconSrc: getIconSrc.bind(null, "armor"),
 
@@ -213,11 +213,11 @@ export const shieldPlating3: ItemTemplate =
   type: "shieldPlating3",
   get displayName()
   {
-    return localize("shieldPlating3_displayName")();
+    return localize("shieldPlating3_displayName").toString();
   },
   get description()
   {
-    return localize("shieldPlating3_description")();
+    return localize("shieldPlating3_description").toString();
   },
   getIconSrc: getIconSrc.bind(null, "armor"),
 

@@ -65,7 +65,7 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
         {
           className: "upgrade-abilities-header",
         },
-          localize("upgradeAbilitiesHeader")(),
+          localize("upgradeAbilitiesHeader").toString(),
         ),
         AbilityList(
         {
@@ -79,8 +79,8 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
           {
             key: "learnNewAbility",
             type: "learnable",
-            displayName: localize("newAbility")(),
-            title: localize("clickToLearnNewAbility")(),
+            displayName: localize("newAbility").toString(),
+            title: localize("clickToLearnNewAbility").toString(),
 
             onClick: this.toggleLearnNewAbilityPopup,
           }),
@@ -89,8 +89,8 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
           DefaultWindow(
           {
             title: this.state.activePopupType === "learn" ?
-              localize("learnAbility")() :
-              localize("upgradeSpecificAbility")(currentlyUpgradingAbility.source.displayName),
+              localize("learnAbility").toString() :
+              localize("upgradeSpecificAbility").format(currentlyUpgradingAbility.source.displayName),
             handleClose: this.closePopup,
             isResizable: false,
           },

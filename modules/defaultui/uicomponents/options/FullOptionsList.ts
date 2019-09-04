@@ -47,7 +47,7 @@ export class FullOptionsListComponent extends React.Component<PropTypes, StateTy
         !this.state.hasConfirmResetAllDialog ? null :
           DialogBox(
           {
-            title: localize("resetAllOptions")(),
+            title: localize("resetAllOptions").toString(),
             handleOk: () =>
             {
               options.setDefaults();
@@ -58,7 +58,7 @@ export class FullOptionsListComponent extends React.Component<PropTypes, StateTy
               this.closeResetAllOptionsDialog();
             },
           },
-          localize("areYouSureYouWantToResetAllOptions")(),
+          localize("areYouSureYouWantToResetAllOptions").toString(),
         ),
 
         ReactDOMElements.div({className: "options-header"},
@@ -67,7 +67,7 @@ export class FullOptionsListComponent extends React.Component<PropTypes, StateTy
             className: "reset-options-button reset-all-options-button",
             onClick: this.openResetAllOptionsDialog,
           },
-            localize("resetAllOptions")(),
+            localize("resetAllOptions").toString(),
           ),
         ),
         DisplayOptions({activeLanguage: this.props.activeLanguage}),

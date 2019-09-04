@@ -51,7 +51,7 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
         {
           className: "technology-unlocks-for-level-header",
         },
-          localize("technologyLevel")(this.props.level),
+          localize("technologyLevel").format(this.props.level),
         ),
         ReactDOMElements.ol(
         {

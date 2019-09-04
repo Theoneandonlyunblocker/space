@@ -20,7 +20,7 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
     type: `snipe${capitalizedAttributeName}`,
     get displayName()
     {
-      return localize("snipe_displayName")(attribute);
+      return localize("snipe_displayName").format(attribute);
     },
     attributes:
     {

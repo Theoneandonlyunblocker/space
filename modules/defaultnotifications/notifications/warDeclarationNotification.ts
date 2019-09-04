@@ -37,13 +37,13 @@ export const warDeclarationNotification: NotificationTemplate<PropTypes, Seriali
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
-    return localize("warDeclarationMessage")(
+    return localize("warDeclarationMessage").format(
     {
       aggressorName: props.aggressor.name,
       defenderName: props.defender.name,
     });
   },
-  getTitle: (props: PropTypes) => localize("warDeclarationTitle")(),
+  getTitle: (props: PropTypes) => localize("warDeclarationTitle").toString(),
   serializeProps: (props: PropTypes) =>
   {
     return(

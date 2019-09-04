@@ -80,8 +80,8 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
           ReactDOMElements.input(
           {
             className: "fleet-info-name",
-            value: isNotDetected ? localize("unidentifiedFleet")() : fleet.name.baseName,
-            title: isNotDetected ? localize("unidentifiedFleet")() : fleet.name.baseName,
+            value: isNotDetected ? localize("unidentifiedFleet").toString() : fleet.name.baseName,
+            title: isNotDetected ? localize("unidentifiedFleet").toString() : fleet.name.baseName,
             onChange: isNotDetected ? null : this.setFleetName,
             readOnly: isNotDetected,
           }),
@@ -114,8 +114,8 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
           className: "fleet-info-move-points",
         },
           isNotDetected ?
-            localize("fleet_movesRemaining")("?", "?") :
-            localize("fleet_movesRemaining")(fleet.getMinCurrentMovePoints(), fleet.getMinMaxMovePoints()),
+            localize("fleet_movesRemaining").format("?", "?") :
+            localize("fleet_movesRemaining").format(fleet.getMinCurrentMovePoints(), fleet.getMinMaxMovePoints()),
         ),
 
       )

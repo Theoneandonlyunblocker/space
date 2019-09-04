@@ -53,11 +53,11 @@ export const closeAttack: AbilityTemplate =
   type: "closeAttack",
   get displayName()
   {
-    return localize("closeAttack_displayName")();
+    return localize("closeAttack_displayName").toString();
   },
   get description()
   {
-    return localize("closeAttack_description")();
+    return localize("closeAttack_description").toString();
   },
   moveDelay: 90,
   actionsUse: 2,
@@ -91,11 +91,11 @@ export const beamAttack: AbilityTemplate =
   type: "beamAttack",
   get displayName()
   {
-    return localize("beamAttack_displayName")();
+    return localize("beamAttack_displayName").toString();
   },
   get description()
   {
-    return localize("beamAttack_description")();
+    return localize("beamAttack_description").toString();
   },
   moveDelay: 300,
   actionsUse: 1,
@@ -133,11 +133,11 @@ export const bombAttack: AbilityTemplate =
   type: "bombAttack",
   get displayName()
   {
-    return localize("bombAttack_displayName")();
+    return localize("bombAttack_displayName").toString();
   },
   get description()
   {
-    return localize("bombAttack_description")();
+    return localize("bombAttack_description").toString();
   },
   moveDelay: 120,
   actionsUse: 1,
@@ -165,11 +165,11 @@ export const guardRow: AbilityTemplate =
   type: "guardRow",
   get displayName()
   {
-    return localize("guardRow_displayName")();
+    return localize("guardRow_displayName").toString();
   },
   get description()
   {
-    return localize("guardRow_description")();
+    return localize("guardRow_description").toString();
   },
   moveDelay: 100,
   actionsUse: 1,
@@ -202,11 +202,11 @@ export const boardingHook: AbilityTemplate =
   type: "boardingHook",
   get displayName()
   {
-    return localize("boardingHook_displayName")();
+    return localize("boardingHook_displayName").toString();
   },
   get description()
   {
-    return localize("boardingHook_description")();
+    return localize("boardingHook_description").toString();
   },
   moveDelay: 100,
   actionsUse: 1,
@@ -254,11 +254,11 @@ export const debugAbility: AbilityTemplate =
   type: "debugAbility",
   get displayName()
   {
-    return localize("debugAbility_displayName")();
+    return localize("debugAbility_displayName").toString();
   },
   get description()
   {
-    return localize("debugAbility_description")();
+    return localize("debugAbility_description").toString();
   },
   moveDelay: 0,
   actionsUse: 1,
@@ -286,11 +286,11 @@ export const rangedAttack: AbilityTemplate =
   type: "rangedAttack",
   get displayName()
   {
-    return localize("rangedAttack_displayName")();
+    return localize("rangedAttack_displayName").toString();
   },
   get description()
   {
-    return localize("rangedAttack_description")();
+    return localize("rangedAttack_description").toString();
   },
   moveDelay: 100,
   actionsUse: 1,
@@ -350,6 +350,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
   const capitalizedAttributeName = attributeName[0].toUpperCase() + attributeName.slice(1);
 
   const key = `snipe${capitalizedAttributeName}`;
+  // TODO 2019.09.04 | missing localization
   const displayName = `Snipe: ${capitalizedAttributeName}`;
   const description = `Deals damage and lowers target ${attributeName}`;
 
@@ -402,11 +403,11 @@ export const standBy: AbilityTemplate =
   type: "standBy",
   get displayName()
   {
-    return localize("standBy_displayName")();
+    return localize("standBy_displayName").toString();
   },
   get description()
   {
-    return localize("standBy_description")();
+    return localize("standBy_description").toString();
   },
   moveDelay: 50,
   actionsUse: 1,

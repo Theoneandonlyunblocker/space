@@ -82,12 +82,12 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
         {
           cellProps.className += " undo-delete-button";
           cellProps.onClick = this.handleUndoMarkForDeletion;
-          cellProps.title = localize("undoMarkForDeletion")();
+          cellProps.title = localize("undoMarkForDeletion").toString();
         }
         else
         {
           cellProps.onClick = this.handleMarkForDeletion;
-          cellProps.title = localize("markForDeletion")();
+          cellProps.title = localize("markForDeletion").toString();
         }
         break;
       }

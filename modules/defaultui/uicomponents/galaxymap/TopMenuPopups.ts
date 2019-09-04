@@ -72,7 +72,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
         globalSelectedStar: this.props.selectedStar,
         setSelectedStar: this.props.setSelectedStar,
       }),
-      title: localize("production")(),
+      title: localize("production").toString(),
     },
     equipItems:
     {
@@ -80,7 +80,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         player: this.props.player,
       }),
-      title: localize("equip")(),
+      title: localize("equip").toString(),
     },
     economySummary:
     {
@@ -88,7 +88,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         player: this.props.player,
       }),
-      title: localize("economy")(),
+      title: localize("economy").toString(),
     },
     saveGame:
     {
@@ -96,7 +96,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         handleClose: this.closePopup.bind(this, "saveGame"),
       }),
-      title: localize("save_action")(),
+      title: localize("save_action").toString(),
     },
     loadGame:
     {
@@ -104,7 +104,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         handleClose: this.closePopup.bind(this, "loadGame"),
       }),
-      title: localize("load_action")(),
+      title: localize("load_action").toString(),
     },
     options:
     {
@@ -112,7 +112,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         activeLanguage: this.props.activeLanguage,
       }),
-      title: localize("options")(),
+      title: localize("options").toString(),
     },
     diplomacy:
     {
@@ -120,7 +120,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         player: this.props.player,
       }),
-      title: localize("diplomacy")(),
+      title: localize("diplomacy").toString(),
     },
     technologies:
     {
@@ -128,7 +128,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         playerTechnology: this.props.player.playerTechnology,
       }),
-      title: localize("technology")(),
+      title: localize("technology").toString(),
     },
   };
 

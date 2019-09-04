@@ -9,7 +9,7 @@ export const defaultMapMode: MapRendererMapModeTemplate =
   key: "defaultMapMode",
   get displayName()
   {
-    return localize("defaultMapMode_displayName")();
+    return localize("defaultMapMode_displayName").toString();
   },
   layers:
   [
@@ -27,7 +27,7 @@ export const noStatic: MapRendererMapModeTemplate =
   key: "noStatic",
   get displayName()
   {
-    return localize("noStatic_displayName")();
+    return localize("noStatic_displayName").toString();
   },
   layers:
   [
@@ -43,7 +43,7 @@ export const income: MapRendererMapModeTemplate =
   key: "income",
   get displayName()
   {
-    return localize("income_displayName")();
+    return localize("income_displayName").toString();
   },
   layers:
   [
@@ -59,7 +59,7 @@ export const resources: MapRendererMapModeTemplate =
   key: "resources",
   get displayName()
   {
-    return localize("resources_displayName")();
+    return localize("resources_displayName").toString();
   },
   layers:
   [

@@ -34,11 +34,11 @@ export const debugShip: UnitTemplate =
   type: "debugShip",
   get displayName()
   {
-    return localize("debugShip_displayName")();
+    return localize("debugShip_displayName").toString();
   },
   get description()
   {
-    return localize("debugShip_description")();
+    return localize("debugShip_description").toString();
   },
   archetype: unitArchetypes.combat,
   unitDrawingFN: makeDefaultUnitDrawingFunction(

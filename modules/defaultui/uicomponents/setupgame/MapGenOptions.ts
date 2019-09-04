@@ -178,17 +178,17 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     {
       defaultOptions:
       {
-        title: localize("defaultOptions")(),
+        title: localize("defaultOptions").toString(),
         isCollapsedInitially: false,
       },
       basicOptions:
       {
-        title: localize("basicOptions")(),
+        title: localize("basicOptions").toString(),
         isCollapsedInitially: false,
       },
       advancedOptions:
       {
-        title: localize("advancedOptions")(),
+        title: localize("advancedOptions").toString(),
         isCollapsedInitially: true,
       },
     };
@@ -247,14 +247,14 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
             className: "map-gen-options-button",
             onClick: this.randomizeOptions,
           },
-            localize("randomize")(),
+            localize("randomize").toString(),
           ),
           ReactDOMElements.button(
           {
             className: "map-gen-options-button",
             onClick: this.resetValuesToDefault,
           },
-            localize("reset")(),
+            localize("reset").toString(),
           ),
         ),
       )

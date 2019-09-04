@@ -50,9 +50,9 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
           onClick: this.upgradeAttribute.bind(this, attribute),
           key: attribute,
         },
-          localize("upgradeAttribute")(
+          localize("upgradeAttribute").format(
           {
-            attribute: localize(attribute)(),
+            attribute: localize(attribute).toString(),
             currentLevel: unit.baseAttributes[attribute],
             nextLevel: unit.baseAttributes[attribute] + 1,
           }),
@@ -69,7 +69,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
         {
           className: "upgrade-attributes-header",
         },
-          localize("upgradeStats")(),
+          localize("upgradeStats").toString(),
         ),
         ReactDOMElements.ol(
         {

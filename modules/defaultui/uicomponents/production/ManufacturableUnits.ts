@@ -110,23 +110,23 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
         {
           money: this.props.money,
           upgradeCost: unitUpgradeCost,
-          actionString: localize("upgradeHealth")(),
+          actionString: localize("upgradeHealth").toString(),
           currentLevel: manufactory.unitHealthModifier,
           maxLevel: 5.0,
           levelDecimalPoints: 1,
           onClick: this.upgradeHealth,
-          title: localize("increaseBaseHealthOfUnitsBuiltHere")(),
+          title: localize("increaseBaseHealthOfUnitsBuiltHere").toString(),
         }),
         ManufactoryUpgradeButton(
         {
           money: this.props.money,
           upgradeCost: unitUpgradeCost,
-          actionString: localize("upgradeStats")(),
+          actionString: localize("upgradeStats").toString(),
           currentLevel: manufactory.unitStatsModifier,
           maxLevel: 5.0,
           levelDecimalPoints: 1,
           onClick: this.upgradeStats,
-          title: localize("increaseBaseStatsOfUnitsBuiltHere")(),
+          title: localize("increaseBaseStatsOfUnitsBuiltHere").toString(),
         }),
       );
     }

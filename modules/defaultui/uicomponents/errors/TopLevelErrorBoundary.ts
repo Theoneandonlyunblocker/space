@@ -39,7 +39,7 @@ export class TopLevelErrorBoundaryComponent extends React.Component<PropTypes, S
           // react doesn't let us ignore errors in rendering I think
 
           const customErrorMessage = this.props.errorReportingMode !== "panic" ?
-            localize("UIErrorPanicDespiteUserPreference")(this.props.errorReportingMode) :
+            localize("UIErrorPanicDespiteUserPreference").format(this.props.errorReportingMode) :
             null;
 
           return SaveRecoveryWithDetails(

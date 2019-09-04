@@ -13,7 +13,7 @@ export const fleets: MapRendererLayerTemplate =
   key: "fleets",
   get displayName()
   {
-    return localize("fleets_displayName")();
+    return localize("fleets_displayName").toString();
   },
   interactive: true,
   isUsedForCameraBounds: false,

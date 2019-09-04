@@ -116,23 +116,23 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
     const columns: ListColumn<ItemListItemProps>[] =
     [
       {
-        label: localize("type")(),
+        label: localize("type").toString(),
         key: "typeName",
         defaultOrder: "asc",
       },
       {
-        label: localize("slot")(),
+        label: localize("slot").toString(),
         key: "slot",
         propToSortBy: "slotIndex",
         defaultOrder: "desc",
       },
       {
-        label: localize("unit")(),
+        label: localize("unit").toString(),
         key: "unitName",
         defaultOrder: "desc",
       },
       {
-        label: localize("ability")(),
+        label: localize("ability").toString(),
         key: "ability",
         defaultOrder: "desc",
       },

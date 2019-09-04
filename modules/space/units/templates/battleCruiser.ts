@@ -20,11 +20,11 @@ export const battleCruiser: UnitTemplate =
   type: "battleCruiser",
   get displayName()
   {
-    return localize("battleCruiser_displayName")();
+    return localize("battleCruiser_displayName").toString();
   },
   get description()
   {
-    return localize("battleCruiser_description")();
+    return localize("battleCruiser_description").toString();
   },
   archetype: unitArchetypes.combat,
   unitDrawingFN: makeDefaultUnitDrawingFunction(

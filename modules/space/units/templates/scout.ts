@@ -19,11 +19,11 @@ export const scout: UnitTemplate =
   type: "scout",
   get displayName()
   {
-    return localize("scout_displayName")();
+    return localize("scout_displayName").toString();
   },
   get description()
   {
-    return localize("scout_description")();
+    return localize("scout_description").toString();
   },
   archetype: unitArchetypes.scouting,
   unitDrawingFN: makeDefaultUnitDrawingFunction(

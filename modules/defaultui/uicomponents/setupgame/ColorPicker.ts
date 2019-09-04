@@ -72,13 +72,13 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
             {
               className: "color-picker-button",
               onClick: this.autoGenerateColor,
-            }, localize("auto")()),
+            }, localize("auto").toString()),
           !this.props.isNullable ? null :
             ReactDOMElements.button(
             {
               className: "color-picker-button",
               onClick: this.nullifyColor,
-            }, localize("clear")()),
+            }, localize("clear").toString()),
           NumberInput(
           {
             noSpinner: true,

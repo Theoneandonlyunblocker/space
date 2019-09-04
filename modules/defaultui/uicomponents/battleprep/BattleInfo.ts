@@ -62,7 +62,7 @@ export class BattleInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "battle-info-summary",
         },
-          `${star.name}: ${isAttacker ? localize("attacking")() : localize("defending")()}`
+          `${star.name}: ${isAttacker ? localize("attacking") : localize("defending")}`
         ),
         TerritoryBuildingList(
         {

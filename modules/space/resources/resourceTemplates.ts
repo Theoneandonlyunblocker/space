@@ -8,7 +8,7 @@ export const testResource1: ResourceTemplate =
   type: "testResource1",
   get displayName()
   {
-    return localize("testResource1")();
+    return localize("testResource1").toString();
   },
   getIconSrc: getIconSrc.bind(null, "test1"),
   distributionData:
@@ -22,7 +22,7 @@ export const testResource2: ResourceTemplate =
   type: "testResource2",
   get displayName()
   {
-    return localize("testResource2")();
+    return localize("testResource2").toString();
   },
   getIconSrc: getIconSrc.bind(null, "test2"),
   distributionData:
@@ -36,7 +36,7 @@ export const testResource3: ResourceTemplate =
   type: "testResource3",
   get displayName()
   {
-    return localize("testResource3")();
+    return localize("testResource3").toString();
   },
   getIconSrc: getIconSrc.bind(null, "test3"),
   distributionData:
@@ -50,7 +50,7 @@ export const testResource4: ResourceTemplate =
   type: "testResource4",
   get displayName()
   {
-    return localize("testResource4")();
+    return localize("testResource4").toString();
   },
   getIconSrc: getIconSrc.bind(null, "test4"),
   distributionData:
@@ -64,7 +64,7 @@ export const testResource5: ResourceTemplate =
   type: "testResource5",
   get displayName()
   {
-    return localize("testResource5")();
+    return localize("testResource5").toString();
   },
   getIconSrc: getIconSrc.bind(null, "test5"),
   distributionData:

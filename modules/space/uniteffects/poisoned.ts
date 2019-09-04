@@ -8,11 +8,11 @@ export const poisoned: UnitEffectTemplate =
   type: "poisoned",
   get displayName()
   {
-    return localize("poisoned_displayName")();
+    return localize("poisoned_displayName").toString();
   },
   get description()
   {
-    return localize("poisoned_description")();
+    return localize("poisoned_description").toString();
   },
   attributes:
   {

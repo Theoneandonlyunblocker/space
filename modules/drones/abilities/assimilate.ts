@@ -25,11 +25,11 @@ export const assimilate: AbilityTemplate =
   type: "assimilate",
   get displayName()
   {
-    return localize("assimilate_displayName")();
+    return localize("assimilate_displayName").toString();
   },
   get description()
   {
-    return localize("assimilate_description")();
+    return localize("assimilate_description").toString();
   },
   moveDelay: 100,
   actionsUse: 1,

@@ -45,14 +45,14 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
-    return localize("battleFinishMessage")(
+    return localize("battleFinishMessage").format(
     {
       locationName: props.location.name,
-      attackerName: props.attacker.name.toString(),
-      defenderName: props.defender.name.toString(),
+      attackerName: props.attacker.name,
+      defenderName: props.defender.name,
     });
   },
-  getTitle: (props: PropTypes) => localize("battleFinishTitle")(),
+  getTitle: (props: PropTypes) => localize("battleFinishTitle").toString(),
   serializeProps: (props: PropTypes) =>
   {
     return(

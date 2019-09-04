@@ -16,5 +16,9 @@ export const formatters =
     {
       return name.baseName + "'s";
     }
-  }
+  },
+  pronoun: (name: EnglishName, locale: string, form: string) => name.languageSpecificTags.pronouns[form],
+  wasWere: (name: EnglishName) => name.languageSpecificTags.isPlural ? "were" : "was",
+  sVerb: (name: EnglishName, locale: string, verbStem: string) => name.languageSpecificTags.isPlural ? verbStem : verbStem + "s",
+  esVerb: (name: EnglishName, locale: string, verbStem: string) => name.languageSpecificTags.isPlural ? verbStem : verbStem + "es",
 };

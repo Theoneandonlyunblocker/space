@@ -9,7 +9,7 @@ export const starLinks: MapRendererLayerTemplate =
   key: "starLinks",
   get displayName()
   {
-    return localize("starLinks_displayName")();
+    return localize("starLinks_displayName").toString();
   },
   interactive: false,
   isUsedForCameraBounds: false,

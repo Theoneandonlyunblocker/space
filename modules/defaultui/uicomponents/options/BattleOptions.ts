@@ -23,42 +23,42 @@ function getBattleAnimationStages()
   [
     {
       key: "before",
-      displayName: localize("beforeAbility")(),
+      displayName: localize("beforeAbility").toString(),
       min: 0,
       max: 5000,
       step: 100,
     },
     {
       key: "effectDuration",
-      displayName: localize("abilityEffectDuration")(),
+      displayName: localize("abilityEffectDuration").toString(),
       min: 0,
       max: 10,
       step: 0.1,
     },
     {
       key: "after",
-      displayName: localize("afterAbility")(),
+      displayName: localize("afterAbility").toString(),
       min: 0,
       max: 5000,
       step: 100,
     },
     {
       key: "unitEnter",
-      displayName: localize("unitEnter")(),
+      displayName: localize("unitEnter").toString(),
       min: 0,
       max: 1000,
       step: 50,
     },
     {
       key: "unitExit",
-      displayName: localize("unitExit")(),
+      displayName: localize("unitExit").toString(),
       min: 0,
       max: 1000,
       step: 50,
     },
     {
       key: "turnTransition",
-      displayName: localize("turnTransition")(),
+      displayName: localize("turnTransition").toString(),
       min: 0,
       max: 2000,
       step: 100,
@@ -85,7 +85,7 @@ export class BattleOptionsComponent extends React.Component<PropTypes, StateType
       },
         OptionsGroup(
         {
-          headerTitle: localize("battleAnimationTiming")(),
+          headerTitle: localize("battleAnimationTiming").toString(),
           options: getBattleAnimationStages().map(stage =>
           {
             const key = stage.key;

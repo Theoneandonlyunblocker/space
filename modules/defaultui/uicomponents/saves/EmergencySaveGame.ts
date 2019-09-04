@@ -42,11 +42,11 @@ export class EmergencySaveGameComponent extends React.Component<PropTypes, State
     try
     {
       this.state.saveData = app.game.getSaveData(storageStrings.panicSave);
-      this.state.saveDataStatusMessage = localize("saveDataCopyPrompt")();
+      this.state.saveDataStatusMessage = localize("saveDataCopyPrompt").toString();
     }
     catch (e)
     {
-      this.state.saveDataStatusMessage = localize("activeGameUnserializable")();
+      this.state.saveDataStatusMessage = localize("activeGameUnserializable").toString();
     }
 
     this.handleSave = this.handleSave.bind(this);
@@ -82,7 +82,7 @@ export class EmergencySaveGameComponent extends React.Component<PropTypes, State
             {
               className: "emergency-save-game-button",
               type: "submit",
-              value: localize("save_action")(),
+              value: localize("save_action").toString(),
             }),
           ),
           !this.state.actionStatusMessage ? null :
@@ -108,7 +108,7 @@ export class EmergencySaveGameComponent extends React.Component<PropTypes, State
             className: "import-data-label",
             htmlFor: "emergency-save-game-textarea",
           },
-            localize("saveData")(),
+            localize("saveData").toString(),
           ),
           ReactDOMElements.textarea(
           {
@@ -129,14 +129,14 @@ export class EmergencySaveGameComponent extends React.Component<PropTypes, State
       app.game.save(this.state.saveName);
       this.setState(
       {
-        actionStatusMessage: localize("saveSuccessful")(),
+        actionStatusMessage: localize("saveSuccessful").toString(),
       });
     }
     catch (e)
     {
       this.setState(
       {
-        actionStatusMessage: localize("saveFailure")(),
+        actionStatusMessage: localize("saveFailure").toString(),
       });
     }
   }

@@ -74,7 +74,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
             },
             key: "buildActions",
           },
-            localize("constructBuilding")(),
+            localize("constructBuilding").toString(),
           ),
         !canUpgradeBuildings ? null :
           ReactDOMElements.button(
@@ -86,7 +86,7 @@ export class PossibleActionsComponent extends React.Component<PropTypes, StateTy
             },
             key: "upgradeActions",
           },
-            localize("upgradeBuilding")(),
+            localize("upgradeBuilding").toString(),
           )
       )
     );

@@ -17,11 +17,11 @@ export const droneSwarm: UnitTemplate =
   type: "droneSwarm",
   get displayName()
   {
-    return localize("droneCommander_displayName")();
+    return localize("droneCommander_displayName").toString();
   },
   get description()
   {
-    return localize("droneCommander_description")();
+    return localize("droneCommander_description").toString();
   },
   archetype: unitArchetypes.combat,
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),

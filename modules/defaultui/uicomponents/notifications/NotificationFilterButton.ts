@@ -52,7 +52,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
         !this.state.hasNotificationFilterPopup ? null :
           DefaultWindow(
           {
-            title: localize("messageSettings")(),
+            title: localize("messageSettings").toString(),
             handleClose: this.closePopup,
           },
             NotificationFilterList(
