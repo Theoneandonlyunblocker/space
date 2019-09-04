@@ -79,7 +79,7 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "star-info-income",
         },
-          `${localize("income")()}: ${star.getIncome()}`,
+          localize("incomeAmount")(star.getIncome()),
         ),
         TerritoryBuildingList(
         {

@@ -17,6 +17,7 @@ export const galaxyMapUI =
   attackTargetTooltip: "Attack {enemyName, possessiveName} {targetType}",
   coordinates: "x: {0}, y: {1}",
   terrainType: "Terrain: {0}",
+  incomeAmount: "Income: {0}",
 
   topMenuButtonActionExplanation: "Left click to open. Right click to close",
   topMenuButtonTooltip_production: "Produce units and items",
