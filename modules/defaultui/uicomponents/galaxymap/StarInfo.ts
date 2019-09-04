@@ -67,14 +67,13 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "star-info-location",
         },
-          `x: ${star.x.toFixed()} y: ${star.y.toFixed()}`,
+          localize("coordinates")(star.x.toFixed(), star.y.toFixed()),
         ),
         ReactDOMElements.div(
         {
           className: "star-info-terrain",
         },
-          // TODO 2019.09.03 | localize
-          `Terrain: ${star.terrain.displayName}`,
+          localize("terrainType")(star.terrain.displayName),
         ),
         ReactDOMElements.div(
         {
