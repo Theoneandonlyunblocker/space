@@ -1,4 +1,4 @@
-import { BattleVfxTemplate } from "../../../src/templateinterfaces/BattleVfxTemplate";
+import { BattleVfxTemplate } from "src/templateinterfaces/BattleVfxTemplate";
 
 import
 {

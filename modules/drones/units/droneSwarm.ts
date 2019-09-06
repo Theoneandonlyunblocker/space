@@ -1,11 +1,11 @@
-import {UnitTemplate} from "../../../src/templateinterfaces/UnitTemplate";
+import {UnitTemplate} from "src/templateinterfaces/UnitTemplate";
 
-import * as unitArchetypes from "../../common/unitArchetypes";
-import {makeDefaultUnitDrawingFunctionForPlaceholder} from "../../space/units/defaultUnitDrawingFunction";
+import * as unitArchetypes from "modules/common/unitArchetypes";
+import {makeDefaultUnitDrawingFunctionForPlaceholder} from "modules/space/units/defaultUnitDrawingFunction";
 
-import * as CommonAbility from "../../space/abilities/abilities";
-import {distributionGroups} from "../../common/distributionGroups";
-import {getAssetSrc} from "../../common/assets";
+import * as CommonAbility from "modules/space/abilities/abilities";
+import {distributionGroups} from "modules/common/distributionGroups";
+import {getAssetSrc} from "modules/common/assets";
 
 import {assimilate} from "../abilities/assimilate";
 import {merge} from "../abilities/merge";

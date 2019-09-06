@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "src/templateinterfaces/MapRendererLayerTemplate";
 import { localize } from "../localization/localize";
 
 

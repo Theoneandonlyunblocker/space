@@ -2,8 +2,8 @@ import * as Proton from "proton-js";
 import * as PIXI from "pixi.js";
 
 import { PixiParticle } from "./PixiParticle";
-import { Point } from "../../../../../src/math/Point";
-import { randRange, getDistanceBetweenPoints, getAngleBetweenPoints } from "../../../../../src/generic/utility";
+import { Point } from "src/math/Point";
+import { randRange, getDistanceBetweenPoints, getAngleBetweenPoints } from "src/generic/utility";
 
 
 export class ArcZone<T extends Proton.Particle = PixiParticle> extends Proton.Zone<T>

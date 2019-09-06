@@ -1,5 +1,5 @@
-import {TechnologyTemplate} from "../../../src/templateinterfaces/TechnologyTemplate";
-import {TemplateCollection} from "../../../src/templateinterfaces/TemplateCollection";
+import {TechnologyTemplate} from "src/templateinterfaces/TechnologyTemplate";
+import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
 import { localize } from "./localization/localize";
 
 

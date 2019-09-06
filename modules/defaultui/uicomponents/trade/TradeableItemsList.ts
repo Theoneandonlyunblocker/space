@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {TradeableItem, TradeableItems} from "../../../../src/trade/Trade";
+import {TradeableItem, TradeableItems} from "src/trade/Trade";
 import {List} from "../list/List";
 import {ListColumn} from "../list/ListColumn";
 import {ListItem} from "../list/ListItem";

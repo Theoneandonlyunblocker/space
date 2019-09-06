@@ -1,6 +1,6 @@
-import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
+import {UnitTemplate} from "src/templateinterfaces/UnitTemplate";
 
-import * as unitArchetypes from "../../../common/unitArchetypes";
+import * as unitArchetypes from "modules/common/unitArchetypes";
 import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
 
 import
@@ -16,15 +16,15 @@ import
   snipeIntelligence,
   snipeSpeed,
   standBy,
-} from "../../abilities/abilities";
-import {itemSlot} from "../../items/itemSlot";
+} from "modules/space/abilities/abilities";
+import {itemSlot} from "modules/space/items/itemSlot";
 
 import
 {
   autoHeal,
   medic,
   warpJammer,
-} from "../../passiveskills/passiveSkills";
+} from "modules/space/passiveskills/passiveSkills";
 import {getIconSrc} from "../resources";
 import { localize } from "../localization/localize";
 

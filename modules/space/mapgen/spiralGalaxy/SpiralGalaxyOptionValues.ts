@@ -1,4 +1,4 @@
-import {MapGenOptionValues} from "../../../../src/templateinterfaces/MapGenOptionValues";
+import {MapGenOptionValues} from "src/templateinterfaces/MapGenOptionValues";
 
 
 export declare interface SpiralGalaxyOptionValues extends MapGenOptionValues

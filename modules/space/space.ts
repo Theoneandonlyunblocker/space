@@ -1,6 +1,6 @@
-import {GameModule} from "../../src/modules/GameModule";
-import {GameModuleInitializationPhase} from "../../src/modules/GameModuleInitializationPhase";
-import { englishLanguage } from "../englishlanguage/englishLanguage";
+import {GameModule} from "src/modules/GameModule";
+import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
+import { englishLanguage } from "modules/englishlanguage/englishLanguage";
 import {ruleSet} from "./ruleSet";
 
 import * as AbilityTemplates from  "./abilities/abilities";

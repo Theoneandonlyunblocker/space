@@ -1,6 +1,6 @@
-import * as TechnologyTemplates from "../../technologies/technologyTemplates";
+import * as TechnologyTemplates from "modules/space/technologies/technologyTemplates";
 
-import {RaceTechnologyValue} from "../../../../src/templateinterfaces/RaceTechnologyValue";
+import {RaceTechnologyValue} from "src/templateinterfaces/RaceTechnologyValue";
 
 
 export const defaultRaceTechnologyValues: RaceTechnologyValue[] =

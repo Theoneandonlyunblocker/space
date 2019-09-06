@@ -1,11 +1,11 @@
 import * as PIXI from "pixi.js";
 
-import {VfxDrawingFunction} from "../../../../src/templateinterfaces/VfxDrawingFunction";
+import {VfxDrawingFunction} from "src/templateinterfaces/VfxDrawingFunction";
 import { WavyLine } from "./vfxfragments/WavyLine";
 import { ProjectileWithImpact } from "./vfxfragments/ProjectileWithImpact";
 import { Projectile } from "./vfxfragments/Projectile";
-import { solveInitialVelocity, solveAcceleration } from "../../../../src/math/kinematics";
-import { linearStep } from "../../../../src/generic/utility";
+import { solveInitialVelocity, solveAcceleration } from "src/math/kinematics";
+import { linearStep } from "src/generic/utility";
 import { resources } from "../resources";
 
 const impactTime = 0.3;

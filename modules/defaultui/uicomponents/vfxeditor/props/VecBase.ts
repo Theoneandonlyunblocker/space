@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {VfxFragment} from "../../../../space/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
+import {VfxFragment} from "modules/space/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
 
 import {InlineNumberProp} from "./InlineNumberProp";
 

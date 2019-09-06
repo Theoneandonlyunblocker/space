@@ -2,8 +2,8 @@ import * as PIXI from "pixi.js";
 
 import {VfxFragment} from "./VfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
-import { Point } from "../../../../../src/math/Point";
-import { TilingRope } from "../../../../../src/graphics/pixiWrapperFunctions";
+import { Point } from "src/math/Point";
+import { TilingRope } from "src/graphics/pixiWrapperFunctions";
 
 
 interface WavyLineProps

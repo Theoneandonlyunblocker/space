@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {AttitudeModifier} from "../../../../src/diplomacy/AttitudeModifier";
+import {AttitudeModifier} from "src/diplomacy/AttitudeModifier";
 import
 {
   clamp,
   getRelativeValue,
-} from "../../../../src/generic/utility";
+} from "src/generic/utility";
 
 import {AttitudeModifierList} from "./AttitudeModifierList";
 

@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Language} from "../../../../src/localization/Language";
-import {LanguageSupportLevel} from "../../../../src/localization/languageSupport";
+import {Language} from "src/localization/Language";
+import {LanguageSupportLevel} from "src/localization/languageSupport";
 
 import {localize} from "../../localization/localize";
 

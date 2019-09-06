@@ -1,8 +1,8 @@
-import {Point} from "../../../../src/math/Point";
+import {Point} from "src/math/Point";
 import
 {
   pointsEqual,
-} from "../../../../src/generic/utility";
+} from "src/generic/utility";
 
 import {Triangle} from "./Triangle";
 

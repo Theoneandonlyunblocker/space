@@ -2,20 +2,20 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 
-import {Battle} from "../../../src/battle/Battle";
-import {BattleScene} from "../../../src/battle/BattleScene";
-import {Player} from "../../../src/player/Player";
-import {Star} from "../../../src/map/Star";
-import {Unit} from "../../../src/unit/Unit";
-import {options} from "../../../src/app/Options";
+import {Battle} from "src/battle/Battle";
+import {BattleScene} from "src/battle/BattleScene";
+import {Player} from "src/player/Player";
+import {Star} from "src/map/Star";
+import {Unit} from "src/unit/Unit";
+import {options} from "src/app/Options";
 import
 {
   extendObject,
   getRandomProperty,
-} from "../../../src/generic/utility";
+} from "src/generic/utility";
 
 
-import {activeModuleData} from "../../../src/app/activeModuleData";
+import {activeModuleData} from "src/app/activeModuleData";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,16 +1,16 @@
 import * as PIXI from "pixi.js";
 
-import {Color} from "../../../../../src/color/Color";
-import {Point} from "../../../../../src/math/Point";
+import {Color} from "src/color/Color";
+import {Point} from "src/math/Point";
 import
 {
   makeShaderSprite,
-} from "../../../../../src/graphics/pixiWrapperFunctions";
+} from "src/graphics/pixiWrapperFunctions";
 import
 {
   clamp,
   getRelativeValue,
-} from "../../../../../src/generic/utility";
+} from "src/generic/utility";
 import {BeamShader} from "../shaders/BeamShader";
 
 import {RampingValue} from "./RampingValue";

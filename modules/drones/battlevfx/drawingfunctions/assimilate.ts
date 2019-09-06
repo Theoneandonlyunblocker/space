@@ -1,8 +1,8 @@
-import { VfxDrawingFunction } from "../../../../src/templateinterfaces/VfxDrawingFunction";
-import { VfxParams } from "../../../../src/templateinterfaces/VfxParams";
+import { VfxDrawingFunction } from "src/templateinterfaces/VfxDrawingFunction";
+import { VfxParams } from "src/templateinterfaces/VfxParams";
 
-import { AbsorbParticlesFromTarget } from "../../../space/battlevfx/drawingfunctions/vfxfragments/AbsorbParticlesFromTarget";
-import { ResultType } from "../../../space/effectactions/ResultType";
+import { AbsorbParticlesFromTarget } from "modules/space/battlevfx/drawingfunctions/vfxfragments/AbsorbParticlesFromTarget";
+import { ResultType } from "modules/space/effectactions/ResultType";
 
 
 export type EffectIds = "damage" | "increaseUserHealth";

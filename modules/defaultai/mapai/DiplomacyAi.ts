@@ -1,6 +1,6 @@
-import {Game} from "../../../src/game/Game";
-import {Player} from "../../../src/player/Player";
-import {PlayerDiplomacy} from "../../../src/diplomacy/PlayerDiplomacy";
+import {Game} from "src/game/Game";
+import {Player} from "src/player/Player";
+import {PlayerDiplomacy} from "src/diplomacy/PlayerDiplomacy";
 
 import {MapEvaluator} from "./MapEvaluator";
 

@@ -1,4 +1,4 @@
-import {MapGenTemplate} from "../../../../src/templateinterfaces/MapGenTemplate";
+import {MapGenTemplate} from "src/templateinterfaces/MapGenTemplate";
 
 import {spiralGalaxyGeneration} from "../spiralGalaxy/spiralGalaxyGeneration";
 import { localize } from "../localization/localize";

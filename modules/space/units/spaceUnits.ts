@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
 
-import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import {GameModule} from "../../../src/modules/GameModule";
-import {GameModuleInitializationPhase} from "../../../src/modules/GameModuleInitializationPhase";
+import {englishLanguage} from "modules/englishlanguage/englishLanguage";
+import {GameModule} from "src/modules/GameModule";
+import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
 
-import {unitArchetypes} from "../../common/unitArchetypes";
+import {unitArchetypes} from "modules/common/unitArchetypes";
 import {unitTemplates} from "./unitTemplates";
 import {setBaseUrl as setAssetBaseUrl} from "./resources";
 

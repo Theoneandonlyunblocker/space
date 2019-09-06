@@ -1,5 +1,5 @@
-import {Localizer} from "../../../../src/localization/Localizer";
-import {englishLanguage} from "../../../englishlanguage/englishLanguage";
+import {Localizer} from "src/localization/Localizer";
+import {englishLanguage} from "modules/englishlanguage/englishLanguage";
 import {abilities as en_abilities} from "./en/abilities";
 
 

@@ -1,11 +1,11 @@
-import {Player} from "../../../../src/player/Player";
-import {Region} from "../../../../src/map/Region";
-import {Star} from "../../../../src/map/Star";
-import {activeModuleData} from "../../../../src/app/activeModuleData";
+import {Player} from "src/player/Player";
+import {Region} from "src/map/Region";
+import {Star} from "src/map/Star";
+import {activeModuleData} from "src/app/activeModuleData";
 import
 {
   randRange,
-} from "../../../../src/generic/utility";
+} from "src/generic/utility";
 
 import {MapGenDataByStarId} from "./MapGenDataByStarId";
 import

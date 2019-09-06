@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Star} from "../../../../src/map/Star";
+import {Star} from "src/map/Star";
 
 
 export interface PropTypes extends React.Props<any>

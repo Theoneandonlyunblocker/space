@@ -1,20 +1,20 @@
 import * as Offset from "polygon-offset";
 import * as PIXI from "pixi.js";
 
-import * as Terrains from "../../terrains/terrains";
+import * as Terrains from "modules/space/terrains/terrains";
 
-import {triangulate} from "../../mapgen/common/triangulate";
+import {triangulate} from "modules/space/mapgen/common/triangulate";
 
-import {GalaxyMap} from "../../../../src/map/GalaxyMap";
-import {Player} from "../../../../src/player/Player";
-import {Point} from "../../../../src/math/Point";
+import {GalaxyMap} from "src/map/GalaxyMap";
+import {Player} from "src/player/Player";
+import {Point} from "src/math/Point";
 import
 {
   getRandomArrayItemWithWeights,
   randInt,
-} from "../../../../src/generic/utility";
+} from "src/generic/utility";
 
-import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "src/templateinterfaces/MapRendererLayerTemplate";
 import { localize } from "../localization/localize";
 
 

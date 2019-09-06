@@ -1,9 +1,9 @@
-import {UnitEffectTemplate} from "../../../../src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "src/templateinterfaces/UnitEffectTemplate";
 
 import
 {
   adjustDefenderBattleEvaluationAdjustment,
-} from "../../effectactions/effectActions";
+} from "modules/space/effectactions/effectActions";
 
 
 export function makeDefenderAdvantageEffect(amount: number): UnitEffectTemplate

@@ -1,19 +1,19 @@
-import {AbilityTemplate} from "../../../src/templateinterfaces/AbilityTemplate";
+import {AbilityTemplate} from "src/templateinterfaces/AbilityTemplate";
 
 import
 {
   AbilityTargetEffect,
   AbilityTargetType,
-} from "../../../src/abilities/AbilityTargetDisplayData";
+} from "src/abilities/AbilityTargetDisplayData";
 import
 {
   makeGetAbilityTargetDisplayDataFN,
   areaSingle,
   targetAllAllies,
-} from "../../../src/abilities/targeting";
+} from "src/abilities/targeting";
 
-import {makePlaceholderVfx} from "../../common/makePlaceholderVfx";
-import * as EffectActions from "../../space/effectactions/effectActions";
+import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
+import * as EffectActions from "modules/space/effectactions/effectActions";
 import { localize } from "../localization/localize";
 
 

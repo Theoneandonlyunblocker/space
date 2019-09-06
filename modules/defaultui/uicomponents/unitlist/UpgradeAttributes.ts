@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Unit} from "../../../../src/unit/Unit";
+import {Unit} from "src/unit/Unit";
 
 import {localize} from "../../localization/localize";
 

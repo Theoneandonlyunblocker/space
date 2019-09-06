@@ -1,4 +1,4 @@
-import {ResourceTemplate} from "../../../src/templateinterfaces/ResourceTemplate";
+import {ResourceTemplate} from "src/templateinterfaces/ResourceTemplate";
 import { getIconSrc } from "./assets";
 import { localize } from "./localization/localize";
 

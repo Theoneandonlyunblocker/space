@@ -1,11 +1,11 @@
-import {Battle} from "../../../src/battle/Battle";
-import {GameLoader} from "../../../src/saves/GameLoader";
-import {Player} from "../../../src/player/Player";
-import {Star} from "../../../src/map/Star";
-import {NotificationFilterState} from "../../../src/notifications/NotificationFilterState";
-import {NotificationWitnessCriterion} from "../../../src/notifications/NotificationWitnessCriterion";
-import {activeNotificationStore} from "../../../src/app/activeNotificationStore";
-import {NotificationTemplate} from "../../../src/templateinterfaces/NotificationTemplate";
+import {Battle} from "src/battle/Battle";
+import {GameLoader} from "src/saves/GameLoader";
+import {Player} from "src/player/Player";
+import {Star} from "src/map/Star";
+import {NotificationFilterState} from "src/notifications/NotificationFilterState";
+import {NotificationWitnessCriterion} from "src/notifications/NotificationWitnessCriterion";
+import {activeNotificationStore} from "src/app/activeNotificationStore";
+import {NotificationTemplate} from "src/templateinterfaces/NotificationTemplate";
 import {localize} from "../localization/localize";
 
 import {BattleFinishNotification as UIComponent} from "./uicomponents/BattleFinishNotification";

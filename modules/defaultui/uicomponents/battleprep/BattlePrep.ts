@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {app} from "../../../../src/app/App"; // TODO global
-import {BattlePrep as BattlePrepObj} from "../../../../src/battleprep/BattlePrep";
-import { BattlePrepFormation } from "../../../../src/battleprep/BattlePrepFormation";
+import {app} from "src/app/App"; // TODO global
+import {BattlePrep as BattlePrepObj} from "src/battleprep/BattlePrep";
+import { BattlePrepFormation } from "src/battleprep/BattlePrepFormation";
 import
 {
   FormationInvalidityReason,
@@ -12,14 +12,14 @@ import
   FormationValidityModifier,
   FormationValidityModifierEffect,
   FormationValidityModifierSourceType,
-} from "../../../../src/battleprep/BattlePrepFormationValidity";
-import {BattleSimulator} from "../../../../src/ai/BattleSimulator";
-import {options} from "../../../../src/app/Options";
-import {Item} from "../../../../src/items/Item";
-import {Unit} from "../../../../src/unit/Unit";
-import {activeModuleData} from "../../../../src/app/activeModuleData";
-import { extractFlagsFromFlagWord } from "../../../../src/generic/utility";
-import * as debug from "../../../../src/app/debug";
+} from "src/battleprep/BattlePrepFormationValidity";
+import {BattleSimulator} from "src/ai/BattleSimulator";
+import {options} from "src/app/Options";
+import {Item} from "src/items/Item";
+import {Unit} from "src/unit/Unit";
+import {activeModuleData} from "src/app/activeModuleData";
+import { extractFlagsFromFlagWord } from "src/generic/utility";
+import * as debug from "src/app/debug";
 import {BattleBackgroundComponent, BattleBackground} from "../battle/BattleBackground";
 import {Formation} from "../battle/Formation";
 import {ItemList} from "../unitlist/ItemList";
@@ -27,7 +27,7 @@ import {MenuUnitInfo} from "../unitlist/MenuUnitInfo";
 import {UnitList} from "../unitlist/UnitList";
 
 import {BattleInfo} from "./BattleInfo";
-import { Player } from "../../../../src/player/Player";
+import { Player } from "src/player/Player";
 
 
 export interface PropTypes extends React.Props<any>

@@ -1,8 +1,8 @@
 import * as React from "react";
-import { ErrorReportingMode } from "../../../../src/app/ErrorReportingMode";
+import { ErrorReportingMode } from "src/app/ErrorReportingMode";
 import {ErrorBoundary} from "./ErrorBoundary";
 import {SaveRecoveryWithDetails} from "./SaveRecoveryWithDetails";
-import {Game} from "../../../../src/game/Game";
+import {Game} from "src/game/Game";
 import {localize} from "../../localization/localize";
 
 

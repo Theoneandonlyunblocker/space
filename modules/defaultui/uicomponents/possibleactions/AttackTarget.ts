@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {FleetAttackTarget} from "../../../../src/map/FleetAttackTarget";
-import {eventManager} from "../../../../src/app/eventManager";
+import {FleetAttackTarget} from "src/map/FleetAttackTarget";
+import {eventManager} from "src/app/eventManager";
 import {PlayerFlag} from "../PlayerFlag";
 
 import {localize} from "../../localization/localize";

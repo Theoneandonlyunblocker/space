@@ -3,8 +3,8 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 import {options as optionsStrings} from "../../localization/en/options";
-import {eventManager} from "../../../../src/app/eventManager";
-import {options} from "../../../../src/app/Options";
+import {eventManager} from "src/app/eventManager";
+import {options} from "src/app/Options";
 import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
 import {OptionsNumericField} from "./OptionsNumericField";
 import {OptionsCheckbox} from "./OptionsCheckbox";

@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {tutorialStatus} from "../../../../src/tutorials/TutorialStatus";
-import {TutorialVisibility} from "../../../../src/tutorials/TutorialVisibility";
+import {tutorialStatus} from "src/tutorials/TutorialStatus";
+import {TutorialVisibility} from "src/tutorials/TutorialVisibility";
 
 import {localize} from "../../localization/localize";
 

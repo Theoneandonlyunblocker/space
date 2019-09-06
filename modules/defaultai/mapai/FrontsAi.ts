@@ -1,6 +1,6 @@
-import {IdDictionary} from "../../../src/generic/IdDictionary";
-import {Player} from "../../../src/player/Player";
-import {Unit} from "../../../src/unit/Unit";
+import {IdDictionary} from "src/generic/IdDictionary";
+import {Player} from "src/player/Player";
+import {Unit} from "src/unit/Unit";
 import {FrontObjective} from "../objectives/common/FrontObjective";
 
 import {Front} from "./Front";

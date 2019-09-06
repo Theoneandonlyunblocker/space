@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {FleetAttackTarget} from "../../../../src/map/FleetAttackTarget";
-import {Player} from "../../../../src/player/Player";
-import {Star} from "../../../../src/map/Star";
+import {FleetAttackTarget} from "src/map/FleetAttackTarget";
+import {Player} from "src/player/Player";
+import {Star} from "src/map/Star";
 
 import {AttackTarget} from "./AttackTarget";
 import {ExpandedActionKind} from "./ExpandedAction";

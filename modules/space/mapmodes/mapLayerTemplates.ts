@@ -1,5 +1,5 @@
-import {MapRendererLayerTemplate} from "../../../src/templateinterfaces/MapRendererLayerTemplate";
-import {TemplateCollection} from "../../../src/templateinterfaces/TemplateCollection";
+import {MapRendererLayerTemplate} from "src/templateinterfaces/MapRendererLayerTemplate";
+import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
 
 import * as MapLayers from "./allMapLayerTemplates";
 

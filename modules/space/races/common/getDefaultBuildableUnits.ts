@@ -1,7 +1,7 @@
-import {unitTemplates as units} from "../../units/unitTemplates";
-import {debugShip} from "../../units/templates/debugShip";
-import {options} from "../../../../src/app/Options";
-import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
+import {unitTemplates as units} from "modules/space/units/unitTemplates";
+import {debugShip} from "modules/space/units/templates/debugShip";
+import {options} from "src/app/Options";
+import {UnitTemplate} from "src/templateinterfaces/UnitTemplate";
 
 
 export function getDefaultBuildableUnits(): UnitTemplate[]

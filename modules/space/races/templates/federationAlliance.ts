@@ -1,17 +1,17 @@
-import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
+import {RaceTemplate} from "src/templateinterfaces/RaceTemplate";
 
 import
 {
   getRandomProperty,
-} from "../../../../src/generic/utility";
+} from "src/generic/utility";
 
-import {generateIndependentFleets} from "../../../common/generateIndependentFleets";
-import {generateIndependentPlayer} from "../../../common/generateIndependentPlayer";
-import {defaultAiConstructor} from "../../../defaultai/mapai/DefaultAiConstructor";
-import * as TechnologyTemplates from "../../technologies/technologyTemplates";
-import * as items from "../../items/itemTemplates";
-import {unitTemplates as units} from "../../units/unitTemplates";
-import * as buildings from "../../buildings/templates/otherBuildings";
+import {generateIndependentFleets} from "modules/common/generateIndependentFleets";
+import {generateIndependentPlayer} from "modules/common/generateIndependentPlayer";
+import {defaultAiConstructor} from "modules/defaultai/mapai/DefaultAiConstructor";
+import * as TechnologyTemplates from "modules/space/technologies/technologyTemplates";
+import * as items from "modules/space/items/itemTemplates";
+import {unitTemplates as units} from "modules/space/units/unitTemplates";
+import * as buildings from "modules/space/buildings/templates/otherBuildings";
 
 import {getDefaultBuildableBuildings} from "../common/getDefaultBuildableBuildings";
 import {getDefaultBuildableItems} from "../common/getDefaultBuildableItems";

@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Player} from "../../../../src/player/Player";
-import {BuildingTemplate} from "../../../../src/templateinterfaces/BuildingTemplate";
+import {Player} from "src/player/Player";
+import {BuildingTemplate} from "src/templateinterfaces/BuildingTemplate";
 import {ListItemProps} from "../list/ListItemProps";
 
 import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";

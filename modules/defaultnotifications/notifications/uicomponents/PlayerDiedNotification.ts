@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
 
-import {Notification} from "../../../../src/notifications/Notification";
+import {Notification} from "src/notifications/Notification";
 
 import
 {

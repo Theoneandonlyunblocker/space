@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {UnitAttributesObject} from "../../../../src/unit/UnitAttributes";
+import {UnitAttributesObject} from "src/unit/UnitAttributes";
 import { getAssetSrc } from "modules/defaultui/assets";
 
 

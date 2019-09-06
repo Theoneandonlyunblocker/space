@@ -1,20 +1,20 @@
-import {ExecutedEffectsResult} from "../../../src/templateinterfaces/ExecutedEffectsResult";
-import {AbilityTemplate} from "../../../src/templateinterfaces/AbilityTemplate";
+import {ExecutedEffectsResult} from "src/templateinterfaces/ExecutedEffectsResult";
+import {AbilityTemplate} from "src/templateinterfaces/AbilityTemplate";
 
 import
 {
   AbilityTargetEffect,
   AbilityTargetType,
-} from "../../../src/abilities/AbilityTargetDisplayData";
+} from "src/abilities/AbilityTargetDisplayData";
 import
 {
   makeGetAbilityTargetDisplayDataFN,
   areaSingle,
   targetOtherAllies,
-} from "../../../src/abilities/targeting";
+} from "src/abilities/targeting";
 
-import {ResultType} from "../../space/effectactions/ResultType";
-import * as EffectActions from "../../space/effectactions/effectActions";
+import {ResultType} from "modules/space/effectactions/ResultType";
+import * as EffectActions from "modules/space/effectactions/effectActions";
 
 import * as DroneStatusEffects from "../unitEffects";
 import * as DroneBattleVfx from "../battlevfx/templates";

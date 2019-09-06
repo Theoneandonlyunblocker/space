@@ -1,5 +1,5 @@
-import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
-import {UnitArchetype} from "../../src/templateinterfaces/UnitArchetype";
+import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
+import {UnitArchetype} from "src/templateinterfaces/UnitArchetype";
 
 
 export const combat: UnitArchetype =

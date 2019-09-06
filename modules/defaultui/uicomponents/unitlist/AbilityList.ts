@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {AbilityBase} from "../../../../src/templateinterfaces/AbilityBase";
+import {AbilityBase} from "src/templateinterfaces/AbilityBase";
 
 import {AbilityListItem, AbilityListItemType} from "./AbilityListItem";
 

@@ -1,21 +1,21 @@
-import {Building} from "../../../../src/building/Building";
-import {Region} from "../../../../src/map/Region";
-import {Star} from "../../../../src/map/Star";
+import {Building} from "src/building/Building";
+import {Region} from "src/map/Region";
+import {Star} from "src/map/Star";
 import
 {
   aStar,
-} from "../../../../src/map/pathFinding";
-import {Distributable} from "../../../../src/generic/Distributable";
+} from "src/map/pathFinding";
+import {Distributable} from "src/generic/Distributable";
 import
 {
   getRandomKeyWithWeights,
   getRelativeWeightsFromObject,
-} from "../../../../src/generic/utility";
+} from "src/generic/utility";
 import
 {
   sectorCommand,
   starBase,
-} from "../../buildings/templates/territoryBuildings";
+} from "modules/space/buildings/templates/territoryBuildings";
 
 import {MapGenDataByStarId} from "./MapGenDataByStarId";
 import {triangulate} from "./triangulate";

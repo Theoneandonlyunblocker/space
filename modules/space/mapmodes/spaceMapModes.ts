@@ -1,8 +1,8 @@
 import * as PIXI from "pixi.js";
 
-import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import {GameModule} from "../../../src/modules/GameModule";
-import {GameModuleInitializationPhase} from "../../../src/modules/GameModuleInitializationPhase";
+import {englishLanguage} from "modules/englishlanguage/englishLanguage";
+import {GameModule} from "src/modules/GameModule";
+import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
 
 import {mapLayerTemplates} from "./mapLayerTemplates";
 import {mapModeTemplates} from "./mapModeTemplates";

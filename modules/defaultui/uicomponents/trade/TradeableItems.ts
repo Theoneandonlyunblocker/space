@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {TradeableItems as TradeableItemsObj} from "../../../../src/trade/Trade";
+import {TradeableItems as TradeableItemsObj} from "src/trade/Trade";
 
 import {TradeableItemsList} from "./TradeableItemsList";
 

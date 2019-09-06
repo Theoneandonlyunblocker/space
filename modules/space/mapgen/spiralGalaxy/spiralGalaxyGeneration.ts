@@ -1,29 +1,29 @@
 import * as RNG from "rng-js";
 
-import {FillerPoint} from "../../../../src/map/FillerPoint";
-import {MapGenResult} from "../../../../src/map/MapGenResult";
-import {Player} from "../../../../src/player/Player";
-import {Region} from "../../../../src/map/Region";
-import {Star} from "../../../../src/map/Star";
-import {templateIndexes} from "../../../../src/app/TemplateIndexes";
-import {activeModuleData} from "../../../../src/app/activeModuleData";
+import {FillerPoint} from "src/map/FillerPoint";
+import {MapGenResult} from "src/map/MapGenResult";
+import {Player} from "src/player/Player";
+import {Region} from "src/map/Region";
+import {Star} from "src/map/Star";
+import {templateIndexes} from "src/app/TemplateIndexes";
+import {activeModuleData} from "src/app/activeModuleData";
 import
 {
   randInt,
-} from "../../../../src/generic/utility";
+} from "src/generic/utility";
 
-import {MapGenFunction} from "../../../../src/templateinterfaces/MapGenFunction";
-import {RaceTemplate} from "../../../../src/templateinterfaces/RaceTemplate";
-import {ResourceTemplate} from "../../../../src/templateinterfaces/ResourceTemplate";
+import {MapGenFunction} from "src/templateinterfaces/MapGenFunction";
+import {RaceTemplate} from "src/templateinterfaces/RaceTemplate";
+import {ResourceTemplate} from "src/templateinterfaces/ResourceTemplate";
 
 import
 {
   makeVoronoi,
   relaxVoronoi,
   setVoronoiCells,
-} from "../../../../src/math/voronoi";
+} from "src/math/voronoi";
 
-import * as Terrains from "../../terrains/terrains";
+import * as Terrains from "modules/space/terrains/terrains";
 
 import {MapGenDataByStarId} from "../common/MapGenDataByStarId";
 import {MapGenPoint} from "../common/MapGenPoint";

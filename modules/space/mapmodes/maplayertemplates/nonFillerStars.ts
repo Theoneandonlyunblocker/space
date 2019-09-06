@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
-import {Star} from "../../../../src/map/Star";
-import {eventManager} from "../../../../src/app/eventManager";
-import {MapRendererLayerTemplate} from "../../../../src/templateinterfaces/MapRendererLayerTemplate";
+import {Star} from "src/map/Star";
+import {eventManager} from "src/app/eventManager";
+import {MapRendererLayerTemplate} from "src/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
   makePolygonFromPoints,
-} from "../../../../src/graphics/pixiWrapperFunctions";
+} from "src/graphics/pixiWrapperFunctions";
 import { localize } from "../localization/localize";
 
 

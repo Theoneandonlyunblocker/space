@@ -1,5 +1,5 @@
-import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import {Localizer} from "../../../src/localization/Localizer";
+import {englishLanguage} from "modules/englishlanguage/englishLanguage";
+import {Localizer} from "src/localization/Localizer";
 
 import {names as en_names} from "./en/names";
 import {units as en_units} from "./en/units";

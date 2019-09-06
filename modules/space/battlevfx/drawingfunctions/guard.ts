@@ -1,9 +1,9 @@
-import {VfxDrawingFunction} from "../../../../src/templateinterfaces/VfxDrawingFunction";
-import { makeShaderSprite } from "../../../../src/graphics/pixiWrapperFunctions";
+import {VfxDrawingFunction} from "src/templateinterfaces/VfxDrawingFunction";
+import { makeShaderSprite } from "src/graphics/pixiWrapperFunctions";
 import
 {
   getRelativeValue,
-} from "../../../../src/generic/utility";
+} from "src/generic/utility";
 
 import {GuardShader} from "./shaders/GuardShader";
 

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Player} from "../../../../src/player/Player";
+import {Player} from "src/player/Player";
 
 import {TradeOverview} from "../trade/TradeOverview";
 

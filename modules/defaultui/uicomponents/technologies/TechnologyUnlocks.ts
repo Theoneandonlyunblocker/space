@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {TechnologyUnlocksByLevel} from "../../../../src/modules/ModuleData";
+import {TechnologyUnlocksByLevel} from "src/modules/ModuleData";
 
 import {TechnologyUnlocksForLevel} from "./TechnologyUnlocksForLevel";
 

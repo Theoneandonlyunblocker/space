@@ -1,4 +1,4 @@
-import {DiplomacyState} from "../../../../src/diplomacy/DiplomacyState";
+import {DiplomacyState} from "src/diplomacy/DiplomacyState";
 
 export const diplomacy =
 {

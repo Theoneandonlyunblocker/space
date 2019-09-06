@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {activeModuleData} from "../../../../src/app/activeModuleData";
-import {MapGenTemplate} from "../../../../src/templateinterfaces/MapGenTemplate";
-import { getRandomProperty } from "../../../../src/generic/utility";
+import {activeModuleData} from "src/app/activeModuleData";
+import {MapGenTemplate} from "src/templateinterfaces/MapGenTemplate";
+import { getRandomProperty } from "src/generic/utility";
 
 import {MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions";
 

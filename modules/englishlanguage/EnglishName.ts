@@ -1,4 +1,4 @@
-import {Name} from "../../src/localization/Name";
+import {Name} from "src/localization/Name";
 import { NameSaveData } from "src/savedata/NameSaveData";
 
 

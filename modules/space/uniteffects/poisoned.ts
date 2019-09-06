@@ -1,4 +1,4 @@
-import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactions/effectActions";
 import { localize } from "./localization/localize";
 

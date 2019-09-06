@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Item} from "../../../../src/items/Item";
+import {Item} from "src/items/Item";
 
 import {UnitItem} from "./UnitItem";
 

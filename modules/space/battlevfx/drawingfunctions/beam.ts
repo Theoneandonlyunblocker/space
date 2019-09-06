@@ -2,13 +2,13 @@ import * as PIXI from "pixi.js";
 import * as Proton from "proton-js";
 import * as TWEEN from "@tweenjs/tween.js";
 
-import {Color} from "../../../../src/color/Color";
+import {Color} from "src/color/Color";
 import
 {
   generateTextureWithBounds,
   makeCenteredShaderSprite,
-} from "../../../../src/graphics/pixiWrapperFunctions";
-import {VfxDrawingFunction} from "../../../../src/templateinterfaces/VfxDrawingFunction";
+} from "src/graphics/pixiWrapperFunctions";
+import {VfxDrawingFunction} from "src/templateinterfaces/VfxDrawingFunction";
 
 import {Beam} from "./vfxfragments/Beam";
 import {LightBurst} from "./vfxfragments/LightBurst";

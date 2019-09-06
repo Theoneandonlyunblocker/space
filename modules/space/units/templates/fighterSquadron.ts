@@ -1,6 +1,6 @@
-import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
+import {UnitTemplate} from "src/templateinterfaces/UnitTemplate";
 
-import * as unitArchetypes from "../../../common/unitArchetypes";
+import * as unitArchetypes from "modules/common/unitArchetypes";
 import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
 
 import
@@ -8,9 +8,9 @@ import
   closeAttack,
   rangedAttack,
   standBy,
-} from "../../abilities/abilities";
-import {distributionGroups} from "../../../common/distributionGroups";
-import {itemSlot} from "../../items/itemSlot";
+} from "modules/space/abilities/abilities";
+import {distributionGroups} from "modules/common/distributionGroups";
+import {itemSlot} from "modules/space/items/itemSlot";
 import {getIconSrc} from "../resources";
 import { localize } from "../localization/localize";
 

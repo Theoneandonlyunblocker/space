@@ -1,4 +1,4 @@
-import { PartialModuleScriptsWithData } from "../../../src/modules/ModuleScripts";
+import { PartialModuleScriptsWithData } from "src/modules/ModuleScripts";
 
 
 export const starScripts: PartialModuleScriptsWithData =

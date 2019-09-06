@@ -1,7 +1,7 @@
 import {unitScripts} from "./unitScripts";
 import {starScripts} from "./starScripts";
 import {autoSaveScripts} from "./autoSaveScripts";
-import { PartialModuleScriptsWithData } from "../../../src/modules/ModuleScripts";
+import { PartialModuleScriptsWithData } from "src/modules/ModuleScripts";
 
 const scriptsToMerge: PartialModuleScriptsWithData[] =
 [

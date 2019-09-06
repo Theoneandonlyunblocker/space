@@ -1,18 +1,18 @@
-import {DiplomacyEvaluation} from "../../../src/diplomacy/DiplomacyEvaluation";
-import {Fleet} from "../../../src/fleets/Fleet";
-import {GalaxyMap} from "../../../src/map/GalaxyMap";
-import {Player} from "../../../src/player/Player";
-import {Star} from "../../../src/map/Star";
-import {Unit} from "../../../src/unit/Unit";
-import {ValuesByPlayer} from "../../../src/player/ValuesByPlayer";
-import {ValuesByStar} from "../../../src/map/ValuesByStar";
+import {DiplomacyEvaluation} from "src/diplomacy/DiplomacyEvaluation";
+import {Fleet} from "src/fleets/Fleet";
+import {GalaxyMap} from "src/map/GalaxyMap";
+import {Player} from "src/player/Player";
+import {Star} from "src/map/Star";
+import {Unit} from "src/unit/Unit";
+import {ValuesByPlayer} from "src/player/ValuesByPlayer";
+import {ValuesByStar} from "src/map/ValuesByStar";
 import
 {
   getRelativeValue,
-} from "../../../src/generic/utility";
+} from "src/generic/utility";
 
 import {UnitEvaluator} from "./UnitEvaluator";
-import { activeModuleData } from "../../../src/app/activeModuleData";
+import { activeModuleData } from "src/app/activeModuleData";
 
 
 export const defaultEvaluationParameters =

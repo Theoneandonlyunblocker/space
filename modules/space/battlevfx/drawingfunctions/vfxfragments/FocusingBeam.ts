@@ -1,10 +1,10 @@
-import {Color} from "../../../../../src/color/Color";
-import {Point} from "../../../../../src/math/Point";
+import {Color} from "src/color/Color";
+import {Point} from "src/math/Point";
 import
 {
   clamp,
   getRelativeValue,
-} from "../../../../../src/generic/utility";
+} from "src/generic/utility";
 
 import {Beam} from "./Beam";
 import {RampingValue} from "./RampingValue";

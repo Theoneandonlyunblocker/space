@@ -1,7 +1,7 @@
-import {englishLanguage} from "../../englishlanguage/englishLanguage";
-import {ModuleData} from "../../../src/modules/ModuleData";
-import {GameModule} from "../../../src/modules/GameModule";
-import {GameModuleInitializationPhase} from "../../../src/modules/GameModuleInitializationPhase";
+import {englishLanguage} from "modules/englishlanguage/englishLanguage";
+import {ModuleData} from "src/modules/ModuleData";
+import {GameModule} from "src/modules/GameModule";
+import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
 
 import {raceTemplates} from "./raceTemplates";
 

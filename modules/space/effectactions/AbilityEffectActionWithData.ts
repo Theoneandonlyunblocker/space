@@ -1,10 +1,10 @@
-import {Battle} from "../../../src/battle/Battle";
-import {Unit} from "../../../src/unit/Unit";
+import {Battle} from "src/battle/Battle";
+import {Unit} from "src/unit/Unit";
 
 import
 {
   ExecutedEffectsResult,
-} from "../../../src/templateinterfaces/ExecutedEffectsResult";
+} from "src/templateinterfaces/ExecutedEffectsResult";
 
 
 export type AbilityEffectActionWithData<T> = (

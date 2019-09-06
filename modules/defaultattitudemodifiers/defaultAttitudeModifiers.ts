@@ -1,6 +1,6 @@
-import {englishLanguage} from "../englishlanguage/englishLanguage";
-import {GameModule} from "../../src/modules/GameModule";
-import {GameModuleInitializationPhase} from "../../src/modules/GameModuleInitializationPhase";
+import {englishLanguage} from "modules/englishlanguage/englishLanguage";
+import {GameModule} from "src/modules/GameModule";
+import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
 
 import {attitudeModifierTemplates} from "./attitudeModifierTemplates";
 import {attitudeModifierModuleScripts} from "./attitudeModifierModuleScripts";

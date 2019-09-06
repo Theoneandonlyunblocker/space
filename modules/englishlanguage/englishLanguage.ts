@@ -1,4 +1,4 @@
-import {Language} from "../../src/localization/Language";
+import {Language} from "src/localization/Language";
 import { EnglishName, EnglishNameTags } from "./EnglishName";
 
 

@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {VfxFragment} from "../../../../modules/space/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
-import {DragPositioner} from "../../../../modules/defaultui/uicomponents/mixins/DragPositioner";
-import {applyMixins} from "../../../../modules/defaultui/uicomponents/mixins/applyMixins";
+import {VfxFragment} from "modules/space/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
+import {DragPositioner} from "modules/defaultui/uicomponents/mixins/DragPositioner";
+import {applyMixins} from "modules/defaultui/uicomponents/mixins/applyMixins";
 
 import {VfxFragmentConstructor} from "./VfxFragmentConstructor";
 

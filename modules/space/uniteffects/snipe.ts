@@ -1,7 +1,7 @@
-import {UnitEffectTemplate} from "../../../src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "src/templateinterfaces/UnitEffectTemplate";
 
-import {UnitAttribute, getUnitAttributesObjectKeyForAttribute} from "../../../src/unit/UnitAttributes";
-import { FlatAndMultiplierAdjustment } from "../../../src/generic/FlatAndMultiplierAdjustment";
+import {UnitAttribute, getUnitAttributesObjectKeyForAttribute} from "src/unit/UnitAttributes";
+import { FlatAndMultiplierAdjustment } from "src/generic/FlatAndMultiplierAdjustment";
 import { localize } from "./localization/localize";
 
 

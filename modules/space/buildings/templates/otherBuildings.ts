@@ -1,6 +1,6 @@
-import {BuildingTemplate} from "../../../../src/templateinterfaces/BuildingTemplate";
+import {BuildingTemplate} from "src/templateinterfaces/BuildingTemplate";
 
-import * as technologies from "../../technologies/technologyTemplates";
+import * as technologies from "modules/space/technologies/technologyTemplates";
 import { localize } from "../localization/localize";
 
 

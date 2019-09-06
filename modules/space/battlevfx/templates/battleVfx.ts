@@ -1,5 +1,5 @@
-import {UnitAttribute} from "../../../../src/unit/UnitAttributes";
-import {BattleVfxTemplate} from "../../../../src/templateinterfaces/BattleVfxTemplate";
+import {UnitAttribute} from "src/unit/UnitAttributes";
+import {BattleVfxTemplate} from "src/templateinterfaces/BattleVfxTemplate";
 
 import {BlackToAlphaFilter} from "../drawingfunctions/shaders/BlackToAlphaFilter";
 

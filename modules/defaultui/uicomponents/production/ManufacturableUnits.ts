@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Manufactory} from "../../../../src/production/Manufactory";
-import {Star} from "../../../../src/map/Star";
-import {ManufacturableThing} from "../../../../src/templateinterfaces/ManufacturableThing";
-import {UnitTemplate} from "../../../../src/templateinterfaces/UnitTemplate";
+import {Manufactory} from "src/production/Manufactory";
+import {Star} from "src/map/Star";
+import {ManufacturableThing} from "src/templateinterfaces/ManufacturableThing";
+import {UnitTemplate} from "src/templateinterfaces/UnitTemplate";
 
 import {ManufactoryUpgradeButton} from "./ManufactoryUpgradeButton";
 import {ManufacturableThingsList} from "./ManufacturableThingsList";

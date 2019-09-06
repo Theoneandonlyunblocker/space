@@ -1,5 +1,5 @@
-import {AbilityTemplate} from "../../src/templateinterfaces/AbilityTemplate";
-import {TemplateCollection} from "../../src/templateinterfaces/TemplateCollection";
+import {AbilityTemplate} from "src/templateinterfaces/AbilityTemplate";
+import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
 
 import {assimilate} from "./abilities/assimilate";
 import {merge} from "./abilities/merge";

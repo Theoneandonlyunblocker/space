@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import {VfxFragment} from "../../../../space/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
+import {VfxFragment} from "modules/space/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
 
-import {Color} from "../../../../../src/color/Color";
+import {Color} from "src/color/Color";
 
 import {ColorSetter} from "../../setupgame/ColorSetter";
 

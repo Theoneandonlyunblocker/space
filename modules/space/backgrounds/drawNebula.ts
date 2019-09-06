@@ -1,17 +1,17 @@
 import * as PIXI from "pixi.js";
 import * as RNG from "rng-js";
 
-import {BackgroundDrawingFunction} from "../../../src/graphics/BackgroundDrawingFunction";
-import {generateColorScheme} from "../../../src/color/colorGeneration";
+import {BackgroundDrawingFunction} from "src/graphics/BackgroundDrawingFunction";
+import {generateColorScheme} from "src/color/colorGeneration";
 import
 {
   generateTextureWithBounds,
   makeShaderSprite,
-} from "../../../src/graphics/pixiWrapperFunctions";
+} from "src/graphics/pixiWrapperFunctions";
 import
 {
   randRange,
-} from "../../../src/generic/utility";
+} from "src/generic/utility";
 
 import {NebulaShader} from "./NebulaShader";
 

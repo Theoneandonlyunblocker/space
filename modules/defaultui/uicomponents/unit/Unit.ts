@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {options} from "../../../../src/app/Options";
-import {UnitDisplayData} from "../../../../src/unit/UnitDisplayData";
+import {options} from "src/app/Options";
+import {UnitDisplayData} from "src/unit/UnitDisplayData";
 import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import {applyMixins} from "../mixins/applyMixins";
 
