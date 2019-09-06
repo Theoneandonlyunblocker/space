@@ -3,7 +3,7 @@ import * as MessageFormat from "messageformat";
 import {Message, ErrorMessage} from "./Message";
 import { BaseLocalizer } from "./Localizer";
 import { Language } from "./Language";
-import { options } from "src/app/Options";
+import { options } from "core/app/Options";
 import { universalFormatters } from "./universalFormatters";
 
 

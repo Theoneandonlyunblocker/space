@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Range} from "src/math/Range";
-import {MapGenOptionValues} from "src/templateinterfaces/MapGenOptionValues";
-import {MapGenOptions as MapGenOptionsObj} from "src/templateinterfaces/MapGenOptions";
-import {MapGenTemplate} from "src/templateinterfaces/MapGenTemplate";
+import {Range} from "core/math/Range";
+import {MapGenOptionValues} from "core/templateinterfaces/MapGenOptionValues";
+import {MapGenOptions as MapGenOptionsObj} from "core/templateinterfaces/MapGenOptions";
+import {MapGenTemplate} from "core/templateinterfaces/MapGenTemplate";
 import
 {
   clamp,
@@ -13,7 +13,7 @@ import
   getRelativeValue,
   randInt,
   roundToNearestMultiple,
-} from "src/generic/utility";
+} from "core/generic/utility";
 import {OptionsGroup} from "../options/OptionsGroup";
 
 import {MapGenOption} from "./MapGenOption";

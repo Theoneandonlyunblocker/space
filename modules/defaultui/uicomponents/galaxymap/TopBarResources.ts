@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Player} from "src/player/Player";
-import {activeModuleData} from "src/app/activeModuleData";
-import {eventManager} from "src/app/eventManager";
+import {Player} from "core/player/Player";
+import {activeModuleData} from "core/app/activeModuleData";
+import {eventManager} from "core/app/eventManager";
 
 import {Resource} from "./Resource";
 

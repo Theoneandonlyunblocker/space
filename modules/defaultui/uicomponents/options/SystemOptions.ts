@@ -2,9 +2,9 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {options} from "src/app/Options";
+import {options} from "core/app/Options";
 import {OptionsGroup, OptionsGroupItem} from "./OptionsGroup";
-import { errorReportingModes, ErrorReportingMode } from "src/app/ErrorReportingMode";
+import { errorReportingModes, ErrorReportingMode } from "core/app/ErrorReportingMode";
 
 
 function localizeErrorReportingModeName(mode: ErrorReportingMode): string

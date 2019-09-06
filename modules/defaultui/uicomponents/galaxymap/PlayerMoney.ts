@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Player} from "src/player/Player";
-import {eventManager} from "src/app/eventManager";
+import {Player} from "core/player/Player";
+import {eventManager} from "core/app/eventManager";
 
 import {localize} from "../../localization/localize";
 

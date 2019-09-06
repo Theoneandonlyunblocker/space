@@ -1,6 +1,6 @@
-import {ModuleData} from "src/modules/ModuleData";
-import {GameModule} from "src/modules/GameModule";
-import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
+import {ModuleData} from "core/modules/ModuleData";
+import {GameModule} from "core/modules/GameModule";
+import {GameModuleInitializationPhase} from "core/modules/GameModuleInitializationPhase";
 import {emblemSources, svgCache} from "./assets";
 
 import {subEmblemTemplates} from "./subEmblemTemplates";

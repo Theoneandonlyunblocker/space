@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 import {VfxFragment} from "./VfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
-import { Point } from "src/math/Point";
+import { Point } from "core/math/Point";
 
 
 interface ProjectileProps<D extends PIXI.DisplayObject>

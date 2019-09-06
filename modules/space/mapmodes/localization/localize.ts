@@ -1,4 +1,4 @@
-import {Localizer} from "src/localization/Localizer";
+import {Localizer} from "core/localization/Localizer";
 import {englishLanguage} from "modules/englishlanguage/englishLanguage";
 import {mapLayers as en_mapLayers} from "./en/mapLayers";
 import {mapModes as en_mapModes} from "./en/mapModes";

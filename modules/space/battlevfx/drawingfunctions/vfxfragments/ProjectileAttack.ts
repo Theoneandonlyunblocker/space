@@ -1,11 +1,11 @@
 import * as PIXI from "pixi.js";
 
-import {UnitDrawingFunctionData} from "src/unit/UnitDrawingFunctionData";
+import {UnitDrawingFunctionData} from "core/unit/UnitDrawingFunctionData";
 import
 {
   randInt,
   getRelativeValue,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
 import {VfxFragment} from "./VfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";

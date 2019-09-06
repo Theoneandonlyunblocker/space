@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 
-import {NotificationFilter} from "src/notifications/NotificationFilter";
-import {NotificationFilterState} from "src/notifications/NotificationFilterState";
+import {NotificationFilter} from "core/notifications/NotificationFilter";
+import {NotificationFilterState} from "core/notifications/NotificationFilterState";
 
-import {eventManager} from "src/app/eventManager";
+import {eventManager} from "core/app/eventManager";
 
 
 export interface PropTypes extends React.Props<any>
@@ -77,7 +77,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
         className: "notification-filter-list-item-filter",
         // could use radio buttons for now as filter states don't overlap currently
         // but they might in the future so just use checkboxes
-        // see src/NotificationFilter#getCompatibleFilterStates()
+        // see core/NotificationFilter#getCompatibleFilterStates()
         type: "checkbox",
         id: this.props.keyTODO/*TODO react*/,
         key: state,

@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {PlayerTechnology} from "src/player/PlayerTechnology";
-import {eventManager} from "src/app/eventManager";
+import {PlayerTechnology} from "core/player/PlayerTechnology";
+import {eventManager} from "core/app/eventManager";
 
 import {Technology} from "./Technology";
 

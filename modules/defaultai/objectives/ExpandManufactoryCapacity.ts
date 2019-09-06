@@ -1,6 +1,6 @@
-import {Manufactory} from "src/production/Manufactory";
-import {Player} from "src/player/Player";
-import {Star} from "src/map/Star";
+import {Manufactory} from "core/production/Manufactory";
+import {Player} from "core/player/Player";
+import {Star} from "core/map/Star";
 import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
 import {MapEvaluator} from "../mapai/MapEvaluator";
 

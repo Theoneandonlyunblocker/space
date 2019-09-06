@@ -1,8 +1,8 @@
 import
 {
   Trade,
-} from "src/trade/Trade";
-import {TradeOffer} from "src/trade/TradeOffer";
+} from "core/trade/Trade";
+import {TradeOffer} from "core/trade/TradeOffer";
 import {localize} from "../localization/localize";
 
 import

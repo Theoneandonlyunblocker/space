@@ -1,17 +1,17 @@
 import * as PIXI from "pixi.js";
 
-import {UnitDrawingFunction} from "src/templateinterfaces/UnitDrawingFunction";
+import {UnitDrawingFunction} from "core/templateinterfaces/UnitDrawingFunction";
 
 
-import {UnitDrawingFunctionData} from "src/unit/UnitDrawingFunctionData";
-import {Point} from "src/math/Point";
+import {UnitDrawingFunctionData} from "core/unit/UnitDrawingFunctionData";
+import {Point} from "core/math/Point";
 import
 {
   clamp,
   transformMat3,
-} from "src/generic/utility";
-import {Unit} from "src/unit/Unit";
-import {VfxParams} from "src/templateinterfaces/VfxParams";
+} from "core/generic/utility";
+import {Unit} from "core/unit/Unit";
+import {VfxParams} from "core/templateinterfaces/VfxParams";
 
 export interface UnitSpriteData
 {

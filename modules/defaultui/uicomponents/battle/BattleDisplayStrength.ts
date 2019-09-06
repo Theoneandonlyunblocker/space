@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactMotion from "react-motion";
-import { fixedDurationSpring } from "src/generic/utility";
+import { fixedDurationSpring } from "core/generic/utility";
 
 
 export interface PropTypes extends React.Props<any>

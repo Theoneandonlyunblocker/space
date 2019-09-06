@@ -1,7 +1,7 @@
 import
 {
   shallowCopy,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
 import {PropInfo} from "./PropInfo";
 

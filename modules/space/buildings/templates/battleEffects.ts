@@ -1,4 +1,4 @@
-import {UnitEffectTemplate} from "src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "core/templateinterfaces/UnitEffectTemplate";
 
 import
 {

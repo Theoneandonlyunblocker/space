@@ -1,4 +1,4 @@
-import {TerritoryBuildingTemplate} from "src/templateinterfaces/TerritoryBuildingTemplate";
+import {TerritoryBuildingTemplate} from "core/templateinterfaces/TerritoryBuildingTemplate";
 
 import {getIconElement} from "../resources";
 import {makeDefenderAdvantageEffect} from "./battleEffects";

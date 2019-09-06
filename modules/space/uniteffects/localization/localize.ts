@@ -1,4 +1,4 @@
-import {MessageFormatLocalizer} from "src/localization/MessageFormatLocalizer";
+import {MessageFormatLocalizer} from "core/localization/MessageFormatLocalizer";
 import {englishLanguage} from "modules/englishlanguage/englishLanguage";
 import {unitEffects as en_unitEffects} from "./en/unitEffects";
 import {UnitEffectsMessageArgs} from "./UnitEffectsMessageArgs";

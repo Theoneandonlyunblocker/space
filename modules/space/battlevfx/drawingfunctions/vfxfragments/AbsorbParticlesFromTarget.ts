@@ -2,11 +2,11 @@
 import * as PIXI from "pixi.js";
 import * as Proton from "proton-js";
 
-import {UnitDrawingFunctionData} from "src/unit/UnitDrawingFunctionData";
-import {solveAcceleration} from "src/math/kinematics";
-import { extractImageData } from "src/graphics/pixiWrapperFunctions";
-import { Color } from "src/color/Color";
-import { randInt } from "src/generic/utility";
+import {UnitDrawingFunctionData} from "core/unit/UnitDrawingFunctionData";
+import {solveAcceleration} from "core/math/kinematics";
+import { extractImageData } from "core/graphics/pixiWrapperFunctions";
+import { Color } from "core/color/Color";
+import { randInt } from "core/generic/utility";
 
 import {VfxFragment} from "./VfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";

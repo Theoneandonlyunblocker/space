@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {MapGenOption as MapGenOptionObj} from "src/templateinterfaces/MapGenOption";
+import {MapGenOption as MapGenOptionObj} from "core/templateinterfaces/MapGenOption";
 import
 {
   clamp,
-} from "src/generic/utility";
+} from "core/generic/utility";
 import { NumberInput } from "../generic/NumberInput";
 
 

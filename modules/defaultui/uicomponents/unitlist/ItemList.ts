@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Item} from "src/items/Item";
-import {AbilityBase} from "src/templateinterfaces/AbilityBase";
+import {Item} from "core/items/Item";
+import {AbilityBase} from "core/templateinterfaces/AbilityBase";
 import {List} from "../list/List";
 import {ListColumn} from "../list/ListColumn";
 import {ListItem} from "../list/ListItem";

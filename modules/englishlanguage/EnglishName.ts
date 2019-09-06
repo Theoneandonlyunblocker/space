@@ -1,5 +1,5 @@
-import {Name} from "src/localization/Name";
-import { NameSaveData } from "src/savedata/NameSaveData";
+import {Name} from "core/localization/Name";
+import { NameSaveData } from "core/savedata/NameSaveData";
 
 
 export type EnglishNameTags =

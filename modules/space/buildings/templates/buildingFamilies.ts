@@ -1,4 +1,4 @@
-import {BuildingFamily} from "src/templateinterfaces/BuildingFamily";
+import {BuildingFamily} from "core/templateinterfaces/BuildingFamily";
 
 
 export const territoryBuildings: BuildingFamily =

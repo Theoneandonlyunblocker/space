@@ -1,4 +1,4 @@
-import {UnitTemplate} from "src/templateinterfaces/UnitTemplate";
+import {UnitTemplate} from "core/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "modules/common/unitArchetypes";
 import {makeDefaultUnitDrawingFunctionForPlaceholder} from "modules/space/units/defaultUnitDrawingFunction";

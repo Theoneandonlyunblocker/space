@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {AttitudeModifier} from "src/diplomacy/AttitudeModifier";
+import {AttitudeModifier} from "core/diplomacy/AttitudeModifier";
 import {List} from "../list/List";
 import {ListColumn} from "../list/ListColumn";
 import {ListItem} from "../list/ListItem";

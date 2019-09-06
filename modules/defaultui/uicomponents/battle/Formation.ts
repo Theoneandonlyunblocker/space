@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {AbilityTargetDisplayDataById} from "src/abilities/AbilityTargetDisplayData";
-import {Unit as UnitObj} from "src/unit/Unit";
-import {UnitDisplayData} from "src/unit/UnitDisplayData";
-import {activeModuleData} from "src/app/activeModuleData";
-import {AbilityTemplate} from "src/templateinterfaces/AbilityTemplate";
-import {shallowExtend} from "src/generic/utility";
+import {AbilityTargetDisplayDataById} from "core/abilities/AbilityTargetDisplayData";
+import {Unit as UnitObj} from "core/unit/Unit";
+import {UnitDisplayData} from "core/unit/UnitDisplayData";
+import {activeModuleData} from "core/app/activeModuleData";
+import {AbilityTemplate} from "core/templateinterfaces/AbilityTemplate";
+import {shallowExtend} from "core/generic/utility";
 import {EmptyUnit} from "../unit/EmptyUnit";
 import
 {

@@ -1,4 +1,4 @@
-import {TerrainTemplate} from "src/templateinterfaces/TerrainTemplate";
+import {TerrainTemplate} from "core/templateinterfaces/TerrainTemplate";
 import { localize } from "./localization/localize";
 
 

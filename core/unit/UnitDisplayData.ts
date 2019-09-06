@@ -23,7 +23,7 @@ export interface UnitDisplayData
   portraitSrc: string; // could also allow other portrait elements
   iconSrc: string; // could also allow other icon elements
 
-  // in src/uicomponents/unit.ts:DisplayStatus
+  // in core/uicomponents/unit.ts:DisplayStatus
   // wasDestroyed?: boolean;
   // wasCaptured?: boolean;
 

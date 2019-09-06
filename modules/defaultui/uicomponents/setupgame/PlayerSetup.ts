@@ -1,28 +1,28 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Color} from "src/color/Color";
-import {Flag} from "src/flag/Flag";
-import {Player} from "src/player/Player";
-import {activeModuleData} from "src/app/activeModuleData";
+import {Color} from "core/color/Color";
+import {Flag} from "core/flag/Flag";
+import {Player} from "core/player/Player";
+import {activeModuleData} from "core/app/activeModuleData";
 import
 {
   generateMainColor,
   generateSecondaryColor,
-} from "src/color/colorGeneration";
+} from "core/color/colorGeneration";
 import
 {
   getRandomArrayItem,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
-import {RaceTemplate} from "src/templateinterfaces/RaceTemplate";
+import {RaceTemplate} from "core/templateinterfaces/RaceTemplate";
 
 import {ColorSetter} from "./ColorSetter";
 import {FlagSetter} from "./FlagSetter";
 import {SetterComponentBase} from "./SetterComponentBase";
 import {RacePicker} from "./RacePicker";
 import { localize } from "../../localization/localize";
-import { options } from "src/app/Options";
+import { options } from "core/app/Options";
 
 
 export interface PropTypes extends React.Props<any>

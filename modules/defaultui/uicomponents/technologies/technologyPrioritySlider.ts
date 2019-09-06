@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {PlayerTechnology} from "src/player/PlayerTechnology";
-import {eventManager} from "src/app/eventManager";
-import {TechnologyTemplate} from "src/templateinterfaces/TechnologyTemplate";
+import {PlayerTechnology} from "core/player/PlayerTechnology";
+import {eventManager} from "core/app/eventManager";
+import {TechnologyTemplate} from "core/templateinterfaces/TechnologyTemplate";
 
 
 export interface PropTypes extends React.Props<any>

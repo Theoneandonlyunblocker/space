@@ -1,7 +1,7 @@
 import
 {
   randRange,
-} from "src/generic/utility";
+} from "core/generic/utility";
 import {MapGenPoint} from "../common/MapGenPoint";
 
 import {SpiralGalaxyOptionValues} from "./SpiralGalaxyOptionValues";

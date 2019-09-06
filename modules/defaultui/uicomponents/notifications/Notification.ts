@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Notification as NotificationObj} from "src/notifications/Notification";
+import {Notification as NotificationObj} from "core/notifications/Notification";
 
 import {localize} from "../../localization/localize";
 

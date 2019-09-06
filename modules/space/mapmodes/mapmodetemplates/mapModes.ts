@@ -1,4 +1,4 @@
-import {MapRendererMapModeTemplate} from "src/templateinterfaces/MapRendererMapModeTemplate";
+import {MapRendererMapModeTemplate} from "core/templateinterfaces/MapRendererMapModeTemplate";
 
 import * as MapLayers from "../allMapLayerTemplates";
 import { localize } from "../localization/localize";

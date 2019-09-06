@@ -1,15 +1,15 @@
 import * as React from "react";
 
-import {app} from "src/app/App"; // TODO global
-import {activeModuleData} from "src/app/activeModuleData";
-import {options} from "src/app/Options";
-import {Language} from "src/localization/Language";
+import {app} from "core/app/App"; // TODO global
+import {activeModuleData} from "core/app/activeModuleData";
+import {options} from "core/app/Options";
+import {Language} from "core/localization/Language";
 import
 {
   getLanguagesByCodeFromGameModules,
   getLanguageSupportLevelForGameModules,
   LanguageSupportLevel,
-} from "src/localization/languageSupport";
+} from "core/localization/languageSupport";
 
 import {LanguageSelect} from "./LanguageSelect";
 

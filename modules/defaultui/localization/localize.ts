@@ -1,4 +1,4 @@
-import {MessageFormatLocalizer} from "src/localization/MessageFormatLocalizer";
+import {MessageFormatLocalizer} from "core/localization/MessageFormatLocalizer";
 
 import {englishLanguage} from "modules/englishlanguage/englishLanguage";
 import {formatters as englishFormatters} from "modules/englishlanguage/formatters";

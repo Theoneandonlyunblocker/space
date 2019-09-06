@@ -20,7 +20,7 @@ import * as spaceResources from "../modules/space/resources/moduleInfo.json";
 import * as spaceTechnologies from "../modules/space/technologies/moduleInfo.json";
 import * as spaceUnits from "../modules/space/units/moduleInfo.json";
 
-import {ModuleInfo} from "src/modules/ModuleInfo";
+import {ModuleInfo} from "core/modules/ModuleInfo";
 
 
 export const defaultModules: ModuleInfo[] =

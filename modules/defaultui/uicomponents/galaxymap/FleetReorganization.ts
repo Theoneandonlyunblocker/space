@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Fleet} from "src/fleets/Fleet";
-import {Unit} from "src/unit/Unit";
-import {eventManager} from "src/app/eventManager";
+import {Fleet} from "core/fleets/Fleet";
+import {Unit} from "core/unit/Unit";
+import {eventManager} from "core/app/eventManager";
 
 import {FleetContents} from "./FleetContents";
 

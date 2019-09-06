@@ -1,4 +1,4 @@
-// TODO 2019.09.02 | move to src/generic
+// TODO 2019.09.02 | move to core/generic
 // all versions are assumed to be in format \d+\.\d+\.\d+
 // 0.1.0, 10.2.4, etc.
 

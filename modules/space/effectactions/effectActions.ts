@@ -1,19 +1,19 @@
-import {Battle} from "src/battle/Battle";
+import {Battle} from "core/battle/Battle";
 import {DamageType} from "./DamageType";
-import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments, getBaseAdjustment} from "src/generic/FlatAndMultiplierAdjustment";
-import {GuardCoverage} from "src/unit/GuardCoverage";
-import {StatusEffect} from "src/unit/StatusEffect";
-import {Unit} from "src/unit/Unit";
-import {UnitAttributeAdjustments} from "src/unit/UnitAttributes";
+import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments, getBaseAdjustment} from "core/generic/FlatAndMultiplierAdjustment";
+import {GuardCoverage} from "core/unit/GuardCoverage";
+import {StatusEffect} from "core/unit/StatusEffect";
+import {Unit} from "core/unit/Unit";
+import {UnitAttributeAdjustments} from "core/unit/UnitAttributes";
 import
 {
   ExecutedEffectsResult,
-} from "src/templateinterfaces/ExecutedEffectsResult";
-import {UnitEffectTemplate} from "src/templateinterfaces/UnitEffectTemplate";
+} from "core/templateinterfaces/ExecutedEffectsResult";
+import {UnitEffectTemplate} from "core/templateinterfaces/UnitEffectTemplate";
 import
 {
   clamp,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
 import {ResultType} from "./ResultType";
 import

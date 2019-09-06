@@ -1,4 +1,4 @@
-import {Localizer} from "src/localization/Localizer";
+import {Localizer} from "core/localization/Localizer";
 import {englishLanguage} from "modules/englishlanguage/englishLanguage";
 import {attitudeModifiers as en_attitudeModifiers} from "./en/attitudeModifiers";
 

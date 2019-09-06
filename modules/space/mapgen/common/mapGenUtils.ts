@@ -1,16 +1,16 @@
-import {Building} from "src/building/Building";
-import {Region} from "src/map/Region";
-import {Star} from "src/map/Star";
+import {Building} from "core/building/Building";
+import {Region} from "core/map/Region";
+import {Star} from "core/map/Star";
 import
 {
   aStar,
-} from "src/map/pathFinding";
-import {Distributable} from "src/generic/Distributable";
+} from "core/map/pathFinding";
+import {Distributable} from "core/generic/Distributable";
 import
 {
   getRandomKeyWithWeights,
   getRelativeWeightsFromObject,
-} from "src/generic/utility";
+} from "core/generic/utility";
 import
 {
   sectorCommand,

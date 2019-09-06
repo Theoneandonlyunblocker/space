@@ -1,11 +1,11 @@
-import {Game} from "src/game/Game";
-import {Personality} from "src/ai/Personality";
-import {Star} from "src/map/Star";
+import {Game} from "core/game/Game";
+import {Personality} from "core/ai/Personality";
+import {Star} from "core/map/Star";
 import
 {
   clamp,
   getRelativeValue,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
 import {MapEvaluator} from "./MapEvaluator";
 

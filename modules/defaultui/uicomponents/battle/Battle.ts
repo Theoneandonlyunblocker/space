@@ -1,32 +1,32 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {AbilityTargetDisplayDataById} from "src/abilities/AbilityTargetDisplayData";
-import {AbilityUseEffectQueue} from "src/abilities/AbilityUseEffectQueue";
-import {Battle as BattleObj} from "src/battle/Battle";
-import {BattleScene as BattleSceneObj} from "src/battle/BattleScene";
-import {MCTree} from "src/ai/MCTree";
-import {options} from "src/app/Options";
-import {Player} from "src/player/Player";
-import {Unit} from "src/unit/Unit";
-import {UnitDisplayData} from "src/unit/UnitDisplayData";
-import {activeModuleData} from "src/app/activeModuleData";
+import {AbilityTargetDisplayDataById} from "core/abilities/AbilityTargetDisplayData";
+import {AbilityUseEffectQueue} from "core/abilities/AbilityUseEffectQueue";
+import {Battle as BattleObj} from "core/battle/Battle";
+import {BattleScene as BattleSceneObj} from "core/battle/BattleScene";
+import {MCTree} from "core/ai/MCTree";
+import {options} from "core/app/Options";
+import {Player} from "core/player/Player";
+import {Unit} from "core/unit/Unit";
+import {UnitDisplayData} from "core/unit/UnitDisplayData";
+import {activeModuleData} from "core/app/activeModuleData";
 import
 {
   getAbilityTargetDisplayData,
   getTargetsForAllAbilities,
-} from "src/abilities/battleAbilityDisplay";
+} from "core/abilities/battleAbilityDisplay";
 import
 {
   useAbilityAndGetUseEffects,
-} from "src/abilities/battleAbilityUsage";
-import {AbilityUseEffect} from "src/abilities/AbilityUseEffect";
-import {AbilityTemplate} from "src/templateinterfaces/AbilityTemplate";
+} from "core/abilities/battleAbilityUsage";
+import {AbilityUseEffect} from "core/abilities/AbilityUseEffect";
+import {AbilityTemplate} from "core/templateinterfaces/AbilityTemplate";
 import
 {
   shallowCopy,
   shallowExtend,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
 import
 {

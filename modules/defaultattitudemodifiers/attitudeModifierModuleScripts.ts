@@ -1,6 +1,6 @@
-import {AttitudeModifier} from "src/diplomacy/AttitudeModifier";
-import {Game} from "src/game/Game";
-import {Player} from "src/player/Player";
+import {AttitudeModifier} from "core/diplomacy/AttitudeModifier";
+import {Game} from "core/game/Game";
+import {Player} from "core/player/Player";
 
 import
 {

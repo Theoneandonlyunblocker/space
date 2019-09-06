@@ -1,6 +1,6 @@
 import {englishLanguage} from "modules/englishlanguage/englishLanguage";
-import {GameModule} from "src/modules/GameModule";
-import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
+import {GameModule} from "core/modules/GameModule";
+import {GameModuleInitializationPhase} from "core/modules/GameModuleInitializationPhase";
 
 import {itemTemplates} from "./itemTemplates";
 import {setBaseUrl as setAssetBaseUrl} from "./resources";

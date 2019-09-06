@@ -1,14 +1,14 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {TutorialPage} from "src/tutorials/Tutorial";
-import {tutorialStatus} from "src/tutorials/TutorialStatus";
-import {TutorialVisibility} from "src/tutorials/TutorialVisibility";
+import {TutorialPage} from "core/tutorials/Tutorial";
+import {tutorialStatus} from "core/tutorials/TutorialStatus";
+import {TutorialVisibility} from "core/tutorials/TutorialVisibility";
 import
 {
   clamp,
   splitMultilineText,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
 import {DontShowAgain} from "./DontShowAgain";
 

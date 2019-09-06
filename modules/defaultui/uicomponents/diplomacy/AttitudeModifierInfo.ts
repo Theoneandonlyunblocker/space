@@ -7,7 +7,7 @@ import
 {
   clamp,
   getRelativeValue,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>

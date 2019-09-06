@@ -1,6 +1,6 @@
-import {ModuleData} from "src/modules/ModuleData";
-import {GameModule} from "src/modules/GameModule";
-import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
+import {ModuleData} from "core/modules/ModuleData";
+import {GameModule} from "core/modules/GameModule";
+import {GameModuleInitializationPhase} from "core/modules/GameModuleInitializationPhase";
 
 import {allScripts} from "./modulescripts/allScripts";
 
@@ -8,7 +8,7 @@ import * as moduleInfo from "./moduleInfo.json";
 
 
 // TODO 2017.07.27 | move core gameplay stuff here
-// TODO 2019.08.24 | ^^^ actually just move this shit to src/ (and organize src/ better too)
+// TODO 2019.08.24 | ^^^ actually just move this shit to core/ (and organize core/ better too)
 // but do expose more stuff to module scripts though
 export const core: GameModule =
 {

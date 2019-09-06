@@ -1,5 +1,5 @@
 import {DamageType} from "./DamageType";
-import {Unit} from "src/unit/Unit";
+import {Unit} from "core/unit/Unit";
 
 
 export function getAdjustedTroopSize(unit: Unit): number

@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Flag} from "src/flag/Flag";
+import {Flag} from "core/flag/Flag";
 
 import {cachedAssets} from "../../assets";
 import {PlayerFlag} from "../PlayerFlag";

@@ -1,8 +1,8 @@
-import {Player} from "src/player/Player";
+import {Player} from "core/player/Player";
 import
 {
   getRandomArrayItem,
-} from "src/generic/utility";
+} from "core/generic/utility";
 import {GrandStrategyAi} from "../mapai/GrandStrategyAi";
 import {MapEvaluator} from "../mapai/MapEvaluator";
 

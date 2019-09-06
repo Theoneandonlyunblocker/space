@@ -1,5 +1,5 @@
-import {Fleet} from "src/fleets/Fleet";
-import {Star} from "src/map/Star";
+import {Fleet} from "core/fleets/Fleet";
+import {Star} from "core/map/Star";
 
 import {Front} from "../../../mapai/Front";
 

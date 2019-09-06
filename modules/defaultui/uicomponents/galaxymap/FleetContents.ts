@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Fleet} from "src/fleets/Fleet";
-import {Player} from "src/player/Player";
-import {Unit} from "src/unit/Unit";
+import {Fleet} from "core/fleets/Fleet";
+import {Player} from "core/player/Player";
+import {Unit} from "core/unit/Unit";
 
 import {FleetUnitInfo} from "./FleetUnitInfo";
 

@@ -1,4 +1,4 @@
-import { NameSaveData } from "src/savedata/NameSaveData";
+import { NameSaveData } from "core/savedata/NameSaveData";
 
 
 export abstract class Name<

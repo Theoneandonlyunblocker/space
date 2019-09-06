@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {UnitEffectTemplate} from "src/templateinterfaces/UnitEffectTemplate";
+import {UnitEffectTemplate} from "core/templateinterfaces/UnitEffectTemplate";
 import { getAssetSrc } from "modules/defaultui/assets";
 
 

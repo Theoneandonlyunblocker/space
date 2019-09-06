@@ -1,8 +1,8 @@
-import {AttitudeModifierTemplate} from "src/templateinterfaces/AttitudeModifierTemplate";
-import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
+import {AttitudeModifierTemplate} from "core/templateinterfaces/AttitudeModifierTemplate";
+import {TemplateCollection} from "core/templateinterfaces/TemplateCollection";
 
-import {DiplomacyEvaluation} from "src/diplomacy/DiplomacyEvaluation";
-import {DiplomacyState} from "src/diplomacy/DiplomacyState";
+import {DiplomacyEvaluation} from "core/diplomacy/DiplomacyEvaluation";
+import {DiplomacyState} from "core/diplomacy/DiplomacyState";
 import {localize} from "./localization/localize";
 
 

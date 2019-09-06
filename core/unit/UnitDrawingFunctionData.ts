@@ -59,7 +59,7 @@ export class UnitDrawingFunctionData
   public normalizeForBattleVfx(offset: Point, sceneWidth: number, side: "user" | "target"): UnitDrawingFunctionData
   {
     const cloned = this.clone();
-    const padding = 25;  // TODO 2017.06.19 | as defined in src/battlescenunit
+    const padding = 25;  // TODO 2017.06.19 | as defined in core/battlescenunit
     cloned.offset({x: padding, y: offset.y});
 
     if (side === "target")

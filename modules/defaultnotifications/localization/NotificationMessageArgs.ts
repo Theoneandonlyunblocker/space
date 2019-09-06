@@ -1,4 +1,4 @@
-import { Name } from "src/localization/Name";
+import { Name } from "core/localization/Name";
 
 
 export type NotificationMessageArgs =

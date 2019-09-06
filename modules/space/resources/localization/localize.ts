@@ -1,4 +1,4 @@
-import {Localizer} from "src/localization/Localizer";
+import {Localizer} from "core/localization/Localizer";
 import {englishLanguage} from "modules/englishlanguage/englishLanguage";
 import {resources as en_resources} from "./en/resources";
 

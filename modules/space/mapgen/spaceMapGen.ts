@@ -1,9 +1,9 @@
 import {englishLanguage} from "modules/englishlanguage/englishLanguage";
-import {ModuleData} from "src/modules/ModuleData";
-import {GameModule} from "src/modules/GameModule";
-import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
-import {MapGenTemplate} from "src/templateinterfaces/MapGenTemplate";
-import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
+import {ModuleData} from "core/modules/ModuleData";
+import {GameModule} from "core/modules/GameModule";
+import {GameModuleInitializationPhase} from "core/modules/GameModuleInitializationPhase";
+import {MapGenTemplate} from "core/templateinterfaces/MapGenTemplate";
+import {TemplateCollection} from "core/templateinterfaces/TemplateCollection";
 
 import {spiralGalaxy} from "./templates/spiralGalaxy";
 import {tinierSpiralGalaxy} from "./templates/tinierSpiralGalaxy";

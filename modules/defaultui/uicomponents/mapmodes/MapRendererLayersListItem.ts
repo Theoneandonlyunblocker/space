@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {MapRendererLayer} from "src/maprenderer/MapRendererLayer";
+import {MapRendererLayer} from "core/maprenderer/MapRendererLayer";
 
 import {DragPositioner, DragPositionerProps} from "../mixins/DragPositioner";
 import {applyMixins} from "../mixins/applyMixins";

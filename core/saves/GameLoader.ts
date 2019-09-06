@@ -40,7 +40,7 @@ import {PlayerSaveData} from "../savedata/PlayerSaveData";
 import {StarSaveData} from "../savedata/StarSaveData";
 import {StatusEffectSaveData} from "../savedata/StatusEffectSaveData";
 import {UnitSaveData} from "../savedata/UnitSaveData";
-import { NameSaveData } from "src/savedata/NameSaveData";
+import { NameSaveData } from "core/savedata/NameSaveData";
 
 
 export class GameLoader

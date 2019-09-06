@@ -1,9 +1,9 @@
-import {RaceTemplate} from "src/templateinterfaces/RaceTemplate";
+import {RaceTemplate} from "core/templateinterfaces/RaceTemplate";
 
 import
 {
   getRandomProperty,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
 import {generateIndependentFleets} from "modules/common/generateIndependentFleets";
 import {generateIndependentPlayer} from "modules/common/generateIndependentPlayer";

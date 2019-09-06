@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import {VfxParams} from "src/templateinterfaces/VfxParams";
+import {VfxParams} from "core/templateinterfaces/VfxParams";
 
 
 export function makeVfxFromVideo(

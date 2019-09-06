@@ -1,5 +1,5 @@
-import {Star} from "src/map/Star";
-import {Unit} from "src/unit/Unit";
+import {Star} from "core/map/Star";
+import {Unit} from "core/unit/Unit";
 import {Front} from "../../mapai/Front";
 import {MapEvaluator} from "../../mapai/MapEvaluator";
 import {UnitEvaluator} from "../../mapai/UnitEvaluator";

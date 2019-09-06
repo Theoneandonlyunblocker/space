@@ -1,8 +1,8 @@
 import * as React from "react";
 
-import {introTutorial} from "src/tutorials/IntroTutorial";
-import {tutorialStatus} from "src/tutorials/TutorialStatus";
-import {TutorialVisibility} from "src/tutorials/TutorialVisibility";
+import {introTutorial} from "core/tutorials/IntroTutorial";
+import {tutorialStatus} from "core/tutorials/TutorialStatus";
+import {TutorialVisibility} from "core/tutorials/TutorialVisibility";
 import {DefaultWindow} from "../windows/DefaultWindow";
 
 import {Tutorial} from "./Tutorial";

@@ -1,17 +1,17 @@
-import {ExecutedEffectsResult} from "src/templateinterfaces/ExecutedEffectsResult";
-import {AbilityTemplate} from "src/templateinterfaces/AbilityTemplate";
+import {ExecutedEffectsResult} from "core/templateinterfaces/ExecutedEffectsResult";
+import {AbilityTemplate} from "core/templateinterfaces/AbilityTemplate";
 import
 {
   AbilityTargetEffect,
   AbilityTargetType,
-} from "src/abilities/AbilityTargetDisplayData";
+} from "core/abilities/AbilityTargetDisplayData";
 import {DamageType} from "modules/space/effectactions/DamageType";
 import
 {
   makeGetAbilityTargetDisplayDataFN,
   areaSingle,
   targetEnemies,
-} from "src/abilities/targeting";
+} from "core/abilities/targeting";
 
 import {ResultType} from "modules/space/effectactions/ResultType";
 import * as EffectActions from "modules/space/effectactions/effectActions";

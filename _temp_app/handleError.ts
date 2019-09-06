@@ -1,5 +1,5 @@
-import {app} from "src/app/App"; // TODO global
-import {options} from "src/app/Options";
+import {app} from "core/app/App"; // TODO global
+import {options} from "core/app/Options";
 
 
 let hasAlertedOfError: boolean = false;

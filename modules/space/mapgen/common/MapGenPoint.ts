@@ -1,4 +1,4 @@
-import {Point} from "src/math/Point";
+import {Point} from "core/math/Point";
 
 import {MapGenData} from "./MapGenData";
 

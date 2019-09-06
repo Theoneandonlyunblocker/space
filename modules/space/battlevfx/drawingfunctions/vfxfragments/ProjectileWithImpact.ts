@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import {VfxFragment} from "./VfxFragment";
 import * as PropInfo from "./props/PropInfoClasses";
 import {Projectile} from "./Projectile";
-import { getRelativeValue } from "src/generic/utility";
+import { getRelativeValue } from "core/generic/utility";
 
 
 interface ProjectileWithImpactProps<D extends PIXI.DisplayObject>

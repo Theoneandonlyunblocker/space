@@ -1,5 +1,5 @@
-import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
-import {UnitTemplate} from "src/templateinterfaces/UnitTemplate";
+import {TemplateCollection} from "core/templateinterfaces/TemplateCollection";
+import {UnitTemplate} from "core/templateinterfaces/UnitTemplate";
 
 import {battleCruiser} from  "./templates/battleCruiser";
 import {bomberSquadron} from  "./templates/bomberSquadron";

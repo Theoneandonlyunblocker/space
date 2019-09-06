@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
-import {Color} from "src/color/Color";
-import {MapRendererLayerTemplate} from "src/templateinterfaces/MapRendererLayerTemplate";
+import {Color} from "core/color/Color";
+import {MapRendererLayerTemplate} from "core/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
   makePolygonFromPoints,
-} from "src/graphics/pixiWrapperFunctions";
-import { clamp } from "src/generic/utility";
+} from "core/graphics/pixiWrapperFunctions";
+import { clamp } from "core/generic/utility";
 import { localize } from "../localization/localize";
 
 

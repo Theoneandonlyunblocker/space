@@ -1,10 +1,10 @@
-import {RaceTemplate} from "src/templateinterfaces/RaceTemplate";
-import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
+import {RaceTemplate} from "core/templateinterfaces/RaceTemplate";
+import {TemplateCollection} from "core/templateinterfaces/TemplateCollection";
 import
 {
   getRandomProperty,
   randInt,
-} from "src/generic/utility";
+} from "core/generic/utility";
 import {distributionGroups} from "../common/distributionGroups";
 import {generateIndependentFleets} from "../common/generateIndependentFleets";
 import {generateIndependentPlayer} from "../common/generateIndependentPlayer";

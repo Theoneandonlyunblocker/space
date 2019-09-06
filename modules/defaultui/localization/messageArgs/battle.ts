@@ -1,4 +1,4 @@
-import {GuardCoverage} from "src/unit/GuardCoverage";
+import {GuardCoverage} from "core/unit/GuardCoverage";
 
 
 export type Battle =

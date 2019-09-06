@@ -1,9 +1,9 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Player} from "src/player/Player";
-import {Star} from "src/map/Star";
-import {eventManager} from "src/app/eventManager";
+import {Player} from "core/player/Player";
+import {Star} from "core/map/Star";
+import {eventManager} from "core/app/eventManager";
 import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";
 import {applyMixins} from "../mixins/applyMixins";
 

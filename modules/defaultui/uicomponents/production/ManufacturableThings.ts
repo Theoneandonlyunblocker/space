@@ -2,10 +2,10 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Player} from "src/player/Player";
-import {Star} from "src/map/Star";
-import {ItemTemplate} from "src/templateinterfaces/ItemTemplate";
-import {UnitTemplate} from "src/templateinterfaces/UnitTemplate";
+import {Player} from "core/player/Player";
+import {Star} from "core/map/Star";
+import {ItemTemplate} from "core/templateinterfaces/ItemTemplate";
+import {UnitTemplate} from "core/templateinterfaces/UnitTemplate";
 
 import {ManufacturableItems} from "./ManufacturableItems";
 import {ManufacturableUnits} from "./ManufacturableUnits";

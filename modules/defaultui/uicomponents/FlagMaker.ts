@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Flag} from "src/flag/Flag";
-import {generateColorScheme} from "src/color/colorGeneration";
+import {Flag} from "core/flag/Flag";
+import {generateColorScheme} from "core/color/colorGeneration";
 
 import {PlayerFlag} from "./PlayerFlag";
 

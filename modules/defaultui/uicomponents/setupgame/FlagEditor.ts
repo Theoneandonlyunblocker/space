@@ -1,10 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Color} from "src/color/Color";
-import {Emblem} from "src/flag/Emblem";
-import {Flag} from "src/flag/Flag";
-import {SubEmblemTemplate} from "src/templateinterfaces/SubEmblemTemplate";
+import {Color} from "core/color/Color";
+import {Emblem} from "core/flag/Emblem";
+import {Flag} from "core/flag/Flag";
+import {SubEmblemTemplate} from "core/templateinterfaces/SubEmblemTemplate";
 import {EmblemProps} from "../Emblem";
 import
 {

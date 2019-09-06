@@ -1,16 +1,16 @@
 import * as PIXI from "pixi.js";
 import * as Proton from "proton-js";
 
-import { VfxDrawingFunction } from "src/templateinterfaces/VfxDrawingFunction";
-import { solveAcceleration } from "src/math/kinematics";
-import { extractImageData } from "src/graphics/pixiWrapperFunctions";
+import { VfxDrawingFunction } from "core/templateinterfaces/VfxDrawingFunction";
+import { solveAcceleration } from "core/math/kinematics";
+import { extractImageData } from "core/graphics/pixiWrapperFunctions";
 
 import { ParticleBurst } from "modules/space/battlevfx/drawingfunctions/vfxfragments/ParticleBurst";
 import { ArcZone } from "modules/space/battlevfx/drawingfunctions/proton/ArcZone";
 import { CollisionRectZone } from "modules/space/battlevfx/drawingfunctions/proton/CollisionRectZone";
 import { AbsorbParticles } from "modules/space/battlevfx/drawingfunctions/vfxfragments/AbsorbParticles";
-import { Color } from "src/color/Color";
-import { Point } from "src/math/Point";
+import { Color } from "core/color/Color";
+import { Point } from "core/math/Point";
 
 
 const baseParticleCount = 200;

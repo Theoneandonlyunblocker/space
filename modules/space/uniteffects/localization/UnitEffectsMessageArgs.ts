@@ -1,4 +1,4 @@
-import { UnitAttribute } from "src/unit/UnitAttributes";
+import { UnitAttribute } from "core/unit/UnitAttributes";
 
 
 export type UnitEffectsMessageArgs =

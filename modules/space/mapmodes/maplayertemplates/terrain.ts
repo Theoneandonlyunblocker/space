@@ -5,16 +5,16 @@ import * as Terrains from "modules/space/terrains/terrains";
 
 import {triangulate} from "modules/space/mapgen/common/triangulate";
 
-import {GalaxyMap} from "src/map/GalaxyMap";
-import {Player} from "src/player/Player";
-import {Point} from "src/math/Point";
+import {GalaxyMap} from "core/map/GalaxyMap";
+import {Player} from "core/player/Player";
+import {Point} from "core/math/Point";
 import
 {
   getRandomArrayItemWithWeights,
   randInt,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
-import {MapRendererLayerTemplate} from "src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "core/templateinterfaces/MapRendererLayerTemplate";
 import { localize } from "../localization/localize";
 
 

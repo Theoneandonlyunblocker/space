@@ -1,4 +1,4 @@
-import {Color} from "src/color/Color";
+import {Color} from "core/color/Color";
 
 
 export const iconSources =

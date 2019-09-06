@@ -1,10 +1,10 @@
 import * as PIXI from "pixi.js";
 
-import {MapRendererLayerTemplate} from "src/templateinterfaces/MapRendererLayerTemplate";
+import {MapRendererLayerTemplate} from "core/templateinterfaces/MapRendererLayerTemplate";
 
-import {app} from "src/app/App";
-import {Fleet} from "src/fleets/Fleet";
-import {eventManager} from "src/app/eventManager";
+import {app} from "core/app/App";
+import {Fleet} from "core/fleets/Fleet";
+import {eventManager} from "core/app/eventManager";
 import { localize } from "../localization/localize";
 
 

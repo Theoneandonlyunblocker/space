@@ -1,6 +1,6 @@
 import {englishLanguage} from "modules/englishlanguage/englishLanguage";
 import {formatters as englishFormatters} from "modules/englishlanguage/formatters";
-import {MessageFormatLocalizer} from "src/localization/MessageFormatLocalizer";
+import {MessageFormatLocalizer} from "core/localization/MessageFormatLocalizer";
 
 import {notificationMessages as en_notificationMessages} from "./en/notificationMessages";
 import {NotificationMessageArgs} from "./NotificationMessageArgs";

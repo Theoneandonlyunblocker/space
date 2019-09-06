@@ -1,12 +1,12 @@
-import {GameModule} from "src/modules/GameModule";
-import {GameModuleInitializationPhase} from "src/modules/GameModuleInitializationPhase";
-import * as semver from "src/app/versions";
+import {GameModule} from "core/modules/GameModule";
+import {GameModuleInitializationPhase} from "core/modules/GameModuleInitializationPhase";
+import * as semver from "core/app/versions";
 
 import {englishLanguage} from "./englishLanguage";
 
 import * as moduleInfo from "./moduleInfo.json";
 import { EnglishNameTagsSaveData, defaultEnglishNameTags } from "./EnglishName";
-import { NameSaveData } from "src/savedata/NameSaveData";
+import { NameSaveData } from "core/savedata/NameSaveData";
 
 
 export const englishLanguageSupport: GameModule =

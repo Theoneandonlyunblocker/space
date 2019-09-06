@@ -9,7 +9,7 @@ import { ProtonEmitter } from "../proton/ProtonEmitter";
 import { PixiRenderer } from "../proton/PixiRenderer";
 import { FunctionInitialize } from "../proton/FunctionInitialize";
 import { PolarVelocityInitialize } from "../proton/PolarVelocityInitialize";
-import { Point } from "src/math/Point";
+import { Point } from "core/math/Point";
 
 
 export interface ParticleBurstProps<D extends PIXI.DisplayObject>

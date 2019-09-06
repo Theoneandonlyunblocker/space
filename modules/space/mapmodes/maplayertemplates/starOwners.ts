@@ -2,14 +2,14 @@
 
 import * as PIXI from "pixi.js";
 
-import {Player} from "src/player/Player";
-import {eventManager} from "src/app/eventManager";
-import {MapRendererLayerTemplate} from "src/templateinterfaces/MapRendererLayerTemplate";
+import {Player} from "core/player/Player";
+import {eventManager} from "core/app/eventManager";
+import {MapRendererLayerTemplate} from "core/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
   makePolygonFromPoints,
-} from "src/graphics/pixiWrapperFunctions";
+} from "core/graphics/pixiWrapperFunctions";
 
 import {OccupationFilter} from "./shaders/OccupationFilter";
 import { localize } from "../localization/localize";

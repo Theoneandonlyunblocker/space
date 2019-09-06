@@ -1,13 +1,13 @@
 import * as PIXI from "pixi.js";
 
-import {Player} from "src/player/Player";
-import {getRevealedBorderEdges, borderWidth} from "src/maprenderer/borderPolygon";
-import {MapRendererLayerTemplate} from "src/templateinterfaces/MapRendererLayerTemplate";
+import {Player} from "core/player/Player";
+import {getRevealedBorderEdges, borderWidth} from "core/maprenderer/borderPolygon";
+import {MapRendererLayerTemplate} from "core/templateinterfaces/MapRendererLayerTemplate";
 
 import
 {
   makePolygonFromPoints,
-} from "src/graphics/pixiWrapperFunctions";
+} from "core/graphics/pixiWrapperFunctions";
 import { localize } from "../localization/localize";
 
 

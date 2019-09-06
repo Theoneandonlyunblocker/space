@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {Color} from "src/color/Color";
-import {SubEmblemTemplate} from "src/templateinterfaces/SubEmblemTemplate";
+import {Color} from "core/color/Color";
+import {SubEmblemTemplate} from "core/templateinterfaces/SubEmblemTemplate";
 
 import {EmblemColorPicker} from "./EmblemColorPicker";
 import {EmblemPicker} from "./EmblemPicker";

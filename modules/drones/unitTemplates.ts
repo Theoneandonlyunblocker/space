@@ -1,5 +1,5 @@
-import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
-import {UnitTemplate} from "src/templateinterfaces/UnitTemplate";
+import {TemplateCollection} from "core/templateinterfaces/TemplateCollection";
+import {UnitTemplate} from "core/templateinterfaces/UnitTemplate";
 
 import {droneBase} from  "./units/droneBase";
 import {droneCommander} from  "./units/droneCommander";

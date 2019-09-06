@@ -1,4 +1,4 @@
-import {DiplomacyState} from "src/diplomacy/DiplomacyState";
+import {DiplomacyState} from "core/diplomacy/DiplomacyState";
 
 
 export type Diplomacy =

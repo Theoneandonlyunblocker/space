@@ -1,11 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {activeNotificationFilter, NotificationFilter} from "src/notifications/NotificationFilter";
+import {activeNotificationFilter, NotificationFilter} from "core/notifications/NotificationFilter";
 
 import {localize} from "../../localization/localize";
 
-import {eventManager} from "src/app/eventManager";
+import {eventManager} from "core/app/eventManager";
 
 import {OptionsGroup} from "../options/OptionsGroup";
 

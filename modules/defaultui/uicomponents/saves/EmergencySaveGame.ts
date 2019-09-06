@@ -2,8 +2,8 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../localization/localize";
-import {app} from "src/app/App"; // TODO global
-import { storageStrings } from "src/saves/storageStrings";
+import {app} from "core/app/App"; // TODO global
+import { storageStrings } from "core/saves/storageStrings";
 
 
 // tslint:disable-next-line:no-any

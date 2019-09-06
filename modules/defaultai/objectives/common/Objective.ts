@@ -1,5 +1,5 @@
-import {IdDictionary} from "src/generic/IdDictionary";
-import {idGenerators} from "src/app/idGenerators";
+import {IdDictionary} from "core/generic/IdDictionary";
+import {idGenerators} from "core/app/idGenerators";
 import {GrandStrategyAi} from "../../mapai/GrandStrategyAi";
 import {MapEvaluator} from "../../mapai/MapEvaluator";
 

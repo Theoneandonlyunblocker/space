@@ -66,8 +66,8 @@
 
     "start": "http-server --port 9001 -o http://127.0.0.1:9001/",
 
-    "lint": "tslint \"{src,modules}/**/*.ts\"",
-    "lintfix": "tslint \"{src,modules}/**/*.ts\" --fix"
+    "lint": "tslint \"{core,modules}/**/*.ts\"",
+    "lintfix": "tslint \"{core,modules}/**/*.ts\" --fix"
   },
   "repository": {
     "type": "git",

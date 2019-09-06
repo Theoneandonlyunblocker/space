@@ -1,11 +1,11 @@
 // Used for storing unit properties not needed by core game
 
-import {Unit} from "src/unit/Unit";
-import {ValuesByUnit} from "src/unit/ValuesByUnit";
+import {Unit} from "core/unit/Unit";
+import {ValuesByUnit} from "core/unit/ValuesByUnit";
 import
 {
   shallowExtend,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
 import {Front} from "./mapai/Front";
 

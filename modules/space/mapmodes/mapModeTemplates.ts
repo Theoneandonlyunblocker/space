@@ -1,5 +1,5 @@
-import {MapRendererMapModeTemplate} from "src/templateinterfaces/MapRendererMapModeTemplate";
-import {TemplateCollection} from "src/templateinterfaces/TemplateCollection";
+import {MapRendererMapModeTemplate} from "core/templateinterfaces/MapRendererMapModeTemplate";
+import {TemplateCollection} from "core/templateinterfaces/TemplateCollection";
 
 import * as MapModes from "./mapmodetemplates/mapModes";
 

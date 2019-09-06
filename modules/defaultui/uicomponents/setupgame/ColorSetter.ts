@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Color} from "src/color/Color";
+import {Color} from "core/color/Color";
 import {AutoPositionerPosition} from "../mixins/AutoPositioner";
 
 import {ColorPicker} from "./ColorPicker";

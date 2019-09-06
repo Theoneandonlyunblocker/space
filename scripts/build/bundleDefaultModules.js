@@ -26,7 +26,7 @@ console.log("bundling modules");
   {root: "modules/space/resources",          include: "**/*.js"},
   {root: "modules/space/technologies",       include: "**/*.js"},
   {root: "modules/space/units",              include: "**/*.js"},
-  {root: "src",                              include: "**/*.js"},
+  {root: "core",                             include: "**/*.js"},
   {root: "_temp_app",                        include: "**/*.js"},
 ].forEach(toBundle =>
 {

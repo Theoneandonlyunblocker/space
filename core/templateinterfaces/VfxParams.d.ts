@@ -1,4 +1,4 @@
-// TODO 2019.08.22 | move to src/
+// TODO 2019.08.22 | move to core/
 // also move other stuff that isn't used for templates from here
 import * as PIXI from "pixi.js";
 

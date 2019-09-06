@@ -1,27 +1,27 @@
 import * as RNG from "rng-js";
 
-import {FillerPoint} from "src/map/FillerPoint";
-import {MapGenResult} from "src/map/MapGenResult";
-import {Player} from "src/player/Player";
-import {Region} from "src/map/Region";
-import {Star} from "src/map/Star";
-import {templateIndexes} from "src/app/TemplateIndexes";
-import {activeModuleData} from "src/app/activeModuleData";
+import {FillerPoint} from "core/map/FillerPoint";
+import {MapGenResult} from "core/map/MapGenResult";
+import {Player} from "core/player/Player";
+import {Region} from "core/map/Region";
+import {Star} from "core/map/Star";
+import {templateIndexes} from "core/app/TemplateIndexes";
+import {activeModuleData} from "core/app/activeModuleData";
 import
 {
   randInt,
-} from "src/generic/utility";
+} from "core/generic/utility";
 
-import {MapGenFunction} from "src/templateinterfaces/MapGenFunction";
-import {RaceTemplate} from "src/templateinterfaces/RaceTemplate";
-import {ResourceTemplate} from "src/templateinterfaces/ResourceTemplate";
+import {MapGenFunction} from "core/templateinterfaces/MapGenFunction";
+import {RaceTemplate} from "core/templateinterfaces/RaceTemplate";
+import {ResourceTemplate} from "core/templateinterfaces/ResourceTemplate";
 
 import
 {
   makeVoronoi,
   relaxVoronoi,
   setVoronoiCells,
-} from "src/math/voronoi";
+} from "core/math/voronoi";
 
 import * as Terrains from "modules/space/terrains/terrains";
 

@@ -1,8 +1,8 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Unit} from "src/unit/Unit";
-import {AbilityTemplate} from "src/templateinterfaces/AbilityTemplate";
+import {Unit} from "core/unit/Unit";
+import {AbilityTemplate} from "core/templateinterfaces/AbilityTemplate";
 
 
 export interface PropTypes extends React.Props<any>
