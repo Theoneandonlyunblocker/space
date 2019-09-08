@@ -1,7 +1,7 @@
-import { PartialModuleScriptsWithData } from "core/modules/ModuleScripts";
+import { PartialTriggeredScriptsWithData } from "core/triggeredscripts/TriggeredScripts";
 
 
-export const autoSaveScripts: PartialModuleScriptsWithData =
+export const autoSaveScripts: PartialTriggeredScriptsWithData =
 {
   game:
   {
@@ -12,7 +12,8 @@ export const autoSaveScripts: PartialModuleScriptsWithData =
         priority: 0,
         script: (game) =>
         {
-          game.save("autosave", false);
+          const wasManuallyTriggered = false;
+          game.save("autosave", wasManuallyTriggered);
         }
       },
     ],

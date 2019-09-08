@@ -1,18 +1,18 @@
 import {unitScripts} from "./unitScripts";
 import {starScripts} from "./starScripts";
 import {autoSaveScripts} from "./autoSaveScripts";
-import { PartialModuleScriptsWithData } from "core/modules/ModuleScripts";
+import { PartialTriggeredScriptsWithData } from "core/triggeredscripts/TriggeredScripts";
 
-const scriptsToMerge: PartialModuleScriptsWithData[] =
+const scriptsToMerge: PartialTriggeredScriptsWithData[] =
 [
   starScripts,
   unitScripts,
   autoSaveScripts,
 ];
 
-export const allScripts: PartialModuleScriptsWithData = scriptsToMerge.reduce((
-  merged: PartialModuleScriptsWithData,
-  toMerge: PartialModuleScriptsWithData,
+export const allScripts: PartialTriggeredScriptsWithData = scriptsToMerge.reduce((
+  merged: PartialTriggeredScriptsWithData,
+  toMerge: PartialTriggeredScriptsWithData,
 ) =>
 {
   for (const category in toMerge)

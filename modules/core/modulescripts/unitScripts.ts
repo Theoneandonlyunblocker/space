@@ -1,7 +1,7 @@
-import { PartialModuleScriptsWithData } from "core/modules/ModuleScripts";
+import { PartialTriggeredScriptsWithData } from "core/triggeredscripts/TriggeredScripts";
 
 
-export const unitScripts: PartialModuleScriptsWithData =
+export const unitScripts: PartialTriggeredScriptsWithData =
 {
   unit:
   {

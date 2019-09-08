@@ -3,7 +3,7 @@ import {TemplateCollection} from "../templateinterfaces/TemplateCollection";
 
 import {BackgroundDrawingFunction} from "../graphics/BackgroundDrawingFunction";
 import {GameModule, ModuleSaveData } from "./GameModule";
-import {ModuleScripts} from "./ModuleScripts";
+import {TriggeredScripts} from "../triggeredscripts/TriggeredScripts";
 import
 {
   PartialRuleSetValues,
@@ -111,7 +111,7 @@ export class ModuleData
   };
 
   public ruleSet: RuleSetValues;
-  public scripts: ModuleScripts;
+  public scripts: TriggeredScripts;
   public defaultMap: MapGenTemplate;
   public defaultLanguage: Language;
   public uiScenes: Partial<UIScenes> =
@@ -134,7 +134,7 @@ export class ModuleData
 
   constructor()
   {
-    this.scripts = new ModuleScripts();
+    this.scripts = new TriggeredScripts();
   }
   public copyTemplates<T extends keyof Templates>(source: Templates[T], category: T): void
   {
