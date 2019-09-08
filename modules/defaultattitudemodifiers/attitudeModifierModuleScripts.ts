@@ -17,7 +17,7 @@ export const attitudeModifierModuleScripts =
     [
       {
         key: "addBaseOpinionAttitudeModifier",
-        priority: 0,
+        triggerPriority: 0,
         script: (a: Player, b: Player, game: Game) =>
         {
           const friendliness = a.aiController.personality.friendliness;
@@ -40,7 +40,7 @@ export const attitudeModifierModuleScripts =
     [
       {
         key: "addDeclaredWarAttitudeModifier",
-        priority: 0,
+        triggerPriority: 0,
         script: (aggressor: Player, defender: Player, game: Game) =>
         {
           const modifier = new AttitudeModifier(

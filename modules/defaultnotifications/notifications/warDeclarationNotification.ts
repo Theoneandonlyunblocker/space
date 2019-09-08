@@ -70,7 +70,7 @@ export const warDeclarationNotificationCreationScripts =
     [
       {
         key: "makeWarDeclarationNotification",
-        priority: 0,
+        triggerPriority: 0,
         script: (aggressor: Player, defender: Player) =>
         {
           activeNotificationStore.makeNotification<PropTypes, SerializedPropTypes>(

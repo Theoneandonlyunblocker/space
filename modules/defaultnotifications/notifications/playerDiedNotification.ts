@@ -64,7 +64,7 @@ export const playerDiedNotificationCreationScripts =
     [
       {
         key: "playerDiedNotification",
-        priority: 0,
+        triggerPriority: 0,
         script: (player: Player) =>
         {
           activeNotificationStore.makeNotification<PropTypes, SerializedPropTypes>(

@@ -58,7 +58,6 @@ class AttachedUnitDataManager
 
 export const attachedUnitData = new AttachedUnitDataManager();
 
-// TODO 2018.12.07 | belongs in ai module
 export const attachedUnitDataScripts =
 {
   unit:
@@ -67,7 +66,7 @@ export const attachedUnitDataScripts =
     [
       {
         key: "removeFromFront",
-        priority: 0,
+        triggerPriority: 0,
         script: (unit: Unit) =>
         {
           const front = attachedUnitData.get(unit).front;

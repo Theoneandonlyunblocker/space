@@ -19,7 +19,11 @@ type AllTriggeredScriptTypes =
 interface TriggeredScriptData<T extends (...args: any[]) => void>
 {
   key: string;
-  priority: number; // 0 should be considered default
+  /**
+   * higher priority scripts are triggered first
+   * @default 0
+   */
+  triggerPriority: number;
   script: T;
 }
 
@@ -153,9 +157,9 @@ export class TriggeredScripts implements AllTriggeredScripts
     }
   }
 
-  private static sort(a: TriggeredScriptData<any>, b: TriggeredScriptData<any>): number
+  private static triggerPrioritySort(a: TriggeredScriptData<any>, b: TriggeredScriptData<any>): number
   {
-    return b.priority - a.priority;
+    return b.triggerPriority - a.triggerPriority;
   }
   private static makeAccessorObject<S extends {[T in keyof S]: (...args: any[]) => void}>(scriptsWithData: ScriptsWithData<S>): ScriptsCollection<S>
   {
@@ -165,7 +169,7 @@ export class TriggeredScripts implements AllTriggeredScripts
     {
       Object.defineProperty(accessorObject, scriptKey,
       {
-        get: () => scriptsWithData[scriptKey].sort(TriggeredScripts.sort).map(scriptData => scriptData.script),
+        get: () => scriptsWithData[scriptKey].sort(TriggeredScripts.triggerPrioritySort).map(scriptData => scriptData.script),
       });
     }
 

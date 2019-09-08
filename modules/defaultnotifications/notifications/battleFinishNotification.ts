@@ -85,7 +85,7 @@ export const battleFinishNotificationCreationScripts =
     [
       {
         key: "makeBattleFinishNotification",
-        priority: 0,
+        triggerPriority: 0,
         script: (battle: Battle) =>
         {
           activeNotificationStore.makeNotification<PropTypes, SerializedPropTypes>(
