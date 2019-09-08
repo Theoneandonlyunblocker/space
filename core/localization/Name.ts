@@ -13,9 +13,9 @@ export abstract class Name<
   public languageSpecificTags?: Tags;
   public hasBeenCustomized: boolean = false;
 
-  constructor(name: string, languageSpecificTags?: Tags)
+  constructor(baseName: string, languageSpecificTags?: Tags)
   {
-    this.baseName = name;
+    this.baseName = baseName;
     this.languageSpecificTags = {...languageSpecificTags};
   }
 
@@ -43,5 +43,3 @@ export abstract class Name<
 
   protected abstract serializeTags(): TagsSaveData;
 }
-
-

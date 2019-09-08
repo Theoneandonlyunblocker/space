@@ -46,6 +46,12 @@ export abstract class BaseLocalizer<
       throw new Error(`Missing localization for '${this.key}.${activeLanguage.code}.${key}'`);
     }
   }
+  public getMissingLocalizationString(messageKey: keyof StoredItems): string
+  {
+    const activeLanguage = options.display.language;
+
+    return `${this.key}.${activeLanguage.code}.${messageKey}`;
+  }
 
   protected get<K extends keyof StoredItems>(key: K): StoredItems[K] | undefined
   {

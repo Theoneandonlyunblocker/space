@@ -46,7 +46,6 @@ export class MessageFormatLocalizer<
   }
   public localize<K extends keyof ItemArgs>(key: K): Message<ItemArgs[K]> | ErrorMessage
   {
-    const activeLanguage = options.display.language;
     const compiledMessage = this.get(key);
     if (compiledMessage)
     {
@@ -54,7 +53,7 @@ export class MessageFormatLocalizer<
     }
     else
     {
-      return this.getMissingLocalizationMessage(key, activeLanguage);
+      return this.getMissingLocalizationMessage(key);
     }
   }
   public addFormatters(formatters: {[key: string]: MessageFormat.FormatterFunction}, language: Language): void
@@ -89,8 +88,8 @@ export class MessageFormatLocalizer<
       return compiledMessages;
     }, <{[K in keyof ItemArgs]: MessageFormat.MessageFunction<ItemArgs[K]>}>{});
   }
-  private getMissingLocalizationMessage(messageKey: keyof ItemArgs, activeLanguage: Language): ErrorMessage
+  private getMissingLocalizationMessage(messageKey: keyof ItemArgs): ErrorMessage
   {
-    return new ErrorMessage(this.errorMessageFormatter.compile(`${this.key}.${activeLanguage.code}.${messageKey}`));
+    return new ErrorMessage(this.errorMessageFormatter.compile(this.getMissingLocalizationString(messageKey)));
   }
 }
