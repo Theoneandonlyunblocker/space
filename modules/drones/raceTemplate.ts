@@ -21,7 +21,7 @@ export const drones: RaceTemplate =
   type: "drones",
   get displayName()
   {
-    return localizeName("drones");
+    return localizeName("drones")();
   },
   description: "",
   distributionData:

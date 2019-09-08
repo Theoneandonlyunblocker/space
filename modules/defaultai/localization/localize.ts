@@ -5,7 +5,13 @@ import {tradeMessages as en_tradeMessages} from "./en/tradeMessages";
 import { getRandomArrayItem } from "core/generic/utility";
 
 
-export const localizer = new Localizer<typeof en_tradeMessages>("tradeMessages");
+export const localizer = new Localizer<typeof en_tradeMessages, [string]>(
+  "tradeMessages",
+  (messageKey, language, missingLocalizationString) =>
+  {
+    return [missingLocalizationString];
+  },
+);
 
 localizer.setAll(en_tradeMessages, englishLanguage);
 

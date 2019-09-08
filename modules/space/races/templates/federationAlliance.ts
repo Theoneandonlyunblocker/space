@@ -26,7 +26,7 @@ export const federationAlliance: RaceTemplate =
   type: "federationAlliance",
   get displayName()
   {
-    return localizeName("federationAlliance");
+    return localizeName("federationAlliance")();
   },
   description: "The good guys",
   distributionData:
@@ -56,7 +56,7 @@ export const federationAlliance: RaceTemplate =
     ];
   },
   getPlayerName: player => player.isIndependent ?
-    localizeName("federationAllianceIndependents") :
+    localizeName("federationAllianceIndependents")() :
     localizeName("genericPlayer")(player.id),
   getFleetName: fleet => localizeName("genericFleet")(fleet.id),
   getUnitName: unitTemplate =>

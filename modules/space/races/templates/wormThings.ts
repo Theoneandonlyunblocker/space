@@ -26,7 +26,7 @@ export const wormThings: RaceTemplate =
   type: "wormThings",
   get displayName()
   {
-    return localizeName("wormThings");
+    return localizeName("wormThings")();
   },
   description: "The gross guys",
   distributionData:
@@ -56,7 +56,7 @@ export const wormThings: RaceTemplate =
     ];
   },
   getPlayerName: player => player.isIndependent ?
-    localizeName("wormThingsIndependents") :
+    localizeName("wormThingsIndependents")() :
     localizeName("genericPlayer")(player.id),
   getFleetName: fleet => localizeName("genericFleet")(fleet.id),
   getUnitName: unitTemplate => `Infested ${unitTemplate.displayName}`,

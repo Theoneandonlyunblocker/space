@@ -5,12 +5,19 @@ import {names as en_names} from "./en/names";
 import {units as en_units} from "./en/units";
 import {unitEffects as en_unitEffects} from "./en/unitEffects";
 import {abilities as en_abilities} from "./en/abilities";
+import { Name } from "core/localization/Name";
 
 
-export const nameLocalizer = new Localizer<typeof en_names>("droneNames");
+export const nameLocalizer = new Localizer<typeof en_names, () => Name>(
+  "droneNames",
+  (nameKey, language, missingLocalizationSTring) =>
+  {
+    return () => language.constructName(missingLocalizationSTring);
+  },
+);
 nameLocalizer.setAll(en_names, englishLanguage);
-export const localizeName = nameLocalizer.localize.bind(nameLocalizer);
 
+export const localizeName = nameLocalizer.localize.bind(nameLocalizer);
 
 const allMessages =
 {

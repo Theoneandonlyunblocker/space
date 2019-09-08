@@ -15,10 +15,12 @@ export abstract class BaseLocalizer<
   {
     [languageCode: string]: StoredItems;
   } = {};
+  protected readonly getFallbackItem: (key: keyof InputItems, language: Language, missingLocalizationString: string) => FallbackOutput;
 
-  constructor(key: string)
+  constructor(key: string, getFallbackItem?: (key: keyof InputItems, language: Language, missingLocalizationString: string) => FallbackOutput)
   {
     this.key = key;
+    this.getFallbackItem = getFallbackItem;
   }
 
   public setAll(items: InputItems, language: Language): void
@@ -41,9 +43,13 @@ export abstract class BaseLocalizer<
     {
       return item;
     }
+    else if (this.getFallbackItem)
+    {
+      return this.getFallbackItem(key, activeLanguage, this.getMissingLocalizationString(key));
+    }
     else
     {
-      throw new Error(`Missing localization for '${this.key}.${activeLanguage.code}.${key}'`);
+      throw new Error(`Missing localization for '${this.getMissingLocalizationString(key)}'`);
     }
   }
   public getMissingLocalizationString(messageKey: keyof StoredItems): string
@@ -68,10 +74,10 @@ export abstract class BaseLocalizer<
   }
 }
 
-export class Localizer<Items extends {[K in keyof Items]: any}> extends BaseLocalizer<Items>
+export class Localizer<Items extends {[K in keyof Items]: any}, FallbackOutput> extends BaseLocalizer<Items, Items, Items, FallbackOutput>
 {
-  constructor(key: string)
+  constructor(key: string, getFallbackItem: (key: keyof Items, language: Language, missingLocalizationString: string) => FallbackOutput)
   {
-    super(key);
+    super(key, getFallbackItem);
   }
 }
