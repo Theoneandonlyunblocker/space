@@ -1,5 +1,6 @@
 import {englishLanguage} from "modules/englishlanguage/englishLanguage";
 import {Localizer} from "core/localization/Localizer";
+import {StringLocalizer} from "core/localization/StringLocalizer";
 
 import {names as en_names} from "./en/names";
 import {units as en_units} from "./en/units";
@@ -26,7 +27,7 @@ const allMessages =
   ...en_abilities,
 };
 
-export const localizer = new Localizer<typeof allMessages>("drones");
+export const localizer = new StringLocalizer<typeof allMessages>("drones");
 localizer.setAll(allMessages, englishLanguage);
 
 export const localize = localizer.localize.bind(localizer);
