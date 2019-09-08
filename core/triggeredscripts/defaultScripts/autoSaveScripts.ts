@@ -1,4 +1,4 @@
-import { PartialTriggeredScriptsWithData } from "core/triggeredscripts/TriggeredScripts";
+import { PartialTriggeredScriptsWithData } from "../TriggeredScripts";
 
 
 export const autoSaveScripts: PartialTriggeredScriptsWithData =
@@ -9,7 +9,7 @@ export const autoSaveScripts: PartialTriggeredScriptsWithData =
     [
       {
         key: "autoSaveBeforePlayerTurnEnd",
-        priority: 0,
+        triggerPriority: 0,
         script: (game) =>
         {
           const wasManuallyTriggered = false;

@@ -4,6 +4,7 @@ import {GameScripts} from "./GameScripts";
 import {PlayerScripts} from "./PlayerScripts";
 import {StarScripts} from "./StarScripts";
 import {UnitScripts} from "./UnitScripts";
+import { allDefaultTriggeredScripts } from "./allDefaultTriggeredScripts";
 
 
 type AllTriggeredScriptTypes =
@@ -29,6 +30,7 @@ interface TriggeredScriptData<T extends (...args: any[]) => void>
 
 type ScriptsWithData<Scripts extends {[T in keyof Scripts]: (...args: any[]) => void}> =
 {
+  // TODO 2019.09.08 | storing these in an object instead of an array would make more sense
   [T in keyof Scripts]: TriggeredScriptData<Scripts[T]>[];
 };
 
@@ -114,7 +116,7 @@ export class TriggeredScripts implements AllTriggeredScripts
 
   constructor()
   {
-
+    this.add(allDefaultTriggeredScripts);
   }
 
   public static merge(...toMerge: TriggeredScripts[]): TriggeredScripts

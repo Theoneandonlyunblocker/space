@@ -1,4 +1,4 @@
-import { PartialTriggeredScriptsWithData } from "core/triggeredscripts/TriggeredScripts";
+import { PartialTriggeredScriptsWithData } from "../TriggeredScripts";
 
 
 export const starScripts: PartialTriggeredScriptsWithData =
@@ -9,7 +9,7 @@ export const starScripts: PartialTriggeredScriptsWithData =
     [
       {
         key: "destroyPerPlayerLimitedBuildings",
-        priority: 0,
+        triggerPriority: 0,
         script: (star, oldOwner, newOwner) =>
         {
           star.buildings.filter((building) =>

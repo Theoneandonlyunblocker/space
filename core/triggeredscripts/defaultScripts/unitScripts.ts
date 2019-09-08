@@ -1,4 +1,4 @@
-import { PartialTriggeredScriptsWithData } from "core/triggeredscripts/TriggeredScripts";
+import { PartialTriggeredScriptsWithData } from "../TriggeredScripts";
 
 
 export const unitScripts: PartialTriggeredScriptsWithData =
@@ -9,7 +9,7 @@ export const unitScripts: PartialTriggeredScriptsWithData =
     [
       {
         key: "transferCapturedUnit",
-        priority: 0,
+        triggerPriority: 0,
         script: (unit, oldPlayer, newPlayer) =>
         {
           unit.transferToPlayer(newPlayer);
@@ -17,7 +17,7 @@ export const unitScripts: PartialTriggeredScriptsWithData =
       },
       {
         key: "resetExperience",
-        priority: 0,
+        triggerPriority: 0,
         script: (unit, oldPlayer, newPlayer) =>
         {
           unit.experienceForCurrentLevel = 0;
@@ -25,7 +25,7 @@ export const unitScripts: PartialTriggeredScriptsWithData =
       },
       {
         key: "exhaustUnit",
-        priority: 0,
+        triggerPriority: 0,
         script: (unit, oldPlayer, newPlayer) =>
         {
           unit.currentMovePoints = 0;

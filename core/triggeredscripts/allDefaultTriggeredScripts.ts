@@ -1,7 +1,8 @@
-import {unitScripts} from "./unitScripts";
-import {starScripts} from "./starScripts";
-import {autoSaveScripts} from "./autoSaveScripts";
-import { PartialTriggeredScriptsWithData } from "core/triggeredscripts/TriggeredScripts";
+import {unitScripts} from "./defaultScripts/unitScripts";
+import {starScripts} from "./defaultScripts/starScripts";
+import {autoSaveScripts} from "./defaultScripts/autoSaveScripts";
+import { PartialTriggeredScriptsWithData } from "./TriggeredScripts";
+
 
 const scriptsToMerge: PartialTriggeredScriptsWithData[] =
 [
@@ -10,7 +11,7 @@ const scriptsToMerge: PartialTriggeredScriptsWithData[] =
   autoSaveScripts,
 ];
 
-export const allScripts: PartialTriggeredScriptsWithData = scriptsToMerge.reduce((
+export const allDefaultTriggeredScripts: PartialTriggeredScriptsWithData = scriptsToMerge.reduce((
   merged: PartialTriggeredScriptsWithData,
   toMerge: PartialTriggeredScriptsWithData,
 ) =>

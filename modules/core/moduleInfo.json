@@ -1,9 +1,0 @@
-{
-  "key":           "core",
-  "version":       "0.4.0",
-  "author":        "giraluna",
-  "description":   "Core gameplay functionality",
-  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/core/index.js"],
-  "moduleObjRequireJsName": "modules/core/core",
-  "gameModuleVariableName": "core"
-}

@@ -7,6 +7,7 @@ import * as semver from "../app/versions";
 import * as debug from "../app/debug";
 import { getFunctionName } from "../generic/utility";
 import {activeModuleStore} from "../modules/ModuleStore";
+import { ModuleSaveData } from "core/modules/GameModule";
 
 
 // data is cloned at start of reviving process
@@ -111,7 +112,21 @@ const coreSaveDataRevivers: ReviversByVersion =
         moduleSaveData.info.moduleBundleUrl = moduleSaveData.info.moduleFileUrl;
       });
     }
-  ]
+  ],
+  "0.4.0":
+  [
+    function removeCoreModuleSaveData(saveData)
+    {
+      const moduleDataWithoutCoreModule = saveData.moduleData.filter((moduleSaveData: ModuleSaveData) =>
+      {
+        const isCoreModule = moduleSaveData.info.key === "core";
+
+        return !isCoreModule;
+      });
+
+      saveData.moduleData = moduleDataWithoutCoreModule;
+    }
+  ],
 };
 
 function reviveModuleSaveData(data: OutdatedFullSaveData): Promise<void>
