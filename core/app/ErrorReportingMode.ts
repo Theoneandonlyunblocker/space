@@ -1,8 +1,7 @@
-export type ErrorReportingMode = "ignore" | "alert" | "alertOnce" | "panic";
+export type ErrorReportingMode = "ignore" | "alert" | "panic";
 export const errorReportingModes: ErrorReportingMode[] =
 [
   "ignore",
   "alert",
-  "alertOnce",
   "panic",
 ];

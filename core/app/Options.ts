@@ -119,7 +119,7 @@ const defaultOptionsValues: OptionsValues =
   },
   system:
   {
-    errorReporting: "alertOnce",
+    errorReporting: "alert",
   },
 };
 

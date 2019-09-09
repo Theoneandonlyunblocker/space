@@ -14,7 +14,6 @@ function localizeErrorReportingModeName(mode: ErrorReportingMode): string
     case "ignore":    return localize("errorReportingMode_ignore").toString();
     case "panic":     return localize("errorReportingMode_panic").toString();
     case "alert":     return localize("errorReportingMode_alert").toString();
-    case "alertOnce": return localize("errorReportingMode_alertOnce").toString();
   }
 }
 function localizeErrorReportingModeDescription(mode: ErrorReportingMode): string
@@ -24,7 +23,6 @@ function localizeErrorReportingModeDescription(mode: ErrorReportingMode): string
     case "ignore":    return localize("errorReportingModeDescription_ignore").toString();
     case "panic":     return localize("errorReportingModeDescription_panic").toString();
     case "alert":     return localize("errorReportingModeDescription_alert").toString();
-    case "alertOnce": return localize("errorReportingModeDescription_alert").toString();
   }
 }
 

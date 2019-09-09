@@ -33,7 +33,6 @@ export type Options =
   errorReportingMode_ignore: [];
   errorReportingModeDescription_ignore: [];
   errorReportingMode_alert: [];
-  errorReportingMode_alertOnce: [];
   errorReportingModeDescription_alert: [];
   errorReportingMode_panic: [];
   errorReportingModeDescription_panic: [];

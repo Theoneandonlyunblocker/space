@@ -2,7 +2,6 @@ import {app} from "core/app/App"; // TODO global
 import {options} from "core/app/Options";
 
 
-let hasAlertedOfError: boolean = false;
 
 export const handleError: OnErrorEventHandlerNonNull = (message, source, lineno, colno, error) =>
 {
@@ -34,17 +33,6 @@ function getErrorHandler(): (errorMessage: string) => void
     {
       return createErrorAlert;
     }
-    case "alertOnce":
-    {
-      if (hasAlertedOfError)
-      {
-        return ignoreError;
-      }
-      else
-      {
-        return createErrorAlert;
-      }
-    }
     case "panic":
     {
       return panicOnError;
@@ -60,9 +48,6 @@ function getErrorHandler(): (errorMessage: string) => void
 const createErrorAlert = (message: string) =>
 {
   // TODO 2018.10.23 | implement
-
-
-  hasAlertedOfError = true;
 };
 const ignoreError: OnErrorEventHandlerNonNull = () =>
 {
