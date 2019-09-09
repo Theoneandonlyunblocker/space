@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
-import {GameModule} from "core/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/modules/GameModuleInitializationPhase";
+import {GameModule} from "core/src/modules/GameModule";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 
 import
 {
@@ -12,6 +12,7 @@ import
 import * as moduleInfo from "./moduleInfo.json";
 
 
+// TODO 2019.09.09 | this needs to be renamed / split up
 export const common: GameModule =
 {
   info: moduleInfo,

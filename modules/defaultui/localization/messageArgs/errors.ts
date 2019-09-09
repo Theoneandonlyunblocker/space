@@ -1,4 +1,4 @@
-import { ErrorReportingMode } from "core/app/ErrorReportingMode";
+import { ErrorReportingMode } from "core/src/app/ErrorReportingMode";
 
 
 export type Errors =

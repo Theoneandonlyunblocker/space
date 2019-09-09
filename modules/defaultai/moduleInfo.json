@@ -1,9 +1,9 @@
 {
   "key": "defaultAi",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "giraluna",
   "description": "",
   "moduleBundleUrls": ["{DOCUMENT_PATH}/dist/modules/defaultai/index.js"],
-  "moduleObjRequireJsName": "modules/defaultai/defaultAi",
+  "moduleObjRequireJsName": "modules/defaultai/src/defaultAi",
   "gameModuleVariableName": "defaultAi"
 }

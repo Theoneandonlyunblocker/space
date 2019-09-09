@@ -1,9 +1,9 @@
 {
   "key": "englishLanguageSupport",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "giraluna",
   "description": "Adds English to the list of available languages",
   "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/englishlanguage/index.js"],
-  "moduleObjRequireJsName": "modules/englishlanguage/englishLanguageSupport",
+  "moduleObjRequireJsName": "modules/englishlanguage/src/englishLanguageSupport",
   "gameModuleVariableName": "englishLanguageSupport"
 }

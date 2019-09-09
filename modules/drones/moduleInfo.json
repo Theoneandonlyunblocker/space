@@ -1,9 +1,9 @@
 {
   "key": "drones",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "giraluna",
   "description": "",
   "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/drones/index.js"],
-  "moduleObjRequireJsName": "modules/drones/drones",
+  "moduleObjRequireJsName": "modules/drones/src/drones",
   "gameModuleVariableName": "drones"
 }

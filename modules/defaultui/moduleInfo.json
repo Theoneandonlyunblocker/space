@@ -1,9 +1,9 @@
 {
   "key": "defaultUi",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "giraluna",
   "description": "",
   "moduleBundleUrls": ["{DOCUMENT_PATH}/dist/modules/defaultui/index.js"],
-  "moduleObjRequireJsName": "modules/defaultui/defaultUi",
+  "moduleObjRequireJsName": "modules/defaultui/src/defaultUi",
   "gameModuleVariableName": "defaultUi"
 }

@@ -1,4 +1,4 @@
-import { Name } from "core/localization/Name";
+import { Name } from "core/src/localization/Name";
 
 
 export type GalaxyMapUI =

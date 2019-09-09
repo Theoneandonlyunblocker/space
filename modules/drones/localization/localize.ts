@@ -1,12 +1,12 @@
-import {englishLanguage} from "modules/englishlanguage/englishLanguage";
-import {Localizer} from "core/localization/Localizer";
-import {StringLocalizer} from "core/localization/StringLocalizer";
+import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
+import {Localizer} from "core/src/localization/Localizer";
+import {StringLocalizer} from "core/src/localization/StringLocalizer";
 
 import {names as en_names} from "./en/names";
 import {units as en_units} from "./en/units";
 import {unitEffects as en_unitEffects} from "./en/unitEffects";
 import {abilities as en_abilities} from "./en/abilities";
-import { Name } from "core/localization/Name";
+import { Name } from "core/src/localization/Name";
 
 
 export const nameLocalizer = new Localizer<typeof en_names, () => Name>(

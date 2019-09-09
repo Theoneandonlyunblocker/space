@@ -1,9 +1,9 @@
 {
   "key": "paintingPortraits",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "various artists",
   "description": "old ppl",
   "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/paintingportraits/index.js"],
-  "moduleObjRequireJsName": "modules/paintingportraits/paintingPortraits",
+  "moduleObjRequireJsName": "modules/paintingportraits/src/paintingPortraits",
   "gameModuleVariableName": "paintingPortraits"
 }

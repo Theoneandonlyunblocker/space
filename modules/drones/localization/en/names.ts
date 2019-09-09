@@ -1,4 +1,4 @@
-import { EnglishName } from "modules/englishlanguage/EnglishName";
+import { EnglishName } from "modules/englishlanguage/src/EnglishName";
 
 
 export const names =

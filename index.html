@@ -72,7 +72,7 @@
         window.onerror = handleError.handleError;
         window.onunhandledrejection = handleError.handleRejection;
 
-        require(["core/app/App"], function(app)
+        require(["core/src/app/App"], function(app)
         {
           window.app = app.createApp.apply(null, defaultModules.defaultModules);
         });

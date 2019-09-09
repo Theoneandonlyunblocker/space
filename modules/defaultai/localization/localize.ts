@@ -1,8 +1,8 @@
-import {englishLanguage} from "modules/englishlanguage/englishLanguage";
-import {Localizer} from "core/localization/Localizer";
+import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
+import {Localizer} from "core/src/localization/Localizer";
 
 import {tradeMessages as en_tradeMessages} from "./en/tradeMessages";
-import { getRandomArrayItem } from "core/generic/utility";
+import { getRandomArrayItem } from "core/src/generic/utility";
 
 
 export const localizer = new Localizer<typeof en_tradeMessages, [string]>(

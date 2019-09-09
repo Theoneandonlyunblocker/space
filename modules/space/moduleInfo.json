@@ -1,10 +1,34 @@
 {
   "key": "space",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "author": "giraluna",
   "description": "",
-  "modsToReplace": ["defaultRuleSet"],
+  "modsToReplace":
+  [
+    "defaultRuleSet",
+    "defaultBackgrounds",
+    "defaultBuildings",
+    "defaultItems",
+    "defaultMapGen",
+    "defaultMapModes",
+    "defaultRaces",
+    "defaultTechnologies",
+    "defaultUnits",
+
+    "spaceBackgrounds",
+    "spaceBattleSfx",
+    "spaceBattleVfx",
+    "spaceBuildings",
+    "spaceItems",
+    "spaceMapGen",
+    "spaceMapModes",
+    "space",
+    "spaceRaces",
+    "spaceResources",
+    "spaceTechnologies",
+    "spaceUnits"
+  ],
   "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/index.js"],
-  "moduleObjRequireJsName": "modules/space/space",
+  "moduleObjRequireJsName": "modules/space/src/space",
   "gameModuleVariableName": "space"
 }

@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
-import {VfxParams} from "core/templateinterfaces/VfxParams";
-import {BattleVfxTemplate} from "core/templateinterfaces/BattleVfxTemplate";
+import {VfxParams} from "core/src/templateinterfaces/VfxParams";
+import {BattleVfxTemplate} from "core/src/templateinterfaces/BattleVfxTemplate";
 
 
 export function makePlaceholderVfx(abilityName: string): BattleVfxTemplate

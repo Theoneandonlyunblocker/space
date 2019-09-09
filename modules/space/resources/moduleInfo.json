@@ -1,9 +1,0 @@
-{
-  "key": "spaceResources",
-  "version": "0.4.0",
-  "author": "giraluna",
-  "description": "",
-  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/resources/index.js"],
-  "moduleObjRequireJsName": "modules/space/resources/spaceResources",
-  "gameModuleVariableName": "spaceResources"
-}

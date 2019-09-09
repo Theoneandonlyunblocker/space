@@ -1,5 +1,5 @@
-import {StringLocalizer} from "core/localization/StringLocalizer";
-import {englishLanguage} from "modules/englishlanguage/englishLanguage";
+import {StringLocalizer} from "core/src/localization/StringLocalizer";
+import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 import {attitudeModifiers as en_attitudeModifiers} from "./en/attitudeModifiers";
 
 

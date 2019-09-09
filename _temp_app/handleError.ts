@@ -1,5 +1,5 @@
-import {app} from "core/app/App"; // TODO global
-import {options} from "core/app/Options";
+import {app} from "core/src/app/App"; // TODO global
+import {options} from "core/src/app/Options";
 
 
 

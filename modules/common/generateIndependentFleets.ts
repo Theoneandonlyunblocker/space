@@ -1,15 +1,15 @@
-import {Fleet} from "core/fleets/Fleet";
-import {Player} from "core/player/Player";
-import {Star} from "core/map/Star";
-import {Unit} from "core/unit/Unit";
+import {Fleet} from "core/src/fleets/Fleet";
+import {Player} from "core/src/player/Player";
+import {Star} from "core/src/map/Star";
+import {Unit} from "core/src/unit/Unit";
 
 import
 {
   getDistributablesWithGroups,
   getRandomWeightedDistributable,
-} from "core/generic/Distributable";
-import {RaceTemplate} from "core/templateinterfaces/RaceTemplate";
-import {UnitTemplate} from "core/templateinterfaces/UnitTemplate";
+} from "core/src/generic/Distributable";
+import {RaceTemplate} from "core/src/templateinterfaces/RaceTemplate";
+import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
 import {distributionGroups} from "./distributionGroups";
 

@@ -1,7 +1,7 @@
-import {MessageFormatLocalizer} from "core/localization/MessageFormatLocalizer";
+import {MessageFormatLocalizer} from "core/src/localization/MessageFormatLocalizer";
 
-import {englishLanguage} from "modules/englishlanguage/englishLanguage";
-import {formatters as englishFormatters} from "modules/englishlanguage/formatters";
+import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
+import {formatters as englishFormatters} from "modules/englishlanguage/src/formatters";
 
 import {battle as en_battle} from "./en/battle";
 import {diplomacy as en_diplomacy} from "./en/diplomacy";

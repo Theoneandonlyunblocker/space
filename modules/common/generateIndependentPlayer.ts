@@ -1,6 +1,6 @@
-import {Player} from "core/player/Player";
+import {Player} from "core/src/player/Player";
 
-import {RaceTemplate} from "core/templateinterfaces/RaceTemplate";
+import {RaceTemplate} from "core/src/templateinterfaces/RaceTemplate";
 
 
 export function generateIndependentPlayer(

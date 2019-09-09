@@ -1,4 +1,4 @@
-import {GuardCoverage} from "core/unit/GuardCoverage";
+import {GuardCoverage} from "core/src/unit/GuardCoverage";
 
 
 export const battle =
