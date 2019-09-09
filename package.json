@@ -47,7 +47,7 @@
     "copy-libs": "node scripts/copy_libs.js",
     "copy-moduleinfo-files": "node scripts/copy_moduleinfo_files.js",
     "copy-assets": "npm run copy-ui-assets && npm run copy-emblems-assets && npm run copy-common-assets && npm run copy-painting-portraits-assets && npm run copy-space-assets",
-    "copy-external-css": "mkdirp dist/css && cpr lib/css dist/lib/css -o",
+    "copy-external-css": "mkdirp dist/css && cpr external/css dist/external/css -o",
 
     "replace-pixi-typedefs": "node scripts/replace_pixi_typedefs.js",
 

@@ -17,7 +17,7 @@
     "moduleResolution": "node",
     // disables automatic global inclusion of @types. node_modules/**/package.json#types is still included
     "typeRoots": [
-      "lib/types",
+      "external/types",
     ],
     "baseUrl": "./",
     "paths": {
@@ -51,7 +51,7 @@
     // "strictPropertyInitialization": true,
   },
   "files": [
-    "lib/_lib.extend.d.ts",
+    "external/_lib.extend.d.ts",
   ],
   "compileOnSave": false,
   "buildOnSave": false

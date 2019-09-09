@@ -10,7 +10,7 @@ const cpr = require("cpr").cpr;
 
 const origDefsPath = "node_modules/pixi.js/pixi.js.d.ts";
 const origDefsCopyPath = "node_modules/pixi.js/pixi.js.d.ts.orig";
-const customDefsPath = "lib/pixi.js.d.ts";
+const customDefsPath = "external/pixi.js.d.ts";
 
 const origCopyExists = fs.existsSync(origDefsCopyPath);
 

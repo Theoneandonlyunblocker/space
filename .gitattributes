@@ -6,6 +6,5 @@
 dist/* -diff
 *.png -diff
 
-lib/* linguist-vendored
+external/* linguist-vendored
 dist/* linguist-vendored
-css/* linguist-vendored
