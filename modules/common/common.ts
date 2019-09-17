@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
 
 import
 {
@@ -16,22 +16,27 @@ import * as moduleInfo from "./moduleInfo.json";
 export const common: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: GameModuleInitializationPhase.GameSetup,
   supportedLanguages: "all",
-  initialize: (baseUrl) =>
+  assetLoaders:
   {
-    setAssetsBaseUrl(baseUrl);
+    [GameModuleInitializationPhase.GameSetup]:
+    [
+      (baseUrl) =>
+      {
+        setAssetsBaseUrl(baseUrl);
 
-    const loader = new PIXI.Loader(baseUrl);
+        const loader = new PIXI.Loader(baseUrl);
 
-    assetsToLoadIntoTextureCache.forEach(assetKey =>
-    {
-      loader.add(assetKey, assetSources[assetKey]);
-    });
+        assetsToLoadIntoTextureCache.forEach(assetKey =>
+        {
+          loader.add(assetKey, assetSources[assetKey]);
+        });
 
-    return new Promise(resolve =>
-    {
-      loader.load(resolve);
-    });
+        return new Promise(resolve =>
+        {
+          loader.load(resolve);
+        });
+      },
+    ]
   },
 };

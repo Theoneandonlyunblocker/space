@@ -1,5 +1,5 @@
 import {GameModule} from "core/src/modules/GameModule";
-import {mergeGameModuleInitializers} from "core/src/modules/GameModuleInitialization";
+import {joinObjectValues} from "core/src/generic/utility";
 import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
 import {ruleSet} from "./ruleSet";
 
@@ -29,13 +29,14 @@ import {spaceUnitsInitializers} from "./units/spaceUnitsInitializers";
 import {unitArchetypes} from "modules/common/unitArchetypes";
 
 import * as moduleInfo from "../moduleInfo.json";
+import { ValuesByGameModuleInitializationPhase, GameModuleAssetLoader } from "core/src/modules/GameModuleInitialization";
 
 
 export const space: GameModule =
 {
   info: moduleInfo,
   supportedLanguages: [englishLanguage],
-  initializers: mergeGameModuleInitializers(
+  assetLoaders: joinObjectValues<Partial<ValuesByGameModuleInitializationPhase<GameModuleAssetLoader>>>(
     spaceBattleVfxInitializers,
     spaceBuildingsInitializers,
     spaceItemsInitializers,
@@ -72,7 +73,7 @@ export const space: GameModule =
 
     if (!moduleData.defaultMap)
     {
-      moduleData.defaultMap = spiralGalaxy;
+      moduleData.defaultMap = mapGenTemplates.spiralGalaxy;
     }
 
     moduleData.ruleSet = ruleSet;

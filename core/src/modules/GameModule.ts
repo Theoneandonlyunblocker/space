@@ -1,6 +1,6 @@
 import {ModuleData} from "./ModuleData";
 import {ModuleInfo} from "./ModuleInfo";
-import {GameModuleInitializationPhase} from "./GameModuleInitializationPhase";
+import {ValuesByGameModuleInitializationPhase, GameModuleAssetLoader} from "./GameModuleInitialization";
 
 import {Language} from "../localization/Language";
 
@@ -14,9 +14,8 @@ export interface ModuleSaveData<S = any>
 export interface GameModule<SaveData = any>
 {
   info: ModuleInfo;
-  phaseToInitializeBefore: GameModuleInitializationPhase;
   supportedLanguages: Language[] | "all";
-  initialize?: (baseUrl: string) => Promise<void>;
+  assetLoaders?: Partial<ValuesByGameModuleInitializationPhase<GameModuleAssetLoader[]>>;
   addToModuleData?: (moduleData: ModuleData) => void;
   serializeModuleSpecificData?: () => SaveData;
   deserializeModuleSpecificData?: (saveData: SaveData) => void;

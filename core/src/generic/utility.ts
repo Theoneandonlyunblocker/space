@@ -691,3 +691,20 @@ export function shuffleArrayInPlace<T>(toShuffle: T[]): void
     toShuffle[i] = temp;
   }
 }
+export function joinObjectValues<T>(...toJoin: T[]): {[K in keyof T]: T[K][]}
+{
+  return toJoin.reduce((joined, current) =>
+  {
+    for (const key in current)
+    {
+      if (!joined[key])
+      {
+        joined[key] = [];
+      }
+
+      joined[key].push(current[key]);
+    }
+
+    return joined;
+  }, <{[K in keyof T]: T[K][]}>{});
+}

@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
 import
 {
   cachedAssets,
@@ -36,33 +36,38 @@ function loadCss(url: string, baseUrl: string): void
 export const defaultUi: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: GameModuleInitializationPhase.AppInit,
   supportedLanguages: [englishLanguage],
-  initialize: (baseUrl) =>
+  assetLoaders:
   {
-    loadCss(assetSources.css, baseUrl);
-    setAssetBaseUrl(baseUrl);
-
-    const loader = new PIXI.Loader(baseUrl);
-
-    const battleSceneFlagFadeUrl = assetSources.battleSceneFlagFade;
-    loader.add(
-    {
-      url: battleSceneFlagFadeUrl,
-      loadType: 1, // XML
-    });
-
-    return new Promise(resolve =>
-    {
-      loader.load(() =>
+    [GameModuleInitializationPhase.AppInit]:
+    [
+      (baseUrl) =>
       {
-        const response = <XMLDocument> loader.resources[battleSceneFlagFadeUrl].data;
-        const svgDoc = <SVGElement> response.children[0];
-        cachedAssets.battleSceneFlagFade = svgDoc;
+        loadCss(assetSources.css, baseUrl);
+        setAssetBaseUrl(baseUrl);
 
-        resolve();
-      });
-    });
+        const loader = new PIXI.Loader(baseUrl);
+
+        const battleSceneFlagFadeUrl = assetSources.battleSceneFlagFade;
+        loader.add(
+        {
+          url: battleSceneFlagFadeUrl,
+          loadType: 1, // XML
+        });
+
+        return new Promise(resolve =>
+        {
+          loader.load(() =>
+          {
+            const response = <XMLDocument> loader.resources[battleSceneFlagFadeUrl].data;
+            const svgDoc = <SVGElement> response.children[0];
+            cachedAssets.battleSceneFlagFade = svgDoc;
+
+            resolve();
+          });
+        });
+      },
+    ],
   },
   addToModuleData: (moduleData) =>
   {

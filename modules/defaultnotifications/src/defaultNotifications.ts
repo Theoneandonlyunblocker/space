@@ -1,7 +1,7 @@
 import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 import {ModuleData} from "core/src/modules/ModuleData";
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
 
 import
 {
@@ -16,13 +16,18 @@ import * as moduleInfo from "../moduleInfo.json";
 export const defaultNotifications: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: GameModuleInitializationPhase.GameStart,
   supportedLanguages: [englishLanguage],
-  initialize: (baseUrl) =>
+  assetLoaders:
   {
-    setAssetBaseUrl(baseUrl);
+    [GameModuleInitializationPhase.GameStart]:
+    [
+      (baseUrl) =>
+      {
+        setAssetBaseUrl(baseUrl);
 
-    return Promise.resolve();
+        return Promise.resolve();
+      },
+    ],
   },
   addToModuleData: (moduleData: ModuleData) =>
   {

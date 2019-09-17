@@ -1,5 +1,5 @@
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
 import * as semver from "core/src/app/versions";
 
 import {englishLanguage} from "./englishLanguage";

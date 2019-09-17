@@ -1,7 +1,6 @@
 import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 import {ModuleData} from "core/src/modules/ModuleData";
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 
 import {abilityTemplates} from "./abilityTemplates";
 import {raceTemplates} from "./raceTemplate";
@@ -15,7 +14,6 @@ import * as moduleInfo from "../moduleInfo.json";
 export const drones: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: GameModuleInitializationPhase.GameSetup,
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>
   {

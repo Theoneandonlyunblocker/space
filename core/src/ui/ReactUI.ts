@@ -5,8 +5,8 @@ import {Battle} from "../battle/Battle";
 import {BattlePrep} from "../battleprep/BattlePrep";
 import {Game} from "../game/Game";
 import {MapRenderer} from "../maprenderer/MapRenderer";
-import {GameModuleInitializationPhase} from "../modules/GameModuleInitializationPhase";
-import {ModuleInitializer} from "../modules/ModuleInitializer";
+import {GameModuleInitializationPhase} from "../modules/GameModuleInitialization";
+import {ModuleAssetLoader} from "../modules/ModuleAssetLoader";
 import {Player} from "../player/Player";
 import {PlayerControl} from "../interaction/PlayerControl";
 import {ReactUIScene} from "./UIScenes";
@@ -46,10 +46,10 @@ export class ReactUI
   public game: Game;
 
   private container: HTMLElement;
-  private moduleInitializer: ModuleInitializer;
+  private moduleInitializer: ModuleAssetLoader;
   private errorMessage: string | undefined;
 
-  constructor(container: HTMLElement, moduleInitializer: ModuleInitializer)
+  constructor(container: HTMLElement, moduleInitializer: ModuleAssetLoader)
   {
     this.container = container;
     this.moduleInitializer = moduleInitializer;
@@ -103,7 +103,7 @@ export class ReactUI
   {
     const phase = moduleInitializationPhaseByScene[this.currentScene];
 
-    return this.moduleInitializer.initModulesNeededForPhase(phase);
+    return this.moduleInitializer.loadAssetsNeededForPhase(phase);
   }
   private getElementToRender(): React.ReactElement<any>
   {

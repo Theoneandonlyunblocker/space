@@ -1,6 +1,6 @@
 import {ModuleData} from "core/src/modules/ModuleData";
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
 import {emblemSources, svgCache} from "../assets/assets";
 
 import {subEmblemTemplates} from "./subEmblemTemplates";
@@ -11,35 +11,40 @@ import * as moduleInfo from "../moduleInfo.json";
 export const defaultEmblems: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: GameModuleInitializationPhase.GameSetup,
   supportedLanguages: "all",
-  initialize: (baseUrl) =>
+  assetLoaders:
   {
-    const loader = new PIXI.Loader(baseUrl);
-
-    for (const key in emblemSources)
-    {
-      loader.add(
+    [GameModuleInitializationPhase.GameSetup]:
+    [
+      (baseUrl) =>
       {
-        url: emblemSources[key],
-        loadType: 1, // XML
-      });
-    }
+        const loader = new PIXI.Loader(baseUrl);
 
-    return new Promise(resolve =>
-    {
-      loader.load(() =>
-      {
         for (const key in emblemSources)
         {
-          const response = <XMLDocument> loader.resources[emblemSources[key]].data;
-          const svgDoc = <SVGElement> response.children[0];
-          svgCache[key] = svgDoc;
+          loader.add(
+          {
+            url: emblemSources[key],
+            loadType: 1, // XML
+          });
         }
 
-        resolve();
-      });
-    });
+        return new Promise(resolve =>
+        {
+          loader.load(() =>
+          {
+            for (const key in emblemSources)
+            {
+              const response = <XMLDocument> loader.resources[emblemSources[key]].data;
+              const svgDoc = <SVGElement> response.children[0];
+              svgCache[key] = svgDoc;
+            }
+
+            resolve();
+          });
+        });
+      }
+    ],
   },
   addToModuleData: (moduleData: ModuleData) =>
   {

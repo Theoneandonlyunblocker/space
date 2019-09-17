@@ -29,7 +29,7 @@ import * as BattleVfx from "../battlevfx/templates/battleVfx";
 import * as EffectActions from "../effectactions/effectActions";
 
 import * as SnipeStatusEffects from "../uniteffects/snipe";
-import { localize } from "./localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 // tslint:disable:no-any

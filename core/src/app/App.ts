@@ -5,8 +5,8 @@ import {GalaxyMap} from "../map/GalaxyMap";
 import {Game} from "../game/Game";
 import {GameLoader} from "../saves/GameLoader";
 import {MapRenderer} from "../maprenderer/MapRenderer";
-import {GameModuleInitializationPhase} from "../modules/GameModuleInitializationPhase";
-import {ModuleInitializer} from "../modules/ModuleInitializer";
+import {GameModuleInitializationPhase} from "../modules/GameModuleInitialization";
+import {ModuleAssetLoader} from "../modules/ModuleAssetLoader";
 import {options} from "./Options";
 import {Player} from "../player/Player";
 import {PlayerControl} from "../interaction/PlayerControl";
@@ -43,6 +43,7 @@ import { PlayerNotificationSubscriber } from "../notifications/PlayerNotificatio
 import { storageStrings } from "../saves/storageStrings";
 import {ModuleInfo} from "../modules/ModuleInfo";
 import {Point} from "../math/Point";
+import { initializeModules } from "../modules/initializeModules";
 
 class App
 {
@@ -50,7 +51,7 @@ class App
   public game: Game;
   public playerControl: PlayerControl;
   public reactUI: ReactUI;
-  public moduleInitializer: ModuleInitializer;
+  public moduleAssetLoader: ModuleAssetLoader;
 
   public readonly version: string = "0.5.0";
   public readonly initialModules: ModuleInfo[] = [];
@@ -77,8 +78,9 @@ class App
     this.initialModules = initialModules;
     activeModuleStore.getModules(...initialModules).then((gameModules) =>
     {
-      this.moduleInitializer = new ModuleInitializer(activeModuleData, activeModuleStore, gameModules);
-    }).then(() =>
+      initializeModules(gameModules, activeModuleData);
+      this.moduleAssetLoader = new ModuleAssetLoader(activeModuleStore, gameModules);
+    }).then(() => // TODO 2019.09.20 | unnecessary?
     {
       return loadDom();
     }).then(() =>
@@ -91,7 +93,7 @@ class App
       // still necessary with promise, as Promise.all may be synchronous
       window.setTimeout(() =>
       {
-        return this.moduleInitializer.initModulesNeededForPhase(GameModuleInitializationPhase.AppInit).then(() =>
+        return this.moduleAssetLoader.loadAssetsNeededForPhase(GameModuleInitializationPhase.AppInit).then(() =>
         {
           return Promise.all(
           [
@@ -114,7 +116,7 @@ class App
 
     this.initUI();
 
-    this.moduleInitializer.initModulesNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
+    this.moduleAssetLoader.loadAssetsNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
     {
       this.initGame(new Game(map, players)).then(() =>
       {
@@ -143,7 +145,7 @@ class App
           this.initUI();
         }
 
-        return this.moduleInitializer.initModulesNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
+        return this.moduleAssetLoader.loadAssetsNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
         {
           const game = new GameLoader().deserializeGame(data.gameData);
           game.gameStorageKey = saveKey;
@@ -161,7 +163,7 @@ class App
   {
     const startTime = Date.now();
 
-    this.moduleInitializer.progressivelyInitModulesByPhase(GameModuleInitializationPhase.AppInit + 1);
+    this.moduleAssetLoader.progressivelyLoadAssets(GameModuleInitializationPhase.AppInit + 1);
 
     const optionsInUrl = this.getOptionsInUrl();
     const initialScene = optionsInUrl.initialScene;
@@ -176,7 +178,7 @@ class App
 
     if (initialScene === "galaxyMap" || optionsInUrl.params.save)
     {
-      this.moduleInitializer.initModulesNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
+      this.moduleAssetLoader.loadAssetsNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
       {
         if (optionsInUrl.params.save)
         {
@@ -241,7 +243,7 @@ class App
 
     this.reactUI = new ReactUI(
       reactContainer,
-      this.moduleInitializer,
+      this.moduleAssetLoader,
     );
   }
   private initGame(game: Game, initialCameraPosition?: Point): Promise<void>
