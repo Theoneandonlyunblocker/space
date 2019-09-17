@@ -9,7 +9,14 @@ import {abilities as en_abilities} from "./en/abilities";
 import { Name } from "core/src/localization/Name";
 
 
-export const nameLocalizer = new Localizer<typeof en_names, () => Name>(
+const allNames =
+{
+  ...en_names,
+};
+
+type GenericNamesType = {[K in keyof typeof allNames]: (...args: Parameters<typeof allNames[K]>) => Name};
+
+export const nameLocalizer = new Localizer<GenericNamesType, () => Name>(
   "droneNames",
   (nameKey, language, missingLocalizationSTring) =>
   {
