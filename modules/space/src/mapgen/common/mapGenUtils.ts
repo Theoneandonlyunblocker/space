@@ -15,7 +15,7 @@ import
 {
   sectorCommand,
   starBase,
-} from "modules/space/buildings/templates/territoryBuildings";
+} from "modules/space/src/buildings/templates/territoryBuildings";
 
 import {MapGenDataByStarId} from "./MapGenDataByStarId";
 import {triangulate} from "./triangulate";

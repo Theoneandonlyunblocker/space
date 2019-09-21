@@ -8,7 +8,7 @@ import
 {
   makePolygonFromPoints,
 } from "core/src/graphics/pixiWrapperFunctions";
-import { localize } from "../localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const nonFillerStars: MapRendererLayerTemplate =

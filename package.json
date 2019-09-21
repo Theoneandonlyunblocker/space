@@ -41,7 +41,7 @@
 
     "build": "tsc -b --verbose && node scripts/build/bundleDefaultModules",
 
-    "compile-ui-module-css": "lessc modules/defaultui/css/main.less dist/modules/defaultui/css/main.css",
+    "compile-ui-module-css": "lessc modules/defaultui/assets/css/main.less dist/modules/defaultui/assets/css/main.css",
     "convert-shaders": "node scripts/convert_shaders",
 
     "copy-libs": "node scripts/copy_libs.js",
@@ -53,16 +53,9 @@
 
     "copy-ui-assets": "node scripts/copy_ui_assets.js",
     "copy-painting-portraits-assets": "node scripts/copy_painting_portraits_assets.js",
-    "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/img && cpr modules/defaultemblems/img dist/modules/defaultemblems/img -o",
+    "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/assets && cpr modules/defaultemblems/assets dist/modules/defaultemblems/assets -o",
     "copy-common-assets": "mkdirp dist/modules/common/img && cpr modules/common/img dist/modules/common/img -o",
-
-    "copy-space-assets": "npm run copy-space-battlevfx-assets && npm run copy-space-buildings-assets && npm run copy-space-items-assets && npm run copy-space-mapmodes-assets && npm run copy-space-resources-assets && npm run copy-space-units-assets",
-    "copy-space-battlevfx-assets": "mkdirp dist/modules/space/battlevfx/img && cpr modules/space/battlevfx/img dist/modules/space/battlevfx/img -o",
-    "copy-space-buildings-assets": "mkdirp dist/modules/space/buildings/img && cpr modules/space/buildings/img dist/modules/space/buildings/img -o",
-    "copy-space-items-assets": "mkdirp dist/modules/space/items/img && cpr modules/space/items/img dist/modules/space/items/img -o",
-    "copy-space-mapmodes-assets": "mkdirp dist/modules/space/mapmodes/img && cpr modules/space/mapmodes/img dist/modules/space/mapmodes/img -o",
-    "copy-space-resources-assets": "mkdirp dist/modules/space/resources/img && cpr modules/space/resources/img dist/modules/space/resources/img -o",
-    "copy-space-units-assets": "mkdirp dist/modules/space/units/img && cpr modules/space/units/img dist/modules/space/units/img -o",
+    "copy-space-assets": "mkdirp dist/modules/space/assets && cpr modules/space/assets dist/modules/space/assets -o",
 
     "start": "http-server --port 9001 -o http://127.0.0.1:9001/",
 

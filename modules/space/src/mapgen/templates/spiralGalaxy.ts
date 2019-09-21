@@ -1,7 +1,7 @@
 import {MapGenTemplate} from "core/src/templateinterfaces/MapGenTemplate";
 
 import {spiralGalaxyGeneration} from "../spiralGalaxy/spiralGalaxyGeneration";
-import { localize } from "../localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const spiralGalaxy: MapGenTemplate =

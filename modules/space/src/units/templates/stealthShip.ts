@@ -7,13 +7,13 @@ import
 {
   rangedAttack,
   standBy,
-} from "modules/space/abilities/abilities";
+} from "modules/space/src/abilities/abilities";
 import {distributionGroups} from "modules/common/distributionGroups";
-import {itemSlot} from "modules/space/items/itemSlot";
+import {itemSlot} from "modules/space/src/items/itemSlot";
 
-import * as technologies from "modules/space/technologies/technologyTemplates";
-import {getIconSrc} from "../resources";
-import { localize } from "../localization/localize";
+import * as technologies from "modules/space/src/technologies/technologyTemplates";
+import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
+import { localize } from "modules/space/localization/localize";
 
 
 export const stealthShip: UnitTemplate =
@@ -38,7 +38,7 @@ export const stealthShip: UnitTemplate =
   isSquadron: true,
   buildCost: 500,
   kind: "unit",
-  getIconSrc: getIconSrc.bind(null, "sc"),
+  getIconSrc: getUnitIconSrc.bind(null, "sc"),
   maxHealthLevel: 0.6,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

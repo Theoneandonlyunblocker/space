@@ -3,7 +3,7 @@ import * as PIXI from "pixi.js";
 import {VfxDrawingFunction} from "core/src/templateinterfaces/VfxDrawingFunction";
 
 import {ProjectileAttack} from "./vfxfragments/ProjectileAttack";
-import {resources} from "../resources";
+import { battleVfxAssets } from "modules/space/assets/battleVfx/battleVfxAssets";
 
 
 export const rocketAttack: VfxDrawingFunction = params =>
@@ -39,7 +39,7 @@ export const rocketAttack: VfxDrawingFunction = params =>
   {
     makeProjectileSprite: i =>
     {
-      const sprite = new PIXI.Sprite(PIXI.Texture.from(resources.rocketProjectile));
+      const sprite = new PIXI.Sprite(PIXI.Texture.from(battleVfxAssets.rocketProjectile));
       sprite.scale.set(0.5);
 
       return sprite;

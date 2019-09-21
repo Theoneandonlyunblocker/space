@@ -1,5 +1,5 @@
-import {unitTemplates as units} from "modules/space/units/unitTemplates";
-import {debugShip} from "modules/space/units/templates/debugShip";
+import {unitTemplates as units} from "modules/space/src/units/unitTemplates";
+import {debugShip} from "modules/space/src/units/templates/debugShip";
 import {options} from "core/src/app/Options";
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 

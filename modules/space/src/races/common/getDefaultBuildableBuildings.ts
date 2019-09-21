@@ -1,5 +1,5 @@
-import * as otherBuildings from "modules/space/buildings/templates/otherBuildings";
-import * as territoryBuildings from "modules/space/buildings/templates/territoryBuildings";
+import * as otherBuildings from "modules/space/src/buildings/templates/otherBuildings";
+import * as territoryBuildings from "modules/space/src/buildings/templates/territoryBuildings";
 import { BuildingTemplate } from "core/src/templateinterfaces/BuildingTemplate";
 
 export function getDefaultBuildableBuildings(): BuildingTemplate[]

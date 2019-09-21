@@ -3,13 +3,13 @@ import {baseUrl} from "../baseUrl";
 
 const unitIconSources =
 {
-  b:  "./img/icons/b.png",
-  bc: "./img/icons/bc.png",
-  f:  "./img/icons/f.png",
-  fa: "./img/icons/fa.png",
-  fb: "./img/icons/fb.png",
-  sc: "./img/icons/sc.png",
-  sh: "./img/icons/sh.png",
+  b:  "./assets/units/img/icons/b.png",
+  bc: "./assets/units/img/icons/bc.png",
+  f:  "./assets/units/img/icons/f.png",
+  fa: "./assets/units/img/icons/fa.png",
+  fb: "./assets/units/img/icons/fb.png",
+  sc: "./assets/units/img/icons/sc.png",
+  sh: "./assets/units/img/icons/sh.png",
 };
 
 export function getUnitIconSrc(type: keyof typeof unitIconSources): string

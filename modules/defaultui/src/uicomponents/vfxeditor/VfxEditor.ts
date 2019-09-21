@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Beam} from "modules/space/battlevfx/drawingfunctions/vfxfragments/Beam";
-import {FocusingBeam} from "modules/space/battlevfx/drawingfunctions/vfxfragments/FocusingBeam";
-import {LightBurst} from "modules/space/battlevfx/drawingfunctions/vfxfragments/LightBurst";
-import {VfxFragment} from "modules/space/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
-import {ShockWave} from "modules/space/battlevfx/drawingfunctions/vfxfragments/ShockWave";
-import {Projectile} from "modules/space/battlevfx/drawingfunctions/vfxfragments/Projectile";
-import {ProjectileWithImpact} from "modules/space/battlevfx/drawingfunctions/vfxfragments/ProjectileWithImpact";
+import {Beam} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/Beam";
+import {FocusingBeam} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/FocusingBeam";
+import {LightBurst} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/LightBurst";
+import {VfxFragment} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
+import {ShockWave} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/ShockWave";
+import {Projectile} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/Projectile";
+import {ProjectileWithImpact} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/ProjectileWithImpact";
 
 import
 {

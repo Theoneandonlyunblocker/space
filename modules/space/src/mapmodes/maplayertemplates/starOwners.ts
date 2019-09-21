@@ -12,7 +12,7 @@ import
 } from "core/src/graphics/pixiWrapperFunctions";
 
 import {OccupationFilter} from "./shaders/OccupationFilter";
-import { localize } from "../localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const starOwners: MapRendererLayerTemplate =

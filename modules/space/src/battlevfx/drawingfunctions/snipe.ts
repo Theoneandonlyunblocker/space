@@ -14,13 +14,13 @@ import {FocusingBeam} from "./vfxfragments/FocusingBeam";
 import {RampingValue} from "./vfxfragments/RampingValue";
 
 import {ColorMatrixFilter} from "./ColorMatrixFilter";
-import {resources} from "../resources";
 import { PixiRenderer } from "./proton/PixiRenderer";
 import { FunctionInitialize } from "./proton/FunctionInitialize";
 import { PixiParticle } from "./proton/PixiParticle";
 import { ProjectileWithImpact } from "./vfxfragments/ProjectileWithImpact";
 import { Projectile } from "./vfxfragments/Projectile";
 import { getRelativeValue } from "core/src/generic/utility";
+import { battleVfxAssets } from "modules/space/assets/battleVfx/battleVfxAssets";
 
 
 const colors =
@@ -116,7 +116,7 @@ export function snipe(type: UnitAttribute, params: VfxParams)
     {
       getDisplayObject: () =>
       {
-        const sprite = new PIXI.Sprite(PIXI.Texture.from(resources.snipeProjectile));
+        const sprite = new PIXI.Sprite(PIXI.Texture.from(battleVfxAssets.snipeProjectile));
         sprite.height = 6;
         sprite.width = 32;
         sprite.filters = [projectileColorMatrixFilter];

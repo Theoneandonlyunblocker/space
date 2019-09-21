@@ -25,9 +25,9 @@ const options =
   overwrite: true,
 };
 
-mkdirp("dist/modules/paintingportraits/img", err =>
+mkdirp("dist/modules/paintingportraits/assets", err =>
 {
-  cpr("modules/paintingportraits/img", "dist/modules/paintingportraits/img", options, (err) =>
+  cpr("modules/paintingportraits/assets", "dist/modules/paintingportraits/assets", options, (err) =>
   {
     if (err)
     {

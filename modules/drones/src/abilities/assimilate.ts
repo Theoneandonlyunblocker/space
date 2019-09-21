@@ -5,7 +5,7 @@ import
   AbilityTargetEffect,
   AbilityTargetType,
 } from "core/src/abilities/AbilityTargetDisplayData";
-import {DamageType} from "modules/space/effectactions/DamageType";
+import {DamageType} from "modules/space/src/effectactions/DamageType";
 import
 {
   makeGetAbilityTargetDisplayDataFN,
@@ -13,8 +13,8 @@ import
   targetEnemies,
 } from "core/src/abilities/targeting";
 
-import {ResultType} from "modules/space/effectactions/ResultType";
-import * as EffectActions from "modules/space/effectactions/effectActions";
+import {ResultType} from "modules/space/src/effectactions/ResultType";
+import * as EffectActions from "modules/space/src/effectactions/effectActions";
 
 import * as DroneBattleVfx from "../battlevfx/templates";
 import { localize } from "../../localization/localize";

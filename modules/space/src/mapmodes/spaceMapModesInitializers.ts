@@ -10,9 +10,9 @@ export const spaceMapModesInitializers =
   {
     const loader = new PIXI.Loader(baseUrl);
 
-    loader.add("fowTexture", "./img/fowTexture.png");
+    loader.add("fowTexture", "./assets/mapmodes/img/fowTexture.png");
 
-    return new Promise(resolve =>
+    return new Promise<void>(resolve =>
     {
       loader.load(() =>
       {

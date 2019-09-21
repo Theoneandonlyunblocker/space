@@ -8,11 +8,11 @@ import
   beamAttack,
   rangedAttack,
   standBy,
-} from "modules/space/abilities/abilities";
+} from "modules/space/src/abilities/abilities";
 import {distributionGroups} from "modules/common/distributionGroups";
-import {itemSlot} from "modules/space/items/itemSlot";
-import {getIconSrc} from "../resources";
-import { localize } from "../localization/localize";
+import {itemSlot} from "modules/space/src/items/itemSlot";
+import { localize } from "modules/space/localization/localize";
+import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 
 
 export const battleCruiser: UnitTemplate =
@@ -37,7 +37,7 @@ export const battleCruiser: UnitTemplate =
   isSquadron: true,
   buildCost: 200,
   kind: "unit",
-  getIconSrc: getIconSrc.bind(null, "bc"),
+  getIconSrc: getUnitIconSrc.bind(null, "bc"),
   maxHealthLevel: 1,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

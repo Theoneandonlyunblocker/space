@@ -7,8 +7,8 @@ import
   makePolygonFromPoints,
 } from "core/src/graphics/pixiWrapperFunctions";
 
-import {resources} from "../resources";
-import { localize } from "../localization/localize";
+import { localize } from "modules/space/localization/localize";
+import { mapModeAssets } from "modules/space/assets/mapModes/mapModeAssets";
 
 
 const fogOfWarMeshesByStarId:
@@ -69,7 +69,7 @@ function makeFogOfWarMeshForStar(star: Star): PIXI.TilingSprite
   const bbox = star.voronoiCell.getBbox();
 
   const sprite = new PIXI.TilingSprite(
-    resources.fogOfWarTexture,
+    mapModeAssets.fogOfWarTexture,
     bbox.width,
     bbox.height,
   );

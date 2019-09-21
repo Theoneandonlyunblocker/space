@@ -5,10 +5,10 @@ import { VfxDrawingFunction } from "core/src/templateinterfaces/VfxDrawingFuncti
 import { solveAcceleration } from "core/src/math/kinematics";
 import { extractImageData } from "core/src/graphics/pixiWrapperFunctions";
 
-import { ParticleBurst } from "modules/space/battlevfx/drawingfunctions/vfxfragments/ParticleBurst";
-import { ArcZone } from "modules/space/battlevfx/drawingfunctions/proton/ArcZone";
-import { CollisionRectZone } from "modules/space/battlevfx/drawingfunctions/proton/CollisionRectZone";
-import { AbsorbParticles } from "modules/space/battlevfx/drawingfunctions/vfxfragments/AbsorbParticles";
+import { ParticleBurst } from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/ParticleBurst";
+import { ArcZone } from "modules/space/src/battlevfx/drawingfunctions/proton/ArcZone";
+import { CollisionRectZone } from "modules/space/src/battlevfx/drawingfunctions/proton/CollisionRectZone";
+import { AbsorbParticles } from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/AbsorbParticles";
 import { Color } from "core/src/color/Color";
 import { Point } from "core/src/math/Point";
 

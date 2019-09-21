@@ -6,7 +6,7 @@ import { ProjectileWithImpact } from "./vfxfragments/ProjectileWithImpact";
 import { Projectile } from "./vfxfragments/Projectile";
 import { solveInitialVelocity, solveAcceleration } from "core/src/math/kinematics";
 import { linearStep } from "core/src/generic/utility";
-import { resources } from "../resources";
+import { battleVfxAssets } from "modules/space/assets/battleVfx/battleVfxAssets";
 
 const impactTime = 0.3;
 const tauteningTime = 0.55;
@@ -90,7 +90,7 @@ export const boardingHookBattleOverlay: VfxDrawingFunction = params =>
   const hookSpriteRopePosition = 21;
   const makeHookSprite = () =>
   {
-    const hookSprite = PIXI.Sprite.from(resources.harpoon);
+    const hookSprite = PIXI.Sprite.from(battleVfxAssets.harpoon);
 
     return hookSprite;
   };
@@ -153,7 +153,7 @@ export const boardingHookBattleOverlay: VfxDrawingFunction = params =>
 
   const ropeFragment = new WavyLine(
   {
-    getTexture: () => PIXI.Texture.from(resources.rope),
+    getTexture: () => PIXI.Texture.from(battleVfxAssets.rope),
     getLineEndRelativePosition: (time, ropeLength) =>
     {
       return (visibleProjectile.position.x - startPosition.x + hookSpriteRopePosition) / ropeLength;

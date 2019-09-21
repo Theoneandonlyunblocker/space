@@ -23,7 +23,7 @@ import
   setVoronoiCells,
 } from "core/src/math/voronoi";
 
-import * as Terrains from "modules/space/terrains/terrains";
+import * as Terrains from "modules/space/src/terrains/terrains";
 
 import {MapGenDataByStarId} from "../common/MapGenDataByStarId";
 import {MapGenPoint} from "../common/MapGenPoint";

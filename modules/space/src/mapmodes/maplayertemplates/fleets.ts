@@ -5,7 +5,7 @@ import {MapRendererLayerTemplate} from "core/src/templateinterfaces/MapRendererL
 import {app} from "core/src/app/App";
 import {Fleet} from "core/src/fleets/Fleet";
 import {eventManager} from "core/src/app/eventManager";
-import { localize } from "../localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const fleets: MapRendererLayerTemplate =

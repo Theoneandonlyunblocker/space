@@ -26,11 +26,11 @@ const options =
   overwrite: true,
 };
 
-mkdirp("dist/modules/defaultui/img", err =>
+mkdirp("dist/modules/defaultui/assets", err =>
 {
   if (err) {throw err};
 
-  cpr("modules/defaultui/img", "dist/modules/defaultui/img", options, (err) =>
+  cpr("modules/defaultui/assets", "dist/modules/defaultui/assets", options, (err) =>
   {
     if (err)
     {

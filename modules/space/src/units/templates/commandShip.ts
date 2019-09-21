@@ -7,16 +7,16 @@ import
 {
   rangedAttack,
   standBy,
-} from "modules/space/abilities/abilities";
+} from "modules/space/src/abilities/abilities";
 import {distributionGroups} from "modules/common/distributionGroups";
-import {itemSlot} from "modules/space/items/itemSlot";
+import {itemSlot} from "modules/space/src/items/itemSlot";
 
 import
 {
   initialGuard,
-} from "modules/space/passiveskills/passiveSkills";
-import {getIconSrc} from "../resources";
-import { localize } from "../localization/localize";
+} from "modules/space/src/passiveskills/passiveSkills";
+import { localize } from "modules/space/localization/localize";
+import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 
 
 export const commandShip: UnitTemplate =
@@ -41,7 +41,7 @@ export const commandShip: UnitTemplate =
   isSquadron: false,
   buildCost: 300,
   kind: "unit",
-  getIconSrc: getIconSrc.bind(null, "sh"),
+  getIconSrc: getUnitIconSrc.bind(null, "sh"),
   maxHealthLevel: 0.7,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

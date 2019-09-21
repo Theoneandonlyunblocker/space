@@ -1,7 +1,7 @@
 import {BuildingTemplate} from "core/src/templateinterfaces/BuildingTemplate";
 
-import * as technologies from "modules/space/technologies/technologyTemplates";
-import { localize } from "../localization/localize";
+import * as technologies from "modules/space/src/technologies/technologyTemplates";
+import { localize } from "modules/space/localization/localize";
 
 
 export const commercialPort: BuildingTemplate =

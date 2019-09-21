@@ -1,6 +1,6 @@
 import {ResourceTemplate} from "core/src/templateinterfaces/ResourceTemplate";
-import { getIconSrc } from "./assets";
-import { localize } from "./localization/localize";
+import { localize } from "modules/space/localization/localize";
+import { getResourceIconSrc } from "modules/space/assets/resources/resourceAssets";
 
 
 export const testResource1: ResourceTemplate =
@@ -10,7 +10,7 @@ export const testResource1: ResourceTemplate =
   {
     return localize("testResource1").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "test1"),
+  getIconSrc: getResourceIconSrc.bind(null, "test1"),
   distributionData:
   {
     weight: 1,
@@ -24,7 +24,7 @@ export const testResource2: ResourceTemplate =
   {
     return localize("testResource2").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "test2"),
+  getIconSrc: getResourceIconSrc.bind(null, "test2"),
   distributionData:
   {
     weight: 1,
@@ -38,7 +38,7 @@ export const testResource3: ResourceTemplate =
   {
     return localize("testResource3").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "test3"),
+  getIconSrc: getResourceIconSrc.bind(null, "test3"),
   distributionData:
   {
     weight: 1,
@@ -52,7 +52,7 @@ export const testResource4: ResourceTemplate =
   {
     return localize("testResource4").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "test4"),
+  getIconSrc: getResourceIconSrc.bind(null, "test4"),
   distributionData:
   {
     weight: 1,
@@ -66,7 +66,7 @@ export const testResource5: ResourceTemplate =
   {
     return localize("testResource5").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "test5"),
+  getIconSrc: getResourceIconSrc.bind(null, "test5"),
   distributionData:
   {
     weight: 1,

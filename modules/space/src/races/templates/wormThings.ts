@@ -8,17 +8,17 @@ import
 import {generateIndependentFleets} from "modules/common/generateIndependentFleets";
 import {generateIndependentPlayer} from "modules/common/generateIndependentPlayer";
 import {defaultAiConstructor} from "modules/defaultai/src/mapai/DefaultAiConstructor";
-import * as TechnologyTemplates from "modules/space/technologies/technologyTemplates";
-import * as items from "modules/space/items/itemTemplates";
-import {unitTemplates as units} from "modules/space/units/unitTemplates";
-import * as buildings from "modules/space/buildings/templates/otherBuildings";
+import * as TechnologyTemplates from "modules/space/src/technologies/technologyTemplates";
+import * as items from "modules/space/src/items/itemTemplates";
+import {unitTemplates as units} from "modules/space/src/units/unitTemplates";
+import * as buildings from "modules/space/src/buildings/templates/otherBuildings";
 
 import {getDefaultBuildableBuildings} from "../common/getDefaultBuildableBuildings";
 import {getDefaultBuildableItems} from "../common/getDefaultBuildableItems";
 import {getDefaultBuildableUnits} from "../common/getDefaultBuildableUnits";
 import {defaultRaceTechnologyValues} from "../common/defaultRaceTechnologyValues";
 import {mergeTechnologyValues} from "../common/utility";
-import { localizeName } from "../localization/localize";
+import { localizeName } from "modules/space/localization/localize";
 
 
 export const wormThings: RaceTemplate =

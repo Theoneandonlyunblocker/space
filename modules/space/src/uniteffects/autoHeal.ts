@@ -1,6 +1,6 @@
 import {UnitEffectTemplate} from "core/src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactions/effectActions";
-import { localize } from "./localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const autoHeal: UnitEffectTemplate =

@@ -2,7 +2,7 @@ import {UnitEffectTemplate} from "core/src/templateinterfaces/UnitEffectTemplate
 
 import {UnitAttribute, getUnitAttributesObjectKeyForAttribute} from "core/src/unit/UnitAttributes";
 import { FlatAndMultiplierAdjustment } from "core/src/generic/FlatAndMultiplierAdjustment";
-import { localize } from "./localization/localize";
+import { localizeMessage } from "modules/space/localization/localize";
 
 
 function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
@@ -20,7 +20,7 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
     type: `snipe${capitalizedAttributeName}`,
     get displayName()
     {
-      return localize("snipe_displayName").format(attribute);
+      return localizeMessage("snipe_displayName").format(attribute);
     },
     attributes:
     {

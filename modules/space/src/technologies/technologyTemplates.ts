@@ -1,6 +1,6 @@
 import {TechnologyTemplate} from "core/src/templateinterfaces/TechnologyTemplate";
 import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
-import { localize } from "./localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const stealth: TechnologyTemplate =

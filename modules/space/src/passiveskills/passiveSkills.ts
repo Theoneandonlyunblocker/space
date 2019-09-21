@@ -9,7 +9,7 @@ import {poisoned as poisonedStatusEffect} from "../uniteffects/poisoned";
 
 import { FormationValidityModifierSourceType } from "core/src/battleprep/BattlePrepFormationValidity";
 import * as EffectActions from "../effectactions/effectActions";
-import { localize } from "./localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const autoHeal: PassiveSkillTemplate =

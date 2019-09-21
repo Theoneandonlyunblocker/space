@@ -1,9 +1,9 @@
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "modules/common/unitArchetypes";
-import {makeDefaultUnitDrawingFunctionForPlaceholder} from "modules/space/units/defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunctionForPlaceholder} from "modules/space/src/units/defaultUnitDrawingFunction";
 
-import * as CommonAbility from "modules/space/abilities/abilities";
+import * as CommonAbility from "modules/space/src/abilities/abilities";
 import {distributionGroups} from "modules/common/distributionGroups";
 import {getAssetSrc} from "modules/common/assets";
 

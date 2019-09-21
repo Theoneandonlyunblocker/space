@@ -3,7 +3,7 @@ import {UnitEffectTemplate} from "core/src/templateinterfaces/UnitEffectTemplate
 import
 {
   adjustDefenderBattleEvaluationAdjustment,
-} from "modules/space/effectactions/effectActions";
+} from "modules/space/src/effectactions/effectActions";
 
 
 export function makeDefenderAdvantageEffect(amount: number): UnitEffectTemplate

@@ -4,6 +4,6 @@
   "author": "giraluna",
   "description": "generic stuff that can be used by various modules. not required to use the things in here, but useful for interoperability",
   "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/common/index.js"],
-  "moduleObjRequireJsName": "modules/common/src/common",
+  "moduleObjRequireJsName": "modules/common/common",
   "gameModuleVariableName": "common"
 }

@@ -1,9 +1,9 @@
 import * as Offset from "polygon-offset";
 import * as PIXI from "pixi.js";
 
-import * as Terrains from "modules/space/terrains/terrains";
+import * as Terrains from "modules/space/src/terrains/terrains";
 
-import {triangulate} from "modules/space/mapgen/common/triangulate";
+import {triangulate} from "modules/space/src/mapgen/common/triangulate";
 
 import {GalaxyMap} from "core/src/map/GalaxyMap";
 import {Player} from "core/src/player/Player";
@@ -15,7 +15,7 @@ import
 } from "core/src/generic/utility";
 
 import {MapRendererLayerTemplate} from "core/src/templateinterfaces/MapRendererLayerTemplate";
-import { localize } from "../localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 // TODO 2017.08.18 | doesn't belong here

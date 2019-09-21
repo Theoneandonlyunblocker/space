@@ -1,7 +1,7 @@
 import {MapRendererMapModeTemplate} from "core/src/templateinterfaces/MapRendererMapModeTemplate";
 
 import * as MapLayers from "../allMapLayerTemplates";
-import { localize } from "../localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const defaultMapMode: MapRendererMapModeTemplate =

@@ -1,4 +1,4 @@
-import * as items from "modules/space/items/itemTemplates";
+import * as items from "modules/space/src/items/itemTemplates";
 import {ItemTemplate} from "core/src/templateinterfaces/ItemTemplate";
 
 export function getDefaultBuildableItems(): ItemTemplate[]

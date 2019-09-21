@@ -13,7 +13,7 @@ import
 } from "core/src/abilities/targeting";
 
 import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
-import * as EffectActions from "modules/space/effectactions/effectActions";
+import * as EffectActions from "modules/space/src/effectactions/effectActions";
 import { localize } from "../../localization/localize";
 
 

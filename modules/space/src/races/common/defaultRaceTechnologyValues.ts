@@ -1,4 +1,4 @@
-import * as TechnologyTemplates from "modules/space/technologies/technologyTemplates";
+import * as TechnologyTemplates from "modules/space/src/technologies/technologyTemplates";
 
 import {RaceTechnologyValue} from "core/src/templateinterfaces/RaceTechnologyValue";
 

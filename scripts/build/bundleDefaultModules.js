@@ -14,20 +14,11 @@ console.log("bundling modules");
   {root: "modules/drones",                   include: "**/*.js"},
   {root: "modules/englishlanguage",          include: "**/*.js"},
   {root: "modules/paintingportraits",        include: "**/*.js"},
-  {root: "modules/space",                    include: "{,abilities/**/,effectactions/**/,passiveskills/**/,terrains/**/,uniteffects/**/}*.js"},
-  {root: "modules/space/backgrounds",        include: "**/*.js"},
-  {root: "modules/space/battlevfx",          include: "**/*.js"},
-  {root: "modules/space/buildings",          include: "**/*.js"},
-  {root: "modules/space/items",              include: "**/*.js"},
-  {root: "modules/space/mapgen",             include: "**/*.js"},
-  {root: "modules/space/mapmodes",           include: "**/*.js"},
-  {root: "modules/space/races",              include: "**/*.js"},
-  {root: "modules/space/resources",          include: "**/*.js"},
-  {root: "modules/space/technologies",       include: "**/*.js"},
-  {root: "modules/space/units",              include: "**/*.js"},
+  {root: "modules/space",                    include: "**/*.js"},
   {root: "core",                             include: "**/*.js"},
   {root: "_temp_app",                        include: "**/*.js"},
 ].forEach(toBundle =>
 {
   bundleModule(toBundle.root, toBundle.include);
 });
+

@@ -19,7 +19,7 @@ import {unitEffects as en_unitEffects} from "./en/unitEffects";
 import {UnitEffectsMessageArgs} from "./messageArgs/UnitEffectsMessageArgs";
 
 import {names as en_names} from "./en/names";
-import { MessageFormatLocalizer } from "build/core/src/localization/MessageFormatLocalizer";
+import { MessageFormatLocalizer } from "core/src/localization/MessageFormatLocalizer";
 
 
 const allStrings =

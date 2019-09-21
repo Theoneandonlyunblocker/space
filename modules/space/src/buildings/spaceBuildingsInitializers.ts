@@ -20,7 +20,7 @@ export const spaceBuildingsInitializers =
       });
     }
 
-    return new Promise(resolve =>
+    return new Promise<void>(resolve =>
     {
       loader.load(() =>
       {

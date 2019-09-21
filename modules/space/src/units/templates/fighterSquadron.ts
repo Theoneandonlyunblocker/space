@@ -8,11 +8,11 @@ import
   closeAttack,
   rangedAttack,
   standBy,
-} from "modules/space/abilities/abilities";
+} from "modules/space/src/abilities/abilities";
 import {distributionGroups} from "modules/common/distributionGroups";
-import {itemSlot} from "modules/space/items/itemSlot";
-import {getIconSrc} from "../resources";
-import { localize } from "../localization/localize";
+import {itemSlot} from "modules/space/src/items/itemSlot";
+import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
+import { localize } from "modules/space/localization/localize";
 
 
 export const fighterSquadron: UnitTemplate =
@@ -37,7 +37,7 @@ export const fighterSquadron: UnitTemplate =
   isSquadron: true,
   buildCost: 100,
   kind: "unit",
-  getIconSrc: getIconSrc.bind(null, "fa"),
+  getIconSrc: getUnitIconSrc.bind(null, "fa"),
   maxHealthLevel: 0.7,
   maxMovePoints: 2,
   maxOffensiveBattlesPerTurn: 1,

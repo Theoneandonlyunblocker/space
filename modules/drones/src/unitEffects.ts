@@ -4,9 +4,9 @@ import {UnitEffectTemplate} from "core/src/templateinterfaces/UnitEffectTemplate
 import
 {
   adjustHealth,
-} from "../../space/effectactions/effectActions";
+} from "modules/space/src/effectactions/effectActions";
 
-import {makePlaceholderVfx} from "../../common/makePlaceholderVfx";
+import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
 import { localize } from "../localization/localize";
 
 

@@ -10,13 +10,18 @@ import * as moduleInfo from "../moduleInfo.json";
 export const paintingPortraits: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: GameModuleInitializationPhase.MapGen,
   supportedLanguages: "all",
-  initialize: (baseUrl) =>
+  assetLoaders:
   {
-    setAssetBaseUrl(baseUrl);
+    [GameModuleInitializationPhase.MapGen]:
+    [
+      (baseUrl) =>
+      {
+        setAssetBaseUrl(baseUrl);
 
-    return Promise.resolve();
+        return Promise.resolve();
+      },
+    ],
   },
   addToModuleData: (moduleData) =>
   {

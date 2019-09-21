@@ -11,8 +11,8 @@ import
   overdrive,
 } from "../passiveskills/passiveSkills";
 
-import {getIconSrc} from "./resources";
-import { localize } from "./localization/localize";
+import { localize } from "modules/space/localization/localize";
+import { getItemIconSrc } from "modules/space/assets/items/itemAssets";
 
 
 export const bombLauncher1: ItemTemplate =
@@ -26,7 +26,7 @@ export const bombLauncher1: ItemTemplate =
   {
     return localize("bombLauncher1_description").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "cannon"),
+  getIconSrc: getItemIconSrc.bind(null, "cannon"),
 
   techLevel: 1,
   buildCost: 100,
@@ -46,7 +46,7 @@ export const bombLauncher2: ItemTemplate =
   {
     return localize("bombLauncher2_description").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "cannon"),
+  getIconSrc: getItemIconSrc.bind(null, "cannon"),
 
   techLevel: 2,
   buildCost: 200,
@@ -71,7 +71,7 @@ export const bombLauncher3: ItemTemplate =
   {
     return localize("bombLauncher3_description").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "cannon"),
+  getIconSrc: getItemIconSrc.bind(null, "cannon"),
 
   techLevel: 3,
   buildCost: 300,
@@ -97,7 +97,7 @@ export const afterBurner1: ItemTemplate =
   {
     return localize("afterBurner1_description").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "blueThing"),
+  getIconSrc: getItemIconSrc.bind(null, "blueThing"),
 
   techLevel: 1,
   buildCost: 100,
@@ -122,7 +122,7 @@ export const afterBurner2: ItemTemplate =
   {
     return localize("afterBurner2_description").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "blueThing"),
+  getIconSrc: getItemIconSrc.bind(null, "blueThing"),
 
   techLevel: 2,
   buildCost: 200,
@@ -146,7 +146,7 @@ export const afterBurner3: ItemTemplate =
   {
     return localize("afterBurner3_description").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "blueThing"),
+  getIconSrc: getItemIconSrc.bind(null, "blueThing"),
 
   techLevel: 3,
   buildCost: 300,
@@ -171,7 +171,7 @@ export const shieldPlating1: ItemTemplate =
   {
     return localize("shieldPlating1_description").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "armor"),
+  getIconSrc: getItemIconSrc.bind(null, "armor"),
 
   techLevel: 1,
   buildCost: 100,
@@ -195,7 +195,7 @@ export const shieldPlating2: ItemTemplate =
   {
     return localize("shieldPlating2_description").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "armor"),
+  getIconSrc: getItemIconSrc.bind(null, "armor"),
 
   techLevel: 2,
   buildCost: 200,
@@ -219,7 +219,7 @@ export const shieldPlating3: ItemTemplate =
   {
     return localize("shieldPlating3_description").toString();
   },
-  getIconSrc: getIconSrc.bind(null, "armor"),
+  getIconSrc: getItemIconSrc.bind(null, "armor"),
 
   techLevel: 3,
   buildCost: 300,

@@ -1,5 +1,4 @@
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
 import * as semver from "core/src/app/versions";
 
 import {englishLanguage} from "./englishLanguage";
@@ -12,7 +11,6 @@ import { NameSaveData } from "core/src/savedata/NameSaveData";
 export const englishLanguageSupport: GameModule =
 {
   info: moduleInfo,
-  phaseToInitializeBefore: GameModuleInitializationPhase.AppInit,
   supportedLanguages: "all",
   addToModuleData: (moduleData) =>
   {

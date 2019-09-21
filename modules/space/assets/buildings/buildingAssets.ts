@@ -3,8 +3,8 @@ import {Color} from "core/src/color/Color";
 
 export const buildingIconSources =
 {
-  starBase:      "./img/starBase.svg",
-  sectorCommand: "./img/sectorCommand.svg",
+  starBase:      "./assets/buildings/img/starBase.svg",
+  sectorCommand: "./assets/buildings/img/sectorCommand.svg",
 };
 
 export const buildingSvgCache: {[K in keyof typeof buildingIconSources]?: SVGElement} = {};

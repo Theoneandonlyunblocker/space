@@ -13,7 +13,7 @@ export const spaceBattleVfxInitializers =
       loader.add(key, battleVfxAssetsToLoad[key]);
     }
 
-    return new Promise(resolve =>
+    return new Promise<void>(resolve =>
     {
       loader.load(resolve);
     });

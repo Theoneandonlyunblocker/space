@@ -1,12 +1,12 @@
 import {TerritoryBuildingTemplate} from "core/src/templateinterfaces/TerritoryBuildingTemplate";
 
-import {getIconElement} from "../resources";
 import {makeDefenderAdvantageEffect} from "./battleEffects";
 import
 {
   territoryBuildings, sectorCommandFamily,
 } from "./buildingFamilies";
-import { localize } from "../localization/localize";
+import { localize } from "modules/space/localization/localize";
+import { getBuildingIconElement } from "modules/space/assets/buildings/buildingAssets";
 
 
 export const sectorCommand: TerritoryBuildingTemplate =
@@ -23,7 +23,7 @@ export const sectorCommand: TerritoryBuildingTemplate =
   {
     return localize("sectorCommand_description").toString();
   },
-  getIconElement: getIconElement.bind(null, "sectorCommand"),
+  getIconElement: getBuildingIconElement.bind(null, "sectorCommand"),
   buildCost: 200,
 
   maxBuiltAtLocation: 1,
@@ -49,7 +49,7 @@ export const sectorCommand1: TerritoryBuildingTemplate =
   {
     return localize("sectorCommand1_description").toString();
   },
-  getIconElement: getIconElement.bind(null, "sectorCommand"),
+  getIconElement: getBuildingIconElement.bind(null, "sectorCommand"),
   buildCost: 100,
 
   maxBuiltAtLocation: 1,
@@ -70,7 +70,7 @@ export const sectorCommand2: TerritoryBuildingTemplate =
   {
     return localize("sectorCommand2_description").toString();
   },
-  getIconElement: getIconElement.bind(null, "sectorCommand"),
+  getIconElement: getBuildingIconElement.bind(null, "sectorCommand"),
   buildCost: 200,
 
   maxBuiltAtLocation: 1,
@@ -91,7 +91,7 @@ export const starBase: TerritoryBuildingTemplate =
   {
     return localize("starBase_description").toString();
   },
-  getIconElement: getIconElement.bind(null, "starBase"),
+  getIconElement: getBuildingIconElement.bind(null, "starBase"),
   buildCost: 200,
 
   battleEffects: [makeDefenderAdvantageEffect(0.1)],

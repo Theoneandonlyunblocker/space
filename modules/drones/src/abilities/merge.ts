@@ -13,8 +13,8 @@ import
   targetOtherAllies,
 } from "core/src/abilities/targeting";
 
-import {ResultType} from "modules/space/effectactions/ResultType";
-import * as EffectActions from "modules/space/effectactions/effectActions";
+import {ResultType} from "modules/space/src/effectactions/ResultType";
+import * as EffectActions from "modules/space/src/effectactions/effectActions";
 
 import * as DroneStatusEffects from "../unitEffects";
 import * as DroneBattleVfx from "../battlevfx/templates";

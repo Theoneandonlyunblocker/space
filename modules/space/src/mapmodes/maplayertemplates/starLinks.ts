@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import {MapRendererLayerTemplate} from "core/src/templateinterfaces/MapRendererLayerTemplate";
-import { localize } from "../localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const starLinks: MapRendererLayerTemplate =

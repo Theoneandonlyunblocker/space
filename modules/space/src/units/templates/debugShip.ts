@@ -16,17 +16,17 @@ import
   snipeIntelligence,
   snipeSpeed,
   standBy,
-} from "modules/space/abilities/abilities";
-import {itemSlot} from "modules/space/items/itemSlot";
+} from "modules/space/src/abilities/abilities";
+import {itemSlot} from "modules/space/src/items/itemSlot";
 
 import
 {
   autoHeal,
   medic,
   warpJammer,
-} from "modules/space/passiveskills/passiveSkills";
-import {getIconSrc} from "../resources";
-import { localize } from "../localization/localize";
+} from "modules/space/src/passiveskills/passiveSkills";
+import { localize } from "modules/space/localization/localize";
+import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 
 
 export const debugShip: UnitTemplate =
@@ -51,7 +51,7 @@ export const debugShip: UnitTemplate =
   isSquadron: false,
   buildCost: 0,
   kind: "unit",
-  getIconSrc: getIconSrc.bind(null, "f"),
+  getIconSrc: getUnitIconSrc.bind(null, "f"),
   maxHealthLevel: 1,
   maxMovePoints: 999,
   maxOffensiveBattlesPerTurn: 999,
