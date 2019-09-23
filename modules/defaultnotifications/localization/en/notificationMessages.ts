@@ -5,8 +5,8 @@ const battleFinish =
 {
   attackSuccessful: "{attackerName} successfully attacked {locationName}.",
   attackUnsuccessful: "{attackerName} unsuccessfully attacked {locationName}.",
-  locationConquered: "{attackerName} now controls {locationName}.",
-  locationNotConquered: "{defenderName} maintains control of {locationName}.",
+  locationConquered: "{attackerName} now {attackerName, sVerb, control} {locationName}.",
+  locationNotConquered: "{defenderName} {defenderName, sVerb, maintain} control of {locationName}.",
 };
 
 export const notificationMessages: Record<keyof NotificationMessageArgs, string> =
@@ -21,7 +21,7 @@ export const notificationMessages: Record<keyof NotificationMessageArgs, string>
   playerDiedTitle: "Player eliminated",
   playerDiedMessage: "{playerName} {playerName, wasWere} eliminated.",
   playerDiedTextTop: "Here {playerName, sVerb, lie} {playerName}.",
-  playerDiedTextBottom: "{playerName, pronoun, thirdPerson} never scored.",
+  playerDiedTextBottom: "{_, capitalize, {playerName, pronoun, thirdPerson}} never scored.",
 
   warDeclarationTitle: "War declaration",
   warDeclarationMessage: "{aggressorName} declared war on {defenderName}.",
