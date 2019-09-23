@@ -20,41 +20,29 @@ interface StateType
 export class NotificationComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Notification";
-
   public state: StateType;
+
+  private readonly iconContainer = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
   {
     super(props);
 
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
     this.handleClick = this.handleClick.bind(this);
     this.handleClose = this.handleClose.bind(this);
     this.handleRightClick = this.handleRightClick.bind(this);
   }
 
-  handleClose()
+  public componentDidMount(): void
   {
-    this.props.markAsRead(this.props.notification);
+    this.setIconContent();
   }
-  handleClick()
+  public componentDidUpdate(): void
   {
-    this.props.togglePopup(this.props.notification);
+    this.setIconContent();
   }
-  handleRightClick(e: React.MouseEvent<HTMLLIElement>)
+  public render()
   {
-    e.preventDefault();
-    e.stopPropagation();
-    this.handleClose();
-  }
-
-  render()
-  {
-    const notification = this.props.notification;
-
     return(
       ReactDOMElements.li(
       {
@@ -63,19 +51,44 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
         onContextMenu: this.handleRightClick,
         title: localize("notificationToolTip").toString(),
       },
-        ReactDOMElements.img(
+        ReactDOMElements.div(
         {
           className: "notification-image",
-          src: notification.template.getIconSrc(),
+          ref: this.iconContainer,
         }),
         ReactDOMElements.span(
         {
           className: "notification-message",
         },
-          notification.makeMessage(),
+          this.props.notification.makeMessage(),
         ),
       )
     );
+  }
+
+  private handleClose()
+  {
+    this.props.markAsRead(this.props.notification);
+  }
+  private handleClick()
+  {
+    this.props.togglePopup(this.props.notification);
+  }
+  private handleRightClick(e: React.MouseEvent<HTMLLIElement>)
+  {
+    e.preventDefault();
+    e.stopPropagation();
+    this.handleClose();
+  }
+  private setIconContent(): void
+  {
+    const container = this.iconContainer.current;
+    while (container.firstChild)
+    {
+      container.removeChild(container.firstChild);
+    }
+
+    container.appendChild(this.props.notification.template.getIcon(this.props.notification.props));
   }
 }
 

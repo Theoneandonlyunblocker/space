@@ -19,11 +19,10 @@ export interface NotificationTemplate<P, D>
       [[isInvolved, locationIsVisible]] => involved AND visible
   */
   witnessCriteria: NotificationWitnessCriterion[][];
-  // TODO 2018.12.20 | return element instead
-  getIconSrc: () => string;
   contentConstructor: React.Factory<any>;
   messageConstructor: (props: P) => string;
   getTitle: (props: P) => string;
+  getIcon: (props: P) => HTMLElement | SVGElement;
 
   serializeProps: (props: P) => D;
   deserializeProps: (dataProps: D, gameLoader: GameLoader) => P;
