@@ -1,4 +1,7 @@
-export const emblemSources =
+import {SvgCache} from "core/src/generic/SvgCache";
+
+
+const emblemSources =
 {
   "Aguila_explayada_2.svg":                    "./assets/img/Aguila_explayada_2.svg",
   "Berliner_Baer.svg":                         "./assets/img/Berliner_Baer.svg",
@@ -23,12 +26,4 @@ export const emblemSources =
   "threeHorns.svg":                            "./assets/img/threeHorns.svg",
 };
 
-export const svgCache: {[K in keyof typeof emblemSources]?: SVGElement} = {};
-
-export function getSvgElementClone(type: keyof typeof emblemSources): SVGElement
-{
-  const sourceElement = svgCache[type];
-  const clone = <SVGElement> sourceElement.cloneNode(true);
-
-  return clone;
-}
+export const svgCache = new SvgCache(emblemSources);

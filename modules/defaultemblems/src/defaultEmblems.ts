@@ -1,7 +1,7 @@
 import {ModuleData} from "core/src/modules/ModuleData";
 import {GameModule} from "core/src/modules/GameModule";
 import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
-import {emblemSources, svgCache} from "../assets/assets";
+import {svgCache} from "../assets/assets";
 
 import {subEmblemTemplates} from "./subEmblemTemplates";
 
@@ -16,34 +16,7 @@ export const defaultEmblems: GameModule =
   {
     [GameModuleInitializationPhase.GameSetup]:
     [
-      (baseUrl) =>
-      {
-        const loader = new PIXI.Loader(baseUrl);
-
-        for (const key in emblemSources)
-        {
-          loader.add(
-          {
-            url: emblemSources[key],
-            loadType: 1, // XML
-          });
-        }
-
-        return new Promise(resolve =>
-        {
-          loader.load(() =>
-          {
-            for (const key in emblemSources)
-            {
-              const response = <XMLDocument> loader.resources[emblemSources[key]].data;
-              const svgDoc = <SVGElement> response.children[0];
-              svgCache[key] = svgDoc;
-            }
-
-            resolve();
-          });
-        });
-      }
+      (baseUrl) => svgCache.load(baseUrl),
     ],
   },
   addToModuleData: (moduleData: ModuleData) =>
