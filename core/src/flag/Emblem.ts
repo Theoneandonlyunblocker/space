@@ -27,6 +27,7 @@ export class Emblem
     this.colors = template.getColors ? template.getColors(null, colors) : colors;
     this.template = template;
   }
+
   public static generateRandom(backgroundColor?: Color, colors: Color[] = [], seed?: string): Emblem
   {
     const _rng = new RNG(seed);
@@ -63,16 +64,7 @@ export class Emblem
       template,
     );
   }
-  private static getAvailableTemplatesForRandomGeneration(): SubEmblemTemplate[]
-  {
-    return Object.keys(activeModuleData.templates.SubEmblems).map(key =>
-    {
-      return activeModuleData.templates.SubEmblems[key];
-    }).filter(template =>
-    {
-      return !template.disallowRandomGeneration;
-    });
-  }
+
   public draw(): SVGElement
   {
     const result = this.createElementClone();
@@ -113,5 +105,16 @@ export class Emblem
   private createElementClone(): SVGElement
   {
     return this.template.getSvgElementClone();
+  }
+
+  private static getAvailableTemplatesForRandomGeneration(): SubEmblemTemplate[]
+  {
+    return Object.keys(activeModuleData.templates.SubEmblems).map(key =>
+    {
+      return activeModuleData.templates.SubEmblems[key];
+    }).filter(template =>
+    {
+      return !template.disallowRandomGeneration;
+    });
   }
 }
