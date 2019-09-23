@@ -5,9 +5,9 @@ import {NotificationWitnessCriterion} from "core/src/notifications/NotificationW
 import {activeNotificationStore} from "core/src/app/activeNotificationStore";
 import {NotificationTemplate} from "core/src/templateinterfaces/NotificationTemplate";
 import {localize} from "../../localization/localize";
+import { getIcon } from "../../assets/assets";
 
 import {WarDeclarationNotification as UIComponent} from "./uicomponents/WarDeclarationNotification";
-import {getIconSrc} from "../../assets/assets";
 
 
 export interface PropTypes
@@ -33,7 +33,14 @@ export const warDeclarationNotification: NotificationTemplate<PropTypes, Seriali
     [NotificationWitnessCriterion.IsInvolved],
     [NotificationWitnessCriterion.MetAllInvolvedPlayers],
   ],
-  getIconSrc: getIconSrc.bind(null, "test2"),
+  getIcon: (props: PropTypes) =>
+  {
+    const svg = getIcon("swords-emblem", "todo");
+    svg.foreground.style.fill = "transparent";
+    svg.background.style.fill = `white`;
+
+    return svg.element;
+  },
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {

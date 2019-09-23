@@ -8,9 +8,9 @@ import
   notificationCreationScripts,
   notificationTemplates,
 } from "./notificationTemplates";
-import {setBaseUrl as setAssetBaseUrl} from "../assets/assets";
 
 import * as moduleInfo from "../moduleInfo.json";
+import { loadSvg } from "../assets/assets";
 
 
 export const defaultNotifications: GameModule =
@@ -21,12 +21,7 @@ export const defaultNotifications: GameModule =
   {
     [GameModuleInitializationPhase.GameStart]:
     [
-      (baseUrl) =>
-      {
-        setAssetBaseUrl(baseUrl);
-
-        return Promise.resolve();
-      },
+      loadSvg,
     ],
   },
   addToModuleData: (moduleData: ModuleData) =>

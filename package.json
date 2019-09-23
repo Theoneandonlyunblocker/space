@@ -46,7 +46,7 @@
 
     "copy-libs": "node scripts/copy_libs.js",
     "copy-moduleinfo-files": "node scripts/copy_moduleinfo_files.js",
-    "copy-assets": "npm run copy-ui-assets && npm run copy-emblems-assets && npm run copy-common-assets && npm run copy-painting-portraits-assets && npm run copy-space-assets",
+    "copy-assets": "npm run copy-ui-assets && npm run copy-emblems-assets && npm run copy-common-assets && npm run copy-painting-portraits-assets && npm run copy-space-assets && npm run copy-notifications-assets",
     "copy-external-css": "mkdirp dist/css && cpr external/css dist/external/css -o",
 
     "replace-pixi-typedefs": "node scripts/replace_pixi_typedefs.js",
@@ -56,6 +56,7 @@
     "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/assets && cpr modules/defaultemblems/assets dist/modules/defaultemblems/assets -o",
     "copy-common-assets": "mkdirp dist/modules/common/img && cpr modules/common/img dist/modules/common/img -o",
     "copy-space-assets": "mkdirp dist/modules/space/assets && cpr modules/space/assets dist/modules/space/assets -o",
+    "copy-notifications-assets": "mkdirp dist/modules/defaultnotifications/assets && cpr modules/defaultnotifications/assets dist/modules/defaultnotifications/assets -o",
 
     "start": "http-server --port 9001 -o http://127.0.0.1:9001/",
 

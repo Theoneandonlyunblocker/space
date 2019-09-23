@@ -7,9 +7,9 @@ import {NotificationWitnessCriterion} from "core/src/notifications/NotificationW
 import {activeNotificationStore} from "core/src/app/activeNotificationStore";
 import {NotificationTemplate} from "core/src/templateinterfaces/NotificationTemplate";
 import {localize} from "../../localization/localize";
+import {getIcon} from "../../assets/assets";
 
 import {BattleFinishNotification as UIComponent} from "./uicomponents/BattleFinishNotification";
-import {getIconSrc} from "../../assets/assets";
 
 
 export interface PropTypes
@@ -41,7 +41,18 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
     [NotificationWitnessCriterion.IsInvolved],
     [NotificationWitnessCriterion.LocationIsVisible],
   ],
-  getIconSrc: getIconSrc.bind(null, "test1"),
+  getIcon: (props: PropTypes) =>
+  {
+    const loser = props.victor === props.defender ? props.attacker : props.defender;
+
+    const icon = getIcon("swords-emblem", props.victor.id, loser.id);
+    icon.foreground.style.fill = "transparent";
+    icon.gradientStop1.style.stopColor = `#${props.victor.color.getHexString()}`;
+    icon.gradientStop2.style.stopColor = `#${loser.color.getHexString()}`;
+    icon.background.style.fill = `url(#${icon.gradient.id})`;
+
+    return icon.element;
+  },
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {

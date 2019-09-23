@@ -9,7 +9,7 @@ import {NotificationWitnessCriterion} from "core/src/notifications/NotificationW
 import {activeNotificationStore} from "core/src/app/activeNotificationStore";
 
 import {PlayerDiedNotification as UIComponent} from "./uicomponents/PlayerDiedNotification";
-import {getIconSrc} from "../../assets/assets";
+import {getIcon} from "../../assets/assets";
 
 
 export interface PropTypes
@@ -30,7 +30,14 @@ export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedP
   category: "game",
   defaultFilterState: [NotificationFilterState.AlwaysShow],
   witnessCriteria: [[NotificationWitnessCriterion.MetOneInvolvedPlayer]],
-  getIconSrc: getIconSrc.bind(null, "test3"),
+  getIcon: (props: PropTypes) =>
+  {
+    const icon = getIcon("hasty-grave", props.player.id);
+    icon.foreground.style.fill = "transparent";
+    icon.background.style.fill = `#${props.player.color.getHexString()}`;
+
+    return icon.element;
+  },
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
   {
