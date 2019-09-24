@@ -35,11 +35,13 @@ export const warDeclarationNotification: NotificationTemplate<PropTypes, Seriali
   ],
   getIcon: (props: PropTypes) =>
   {
-    const svg = getIcon("swords-emblem", "todo");
-    svg.foreground.style.fill = "transparent";
-    svg.background.style.fill = `white`;
+    const icon = getIcon("crossed-swords", props.aggressor.id, props.defender.id);
+    icon.foreground.style.fill = "transparent";
+    icon.gradientStop1.style.stopColor = `#${props.aggressor.color.getHexString()}`;
+    icon.gradientStop2.style.stopColor = `#${props.defender.color.getHexString()}`;
+    icon.background.style.fill = `url(#${icon.gradient.id})`;
 
-    return svg.element;
+    return icon.element;
   },
   contentConstructor: UIComponent,
   messageConstructor: (props: PropTypes) =>
