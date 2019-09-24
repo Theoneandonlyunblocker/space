@@ -12,7 +12,7 @@ const battleFinish =
 export const notificationMessages: Record<keyof NotificationMessageArgs, string> =
 {
   battleFinishTitle: "Battle finished",
-  battleFinishMessage: "A battle was fought in {locationName} between {attackerName} and {defenderName}",
+  battleFinishMessage: "A battle was fought between {attackerName} and {defenderName}",
 
   battleFinishText_attackerLost: `${battleFinish.attackUnsuccessful}\n${battleFinish.locationNotConquered}`,
   battleFinishText_attackerWon: `${battleFinish.attackSuccessful}\n${battleFinish.locationNotConquered}`,

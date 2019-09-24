@@ -4,7 +4,7 @@ import { Name } from "core/src/localization/Name";
 export type NotificationMessageArgs =
 {
   battleFinishTitle: [];
-  battleFinishMessage: [{locationName: string; attackerName: Name; defenderName: Name}];
+  battleFinishMessage: [{attackerName: Name; defenderName: Name}];
   battleFinishText_attackerLost: [{locationName: string; attackerName: Name; defenderName: Name}];
   battleFinishText_attackerWon: [{locationName: string; attackerName: Name; defenderName: Name}];
   battleFinishText_locationConquered: [{locationName: string; attackerName: Name}];

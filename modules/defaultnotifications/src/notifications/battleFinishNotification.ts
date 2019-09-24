@@ -64,7 +64,6 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
   {
     return localize("battleFinishMessage").format(
     {
-      locationName: props.location.name,
       attackerName: props.attacker.name,
       defenderName: props.defender.name,
     });
