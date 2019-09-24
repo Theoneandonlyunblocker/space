@@ -353,7 +353,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         TurnOrderUnit(
         {
           key: displayData.unit.id,
-          unitName: displayData.unit.name,
+          unitName: displayData.unit.name.toString(),
           delay: displayData.moveDelay,
           isFriendly: this.props.unitsBySide.side1.indexOf(displayData.unit) > -1,
           isHovered: this.props.hoveredUnit && displayData.unit === this.props.hoveredUnit,

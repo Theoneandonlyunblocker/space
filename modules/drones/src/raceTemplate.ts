@@ -40,10 +40,7 @@ export const drones: RaceTemplate =
   ],
   getPlayerName: player => localizeName("droneHost")(randInt(0, 20000)),
   getFleetName: fleet => localizeName("swarm")(fleet.id),
-  getUnitName: unitTemplate =>
-  {
-    return `${unitTemplate.displayName} #${randInt(0, 20000)}`;
-  },
+  getUnitName: unitTemplate => localizeName("unitName")(unitTemplate.displayName, randInt(0, 20000)),
   getUnitPortrait: (unitTemplate, allTemplates) =>
   {
     return getRandomProperty(allTemplates);

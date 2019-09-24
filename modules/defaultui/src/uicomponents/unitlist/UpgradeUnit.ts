@@ -43,7 +43,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
         },
           localize("unitUpgradeHeader").format(
           {
-            unitName: this.props.unit.name,
+            unitName: this.props.unit.name.toString(),
             currentLevel: this.props.unit.level,
             nextLevel: this.props.unit.level + 1,
           }),

@@ -455,7 +455,7 @@ function localizeFormationValidityModifierSource(
         return localize("battlePrepValidityModifierSource_passiveAbility_known").format(
         {
           abilityName: sourceAbility.displayName,
-          unitName: sourceUnit.name,
+          unitName: sourceUnit.name.toString(),
         });
       }
       else

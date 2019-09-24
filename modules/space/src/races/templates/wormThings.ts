@@ -59,7 +59,7 @@ export const wormThings: RaceTemplate =
     localizeName("wormThingsIndependents")() :
     localizeName("genericPlayer")(player.id),
   getFleetName: fleet => localizeName("genericFleet")(fleet.id),
-  getUnitName: unitTemplate => `Infested ${unitTemplate.displayName}`,
+  getUnitName: unitTemplate => localizeName("infestedUnitName")(unitTemplate.displayName),
   getUnitPortrait: (unitTemplate, allPortraits) => getRandomProperty(allPortraits),
   generateIndependentPlayer: emblemTemplates =>
   {

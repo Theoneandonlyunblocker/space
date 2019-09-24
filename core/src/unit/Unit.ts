@@ -40,6 +40,7 @@ import
 import {UnitBattleStatsSaveData} from "../savedata/UnitBattleStatsSaveData";
 import {UnitSaveData} from "../savedata/UnitSaveData";
 import { ProbabilityDistributions } from "../templateinterfaces/ProbabilityDistribution";
+import { Name } from "../localization/Name";
 
 
 type PassiveSkillsByPhase =
@@ -56,7 +57,7 @@ export class Unit
 
   public id: number;
 
-  public name: string;
+  public name: Name;
   public portrait?: PortraitTemplate;
   private race?: RaceTemplate;
 
@@ -113,7 +114,7 @@ export class Unit
     template: UnitTemplate;
 
     id: number;
-    name: string;
+    name: Name;
 
     maxHealth: number;
     currentHealth: number;
@@ -219,7 +220,7 @@ export class Unit
     template: UnitTemplate;
     race: RaceTemplate;
 
-    name?: string;
+    name?: Name;
 
     attributeMultiplier?: number;
     healthMultiplier?: number;
@@ -293,7 +294,7 @@ export class Unit
       template: activeModuleData.templates.Units[data.templateType],
 
       id: data.id,
-      name: data.name,
+      name: Name.fromData(data.name),
 
       maxHealth: data.maxHealth,
       currentHealth: data.currentHealth,
@@ -1079,7 +1080,7 @@ export class Unit
   {
     return(
     {
-      name: this.name,
+      name: this.name.toString(),
       facesLeft: this.battleStats.side === "side2",
 
       currentHealth: this.currentHealth,

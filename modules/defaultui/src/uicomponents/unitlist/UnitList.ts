@@ -54,7 +54,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
           unit: unit,
 
           id: unit.id,
-          unitName: unit.name,
+          unitName: unit.name.toString(),
           unitTypeName: unit.template.displayName,
           strength: `${unit.currentHealth} / ${unit.maxHealth}`,
           currentHealth: unit.currentHealth,

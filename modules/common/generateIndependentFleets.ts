@@ -116,7 +116,8 @@ export function generateIndependentFleets(
     const healthModifier = unitRoleData[unitRole].health;
     const attributesModifier = unitRoleData[unitRole].attributes;
 
-    const unitName = `${unitRoleData[unitRole].namePrefix}${race.getUnitName(unitTemplate)}`;
+    const unitName = race.getUnitName(unitTemplate);
+    unitName.baseName = `${unitRoleData[unitRole].namePrefix}${unitName.baseName}`;
 
     const unit = Unit.fromTemplate(
     {

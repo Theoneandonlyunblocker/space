@@ -83,7 +83,7 @@ export class BattleTurnOrder
       moveDelay: unit.battleStats.moveDelay,
 
       unit: unit,
-      displayName: unit.name,
+      displayName: unit.name.toString(),
     });
   }
 }

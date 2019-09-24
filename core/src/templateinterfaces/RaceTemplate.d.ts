@@ -36,8 +36,7 @@ export interface RaceTemplate
 
   getPlayerName: (player: Player) => Name;
   getFleetName: (fleet: Fleet) => Name;
-  // TODO 2019.09.02 | return Name instead
-  getUnitName: (unitTemplate: UnitTemplate) => string;
+  getUnitName: (unitTemplate: UnitTemplate) => Name;
   getUnitPortrait: (
     unitTemplate: UnitTemplate,
     allPortraitTemplates: TemplateCollection<PortraitTemplate>,

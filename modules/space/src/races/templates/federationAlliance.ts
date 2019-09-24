@@ -59,10 +59,7 @@ export const federationAlliance: RaceTemplate =
     localizeName("federationAllianceIndependents")() :
     localizeName("genericPlayer")(player.id),
   getFleetName: fleet => localizeName("genericFleet")(fleet.id),
-  getUnitName: unitTemplate =>
-  {
-    return `Federation ${unitTemplate.displayName}`;
-  },
+  getUnitName: unitTemplate => localizeName("federationUnitName")(unitTemplate.displayName),
   getUnitPortrait: (unitTemplate, allPortraits) => getRandomProperty(allPortraits),
   generateIndependentPlayer: emblemTemplates =>
   {

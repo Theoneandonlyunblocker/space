@@ -3,13 +3,13 @@ import {UnitAttributesObject} from "../unit/UnitAttributes";
 import {UnitBattleStatsSaveData} from "./UnitBattleStatsSaveData";
 import {UnitItemsSaveData} from "./UnitItemsSaveData";
 import { AbilityUpgradeSaveData } from "../abilities/UpgradableAbilitiesData";
+import { NameSaveData } from "./NameSaveData";
 
 export interface UnitSaveData
 {
   templateType: string;
   id: number;
-  // TODO 2019.09.02 | convert to name
-  name: string;
+  name: NameSaveData;
   maxHealth: number;
   currentHealth: number;
   currentMovePoints: number;
