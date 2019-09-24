@@ -21,6 +21,6 @@ export function initializeModules(gameModules: GameModule[], moduleData: ModuleD
   {
     const gameModule = modulesByKey[moduleInfo.key];
 
-    gameModule.addToModuleData(moduleData);
+    moduleData.addGameModule(gameModule);
   });
 }

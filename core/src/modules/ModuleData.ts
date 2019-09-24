@@ -181,6 +181,10 @@ export class ModuleData
   public addGameModule(gameModule: GameModule): void
   {
     this.gameModules.push(gameModule);
+    if (gameModule.addToModuleData)
+    {
+      gameModule.addToModuleData(this);
+    }
   }
   public getDefaultMap(): MapGenTemplate
   {
