@@ -1,4 +1,4 @@
-import {localize} from "../../localization/localize";
+import {localize, localizeString} from "../../localization/localize";
 
 import {NotificationTemplate} from "core/src/templateinterfaces/NotificationTemplate";
 
@@ -25,9 +25,14 @@ export interface SerializedPropTypes
 export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "playerDiedNotification",
-  // TODO 2019.09.05 | missing localization
-  displayName: "Player died",
-  category: "game",
+  get displayName()
+  {
+    return localizeString("playerDiedNotification_displayName");
+  },
+  get category()
+  {
+    return localizeString("notificationCategory_game");
+  },
   defaultFilterState: [NotificationFilterState.AlwaysShow],
   witnessCriteria: [[NotificationWitnessCriterion.MetOneInvolvedPlayer]],
   getIcon: (props: PropTypes) =>

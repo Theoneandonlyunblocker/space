@@ -6,7 +6,7 @@ import {NotificationFilterState} from "core/src/notifications/NotificationFilter
 import {NotificationWitnessCriterion} from "core/src/notifications/NotificationWitnessCriterion";
 import {activeNotificationStore} from "core/src/app/activeNotificationStore";
 import {NotificationTemplate} from "core/src/templateinterfaces/NotificationTemplate";
-import {localize} from "../../localization/localize";
+import {localize, localizeString} from "../../localization/localize";
 import {getIcon} from "../../assets/assets";
 
 import {BattleFinishNotification as UIComponent} from "./uicomponents/BattleFinishNotification";
@@ -33,8 +33,14 @@ export interface SerializedPropTypes
 export const battleFinishNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "battleFinishNotification",
-  displayName: "Battle finished",
-  category: "combat",
+  get displayName()
+  {
+    return localizeString("battleFinishNotification_displayName");
+  },
+  get category()
+  {
+    return localizeString("notificationCategory_combat");
+  },
   defaultFilterState: [NotificationFilterState.NeverShow],
   witnessCriteria:
   [

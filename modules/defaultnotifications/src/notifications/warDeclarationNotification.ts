@@ -4,7 +4,7 @@ import {NotificationFilterState} from "core/src/notifications/NotificationFilter
 import {NotificationWitnessCriterion} from "core/src/notifications/NotificationWitnessCriterion";
 import {activeNotificationStore} from "core/src/app/activeNotificationStore";
 import {NotificationTemplate} from "core/src/templateinterfaces/NotificationTemplate";
-import {localize} from "../../localization/localize";
+import {localize, localizeString} from "../../localization/localize";
 import { getIcon } from "../../assets/assets";
 
 import {WarDeclarationNotification as UIComponent} from "./uicomponents/WarDeclarationNotification";
@@ -25,8 +25,14 @@ export interface SerializedPropTypes
 export const warDeclarationNotification: NotificationTemplate<PropTypes, SerializedPropTypes> =
 {
   key: "warDeclarationNotification",
-  displayName: "War declaration",
-  category: "diplomacy",
+  get displayName()
+  {
+    return localizeString("warDeclarationNotification_displayName");
+  },
+  get category()
+  {
+    return localizeString("notificationCategory_diplomacy");
+  },
   defaultFilterState: [NotificationFilterState.ShowIfInvolved],
   witnessCriteria:
   [
