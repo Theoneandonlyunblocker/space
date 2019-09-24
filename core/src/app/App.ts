@@ -266,7 +266,7 @@ class App
 
     this.playerControl = new PlayerControl(activePlayer);
 
-    game.players.forEach(player =>
+    game.players.filter(player => !player.isDead).forEach(player =>
     {
       if (!player.isIndependent)
       {

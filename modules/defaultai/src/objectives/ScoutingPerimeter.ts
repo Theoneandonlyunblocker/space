@@ -27,7 +27,7 @@ export class ScoutingPerimeter extends TargetedFrontObjective
   {
     const playersToEstablishPerimeterAgainst = mapEvaluator.player.diplomacy.getMetPlayers().filter(player =>
     {
-      return player.diplomacy.canAttackBuildingOfPlayer(mapEvaluator.player);
+      return !player.isDead && player.diplomacy.canAttackBuildingOfPlayer(mapEvaluator.player);
     });
 
     const allScores = playersToEstablishPerimeterAgainst.map(player =>

@@ -120,7 +120,7 @@ export class GameLoader
     data.players.forEach(playerData =>
     {
       const player = this.playersById[playerData.id];
-      if (player.diplomacy && playerData.diplomacyData)
+      if (!player.isDead && player.diplomacy && playerData.diplomacyData)
       {
         this.deserializePlayerDiplomacy(player, playerData.diplomacyData);
       }
@@ -131,7 +131,7 @@ export class GameLoader
     setActiveNotificationStore(notificationStore);
 
     // notification subscribers
-    data.players.filter(playerData => playerData.notificationLog).forEach(playerData =>
+    data.players.filter(playerData => !playerData.isDead && playerData.notificationLog).forEach(playerData =>
     {
       const player = this.playersById[playerData.id];
       const subscriber = new PlayerNotificationSubscriber(player);
@@ -148,7 +148,7 @@ export class GameLoader
     {
       const player = this.playersById[playerData.id];
 
-      if (playerData.AiController)
+      if (!playerData.isDead && playerData.AiController)
       {
         player.aiController = this.deserializeAiController(
           playerData.AiController,
