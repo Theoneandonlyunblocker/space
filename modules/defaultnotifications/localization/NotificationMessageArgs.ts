@@ -7,7 +7,7 @@ export type NotificationMessageArgs =
   battleFinishMessage: [{attackerName: Name; defenderName: Name}];
   battleFinishText_attackerLost: [{locationName: string; attackerName: Name; defenderName: Name}];
   battleFinishText_attackerWon: [{locationName: string; attackerName: Name; defenderName: Name}];
-  battleFinishText_locationConquered: [{locationName: string; attackerName: Name}];
+  battleFinishText_locationConquered: [{locationName: string; attackerName: Name; defenderName: Name}];
   playerDiedTitle: [];
   playerDiedMessage: [{playerName: Name}];
   playerDiedTextTop: [{playerName: Name}];

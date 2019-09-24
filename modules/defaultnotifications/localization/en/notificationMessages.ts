@@ -3,8 +3,7 @@ import {NotificationMessageArgs} from "../NotificationMessageArgs";
 
 const battleFinish =
 {
-  attackSuccessful: "{attackerName} successfully attacked {locationName}.",
-  attackUnsuccessful: "{attackerName} unsuccessfully attacked {locationName}.",
+  attacked: "{attackerName} attacked {defenderName} in {locationName}.",
   locationConquered: "{attackerName} now {attackerName, sVerb, control} {locationName}.",
   locationNotConquered: "{defenderName} {defenderName, sVerb, maintain} control of {locationName}.",
 };
@@ -14,9 +13,9 @@ export const notificationMessages: Record<keyof NotificationMessageArgs, string>
   battleFinishTitle: "Battle finished",
   battleFinishMessage: "A battle was fought between {attackerName} and {defenderName}",
 
-  battleFinishText_attackerLost: `${battleFinish.attackUnsuccessful}\n${battleFinish.locationNotConquered}`,
-  battleFinishText_attackerWon: `${battleFinish.attackSuccessful}\n${battleFinish.locationNotConquered}`,
-  battleFinishText_locationConquered: `${battleFinish.attackSuccessful}\n${battleFinish.locationConquered}`,
+  battleFinishText_attackerLost: `${battleFinish.attacked}\n\n${battleFinish.locationNotConquered}`,
+  battleFinishText_attackerWon: `${battleFinish.attacked}\n\n${battleFinish.locationNotConquered}`,
+  battleFinishText_locationConquered: `${battleFinish.attacked}\n\n${battleFinish.locationConquered}`,
 
   playerDiedTitle: "Player eliminated",
   playerDiedMessage: "{playerName} {playerName, wasWere} eliminated.",
