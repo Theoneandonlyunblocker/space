@@ -48,3 +48,20 @@
   width: auto !important;
   height: auto !important;
 }
+
+.line-clamp(@lines, @line-height)
+{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-height: @lines * @line-height;
+
+  @supports (-webkit-line-clamp: 2) {
+    white-space: initial;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: @lines;
+    -webkit-box-orient: vertical;
+  }
+}
