@@ -43,12 +43,18 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
   ],
   getIcon: (props: PropTypes) =>
   {
+    const involvedMajorPlayers = [props.defender, props.attacker].filter(player => !player.isIndependent);
+    const minorPlayerWasInvolved = involvedMajorPlayers.length !== 2;
     const loser = props.victor === props.defender ? props.attacker : props.defender;
+
+    const [color1, color2] = minorPlayerWasInvolved ?
+      [involvedMajorPlayers[0].color, involvedMajorPlayers[0].color] :
+      [props.victor.color, loser.color];
 
     const icon = getIcon("swords-emblem", props.victor.id, loser.id);
     icon.foreground.style.fill = "transparent";
-    icon.gradientStop1.style.stopColor = `#${props.victor.color.getHexString()}`;
-    icon.gradientStop2.style.stopColor = `#${loser.color.getHexString()}`;
+    icon.gradientStop1.style.stopColor = `#${color1.getHexString()}`;
+    icon.gradientStop2.style.stopColor = `#${color2.getHexString()}`;
     icon.background.style.fill = `url(#${icon.gradient.id})`;
 
     return icon.element;
