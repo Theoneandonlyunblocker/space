@@ -1,3 +1,5 @@
+// css is built by less, so don't copy them
+
 "use strict";
 
 process.on("unhandledRejection", err => {
@@ -26,11 +28,11 @@ const options =
   overwrite: true,
 };
 
-mkdirp("dist/modules/defaultui/assets", err =>
+mkdirp("dist/modules/defaultui/assets/img", err =>
 {
   if (err) {throw err};
 
-  cpr("modules/defaultui/assets", "dist/modules/defaultui/assets", options, (err) =>
+  cpr("modules/defaultui/assets/img", "dist/modules/defaultui/assets/img", options, (err) =>
   {
     if (err)
     {
