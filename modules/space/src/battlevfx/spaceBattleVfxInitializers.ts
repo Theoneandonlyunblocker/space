@@ -1,4 +1,4 @@
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 import {battleVfxAssetsToLoad} from "modules/space/assets/battleVfx/battleVfxAssets";
 
 

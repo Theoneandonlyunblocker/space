@@ -1,7 +1,7 @@
 import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 import {ModuleData} from "core/src/modules/ModuleData";
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 
 import
 {

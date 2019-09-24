@@ -5,7 +5,7 @@ import {GalaxyMap} from "../map/GalaxyMap";
 import {Game} from "../game/Game";
 import {GameLoader} from "../saves/GameLoader";
 import {MapRenderer} from "../maprenderer/MapRenderer";
-import {GameModuleInitializationPhase} from "../modules/GameModuleInitialization";
+import {GameModuleInitializationPhase} from "../modules/GameModuleInitializationPhase";
 import {ModuleAssetLoader} from "../modules/ModuleAssetLoader";
 import {options} from "./Options";
 import {Player} from "../player/Player";

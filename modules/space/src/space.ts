@@ -1,6 +1,7 @@
 import {GameModule} from "core/src/modules/GameModule";
 import {joinObjectValues} from "core/src/generic/utility";
-import { ValuesByGameModuleInitializationPhase, GameModuleAssetLoader, GameModuleInitializationPhase } from "core/src/modules/GameModuleInitialization";
+import { ValuesByGameModuleInitializationPhase, GameModuleInitializationPhase } from "core/src/modules/GameModuleInitializationPhase";
+import { AssetLoadingFunction } from "core/src/modules/AssetLoadingFunction";
 
 import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
 import {unitArchetypes} from "modules/common/unitArchetypes";
@@ -36,7 +37,7 @@ export const space: GameModule =
 {
   info: moduleInfo,
   supportedLanguages: [englishLanguage],
-  assetLoaders: joinObjectValues<Partial<ValuesByGameModuleInitializationPhase<GameModuleAssetLoader>>>(
+  assetLoaders: joinObjectValues<Partial<ValuesByGameModuleInitializationPhase<AssetLoadingFunction>>>(
     spaceBattleVfxInitializers,
     spaceBuildingsInitializers,
     spaceMapModesInitializers,

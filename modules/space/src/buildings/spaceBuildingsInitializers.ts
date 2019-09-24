@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 
 import {buildingIconSources, buildingSvgCache} from "modules/space/assets/buildings/buildingAssets";
 

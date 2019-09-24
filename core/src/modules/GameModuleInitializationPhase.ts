@@ -1,4 +1,3 @@
-// TODO 2019.09.18 | rename file GameModuleInitializationPhase.ts
 export enum GameModuleInitializationPhase
 {
   AppInit,
@@ -21,6 +20,3 @@ export type ValuesByGameModuleInitializationPhase<T> =
   [GameModuleInitializationPhase.BattlePrep]: T;
   [GameModuleInitializationPhase.BattleStart]: T;
 };
-
-// TODO 2019.09.18 | move somewhere else
-export type GameModuleAssetLoader = (baseUrl: string) => Promise<void>;

@@ -5,7 +5,7 @@ import {Battle} from "../battle/Battle";
 import {BattlePrep} from "../battleprep/BattlePrep";
 import {Game} from "../game/Game";
 import {MapRenderer} from "../maprenderer/MapRenderer";
-import {GameModuleInitializationPhase} from "../modules/GameModuleInitialization";
+import {GameModuleInitializationPhase} from "../modules/GameModuleInitializationPhase";
 import {ModuleAssetLoader} from "../modules/ModuleAssetLoader";
 import {Player} from "../player/Player";
 import {PlayerControl} from "../interaction/PlayerControl";

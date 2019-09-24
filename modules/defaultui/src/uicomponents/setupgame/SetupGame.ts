@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {app} from "core/src/app/App"; // TODO global
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 import {MapGenFunction} from "core/src/templateinterfaces/MapGenFunction";
 
 import {MapSetup, MapSetupComponent} from "./MapSetup";

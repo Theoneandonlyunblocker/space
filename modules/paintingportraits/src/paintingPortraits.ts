@@ -1,5 +1,5 @@
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 
 import {paintingPortraitTemplates} from "./paintingPortraitTemplates";
 import {setBaseUrl as setAssetBaseUrl} from "../assets/assets";

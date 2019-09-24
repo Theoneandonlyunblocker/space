@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 
 import {GameModule} from "core/src/modules/GameModule";
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 
 import
 {

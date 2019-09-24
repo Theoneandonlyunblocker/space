@@ -3,15 +3,15 @@ import
 {
   GameModuleInitializationPhase,
   ValuesByGameModuleInitializationPhase,
-  GameModuleAssetLoader,
-} from "./GameModuleInitialization";
+} from "./GameModuleInitializationPhase";
 import * as debug from "../app/debug";
 import { ModuleStore } from "./ModuleStore";
+import { AssetLoadingFunction } from "./AssetLoadingFunction";
 
 
 type AssetLoaderWithModule =
 {
-  loaderFunction: GameModuleAssetLoader;
+  loaderFunction: AssetLoadingFunction;
   gameModule: GameModule;
 };
 

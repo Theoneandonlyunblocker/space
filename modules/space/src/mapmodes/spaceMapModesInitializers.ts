@@ -1,6 +1,6 @@
 import * as PIXI from "pixi.js";
 
-import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitialization";
+import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 import {mapModeAssets} from "modules/space/assets/mapModes/mapModeAssets";
 
 
