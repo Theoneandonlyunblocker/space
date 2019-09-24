@@ -32,7 +32,7 @@ export class EnglishName extends Name<EnglishNameTags, EnglishNameTagsSaveData>
     super(name, {...defaultEnglishNameTags, ...tags});
   }
 
-  public copyFromData(data: NameSaveData<EnglishNameTagsSaveData>)
+  public applyData(data: NameSaveData<EnglishNameTagsSaveData>)
   {
     this.languageSpecificTags = {...data.languageSpecificTags};
     this.hasBeenCustomized = data.hasBeenCustomized;

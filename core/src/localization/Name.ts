@@ -1,4 +1,5 @@
 import { NameSaveData } from "core/src/savedata/NameSaveData";
+import { activeModuleData } from "../app/activeModuleData";
 
 
 export abstract class Name<
@@ -19,8 +20,21 @@ export abstract class Name<
     this.languageSpecificTags = {...languageSpecificTags};
   }
 
-  // 'abstract static deserializeTags' would be nicer, but see above
-  public abstract copyFromData(data: NameSaveData<TagsSaveData>): void;
+  public static fromData(data: NameSaveData)
+  {
+    const language = activeModuleData.templates.Languages[data.languageCode];
+    if (!language)
+    {
+      throw new Error(`Saved name '${data.baseName}' was defined with language code '${data.languageCode}', but said language was not available when trying to load name.`);
+    }
+
+    const name = language.constructName(data.baseName);
+    name.applyData(data);
+
+    return name;
+  }
+
+  public abstract applyData(data: NameSaveData<TagsSaveData>): void;
   public serialize(): NameSaveData<TagsSaveData>
   {
     return(

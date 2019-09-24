@@ -320,7 +320,7 @@ export class GameLoader
       money: data.money,
 
       id: data.id,
-      name: this.deserializeName(data.name),
+      name: Name.fromData(data.name),
       color:
       {
         main: Color.deserialize(data.color),
@@ -434,7 +434,7 @@ export class GameLoader
       units: units,
       player: player,
       id: data.id,
-      name: this.deserializeName(data.name),
+      name: Name.fromData(data.name),
     });
 
     player.addFleet(fleet);
@@ -493,19 +493,6 @@ export class GameLoader
       turnsHasBeenActiveFor: data.turnsHasBeenActiveFor,
       sourceUnit: this.unitsById[data.sourceUnitId],
     });
-  }
-  private deserializeName(data: NameSaveData): Name
-  {
-    const language = activeModuleData.templates.Languages[data.languageCode];
-    if (!language)
-    {
-      throw new Error(`Saved name '${data.baseName}' was defined with language code '${data.languageCode}', but said language was not available when trying to load name.`);
-    }
-
-    const name = language.constructName(data.baseName);
-    name.copyFromData(data);
-
-    return name;
   }
 }
 
