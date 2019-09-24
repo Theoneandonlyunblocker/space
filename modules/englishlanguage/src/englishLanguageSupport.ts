@@ -56,6 +56,7 @@ export const englishLanguageSupport: GameModule =
           languageSpecificTags:
           {
             ...defaultEnglishNameTags,
+            isPlural: legacyData.isPlural,
           },
         });
       }
