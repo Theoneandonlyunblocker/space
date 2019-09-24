@@ -11,7 +11,7 @@ export abstract class Name<
   // https://github.com/Microsoft/TypeScript/issues/14600
   public abstract readonly languageCode: string;
   public baseName: string;
-  public languageSpecificTags?: Tags;
+  public languageSpecificTags: Tags;
   public hasBeenCustomized: boolean = false;
 
   constructor(baseName: string, languageSpecificTags?: Tags)
@@ -45,10 +45,14 @@ export abstract class Name<
       hasBeenCustomized: this.hasBeenCustomized,
     });
   }
-  public customize(newName: string, tags: Tags): void
+  public customize(newName: string, tags?: Tags): void
   {
+    this.hasBeenCustomized = true;
     this.baseName = newName;
-    this.languageSpecificTags = {...this.languageSpecificTags, ...tags};
+    if (tags)
+    {
+      this.languageSpecificTags = {...this.languageSpecificTags, ...tags};
+    }
   }
   public toString(): string
   {
