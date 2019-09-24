@@ -80,8 +80,7 @@ class App
     {
       initializeModules(gameModules, activeModuleData);
       this.moduleAssetLoader = new ModuleAssetLoader(activeModuleStore, gameModules);
-    }).then(() => // TODO 2019.09.20 | unnecessary?
-    {
+
       return loadDom();
     }).then(() =>
     {
