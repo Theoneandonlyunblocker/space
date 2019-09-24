@@ -1,6 +1,10 @@
 import {GameModule} from "core/src/modules/GameModule";
 import {joinObjectValues} from "core/src/generic/utility";
+import { ValuesByGameModuleInitializationPhase, GameModuleAssetLoader, GameModuleInitializationPhase } from "core/src/modules/GameModuleInitialization";
+
 import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
+import {unitArchetypes} from "modules/common/unitArchetypes";
+
 import {ruleSet} from "./ruleSet";
 
 import * as abilityTemplates from  "./abilities/abilities";
@@ -21,15 +25,11 @@ import {unitTemplates} from "./units/unitTemplates";
 
 import {spaceBattleVfxInitializers} from "./battlevfx/spaceBattleVfxInitializers";
 import {spaceBuildingsInitializers} from "./buildings/spaceBuildingsInitializers";
-import {spaceItemsInitializers} from "./items/spaceItemsInitializers";
 import {spaceMapModesInitializers} from "./mapmodes/spaceMapModesInitializers";
-import {spaceResourcesInitializers} from "./resources/spaceResourcesInitializers";
 import {spaceUnitsInitializers} from "./units/spaceUnitsInitializers";
 
-import {unitArchetypes} from "modules/common/unitArchetypes";
-
+import { setBaseUrl as setAssetBaseUrl } from "../assets/baseUrl";
 import * as moduleInfo from "../moduleInfo.json";
-import { ValuesByGameModuleInitializationPhase, GameModuleAssetLoader } from "core/src/modules/GameModuleInitialization";
 
 
 export const space: GameModule =
@@ -39,10 +39,16 @@ export const space: GameModule =
   assetLoaders: joinObjectValues<Partial<ValuesByGameModuleInitializationPhase<GameModuleAssetLoader>>>(
     spaceBattleVfxInitializers,
     spaceBuildingsInitializers,
-    spaceItemsInitializers,
     spaceMapModesInitializers,
-    spaceResourcesInitializers,
     spaceUnitsInitializers,
+    {
+      [GameModuleInitializationPhase.MapGen]: (baseUrl) =>
+      {
+        setAssetBaseUrl(baseUrl);
+
+        return Promise.resolve();
+      }
+    }
   ),
   addToModuleData: moduleData =>
   {
