@@ -1,4 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <!-- giraluna [Public domain] -->
   <defs>
     <linearGradient id="notification-icon-gradient" gradientUnits="objectBoundingBox" x1="0.3" x2="0.7" y1="1" y2="0">
       <stop offset= "0.4" stop-color="white"/>
