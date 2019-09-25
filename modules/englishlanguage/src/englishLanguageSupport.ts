@@ -25,25 +25,30 @@ export const englishLanguageSupport: GameModule =
   reviveGameData: (saveData) =>
   {
     const dataVersion = saveData.appVersion;
-    // all names before 0.5.0 were english names, so do this here instead of in core
+    // all names used to be english names, so do this here instead of in core
     if (semver.lt(dataVersion, "0.5.0"))
     {
-      convertNames();
       debug.log("saves", `Executing stored core save data reviver function 'convertPlayerAndFleetNames'`);
+      convertPlayerAndFleetNames();
+    }
+    if (semver.lt(dataVersion, "0.5.1"))
+    {
+      debug.log("saves", `Executing stored core save data reviver function 'convertUnitNames'`);
+      convertUnitNames();
     }
 
-    function convertNames()
+    function convertPlayerAndFleetNames()
     {
       saveData.gameData.players.forEach((playerSaveData: any) =>
       {
-        playerSaveData.name = convertName(playerSaveData.name);
+        playerSaveData.name = convertOldName(playerSaveData.name);
         playerSaveData.fleets.forEach((fleetSaveData: any) =>
         {
-          fleetSaveData.name = convertName(fleetSaveData.name);
+          fleetSaveData.name = convertOldName(fleetSaveData.name);
         });
       });
 
-      function convertName(legacyData:
+      function convertOldName(legacyData:
       {
         fullName: string;
         isPlural: boolean;
@@ -59,6 +64,29 @@ export const englishLanguageSupport: GameModule =
           {
             ...defaultEnglishNameTags,
             isPlural: legacyData.isPlural,
+          },
+        });
+      }
+    }
+
+    function convertUnitNames()
+    {
+      saveData.gameData.units.forEach((unitSaveData: any) =>
+      {
+        unitSaveData.name = convertStringName(unitSaveData.name);
+      });
+
+      function convertStringName(legacyName: string): NameSaveData<EnglishNameTagsSaveData>
+      {
+        return(
+        {
+          languageCode: englishLanguage.code,
+          hasBeenCustomized: false,
+          baseName: legacyName,
+          languageSpecificTags:
+          {
+            ...defaultEnglishNameTags,
+            isPlural: legacyName.charAt(legacyName.length - 1) === "s", // close enough
           },
         });
       }
