@@ -89,7 +89,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
           ReactDOMElements.div(
           {
             className: "menu-unit-info-name",
-          }, unit.name),
+          }, unit.name.toString()),
           ReactDOMElements.div(
           {
             className: "menu-unit-info-abilities",

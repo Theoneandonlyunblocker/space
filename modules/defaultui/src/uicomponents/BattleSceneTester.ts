@@ -288,7 +288,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
         key: "" + unit.id,
         style: style,
       },
-        unit.name,
+        unit.name.toString(),
       ));
     }
 
