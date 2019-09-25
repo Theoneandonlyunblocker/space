@@ -6,6 +6,7 @@ import {englishLanguage} from "./englishLanguage";
 import * as moduleInfo from "../moduleInfo.json";
 import { EnglishNameTagsSaveData, defaultEnglishNameTags } from "./EnglishName";
 import { NameSaveData } from "core/src/savedata/NameSaveData";
+import * as debug from "core/src/app/debug";
 
 
 export const englishLanguageSupport: GameModule =
@@ -28,6 +29,7 @@ export const englishLanguageSupport: GameModule =
     if (semver.lt(dataVersion, "0.5.0"))
     {
       convertNames();
+      debug.log("saves", `Executing stored core save data reviver function 'convertPlayerAndFleetNames'`);
     }
 
     function convertNames()
