@@ -1,6 +1,6 @@
 import {UnitEffectTemplate} from "core/src/templateinterfaces/UnitEffectTemplate";
 import {adjustHealth} from "../effectactions/effectActions";
-import { localizeMessage } from "modules/space/localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 export const poisoned: UnitEffectTemplate =
@@ -8,11 +8,11 @@ export const poisoned: UnitEffectTemplate =
   type: "poisoned",
   get displayName()
   {
-    return localizeMessage("poisoned_displayName").toString();
+    return localize("poisoned_displayName");
   },
   get description()
   {
-    return localizeMessage("poisoned_description").toString();
+    return localize("poisoned_description");
   },
   attributes:
   {

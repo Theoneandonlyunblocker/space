@@ -14,12 +14,10 @@ import {resources as en_resources} from "./en/resources";
 import {technologies as en_technologies} from "./en/technologies";
 import {terrains as en_terrains} from "./en/terrains";
 import {units as en_units} from "./en/units";
-
 import {unitEffects as en_unitEffects} from "./en/unitEffects";
-import {UnitEffectsMessageArgs} from "./messageArgs/UnitEffectsMessageArgs";
+
 
 import {names as en_names} from "./en/names";
-import { MessageFormatLocalizer } from "core/src/localization/MessageFormatLocalizer";
 
 
 const allStrings =
@@ -35,6 +33,7 @@ const allStrings =
   ...en_technologies,
   ...en_terrains,
   ...en_units,
+  ...en_unitEffects,
 };
 
 export const localizer = new StringLocalizer<typeof allStrings>("space");
@@ -60,16 +59,3 @@ export const nameLocalizer = new Localizer<GenericNamesType, () => Name>(
 nameLocalizer.setAll(en_names, englishLanguage);
 
 export const localizeName = nameLocalizer.localize.bind(nameLocalizer);
-
-
-type AllMessageArgs =
-  UnitEffectsMessageArgs;
-const allMessages =
-{
-  ...en_unitEffects,
-};
-
-export const messageLocalizer = new MessageFormatLocalizer<AllMessageArgs>("space");
-messageLocalizer.setAll(allMessages, englishLanguage);
-
-export const localizeMessage = messageLocalizer.localize.bind(messageLocalizer);
