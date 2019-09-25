@@ -16,4 +16,12 @@ export const abilities =
   rangedAttack_description: "Standard ranged attack",
   standBy_displayName: "Standby",
   standBy_description: "Skip a turn but next one comes faster",
+  snipeAttack_displayName: "Snipe: Attack",
+  snipeAttack_description: "Deals damage and lowers target attack",
+  snipeDefence_displayName: "Snipe: Defence",
+  snipeDefence_description: "Deals damage and lowers target defence",
+  snipeIntelligence_displayName: "Snipe: Intelligence",
+  snipeIntelligence_description: "Deals damage and lowers target intelligence",
+  snipeSpeed_displayName: "Snipe: Speed",
+  snipeSpeed_description: "Deals damage and lowers target speed",
 };

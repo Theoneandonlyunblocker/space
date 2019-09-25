@@ -2,25 +2,56 @@ import {UnitEffectTemplate} from "core/src/templateinterfaces/UnitEffectTemplate
 
 import {UnitAttribute, getUnitAttributesObjectKeyForAttribute} from "core/src/unit/UnitAttributes";
 import { FlatAndMultiplierAdjustment } from "core/src/generic/FlatAndMultiplierAdjustment";
-import { localizeMessage } from "modules/space/localization/localize";
+import { localize } from "modules/space/localization/localize";
 
 
 function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
 {
-  const attributeName = UnitAttribute[attribute];
-  const capitalizedAttributeName = attributeName[0].toUpperCase() + attributeName.slice(1);
-
   const attributeAdjustment: Partial<FlatAndMultiplierAdjustment> =
   {
     multiplicativeMultiplier: 0.5,
   };
 
+  let abilityKey: "snipeAttack" | "snipeDefence" | "snipeIntelligence" | "snipeSpeed";
+  let displayNameKey: "snipeAttack_displayName" | "snipeDefence_displayName" | "snipeIntelligence_displayName" | "snipeSpeed_displayName";
+  switch (attribute)
+  {
+    case UnitAttribute.Attack:
+    {
+      abilityKey = "snipeAttack";
+      displayNameKey = "snipeAttack_displayName";
+
+      break;
+    }
+    case UnitAttribute.Defence:
+    {
+      abilityKey = "snipeDefence";
+      displayNameKey = "snipeDefence_displayName";
+
+      break;
+    }
+    case UnitAttribute.Intelligence:
+    {
+      abilityKey = "snipeIntelligence";
+      displayNameKey = "snipeIntelligence_displayName";
+
+      break;
+    }
+    case UnitAttribute.Speed:
+    {
+      abilityKey = "snipeSpeed";
+      displayNameKey = "snipeSpeed_displayName";
+
+      break;
+    }
+  }
+
   return(
   {
-    type: `snipe${capitalizedAttributeName}`,
+    type: abilityKey,
     get displayName()
     {
-      return localizeMessage("snipe_displayName").format(attribute);
+      return localize(displayNameKey);
     },
     attributes:
     {

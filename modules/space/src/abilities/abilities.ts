@@ -346,19 +346,58 @@ const snipeStatusEffectTemplateByAttribute =
 };
 function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
 {
-  const attributeName = UnitAttribute[attribute];
-  const capitalizedAttributeName = attributeName[0].toUpperCase() + attributeName.slice(1);
+  let abilityKey: "snipeAttack" | "snipeDefence" | "snipeIntelligence" | "snipeSpeed";
+  let battleVfxKey: typeof abilityKey;
+  let displayNameKey: "snipeAttack_displayName" | "snipeDefence_displayName" | "snipeIntelligence_displayName" | "snipeSpeed_displayName";
+  let descriptionKey: "snipeAttack_description" | "snipeDefence_description" | "snipeIntelligence_description" | "snipeSpeed_description";
 
-  const key = `snipe${capitalizedAttributeName}`;
-  // TODO 2019.09.04 | missing localization
-  const displayName = `Snipe: ${capitalizedAttributeName}`;
-  const description = `Deals damage and lowers target ${attributeName}`;
+  switch (attribute)
+  {
+    case UnitAttribute.Attack:
+    {
+      abilityKey = battleVfxKey = "snipeAttack";
+      displayNameKey = "snipeAttack_displayName";
+      descriptionKey = "snipeAttack_description";
+
+      break;
+    }
+    case UnitAttribute.Defence:
+    {
+      abilityKey = battleVfxKey = "snipeDefence";
+      displayNameKey = "snipeDefence_displayName";
+      descriptionKey = "snipeDefence_description";
+
+      break;
+    }
+    case UnitAttribute.Intelligence:
+    {
+      abilityKey = battleVfxKey = "snipeIntelligence";
+      displayNameKey = "snipeIntelligence_displayName";
+      descriptionKey = "snipeIntelligence_description";
+
+      break;
+    }
+    case UnitAttribute.Speed:
+    {
+      abilityKey = battleVfxKey = "snipeSpeed";
+      displayNameKey = "snipeSpeed_displayName";
+      descriptionKey = "snipeSpeed_description";
+
+      break;
+    }
+  }
 
   return(
   {
-    type: key,
-    displayName: displayName,
-    description: description,
+    type: abilityKey,
+    get displayName()
+    {
+      return localize(displayNameKey);
+    },
+    get description()
+    {
+      return localize(descriptionKey);
+    },
     moveDelay: 100,
     actionsUse: 1,
     getPossibleTargets: targetEnemies,
@@ -377,7 +416,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): AbilityTemplate
         targetType: AbilityTargetType.Primary,
         targetEffect: AbilityTargetEffect.Negative,
       }),
-      vfx: BattleVfx[key],
+      vfx: BattleVfx[battleVfxKey],
       attachedEffects:
       [
         {

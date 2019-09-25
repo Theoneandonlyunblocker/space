@@ -1,8 +1,7 @@
 import { UnitAttribute } from "core/src/unit/UnitAttributes";
-import {UnitEffectsMessageArgs} from "../messageArgs/UnitEffectsMessageArgs";
 
 
-export const unitEffects: Record<keyof UnitEffectsMessageArgs, string> =
+export const unitEffects =
 {
   autoHeal_displayName: "Auto heal",
   autoHeal_description: "Restore 50 health after every action",
