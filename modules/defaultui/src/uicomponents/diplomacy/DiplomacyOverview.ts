@@ -74,7 +74,6 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
         {
           player: player,
           name: player.name.baseName,
-          // TODO 2019.09.05 | missing localization
           status: "dead",
           opinion: null,
           flag: player.flag,
