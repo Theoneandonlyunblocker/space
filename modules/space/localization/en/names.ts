@@ -1,5 +1,4 @@
 import { EnglishName } from "modules/englishlanguage/src/EnglishName";
-// import { Name } from "core/src/localization/Name";
 
 
 export const names =
@@ -18,12 +17,4 @@ export const names =
   {
     return new EnglishName(`Federation ${unitDisplayName}`);
   },
-  // infestedUnitName: (unitDisplayName: Name) =>
-  // {
-  //   return new EnglishName(`Infested ${unitDisplayName.toString()}`, unitDisplayName.languageSpecificTags);
-  // },
-  // federationUnitName: (unitDisplayName: Name) =>
-  // {
-  //   return new EnglishName(`Federation ${unitDisplayName.toString()}`, unitDisplayName.languageSpecificTags);
-  // },
 };

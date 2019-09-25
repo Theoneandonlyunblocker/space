@@ -1,5 +1,4 @@
 import { EnglishName } from "modules/englishlanguage/src/EnglishName";
-// import { Name } from "core/src/localization/Name";
 
 
 export const names =
@@ -13,10 +12,4 @@ export const names =
 
     return new EnglishName(baseName);
   },
-  // unitName: (unitDisplayName: Name, num: number) =>
-  // {
-  //   const baseName = `${unitDisplayName.toString()} #${num}`;
-
-  //   return new EnglishName(baseName, unitDisplayName.languageSpecificTags);
-  // },
 };
