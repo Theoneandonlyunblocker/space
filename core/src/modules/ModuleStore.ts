@@ -2,7 +2,7 @@
 
 import {GameModule} from "./GameModule";
 import {ModuleInfo} from "./ModuleInfo";
-import * as semver from "../app/versions";
+import * as semver from "../generic/versions";
 import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
 import * as debug from "../app/debug";
 

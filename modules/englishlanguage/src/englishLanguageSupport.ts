@@ -1,5 +1,5 @@
 import {GameModule} from "core/src/modules/GameModule";
-import * as semver from "core/src/app/versions";
+import * as semver from "core/src/generic/versions";
 
 import {englishLanguage} from "./englishLanguage";
 

@@ -3,7 +3,7 @@
 
 import {app} from "../app/App"; // TODO global
 import {FullSaveData} from "../savedata/FullSaveData";
-import * as semver from "../app/versions";
+import * as semver from "../generic/versions";
 import * as debug from "../app/debug";
 import { getFunctionName } from "../generic/utility";
 import {activeModuleStore} from "../modules/ModuleStore";
