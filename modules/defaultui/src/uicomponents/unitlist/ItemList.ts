@@ -80,7 +80,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
       {
         typeName: item.template.displayName,
         slot: item.template.slot,
-        unitName: item.unit ? item.unit.name : "",
+        unitName: item.unit ? item.unit.name.toString() : "",
 
         item: item,
         key: item.id,
