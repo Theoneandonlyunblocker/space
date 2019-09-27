@@ -59,7 +59,7 @@ async function bundleModule(moduleRoot, includePattern)
         processedSource = moduleNameResult.data;
 
         // ---PREFIX JSON IMPORTS---
-        const prefixResult = prefixJsonAmdImports(processedSource);
+        const prefixResult = prefixJsonAmdImports(processedSource, fileName);
         processedSource = prefixResult.data;
 
         //  ---REMOVE ORIGINAL SOURCEMAPPING---

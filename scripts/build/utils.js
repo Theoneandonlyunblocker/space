@@ -8,9 +8,14 @@ const path = require("path");
 const {spawn} = require("child_process");
 
 
-exports.prefixJsonAmdImports = (source) =>
+exports.prefixJsonAmdImports = (source, fileName) =>
 {
-  const defineBlock = source.match(/define\((.+?)\)/)[1];
+  const defineBlockMatch = source.match(/define\((.+?)\)/);
+  if (!defineBlockMatch)
+  {
+    throw new Error(`'build/${fileName}' can't be built as it isn't a valid javascript module. It probably lacks any imports or exports.\n\nTry deleting the build/ directory if the source file looks fine`)
+  }
+  const defineBlock = defineBlockMatch[1];
   const toSearch = /"([^"!]+?)\.json"/g;
   const toReplaceWith = `"json!dist/$1.json"`;
 
