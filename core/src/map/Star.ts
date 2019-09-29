@@ -321,6 +321,11 @@ export class Star implements Point
 
     const finalAmount = applyFlatAndMultiplierAdjustments(baseAmount, buildingsEffect);
 
+    if (finalAmount === 0)
+    {
+      return null;
+    }
+
     return(
     {
       resource: this.resource,

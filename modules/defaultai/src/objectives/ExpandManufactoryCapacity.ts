@@ -70,7 +70,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
   public execute(afterDoneCallback: () => void): void
   {
     const upgradeCost = ExpandManufactoryCapacity.getCostForStar(this.target);
-    const canAffordUpgrade = upgradeCost <= this.player.money;
+    const canAffordUpgrade = upgradeCost <= this.player.resources.money;
 
     if (canAffordUpgrade)
     {
@@ -81,7 +81,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
       else
       {
         this.target.buildManufactory();
-        this.player.money -= Manufactory.getBuildCost();
+        this.player.resources.money -= Manufactory.getBuildCost();
       }
     }
 

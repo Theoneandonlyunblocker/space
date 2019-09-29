@@ -7,6 +7,7 @@ import
 } from "./buildingFamilies";
 import { localize } from "modules/space/localization/localize";
 import { getBuildingIconElement } from "modules/space/assets/buildings/buildingAssets";
+import {moneyResource} from "modules/money/src/moneyResource";
 
 
 export const sectorCommand: TerritoryBuildingTemplate =
@@ -24,7 +25,10 @@ export const sectorCommand: TerritoryBuildingTemplate =
     return localize("sectorCommand_description").toString();
   },
   getIconElement: getBuildingIconElement.bind(null, "sectorCommand"),
-  buildCost: 200,
+  buildCost:
+  {
+    [moneyResource.type]: 200,
+  },
 
   maxBuiltAtLocation: 1,
 
@@ -50,7 +54,10 @@ export const sectorCommand1: TerritoryBuildingTemplate =
     return localize("sectorCommand1_description").toString();
   },
   getIconElement: getBuildingIconElement.bind(null, "sectorCommand"),
-  buildCost: 100,
+  buildCost:
+  {
+    [moneyResource.type]: 100,
+  },
 
   maxBuiltAtLocation: 1,
 
@@ -71,7 +78,10 @@ export const sectorCommand2: TerritoryBuildingTemplate =
     return localize("sectorCommand2_description").toString();
   },
   getIconElement: getBuildingIconElement.bind(null, "sectorCommand"),
-  buildCost: 200,
+  buildCost:
+  {
+    [moneyResource.type]: 200,
+  },
 
   maxBuiltAtLocation: 1,
 
@@ -92,7 +102,10 @@ export const starBase: TerritoryBuildingTemplate =
     return localize("starBase_description").toString();
   },
   getIconElement: getBuildingIconElement.bind(null, "starBase"),
-  buildCost: 200,
+  buildCost:
+  {
+    [moneyResource.type]: 200,
+  },
 
   battleEffects: [makeDefenderAdvantageEffect(0.1)],
   getStandardUpgradeTargets: () =>

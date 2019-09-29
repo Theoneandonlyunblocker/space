@@ -142,7 +142,7 @@ export class Trade
       {
         key: "money",
         type: TradeableItemType.Money,
-        amount: this.player.money,
+        amount: this.player.resources.money,
       },
     };
   }
@@ -152,8 +152,8 @@ export class Trade
     {
       case "money":
       {
-        this.player.money -= amount;
-        targetPlayer.money += amount;
+        this.player.resources.money -= amount;
+        targetPlayer.resources.money += amount;
       }
     }
   }

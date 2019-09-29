@@ -43,7 +43,7 @@ export class ConstructManufactoryComponent extends React.PureComponent<PropTypes
     const star = this.props.star;
     const player = this.props.player;
     star.buildManufactory();
-    player.money -= activeModuleData.ruleSet.manufactory.buildCost;
+    player.resources.money -= activeModuleData.ruleSet.manufactory.buildCost;
     this.props.triggerUpdate();
   }
 

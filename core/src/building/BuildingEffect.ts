@@ -9,8 +9,7 @@ export interface BuildingEffect
 {
   vision: FlatAndMultiplierAdjustment;
   detection: FlatAndMultiplierAdjustment;
-  // TODO 2018.06.06 | can't we do a more generic way of handling income?
-  // so exact same system is used for different resources
+  // TODO 2019.09.27 | unify income & resourceincome
   income: FlatAndMultiplierAdjustment;
   resourceIncome: FlatAndMultiplierAdjustment;
   researchPoints: FlatAndMultiplierAdjustment;

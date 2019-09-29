@@ -7,8 +7,8 @@ import {Player} from "core/src/player/Player";
 import {eventManager} from "core/src/app/eventManager";
 import {PlayerFlag} from "../PlayerFlag";
 
-import {PlayerMoney} from "./PlayerMoney";
-import {TopBarResources} from "./TopBarResources";
+// import {PlayerMoney} from "./PlayerMoney";
+import { PlayerResources } from "../resources/PlayerResources";
 
 
 export interface PropTypes extends React.Props<any>
@@ -24,7 +24,10 @@ interface StateType
 export class TopBarComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TopBar";
-  private updateListener: () => void;
+  private readonly updateListeners:
+  {
+    [key: string]: () => void;
+  } = {};
 
   public state: StateType;
 
@@ -35,25 +38,31 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
 
   componentDidMount()
   {
-    this.updateListener = eventManager.addEventListener(
-      "builtBuildingWithEffect_income", this.forceUpdate.bind(this));
+    this.updateListeners["builtBuildingWithEffect_income"] =
+      eventManager.addEventListener("builtBuildingWithEffect_income", this.forceUpdate.bind(this));
+    this.updateListeners["builtBuildingWithEffect_resourceIncome"] =
+      eventManager.addEventListener("builtBuildingWithEffect_resourceIncome", this.forceUpdate.bind(this));
+    this.updateListeners["playerMoneyUpdated"] =
+      eventManager.addEventListener("playerMoneyUpdated", this.forceUpdate.bind(this));
   }
 
   componentWillUnmount()
   {
-    eventManager.removeEventListener("builtBuildingWithEffect_income", this.updateListener);
+    for (const key in this.updateListeners)
+    {
+      eventManager.removeEventListener(key, this.updateListeners[key]);
+    }
   }
 
   render()
   {
     const player = this.props.player;
+    // const income = player.getResourceIncome().money;
 
-    const income = player.getIncome();
+    // let incomeClass = "top-bar-money-income";
+    // if (income < 0) { incomeClass += " negative"; }
 
-    let incomeClass = "top-bar-money-income";
-    if (income < 0) { incomeClass += " negative"; }
-
-    const incomeSign = income < 0 ? "" : "+";
+    // const incomeSign = income < 0 ? "" : "+";
 
     return(
       ReactDOMElements.div(
@@ -83,24 +92,25 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
               `${localize("turnCounter")} ${this.props.game.turnNumber}`,
             ),
           ),
-          ReactDOMElements.div(
+          // ReactDOMElements.div(
+          // {
+          //   className: "top-bar-money",
+          // },
+          //   PlayerMoney(
+          //   {
+          //     player: player,
+          //   }),
+          //   ReactDOMElements.div(
+          //   {
+          //     className: incomeClass,
+          //   },
+          //     `(${incomeSign}${income})`,
+          //   ),
+          // ),
+          PlayerResources(
           {
-            className: "top-bar-money",
-          },
-            PlayerMoney(
-            {
-              player: player,
-            }),
-            ReactDOMElements.div(
-            {
-              className: incomeClass,
-            },
-              `(${incomeSign}${player.getIncome()})`,
-            ),
-          ),
-          TopBarResources(
-          {
-            player: player,
+            resources: player.resources,
+            income: player.getResourceIncome(),
           }),
         ),
       )

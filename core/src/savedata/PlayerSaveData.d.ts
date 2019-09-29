@@ -6,6 +6,7 @@ import {NameSaveData} from "./NameSaveData";
 import {NotificationSubscriberSaveData} from "./NotificationSubscriberSaveData";
 import {PlayerDiplomacySaveData} from "./PlayerDiplomacySaveData";
 import {PlayerTechnologySaveData} from "./PlayerTechnologySaveData";
+import {Resources} from "../player/PlayerResources";
 
 export interface PlayerSaveData
 {
@@ -15,17 +16,13 @@ export interface PlayerSaveData
   colorAlpha: number;
   secondaryColor: ColorSaveData;
   isIndependent: boolean;
-  resources:
-  {
-    [resourceType: string]: number;
-  };
+  resources: Resources;
   diplomacyData?: PlayerDiplomacySaveData;
 
   flag?: FlagSaveData;
 
   unitIds: number[];
   fleets: FleetSaveData[];
-  money: number;
   controlledLocationIds: number[];
   itemIds: number[];
   revealedStarIds: number[];

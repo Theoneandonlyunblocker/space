@@ -1,0 +1,9 @@
+{
+  "key": "money",
+  "version": "0.1.0",
+  "author": "giraluna",
+  "description": "Adds money resource to the game",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/money/index.js"],
+  "moduleObjRequireJsName": "modules/money/src/money",
+  "gameModuleVariableName": "money"
+}

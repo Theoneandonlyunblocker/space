@@ -13,7 +13,7 @@ export function generateIndependentPlayer(
     isIndependent: true,
 
     race: race,
-    money: -1,
+    resources: {money: 0},
   });
 
   player.colorAlpha = 0.66;

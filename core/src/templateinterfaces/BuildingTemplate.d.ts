@@ -4,6 +4,7 @@ import {Star} from "../map/Star";
 import {Player} from "../player/Player";
 import { UnlockableThing } from "./UnlockableThing";
 import { BuildingFamily } from "./BuildingFamily";
+import { Resources } from "../player/PlayerResources";
 
 export interface BuildingTemplate extends UnlockableThing
 {
@@ -11,7 +12,7 @@ export interface BuildingTemplate extends UnlockableThing
   displayName: string;
   description: string;
 
-  buildCost: number;
+  buildCost: Resources;
   kind: "building";
 
   families: BuildingFamily[];

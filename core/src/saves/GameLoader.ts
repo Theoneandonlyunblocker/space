@@ -316,7 +316,6 @@ export class GameLoader
       isDead: data.isDead,
 
       race: activeModuleData.templates.Races[data.raceKey],
-      money: data.money,
 
       id: data.id,
       name: Name.fromData(data.name),

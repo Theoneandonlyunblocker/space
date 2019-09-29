@@ -6,6 +6,7 @@ const {bundleModule} = require("./bundleModule");
 console.log("bundling modules");
 [
   {root: "modules/common",                   include: "**/*.js"},
+  {root: "modules/money",                    include: "**/*.js"},
   {root: "modules/defaultai",                include: "**/*.js"},
   {root: "modules/defaultattitudemodifiers", include: "**/*.js"},
   {root: "modules/defaultemblems",           include: "**/*.js"},

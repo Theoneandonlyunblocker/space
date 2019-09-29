@@ -194,7 +194,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       isIndependent: false,
 
       race: this.state.race,
-      money: 1000,
+      resources: {money: 1000},
 
       // TODO 2019.09.02 | should allow player to define plurality etc
       name: options.display.language.constructName(this.state.name),

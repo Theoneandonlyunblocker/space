@@ -168,14 +168,8 @@ export class Game
 
     if (!player.isIndependent)
     {
-      player.money += player.getIncome();
-
-      const allResourceIncomeData = player.getResourceIncome();
-      for (const resourceType in allResourceIncomeData)
-      {
-        const resourceData = allResourceIncomeData[resourceType];
-        player.addResource(resourceData.resource, resourceData.amount);
-      }
+      const resourceIncome = player.getResourceIncome();
+      player.addResources(resourceIncome);
 
       player.playerTechnology.allocateResearchPoints(player.getResearchSpeed());
     }

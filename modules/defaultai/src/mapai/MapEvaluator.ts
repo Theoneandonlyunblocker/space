@@ -8,7 +8,7 @@ import {ValuesByPlayer} from "core/src/player/ValuesByPlayer";
 import {ValuesByStar} from "core/src/map/ValuesByStar";
 import
 {
-  getRelativeValue,
+  getRelativeValue, sumObjectValues,
 } from "core/src/generic/utility";
 
 import {UnitEvaluator} from "./UnitEvaluator";
@@ -84,16 +84,11 @@ export class MapEvaluator
 
   evaluateStarInfrastructure(star: Star): number
   {
+    const allBuildCosts = star.buildings.map(building => building.totalCost);
+    const totalCostOfAllBuildings = sumObjectValues(...allBuildCosts);
 
-    const totalCostOfAllBuildings = star.buildings.map(building =>
-    {
-      return building.totalCost;
-    }).reduce((total, current) =>
-    {
-      return total + current;
-    }, 0);
-
-    return totalCostOfAllBuildings / 25;
+    // TODO 2019.09.27 | handle other resources
+    return totalCostOfAllBuildings.money / 25;
   }
 
   evaluateStarProduction(star: Star): number
@@ -155,7 +150,7 @@ export class MapEvaluator
 
     let incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
     // prioritize income when would make big relative boost, penalize when opposite
-    incomeEvaluation *= incomeEvaluation / (this.player.getIncome() / 4);
+    incomeEvaluation *= incomeEvaluation / (this.player.getResourceIncome().money / 4);
     evaluation += incomeEvaluation;
 
     const infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;
@@ -308,7 +303,7 @@ export class MapEvaluator
     star.territoryBuildings.forEach(building =>
     {
       const previousValue = byPlayer.get(building.controller) || 0;
-      byPlayer.set(building.controller, previousValue + building.totalCost);
+      byPlayer.set(building.controller, previousValue + building.totalCost.money);
     });
 
     return byPlayer;

@@ -387,7 +387,7 @@ class App
         isIndependent: false,
 
         race: getRandomArrayItem(candidateRaces),
-        money: 1000,
+        resources: {money: 1000},
       }));
     }
 

@@ -10,6 +10,8 @@ import {Player} from "../player/Player";
 import {Star} from "../map/Star";
 import { TerritoryBuildingTemplate } from "../templateinterfaces/TerritoryBuildingTemplate";
 import { BuildingFamily } from "../templateinterfaces/BuildingFamily";
+import { Resources } from "../player/PlayerResources";
+import { sumObjectValues } from "../generic/utility";
 
 
 export type TerritoryBuilding = Building<TerritoryBuildingTemplate>;
@@ -22,7 +24,7 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
   public location: Star;
   public controller: Player;
 
-  public totalCost: number;
+  public totalCost: Resources;
 
   constructor(props:
   {
@@ -31,7 +33,7 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     location: Star;
     controller?: Player;
 
-    totalCost?: number;
+    totalCost?: Resources;
 
     id?: number;
 
@@ -41,7 +43,7 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     this.id = (props.id && isFinite(props.id)) ? props.id : idGenerators.building++;
     this.location = props.location;
     this.controller = props.controller || this.location.owner;
-    this.totalCost = props.totalCost || this.template.buildCost || 0;
+    this.totalCost = props.totalCost || this.template.buildCost || {};
   }
   public getEffect(): PartialBuildingEffect
   {
@@ -77,7 +79,7 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     const oldTemplate = this.template;
 
     this.template = upgradeData.template;
-    this.totalCost += upgradeData.cost;
+    this.totalCost = sumObjectValues(this.totalCost, upgradeData.cost);
 
     // TODO 2018.06.13 | better way to do this?
     this.location.buildings.handleBuidlingUpgrade(this, oldTemplate);

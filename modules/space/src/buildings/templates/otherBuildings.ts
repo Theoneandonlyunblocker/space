@@ -2,7 +2,7 @@ import {BuildingTemplate} from "core/src/templateinterfaces/BuildingTemplate";
 
 import * as technologies from "modules/space/src/technologies/technologyTemplates";
 import { localize } from "modules/space/localization/localize";
-
+import {moneyResource} from "modules/money/src/moneyResource";
 
 export const commercialPort: BuildingTemplate =
 {
@@ -18,7 +18,10 @@ export const commercialPort: BuildingTemplate =
   },
   families: [],
 
-  buildCost: 200,
+  buildCost:
+  {
+    [moneyResource.type]: 200,
+  },
   maxBuiltAtLocation: 1,
 
   getEffect: () =>
@@ -43,7 +46,10 @@ export const deepSpaceRadar: BuildingTemplate =
   },
   families: [],
 
-  buildCost: 200,
+  buildCost:
+  {
+    [moneyResource.type]: 200,
+  },
 
   maxBuiltAtLocation: 1,
 
@@ -77,7 +83,10 @@ export const resourceMine: BuildingTemplate =
   },
   families: [],
 
-  buildCost: 500,
+  buildCost:
+  {
+    [moneyResource.type]: 500,
+  },
 
   maxBuiltAtLocation: 1,
   canBeBuiltInLocation: (star) =>
@@ -110,7 +119,10 @@ export const reserachLab: BuildingTemplate =
   },
   families: [],
 
-  buildCost: 300,
+  buildCost:
+  {
+    [moneyResource.type]: 300,
+  },
 
   maxBuiltAtLocation: 1,
 
@@ -138,10 +150,13 @@ export const thePyramids: BuildingTemplate =
 
   onBuild: (star, player) =>
   {
-    player.money += 1000;
+    player.resources.money += 1000;
   },
 
-  buildCost: 0,
+  buildCost:
+  {
+    [moneyResource.type]: 0,
+  },
 
   maxBuiltAtLocation: 1,
   maxBuiltGlobally: 1,
@@ -162,10 +177,13 @@ export const nationalEpic: BuildingTemplate =
 
   onBuild: (star, player) =>
   {
-    player.money += 999;
+    player.resources.money += 999;
   },
 
-  buildCost: 0,
+  buildCost:
+  {
+    [moneyResource.type]: 0,
+  },
 
   maxBuiltAtLocation: 1,
   maxBuiltForPlayer: 1,

@@ -7,6 +7,7 @@ import {applyMixins} from "../mixins/applyMixins";
 import {TradeableItemProps} from "./TradeableItemProps";
 
 
+// TODO 2019.09.28 | rework
 export interface PropTypes extends TradeableItemProps, React.Props<any>
 {
   keyTODO: string;

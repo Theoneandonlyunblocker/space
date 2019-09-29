@@ -38,7 +38,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
     this.state = {
       selectedStar: this.getInitialSelectedStar(),
-      money: this.props.player.money,
+      money: this.props.player.resources.money,
     };
 
     this.getStarsWithAndWithoutManufactories = this.getStarsWithAndWithoutManufactories.bind(this);

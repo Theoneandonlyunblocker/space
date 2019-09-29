@@ -7,12 +7,14 @@ import {ListItemProps} from "../list/ListItemProps";
 
 import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";
 import {applyMixins} from "../mixins/applyMixins";
+import { Resources } from "core/src/player/PlayerResources";
+import { ResourceCost } from "../resources/ResourceCost";
 
 
 export interface PropTypes extends ListItemProps, React.Props<any>
 {
   typeName: string;
-  buildCost: number;
+  buildCost: Resources;
 
   template: BuildingTemplate;
   player: Player;
@@ -47,7 +49,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
   {
     return(
     {
-      canAfford: this.props.player.money >= this.props.buildCost,
+      canAfford: this.props.player.canAfford(this.props.buildCost),
     });
   }
 
@@ -55,7 +57,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
   {
     this.setState(
     {
-      canAfford: this.props.player.money >= this.props.buildCost,
+      canAfford: this.props.player.canAfford(this.props.buildCost),
     });
   }
 
@@ -71,11 +73,12 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     {
       case "buildCost":
       {
-        cellContent = this.props.buildCost;
-        if (!this.state.canAfford)
+        cellContent = ResourceCost(
         {
-          cellProps.className += " negative";
-        }
+          cost: this.props.buildCost,
+          missingResources: this.props.player.getMissingResourcesFor(this.props.buildCost),
+        });
+
         break;
       }
       case "typeName":

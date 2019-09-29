@@ -30,8 +30,6 @@ ul, ol
 @ui-border-color2: #77ABCE;
 @text-color: #EEEEEC;
 @unit-border-color: #999;
-@money-color: #FFEB00;
-@money-icon-color: #F3C620;
 @negative-color: #FF3C3C;
 
 .fa(@content)
@@ -41,18 +39,6 @@ ul, ol
   font-style: normal;
   font-weight: normal;
   text-decoration: inherit;
-}
-
-.money-style
-{
-  color: @money-color;
-
-  &::after
-  {
-    .fa("\f111");
-    margin-left: 0.25em;
-    color: @money-icon-color;
-  }
 }
 
 .horizontal-border(@top-width, @bottom-width)
@@ -2262,49 +2248,58 @@ ul, ol
   width: 1em;
   margin-right: 1em;
 }
-
-.top-bar-money
-{
-  display: flex;
-  flex-flow: row;
-  color: @money-color;
-}
-
-.top-bar-money-income
-{
-  margin-left: 0.666em;
-}
-
 .negative
 {
   color: @negative-color !important;
 }
 
-.top-bar-resources
+.resource
+{
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+.resource-icon
+{
+  >*
+  {
+    width: 100%;
+    height: 100%;
+  }
+}
+.player-resources
 {
   display: flex;
   flex-flow: row;
 
+  >*
+  {
+    float: left;
+    margin-right: 1em;
+  }
   .resource-icon
   {
     height: 1em;
     width: 1em;
     margin-right: 0.333em;
   }
+  .resource-amount
+  {
+    margin-right: 0.5em;
+  }
 }
-
-.resource-icon
+.resource-cost
 {
-  float: left;
-}
-.resource-amount
-{
-  float: left;
-}
-.resource-income
-{
-  margin-left: 0.666em;
-  float: left;
+  >*
+  {
+    float: right;
+  }
+  .resource-icon
+  {
+    height: 1em;
+    width: 1em;
+    margin-left: 0.333em;
+  }
 }
 
 .top-menu-wrapper
@@ -2996,14 +2991,6 @@ ul, ol
   .fancy-table-style-without-splitters(8px, 70px);
   width: 100%;
 }
-.buildable-item
-{
-  .buildCost
-  {
-    text-align: right;
-    .money-style;
-  }
-}
 
 .item-equip
 {
@@ -3372,11 +3359,6 @@ ul, ol
     padding-top: 8px;
     padding-bottom: 8px;
   }
-}
-
-.economy-summary-income
-{
-  .money-style;
 }
 
 .diplomacy-overview
@@ -3775,25 +3757,6 @@ ul, ol
   }
 }
 
-.item-purchase-list
-{
-  color: @text-color;
-  background-color: @bg-color;
-  height: 100%;
-  overflow-y: hidden;
-  .default-border(1px);
-
-  .hover-only-fancy-table-style(2px, 0);
-
-  .sort-icons(700px);
-  .prevent-user-select;
-}
-
-.item-purchase-list-buildCost
-{
-  .money-style;
-}
-
 .building-upgrade-list
 {
   overflow-y: auto;
@@ -3803,12 +3766,6 @@ ul, ol
 {
   color: @text-color;
   font-size: 0.82em;
-}
-
-.building-upgrade-list-item-cost
-{
-  .money-style;
-  text-align: right;
 }
 
 .options
@@ -4648,12 +4605,6 @@ button.player-setup-remove-player
   }
 }
 
-.manufactory-upgrade-button-cost
-{
-  .money-style;
-  margin-left: 0.5em;
-}
-
 .manufacturable-units
 {
   .manufactory-upgrade-button
@@ -4783,12 +4734,6 @@ button.player-setup-remove-player
 .trade-button-ok
 {
   font-size: 1.33em;
-}
-
-.trade-money-money-available
-{
-  .money-style;
-  margin-left: 0.5em;
 }
 
 .trade-item-adjust

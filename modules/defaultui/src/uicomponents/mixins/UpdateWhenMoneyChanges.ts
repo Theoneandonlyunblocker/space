@@ -37,7 +37,7 @@ export class UpdateWhenMoneyChanges<T extends React.Component<any, any>> impleme
     }
     else
     {
-      this.owner.setState({money: this.owner.props.player.money});
+      this.owner.setState({money: this.owner.props.player.resources.money});
     }
   }
 }

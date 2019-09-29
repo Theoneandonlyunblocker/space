@@ -708,3 +708,20 @@ export function joinObjectValues<T>(...toJoin: T[]): {[K in keyof T]: T[K][]}
     return joined;
   }, <{[K in keyof T]: T[K][]}>{});
 }
+export function sumObjectValues<T extends {[key: string]: number}>(...toSum: T[]): T
+{
+  return toSum.reduce((summed, currentObj) =>
+  {
+    for (const key in currentObj)
+    {
+      if (!summed[key])
+      {
+        summed[key] = 0;
+      }
+
+      summed[key] += currentObj[key];
+    }
+
+    return summed;
+  }, <any>{});
+}

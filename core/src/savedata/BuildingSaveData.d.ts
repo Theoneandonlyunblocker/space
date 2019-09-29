@@ -1,3 +1,6 @@
+import { Resources } from "../player/PlayerResources";
+
+
 export interface BuildingSaveData
 {
   templateType: string;
@@ -6,5 +9,5 @@ export interface BuildingSaveData
   locationId: number;
   controllerId: number;
 
-  totalCost: number;
+  totalCost: Resources;
 }

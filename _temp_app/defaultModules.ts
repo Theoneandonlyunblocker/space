@@ -8,6 +8,7 @@ import * as paintingPortraits from "modules/paintingportraits/moduleInfo.json";
 import * as englishLanguageSupport from "modules/englishlanguage/moduleInfo.json";
 import * as defaultUi from "modules/defaultui/moduleInfo.json";
 import * as space from "modules/space/moduleInfo.json";
+import * as money from "modules/money/moduleInfo.json";
 
 import {ModuleInfo} from "core/src/modules/ModuleInfo";
 
@@ -16,6 +17,7 @@ export const defaultModules: ModuleInfo[] =
 [
   common,
   englishLanguageSupport,
+  money,
 
   defaultUi,
   defaultEmblems,

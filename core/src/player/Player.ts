@@ -35,7 +35,6 @@ import
 import {PlayerNotificationSubscriber} from "../notifications/PlayerNotificationSubscriber";
 
 import {RaceTemplate} from "../templateinterfaces/RaceTemplate";
-import {ResourceTemplate} from "../templateinterfaces/ResourceTemplate";
 import {TechRequirement} from "../templateinterfaces/TechRequirement";
 
 import {PlayerSaveData} from "../savedata/PlayerSaveData";
@@ -43,6 +42,39 @@ import {PlayerTechnologySaveData} from "../savedata/PlayerTechnologySaveData";
 import { BuildingTemplate } from "../templateinterfaces/BuildingTemplate";
 import { Building } from "../building/Building";
 import {BuildingUpgradeData} from "../building/BuildingUpgradeData";
+import { Resources } from "./PlayerResources";
+
+
+const resourcesProxyHandler: ProxyHandler<Resources> =
+{
+  get: (obj, prop: string) =>
+  {
+    if (prop in obj)
+    {
+      return obj[prop];
+    }
+    else
+    {
+      return 0;
+    }
+  },
+};
+const humanPlayerResourcesProxyHandler: ProxyHandler<Resources> =
+{
+  ...resourcesProxyHandler,
+  set: (obj, prop: string, value) =>
+  {
+    obj[prop] = value;
+
+    if (prop === "money")
+    {
+      // TODO 2019.09.27 | this aint good. used in lots of places though
+      eventManager.dispatchEvent("playerMoneyUpdated");
+    }
+
+    return true;
+  }
+};
 
 
 // TODO 2017.07.26 | probably should split minor & major players into subclasses
@@ -56,10 +88,7 @@ export class Player
   flag: Flag;
   race: RaceTemplate;
   units: Unit[] = [];
-  resources:
-  {
-    [resourceType: string]: number;
-  } = {};
+  public resources: Resources;
   fleets: Fleet[] = [];
   items: Item[] = [];
 
@@ -72,19 +101,6 @@ export class Player
 
   public notificationLog: PlayerNotificationSubscriber;
 
-  private _money: number;
-  get money(): number
-  {
-    return this._money;
-  }
-  set money(amount: number)
-  {
-    this._money = amount;
-    if (!this.isAi)
-    {
-      eventManager.dispatchEvent("playerMoneyUpdated");
-    }
-  }
   controlledLocations: Star[] = [];
 
   visionIsDirty: boolean = true;
@@ -120,7 +136,6 @@ export class Player
     isDead?: boolean;
 
     race: RaceTemplate;
-    money: number;
 
     id?: number;
     name?: Name;
@@ -134,9 +149,8 @@ export class Player
 
     flag?: Flag;
 
-    resources?: {[resourceType: string]: number};
+    resources: Resources;
     technologyData?: PlayerTechnologySaveData;
-
   })
   {
     this.isAi = props.isAi;
@@ -144,9 +158,9 @@ export class Player
     this.isDead = props.isDead || false;
 
     this.race = props.race;
-    this.money = props.money;
 
     this.id = isFinite(props.id) ? props.id : idGenerators.player++;
+    this.resources = new Proxy({}, this.isAi ? resourcesProxyHandler : humanPlayerResourcesProxyHandler);
 
     if (props.color)
     {
@@ -171,9 +185,10 @@ export class Player
       this.flag = this.makeRandomFlag();
     }
 
-    if (props.resources)
+    // TODO 2019.09.26 | replace with object spread once getters are removed
+    for (const key in props.resources)
     {
-      this.resources = extendObject(props.resources);
+      this.resources[key] = props.resources[key];
     }
 
     if (!this.isIndependent)
@@ -229,7 +244,7 @@ export class Player
 
         getAiTemplateConstructor: undefined,
       },
-      money: 0,
+      resources: {money: 0},
     });
   }
   public destroy(): void
@@ -391,54 +406,72 @@ export class Player
       this.die();
     }
   }
-  getIncome(): number
+  public addResources(toAdd: Resources): void
+  {
+    for (const key in toAdd)
+    {
+      this.resources[key] += toAdd[key];
+    }
+  }
+  public removeResources(toRemove: Resources): void
+  {
+    for (const key in toRemove)
+    {
+      if (this.resources[key] < toRemove[key])
+      {
+        throw new Error(`Tried to remove ${toRemove[key]} resources of type '${key}' when player ${this.name.toString()} only had ${this.resources[key]}`);
+      }
+
+      this.resources[key] -= toRemove[key];
+    }
+  }
+  public getMissingResourcesFor(resources: Resources): Resources
+  {
+    return Object.keys(resources).reduce((missingResources, resource) =>
+    {
+      const amountOwned = this.resources[resource];
+      const amountNeeded = resources[resource];
+      if (amountOwned < amountNeeded)
+      {
+        missingResources[resource] = amountNeeded - amountOwned;
+      }
+
+      return missingResources;
+    }, {});
+  }
+  public canAfford(resources: Resources): boolean
+  {
+    for (const key in resources)
+    {
+      if (this.resources[key] < resources[key])
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+  public getResourceIncome(): Resources
   {
     return this.controlledLocations.reduce((total, star) =>
     {
-      return total + star.getIncome();
-    }, 0);
-  }
-  addResource(resource: ResourceTemplate, amount: number): void
-  {
-    if (!this.resources[resource.type])
-    {
-      this.resources[resource.type] = 0;
-    }
+      const moneyIncome = star.getIncome();
+      const otherIncome = star.getResourceIncome();
 
-    this.resources[resource.type] += amount;
-  }
-  getResourceIncome(): {[resourceType: string]: {resource: ResourceTemplate; amount: number}}
-  {
-    const incomeByResource:
-    {
-      [resourceType: string]:
+      total.money += moneyIncome;
+      if (otherIncome)
       {
-        resource: ResourceTemplate;
-        amount: number;
-      };
-    } = {};
-
-    for (let i = 0; i < this.controlledLocations.length; i++)
-    {
-      const star = this.controlledLocations[i];
-
-      const starIncome = star.getResourceIncome();
-
-      if (!starIncome) { continue; }
-
-      if (!incomeByResource[starIncome.resource.type])
-      {
-        incomeByResource[starIncome.resource.type] =
+        const resourceKey = otherIncome.resource.type;
+        if (!total[resourceKey])
         {
-          resource: starIncome.resource,
-          amount: 0,
-        };
+          total[resourceKey] = 0;
+        }
+
+        total[resourceKey] += otherIncome.amount;
       }
 
-      incomeByResource[starIncome.resource.type].amount += starIncome.amount;
-    }
-
-    return incomeByResource;
+      return total;
+    }, {money: 0});
   }
   // TODO refactor | should probably be moved
   public getNeighboringStars(): Star[]
@@ -892,7 +925,7 @@ export class Player
     building.controller = this;
 
     location.buildings.add(building);
-    this.money -= building.template.buildCost;
+    this.removeResources(building.template.buildCost);
 
     if (template.onBuild)
     {
@@ -902,9 +935,9 @@ export class Player
   public upgradeBuilding(upgradeData: BuildingUpgradeData): void
   {
     upgradeData.parentBuilding.upgrade(upgradeData);
-    this.money -= upgradeData.cost;
+    this.removeResources(upgradeData.cost);
   }
-  getResearchSpeed(): number
+  public getResearchSpeed(): number
   {
     let research = 0;
     research += activeModuleData.ruleSet.research.baseResearchPoints;
@@ -991,10 +1024,9 @@ export class Player
       secondaryColor: this.secondaryColor.serialize(),
       isIndependent: this.isIndependent,
       isAi: this.isAi,
-      resources: extendObject(this.resources),
+      resources: {...this.resources},
 
       fleets: this.fleets.map(fleet => fleet.serialize()),
-      money: this.money,
       controlledLocationIds: this.controlledLocations.map(star => star.id),
 
       itemIds: this.items.map(item => item.id),

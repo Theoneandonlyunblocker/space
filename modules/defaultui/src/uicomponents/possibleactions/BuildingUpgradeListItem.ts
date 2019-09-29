@@ -44,7 +44,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
   {
     return(
     {
-      canAfford: this.props.player.money >= this.props.upgradeData.cost,
+      canAfford: this.props.player.canAfford(this.props.upgradeData.cost),
     });
   }
 
@@ -52,7 +52,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
   {
     this.setState(
     {
-      canAfford: this.props.player.money >= this.props.upgradeData.cost,
+      canAfford: this.props.player.canAfford(this.props.upgradeData.cost),
     });
   }
 
