@@ -4,8 +4,7 @@ export interface ResourceTemplate
 {
   type: string;
   displayName: string;
-  // TODO 2018.12.20 | return element instead
-  getIconSrc: () => string;
+  getIcon: () => HTMLElement | SVGElement;
 
   distributionData: DistributionData;
 }

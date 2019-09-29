@@ -10,7 +10,10 @@ const resourceIconSources =
   test5: "./assets/resources/img/test5.png",
 };
 
-export function getResourceIconSrc(type: keyof typeof resourceIconSources): string
+export function getResourceIcon(type: keyof typeof resourceIconSources): HTMLImageElement
 {
-  return new URL(resourceIconSources[type], baseUrl).toString();
+  const img = new Image();
+  img.src = new URL(resourceIconSources[type], baseUrl).toString();
+
+  return img;
 }
