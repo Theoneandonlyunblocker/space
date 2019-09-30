@@ -1,5 +1,6 @@
 import {AiController} from "../ai/AiController";
 import {app} from "../app/App"; // TODO global
+import * as debug from "../app/debug";
 import {BattleData} from "../battle/BattleData";
 import {BattlePrep} from "../battleprep/BattlePrep";
 import {BattleSimulator} from "../ai/BattleSimulator";
@@ -377,7 +378,7 @@ export class Player
     {
       if (this.resources[key] < toRemove[key])
       {
-        throw new Error(`Tried to remove ${toRemove[key]} resources of type '${key}' when player ${this.name.toString()} only had ${this.resources[key]}`);
+        debug.warn("game", `Removed ${toRemove[key]} resources of type '${key}' when player ${this.name.toString()} only had ${this.resources[key]}`);
       }
 
       this.resources[key] -= toRemove[key];
