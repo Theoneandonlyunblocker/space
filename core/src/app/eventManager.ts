@@ -1,6 +1,10 @@
-// should be used as little as possible. old code using this should be refactored
+// consider this legacy. should be used as little as possible
+// should only use for presentation and interaction stuff
+// TriggeredScripts should be used for everything else
+// definitely use TriggeredScripts if something touches the game itself. players, units, etc.
 
 import * as PIXI from "pixi.js";
+
 
 const eventEmitter = new PIXI.utils.EventEmitter();
 export const eventManager =

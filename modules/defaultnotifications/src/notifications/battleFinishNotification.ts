@@ -10,6 +10,7 @@ import {localize, localizeString} from "../../localization/localize";
 import {getIcon} from "../../assets/assets";
 
 import {BattleFinishNotification as UIComponent} from "./uicomponents/BattleFinishNotification";
+import { PartialTriggeredScriptsWithData } from "core/src/triggeredscripts/TriggeredScripts";
 
 
 export interface PropTypes
@@ -99,14 +100,14 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
   },
 };
 
-export const battleFinishNotificationCreationScripts =
+export const battleFinishNotificationCreationScripts: PartialTriggeredScriptsWithData =
 {
   battle:
   {
     battleFinish:
-    [
+    {
+      makeBattleFinishNotification:
       {
-        key: "makeBattleFinishNotification",
         triggerPriority: 0,
         script: (battle: Battle) =>
         {
@@ -126,6 +127,6 @@ export const battleFinishNotificationCreationScripts =
           });
         },
       },
-    ],
+    },
   },
 };

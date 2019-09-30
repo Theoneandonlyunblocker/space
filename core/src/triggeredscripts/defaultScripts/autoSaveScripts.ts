@@ -6,9 +6,9 @@ export const autoSaveScripts: PartialTriggeredScriptsWithData =
   game:
   {
     beforePlayerTurnEnd:
-    [
+    {
+      autoSaveBeforePlayerTurnEnd:
       {
-        key: "autoSaveBeforePlayerTurnEnd",
         triggerPriority: 0,
         script: (game) =>
         {
@@ -16,6 +16,6 @@ export const autoSaveScripts: PartialTriggeredScriptsWithData =
           game.save("autosave", wasManuallyTriggered);
         }
       },
-    ],
+    },
   }
 };

@@ -6,9 +6,9 @@ export const starScripts: PartialTriggeredScriptsWithData =
   star:
   {
     onOwnerChange:
-    [
+    {
+      destroyPerPlayerLimitedBuildings:
       {
-        key: "destroyPerPlayerLimitedBuildings",
         triggerPriority: 0,
         script: (star, oldOwner, newOwner) =>
         {
@@ -25,6 +25,6 @@ export const starScripts: PartialTriggeredScriptsWithData =
           });
         },
       },
-    ],
+    },
   },
 };

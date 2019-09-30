@@ -6,25 +6,25 @@ export const unitScripts: PartialTriggeredScriptsWithData =
   unit:
   {
     onCapture:
-    [
+    {
+      transferCapturedUnit:
       {
-        key: "transferCapturedUnit",
         triggerPriority: 0,
         script: (unit, oldPlayer, newPlayer) =>
         {
           unit.transferToPlayer(newPlayer);
         },
       },
+      resetExperience:
       {
-        key: "resetExperience",
         triggerPriority: 0,
         script: (unit, oldPlayer, newPlayer) =>
         {
           unit.experienceForCurrentLevel = 0;
         },
       },
+      exhaustUnit:
       {
-        key: "exhaustUnit",
         triggerPriority: 0,
         script: (unit, oldPlayer, newPlayer) =>
         {
@@ -32,6 +32,6 @@ export const unitScripts: PartialTriggeredScriptsWithData =
           unit.offensiveBattlesFoughtThisTurn = Infinity;
         },
       },
-    ],
+    },
   },
 };

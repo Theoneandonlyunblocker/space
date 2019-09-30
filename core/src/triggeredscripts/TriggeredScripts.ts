@@ -7,7 +7,7 @@ import {UnitScripts} from "./UnitScripts";
 import { allDefaultTriggeredScripts } from "./allDefaultTriggeredScripts";
 
 
-type AllTriggeredScriptTypes =
+type AllTriggeredScripts =
 {
   battle: BattleScripts;
   diplomacy: DiplomacyScripts;
@@ -16,101 +16,86 @@ type AllTriggeredScriptTypes =
   star: StarScripts;
   unit: UnitScripts;
 };
-
-interface TriggeredScriptData<T extends (...args: any[]) => void>
+type TriggeredScriptData<T> =
 {
-  key: string;
   /**
    * higher priority scripts are triggered first
-   * @default 0
+   * 0 should be considered the default
    */
   triggerPriority: number;
   script: T;
-}
-
-type ScriptsWithData<Scripts extends {[T in keyof Scripts]: (...args: any[]) => void}> =
-{
-  // TODO 2019.09.08 | storing these in an object instead of an array would make more sense
-  [T in keyof Scripts]: TriggeredScriptData<Scripts[T]>[];
 };
 
-// why doesn't this work directly?
-type _dummy_<ScriptTypes extends
+// no higher kinded types so lots of copy paste
+// https://github.com/microsoft/TypeScript/issues/1213
+export type AllTriggeredScriptsWithData =
 {
-  [C in keyof ScriptTypes]:
+  [Category in keyof AllTriggeredScripts]:
   {
-    [K in keyof ScriptTypes[C]]: (...args: any[]) => void;
-  }
-}> =
-{
-  [C in keyof ScriptTypes]: ScriptsWithData<ScriptTypes[C]>;
-};
-
-type InnerPartial<T> =
-{
-  [K in keyof T]: Partial<T[K]>;
-};
-
-
-
-export type AllTriggeredScriptsWithData = _dummy_<AllTriggeredScriptTypes>;
-
-export type PartialTriggeredScriptsWithData = Partial<InnerPartial<AllTriggeredScriptsWithData>>;
-
-type ScriptsCollection<S extends {[C in keyof S]: (...args: any[]) => void}> =
-{
-  [C in keyof S]: S[C][];
-};
-
-type AllTriggeredScripts =
-{
-  [C in keyof AllTriggeredScriptTypes]:
-  {
-    [K in keyof AllTriggeredScriptTypes[C]]: AllTriggeredScriptTypes[C][K][];
+    [TriggerKey in keyof AllTriggeredScripts[Category]]:
+    {
+      [scriptKey: string]: TriggeredScriptData<AllTriggeredScripts[Category][TriggerKey]>;
+    };
   }
 };
+export type PartialTriggeredScriptsWithData =
+{
+  [Category in keyof AllTriggeredScripts]?:
+  {
+    [TriggerKey in keyof AllTriggeredScripts[Category]]?:
+    {
+      [scriptKey: string]: TriggeredScriptData<AllTriggeredScripts[Category][TriggerKey]>;
+    }
+  }
+};
+type ScriptsArrayForCategory<Category extends keyof AllTriggeredScripts> =
+{
+  [TriggerKey in keyof AllTriggeredScripts[Category]]: (AllTriggeredScripts[Category][TriggerKey])[];
+};
 
-export class TriggeredScripts implements AllTriggeredScripts
+export class TriggeredScripts
 {
   /* tslint:disable:member-ordering */
   private readonly scriptsWithData: AllTriggeredScriptsWithData =
   {
     battle:
     {
-      battleFinish: [],
+      battleFinish: {},
     },
     diplomacy:
     {
-      onWarDeclaration: [],
-      onFirstMeeting: [],
+      onWarDeclaration: {},
+      onFirstMeeting: {},
     },
     game:
     {
-      afterInit: [],
-      beforePlayerTurnEnd: [],
+      afterInit: {},
+      beforePlayerTurnEnd: {},
     },
     player:
     {
-      onDeath: [],
+      onDeath: {},
+      onResourcesChange: {},
+      onIncomeChange: {},
     },
     star:
     {
-      onOwnerChange: [],
+      onOwnerChange: {},
     },
     unit:
     {
-      removeFromPlayer: [],
-      onCapture: [],
+      removeFromPlayer: {},
+      onCapture: {},
     },
   };
 
   /* tslint:disable:typedef-whitespace */
-  public readonly battle    : ScriptsCollection<BattleScripts>    = TriggeredScripts.makeAccessorObject(this.scriptsWithData.battle);
-  public readonly diplomacy : ScriptsCollection<DiplomacyScripts> = TriggeredScripts.makeAccessorObject(this.scriptsWithData.diplomacy);
-  public readonly game      : ScriptsCollection<GameScripts>      = TriggeredScripts.makeAccessorObject(this.scriptsWithData.game);
-  public readonly player    : ScriptsCollection<PlayerScripts>    = TriggeredScripts.makeAccessorObject(this.scriptsWithData.player);
-  public readonly star      : ScriptsCollection<StarScripts>      = TriggeredScripts.makeAccessorObject(this.scriptsWithData.star);
-  public readonly unit      : ScriptsCollection<UnitScripts>      = TriggeredScripts.makeAccessorObject(this.scriptsWithData.unit);
+  public readonly battle    : ScriptsArrayForCategory<"battle">    = TriggeredScripts.makeAccessorObject(this.scriptsWithData.battle);
+  public readonly diplomacy : ScriptsArrayForCategory<"diplomacy"> = TriggeredScripts.makeAccessorObject(this.scriptsWithData.diplomacy);
+  public readonly game      : ScriptsArrayForCategory<"game">      = TriggeredScripts.makeAccessorObject(this.scriptsWithData.game);
+  public readonly player    : ScriptsArrayForCategory<"player">    = TriggeredScripts.makeAccessorObject(this.scriptsWithData.player);
+  public readonly star      : ScriptsArrayForCategory<"star">      = TriggeredScripts.makeAccessorObject(this.scriptsWithData.star);
+  public readonly unit      : ScriptsArrayForCategory<"unit">      = TriggeredScripts.makeAccessorObject(this.scriptsWithData.unit);
   /* tslint:enable:typedef-whitespace */
   /* tslint:enable:member-ordering */
 
@@ -137,44 +122,39 @@ export class TriggeredScripts implements AllTriggeredScripts
     {
       for (const category in toAdd)
       {
-        for (const scriptKey in toAdd[category])
+        for (const triggerKey in toAdd[category])
         {
-          this.scriptsWithData[category][scriptKey].push(...toAdd[category][scriptKey]);
+          const existingScriptsForTrigger: {[scriptKey: string]: TriggeredScriptData<any>} = this.scriptsWithData[category][triggerKey];
+          const toAddScriptsForTrigger: {[scriptKey: string]: TriggeredScriptData<any>} = toAdd[category][triggerKey];
+          for (const scriptKey in toAddScriptsForTrigger)
+          {
+            if (existingScriptsForTrigger[scriptKey])
+            {
+              throw new Error(`Duplicate triggered script '${category}.${triggerKey}.${scriptKey}'`);
+            }
+
+            existingScriptsForTrigger[scriptKey] = toAddScriptsForTrigger[scriptKey];
+          }
         }
       }
     });
-  }
-  public remove(toRemove: PartialTriggeredScriptsWithData): void
-  {
-    for (const category in toRemove)
-    {
-      for (const scriptKey in toRemove[category])
-      {
-        this.scriptsWithData[category][scriptKey] =
-          this.scriptsWithData[category][scriptKey].filter((scriptData: TriggeredScriptData<any>) =>
-        {
-          return toRemove[category][scriptKey].indexOf(scriptData) !== -1;
-        });
-      }
-    }
   }
 
   private static triggerPrioritySort(a: TriggeredScriptData<any>, b: TriggeredScriptData<any>): number
   {
     return b.triggerPriority - a.triggerPriority;
   }
-  private static makeAccessorObject<S extends {[T in keyof S]: (...args: any[]) => void}>(scriptsWithData: ScriptsWithData<S>): ScriptsCollection<S>
+  private static makeAccessorObject<C extends keyof AllTriggeredScriptsWithData>(scriptsForCategory: AllTriggeredScriptsWithData[C]): ScriptsArrayForCategory<C>
   {
-    const accessorObject = <ScriptsCollection<S>> {};
-
-    for (const scriptKey in scriptsWithData)
+    return new Proxy(<ScriptsArrayForCategory<C>>{},
     {
-      Object.defineProperty(accessorObject, scriptKey,
+      get: (obj, triggerKey) =>
       {
-        get: () => scriptsWithData[scriptKey].sort(TriggeredScripts.triggerPrioritySort).map(scriptData => scriptData.script),
-      });
-    }
-
-    return accessorObject;
+        return Object.keys(scriptsForCategory[triggerKey]).map(scriptKeys =>
+        {
+          return scriptsForCategory[triggerKey][scriptKeys];
+        }).sort(TriggeredScripts.triggerPrioritySort).map(scriptData => scriptData.script);
+      },
+    });
   }
 }

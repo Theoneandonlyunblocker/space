@@ -7,16 +7,17 @@ import
   baseOpinion,
   declaredWar,
 } from "./attitudeModifierTemplates";
+import { PartialTriggeredScriptsWithData } from "core/src/triggeredscripts/TriggeredScripts";
 
 
-export const attitudeModifierModuleScripts =
+export const attitudeModifierModuleScripts: PartialTriggeredScriptsWithData =
 {
   diplomacy:
   {
     onFirstMeeting:
-    [
+    {
+      addBaseOpinionAttitudeModifier:
       {
-        key: "addBaseOpinionAttitudeModifier",
         triggerPriority: 0,
         script: (a: Player, b: Player, game: Game) =>
         {
@@ -35,11 +36,11 @@ export const attitudeModifierModuleScripts =
           a.diplomacy.addAttitudeModifier(b, modifier);
         },
       },
-    ],
+    },
     onWarDeclaration:
-    [
+    {
+      addDeclaredWarAttitudeModifier:
       {
-        key: "addDeclaredWarAttitudeModifier",
         triggerPriority: 0,
         script: (aggressor: Player, defender: Player, game: Game) =>
         {
@@ -52,6 +53,6 @@ export const attitudeModifierModuleScripts =
           defender.diplomacy.addAttitudeModifier(aggressor, modifier);
         },
       }
-    ]
+    },
   },
 };

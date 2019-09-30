@@ -8,6 +8,7 @@ import {localize, localizeString} from "../../localization/localize";
 import { getIcon } from "../../assets/assets";
 
 import {WarDeclarationNotification as UIComponent} from "./uicomponents/WarDeclarationNotification";
+import { PartialTriggeredScriptsWithData } from "core/src/triggeredscripts/TriggeredScripts";
 
 
 export interface PropTypes
@@ -77,14 +78,14 @@ export const warDeclarationNotification: NotificationTemplate<PropTypes, Seriali
   },
 };
 
-export const warDeclarationNotificationCreationScripts =
+export const warDeclarationNotificationCreationScripts: PartialTriggeredScriptsWithData =
 {
   diplomacy:
   {
     onWarDeclaration:
-    [
+    {
+      makeWarDeclarationNotification:
       {
-        key: "makeWarDeclarationNotification",
         triggerPriority: 0,
         script: (aggressor: Player, defender: Player) =>
         {
@@ -101,6 +102,6 @@ export const warDeclarationNotificationCreationScripts =
           });
         },
       },
-    ],
+    },
   },
 };
