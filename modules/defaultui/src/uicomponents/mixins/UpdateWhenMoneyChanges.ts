@@ -1,4 +1,4 @@
-// TODO refactor | this should 100% be removed
+// TODO 2019.09.30 | delete after everything converted to useResources
 
 import * as React from "react";
 

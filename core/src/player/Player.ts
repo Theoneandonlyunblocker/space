@@ -60,23 +60,6 @@ const resourcesProxyHandler: ProxyHandler<Resources> =
     }
   },
 };
-const humanPlayerResourcesProxyHandler: ProxyHandler<Resources> =
-{
-  ...resourcesProxyHandler,
-  set: (obj, prop: string, value) =>
-  {
-    obj[prop] = value;
-
-    if (prop === "money")
-    {
-      // TODO 2019.09.27 | this aint good. used in lots of places though
-      eventManager.dispatchEvent("playerMoneyUpdated");
-    }
-
-    return true;
-  }
-};
-
 
 // TODO 2019.09.30 | holy crap does this need to be split up
 export class Player
@@ -160,7 +143,6 @@ export class Player
     this.race = props.race;
 
     this.id = isFinite(props.id) ? props.id : idGenerators.player++;
-    this.resources = new Proxy({}, this.isAi ? resourcesProxyHandler : humanPlayerResourcesProxyHandler);
 
     if (props.color)
     {

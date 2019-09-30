@@ -21,6 +21,7 @@ import {TopLevelErrorBoundary} from "./uicomponents/errors/TopLevelErrorBoundary
 import {VfxEditor} from "./uicomponents/vfxeditor/VfxEditor";
 
 import * as moduleInfo from "../moduleInfo.json";
+import { triggeredScripts } from "./triggeredScripts";
 
 
 function loadCss(url: string, baseUrl: string): void
@@ -71,6 +72,8 @@ export const defaultUi: GameModule =
   },
   addToModuleData: (moduleData) =>
   {
+    moduleData.scripts.add(triggeredScripts);
+
     moduleData.uiScenes.battle = Battle;
     moduleData.uiScenes.battlePrep = BattlePrep;
     moduleData.uiScenes.galaxyMap = GalaxyMap;

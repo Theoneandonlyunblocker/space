@@ -7,8 +7,7 @@ import {Player} from "core/src/player/Player";
 import {eventManager} from "core/src/app/eventManager";
 import {PlayerFlag} from "../PlayerFlag";
 
-// import {PlayerMoney} from "./PlayerMoney";
-import { PlayerResources } from "../resources/PlayerResources";
+import { PlayerResourcesWithIncome } from "../resources/PlayerResourcesWithIncome";
 
 
 export interface PropTypes extends React.Props<any>
@@ -57,12 +56,6 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
   render()
   {
     const player = this.props.player;
-    // const income = player.getResourceIncome().money;
-
-    // let incomeClass = "top-bar-money-income";
-    // if (income < 0) { incomeClass += " negative"; }
-
-    // const incomeSign = income < 0 ? "" : "+";
 
     return(
       ReactDOMElements.div(
@@ -92,25 +85,9 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
               `${localize("turnCounter")} ${this.props.game.turnNumber}`,
             ),
           ),
-          // ReactDOMElements.div(
-          // {
-          //   className: "top-bar-money",
-          // },
-          //   PlayerMoney(
-          //   {
-          //     player: player,
-          //   }),
-          //   ReactDOMElements.div(
-          //   {
-          //     className: incomeClass,
-          //   },
-          //     `(${incomeSign}${income})`,
-          //   ),
-          // ),
-          PlayerResources(
+          PlayerResourcesWithIncome(
           {
-            resources: player.resources,
-            income: player.getResourceIncome(),
+            player: player,
           }),
         ),
       )

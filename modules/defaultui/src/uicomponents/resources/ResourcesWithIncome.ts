@@ -14,15 +14,14 @@ export interface PropTypes extends React.Props<any>
   income?: Resources;
 }
 
-const PlayerResourcesComponent: React.FunctionComponent<PropTypes> = props =>
+const ResourcesWithIncomeComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const allResourceTypes = Object.keys({...props.resources, ...props.income});
-
 
   return(
     ReactDOMElements.div(
     {
-      className: "player-resources",
+      className: "resources-with-income",
     },
       ResourceList(
       {
@@ -49,4 +48,4 @@ const PlayerResourcesComponent: React.FunctionComponent<PropTypes> = props =>
   );
 };
 
-export const PlayerResources: React.FunctionComponentFactory<PropTypes> = React.createFactory(PlayerResourcesComponent);
+export const ResourcesWithIncome: React.FunctionComponentFactory<PropTypes> = React.createFactory(ResourcesWithIncomeComponent);
