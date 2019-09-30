@@ -371,6 +371,8 @@ export class Player
     {
       this.resources[key] += toAdd[key];
     }
+
+    this.onResourcesChange();
   }
   public removeResources(toRemove: Resources): void
   {
@@ -383,6 +385,8 @@ export class Player
 
       this.resources[key] -= toRemove[key];
     }
+
+    this.onResourcesChange();
   }
   public getMissingResourcesFor(resources: Resources): Resources
   {
@@ -1033,5 +1037,12 @@ export class Player
       const player = presentPlayersByVisibility[visibility][playerId];
       this.diplomacy.meetPlayerIfNeeded(player);
     }
+  }
+  private onResourcesChange(): void
+  {
+    activeModuleData.scripts.player.onResourcesChange.forEach(script =>
+    {
+      script(this);
+    });
   }
 }
