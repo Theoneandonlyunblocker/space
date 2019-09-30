@@ -77,20 +77,20 @@ const humanPlayerResourcesProxyHandler: ProxyHandler<Resources> =
 };
 
 
-// TODO 2017.07.26 | probably should split minor & major players into subclasses
+// TODO 2019.09.30 | holy crap does this need to be split up
 export class Player
 {
-  id: number;
-  name: Name;
-  color: Color;
-  colorAlpha: number;
-  secondaryColor: Color;
-  flag: Flag;
-  race: RaceTemplate;
-  units: Unit[] = [];
-  public resources: Resources;
-  fleets: Fleet[] = [];
-  items: Item[] = [];
+  public id: number;
+  public name: Name;
+  public color: Color;
+  public colorAlpha: number;
+  public secondaryColor: Color;
+  public flag: Flag;
+  public race: RaceTemplate;
+  public units: Unit[] = [];
+  public resources: Resources = new Proxy({}, resourcesProxyHandler);
+  public fleets: Fleet[] = [];
+  public items: Item[] = [];
 
   public isAi: boolean = false;
   public aiController: AiController<any>;
@@ -98,31 +98,30 @@ export class Player
   public isDead: boolean = false;
 
   public diplomacy: PlayerDiplomacy;
-
+  public playerTechnology: PlayerTechnology;
   public notificationLog: PlayerNotificationSubscriber;
+  public controlledLocations: Star[] = [];
 
-  controlledLocations: Star[] = [];
-
-  visionIsDirty: boolean = true;
-  visibleStars:
+  public visionIsDirty: boolean = true;
+  public visibleStars:
   {
     [id: number]: Star;
   } = {};
-  revealedStars:
+  public revealedStars:
   {
     [id: number]: Star;
   } = {};
-  detectedStars:
+  public detectedStars:
   {
     [id: number]: Star;
   } = {};
-  identifiedUnits:
+  private identifiedUnits:
   {
     [id: number]: Unit;
   } = {};
 
-  tempOverflowedResearchAmount: number = 0;
-  playerTechnology: PlayerTechnology;
+  // TODO 2019.09.30 | remove?
+  // private tempOverflowedResearchAmount: number = 0;
 
   private listeners:
   {
@@ -182,10 +181,9 @@ export class Player
     }
     else
     {
-      this.flag = this.makeRandomFlag();
+      this.flag = Flag.generateRandom(this.color, this.secondaryColor);
     }
 
-    // TODO 2019.09.26 | replace with object spread once getters are removed
     for (const key in props.resources)
     {
       this.resources[key] = props.resources[key];
@@ -210,6 +208,7 @@ export class Player
       this.name = this.race.getPlayerName(this);
     }
   }
+
   public static createDummyPlayer(): Player
   {
     return new Player(
@@ -247,6 +246,7 @@ export class Player
       resources: {money: 0},
     });
   }
+
   public destroy(): void
   {
     if (this.diplomacy)
@@ -266,43 +266,6 @@ export class Player
   {
     return this.controlledLocations.length === 0;
   }
-  private die(): void
-  {
-    this.isDead = true;
-
-    for (let i = this.fleets.length - 1; i >= 0; i--)
-    {
-      this.fleets[i].deleteFleet(false);
-    }
-
-    activeModuleData.scripts.player.onDeath.forEach(script =>
-    {
-      script(this);
-    });
-  }
-  initTechnologies(savedData?: PlayerTechnologySaveData): void
-  {
-    const race = this.race;
-    this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this),
-      race.technologies, savedData);
-
-    this.listeners["builtBuildingWithEffect_research"] = eventManager.addEventListener(
-      "builtBuildingWithEffect_research",
-      this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology),
-    );
-  }
-  makeRandomFlag(seed?: any): Flag
-  {
-    if (!this.color || !this.secondaryColor)
-    {
-      throw new Error("Player has no color specified");
-    }
-
-    const flag = new Flag(this.color);
-    flag.addRandomEmblem(this.secondaryColor, seed);
-
-    return flag;
-  }
   public makeRandomAiController(game: Game): AiController<any>
   {
     const race = this.race;
@@ -316,21 +279,17 @@ export class Player
 
     return new AiController(template);
   }
-  addUnit(unit: Unit): void
+  public addUnit(unit: Unit): void
   {
     this.units.push(unit);
     this.identifyUnit(unit);
   }
-  removeUnit(toRemove: Unit): void
+  public removeUnit(toRemove: Unit): void
   {
     const index = this.units.indexOf(toRemove);
     this.units.splice(index, 1);
   }
-  getFleetIndex(fleet: Fleet): number
-  {
-    return this.fleets.indexOf(fleet);
-  }
-  addFleet(fleet: Fleet): void
+  public addFleet(fleet: Fleet): void
   {
     if (this.getFleetIndex(fleet) >= 0)
     {
@@ -340,7 +299,7 @@ export class Player
     this.fleets.push(fleet);
     this.visionIsDirty = true;
   }
-  removeFleet(fleet: Fleet): void
+  public removeFleet(fleet: Fleet): void
   {
     const fleetIndex = this.getFleetIndex(fleet);
 
@@ -352,7 +311,7 @@ export class Player
     this.fleets.splice(fleetIndex, 1);
     this.visionIsDirty = true;
   }
-  getFleetsWithPositions(): {position: Point; data: Fleet}[]
+  public getFleetsWithPositions(): {position: Point; data: Fleet}[]
   {
     const positions:
     {
@@ -373,12 +332,11 @@ export class Player
 
     return positions;
   }
-
-  hasStar(star: Star): boolean
+  public hasStar(star: Star): boolean
   {
     return (this.controlledLocations.indexOf(star) >= 0);
   }
-  addStar(star: Star): void
+  public addStar(star: Star): void
   {
     if (this.hasStar(star))
     {
@@ -389,7 +347,7 @@ export class Player
     this.controlledLocations.push(star);
     this.visionIsDirty = true;
   }
-  removeStar(star: Star): void
+  public removeStar(star: Star): void
   {
     const index = this.controlledLocations.indexOf(star);
 
@@ -473,7 +431,6 @@ export class Player
       return total;
     }, {money: 0});
   }
-  // TODO refactor | should probably be moved
   public getNeighboringStars(): Star[]
   {
     const stars:
@@ -511,7 +468,6 @@ export class Player
 
     return allStars;
   }
-  // TODO refactor | should probably be moved
   public getNeighboringPlayers(): Player[]
   {
     const alreadyAddedPlayersById:
@@ -531,29 +487,7 @@ export class Player
       return alreadyAddedPlayersById[playerId];
     });
   }
-  updateVisionInStar(star: Star): void
-  {
-    // meet players
-    if (this.diplomacy && this.diplomacy.hasAnUnmetPlayer())
-    {
-      this.meetPlayersInStarByVisibility(star, "visible");
-    }
-  }
-  updateDetectionInStar(star: Star): void
-  {
-    // meet players
-    if (this.diplomacy && this.diplomacy.hasAnUnmetPlayer())
-    {
-      this.meetPlayersInStarByVisibility(star, "stealthy");
-    }
-    // identify units
-    const unitsToIdentify = star.getUnits();
-    for (let i = 0; i < unitsToIdentify.length; i++)
-    {
-      this.identifyUnit(unitsToIdentify[i]);
-    }
-  }
-  updateAllVisibilityInStar(star: Star): void
+  public updateAllVisibilityInStar(star: Star): void
   {
     if (this.starIsVisible(star))
     {
@@ -564,17 +498,7 @@ export class Player
       this.updateDetectionInStar(star);
     }
   }
-  meetPlayersInStarByVisibility(star: Star, visibility: string): void
-  {
-    const presentPlayersByVisibility = star.getPresentPlayersByVisibility();
-
-    for (const playerId in presentPlayersByVisibility[visibility])
-    {
-      const player = presentPlayersByVisibility[visibility][playerId];
-      this.diplomacy.meetPlayerIfNeeded(player);
-    }
-  }
-  updateVisibleStars(): void
+  public updateVisibleStars(): void
   {
     const previousVisibleStars = extendObject(this.visibleStars);
     const previousDetectedStars = extendObject(this.detectedStars);
@@ -661,24 +585,7 @@ export class Player
       eventManager.dispatchEvent("renderLayer", "fleets");
     }
   }
-  private getDebugVisibleStars(): Star[]
-  {
-    if (this.controlledLocations.length > 0)
-    {
-      return this.controlledLocations[0].getAllLinkedStars();
-    }
-    else if (Object.keys(this.revealedStars).length > 0)
-    {
-      const initialStar: Star = this.revealedStars[Object.keys(this.revealedStars)[0]];
-
-      return initialStar.getAllLinkedStars();
-    }
-    else
-    {
-      return [];
-    }
-  }
-  getVisibleStars(): Star[]
+  public getVisibleStars(): Star[]
   {
     if (!this.isAi && options.debug.enabled)
     {
@@ -699,7 +606,7 @@ export class Player
 
     return visible;
   }
-  getRevealedStars(): Star[]
+  public getRevealedStars(): Star[]
   {
     if (!this.isAi && options.debug.enabled)
     {
@@ -719,7 +626,7 @@ export class Player
 
     return toReturn;
   }
-  getRevealedButNotVisibleStars(): Star[]
+  public getRevealedButNotVisibleStars(): Star[]
   {
     if (this.visionIsDirty)
     {
@@ -738,7 +645,7 @@ export class Player
 
     return toReturn;
   }
-  getDetectedStars(): Star[]
+  public getDetectedStars(): Star[]
   {
     if (!this.isAi && options.debug.enabled)
     {
@@ -758,7 +665,7 @@ export class Player
 
     return toReturn;
   }
-  starIsVisible(star: Star): boolean
+  public starIsVisible(star: Star): boolean
   {
     if (!this.isAi && options.debug.enabled) { return true; }
     if (this.visionIsDirty)
@@ -768,7 +675,7 @@ export class Player
 
     return Boolean(this.visibleStars[star.id]);
   }
-  starIsRevealed(star: Star): boolean
+  public starIsRevealed(star: Star): boolean
   {
     if (!this.isAi && options.debug.enabled) { return true; }
     if (this.visionIsDirty)
@@ -778,7 +685,7 @@ export class Player
 
     return Boolean(this.revealedStars[star.id]);
   }
-  starIsDetected(star: Star): boolean
+  public starIsDetected(star: Star): boolean
   {
     if (!this.isAi && options.debug.enabled) { return true; }
     if (this.visionIsDirty)
@@ -788,7 +695,7 @@ export class Player
 
     return Boolean(this.detectedStars[star.id]);
   }
-  getLinksToUnRevealedStars(): ValuesByStar<Star[]>
+  public getLinksToUnRevealedStars(): ValuesByStar<Star[]>
   {
     if (this.visionIsDirty)
     {
@@ -820,14 +727,14 @@ export class Player
 
     return linksBySourceStar;
   }
-  identifyUnit(unit: Unit): void
+  public identifyUnit(unit: Unit): void
   {
     if (!this.identifiedUnits[unit.id])
     {
       this.identifiedUnits[unit.id] = unit;
     }
   }
-  unitIsIdentified(unit: Unit): boolean
+  public unitIsIdentified(unit: Unit): boolean
   {
     if (options.debug.enabled && !this.isAi)
     {
@@ -838,7 +745,7 @@ export class Player
       return Boolean(this.identifiedUnits[unit.id]);
     }
   }
-  fleetIsFullyIdentified(fleet: Fleet): boolean
+  public fleetIsFullyIdentified(fleet: Fleet): boolean
   {
     if (options.debug.enabled && !this.isAi)
     {
@@ -854,11 +761,11 @@ export class Player
 
     return true;
   }
-  addItem(item: Item): void
+  public addItem(item: Item): void
   {
     this.items.push(item);
   }
-  removeItem(item: Item): void
+  public removeItem(item: Item): void
   {
     const index = this.items.indexOf(item);
     if (index === -1)
@@ -868,7 +775,7 @@ export class Player
 
     this.items.splice(index, 1);
   }
-  getNearestOwnedStarTo(targetStar: Star): Star
+  public getNearestOwnedStarTo(targetStar: Star): Star
   {
     const isOwnedByThisFN = (star: Star) =>
     {
@@ -877,7 +784,7 @@ export class Player
 
     return targetStar.getNearestStarForQualifier(isOwnedByThisFN);
   }
-  attackTarget(location: Star, target: FleetAttackTarget, battleFinishCallback?: () => void): void
+  public attackTarget(location: Star, target: FleetAttackTarget, battleFinishCallback?: () => void): void
   {
     const battleData: BattleData =
     {
@@ -965,7 +872,7 @@ export class Player
 
     return allBuildings;
   }
-  getAllManufactories(): Manufactory[]
+  public getAllManufactories(): Manufactory[]
   {
     const manufactories: Manufactory[] = [];
 
@@ -983,7 +890,7 @@ export class Player
   {
     return this === location.owner;
   }
-  meetsTechRequirements(requirements: TechRequirement[]): boolean
+  public meetsTechRequirements(requirements: TechRequirement[]): boolean
   {
     if (!this.playerTechnology)
     {
@@ -1001,7 +908,7 @@ export class Player
 
     return true;
   }
-  serialize(): PlayerSaveData
+  public serialize(): PlayerSaveData
   {
     const revealedStarIds: number[] = [];
     for (const id in this.revealedStars)
@@ -1046,5 +953,84 @@ export class Player
     };
 
     return data;
+  }
+
+  private initTechnologies(savedData?: PlayerTechnologySaveData): void
+  {
+    const race = this.race;
+    this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this),
+      race.technologies, savedData);
+
+    this.listeners["builtBuildingWithEffect_research"] = eventManager.addEventListener(
+      "builtBuildingWithEffect_research",
+      this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology),
+    );
+  }
+  private die(): void
+  {
+    this.isDead = true;
+
+    for (let i = this.fleets.length - 1; i >= 0; i--)
+    {
+      this.fleets[i].deleteFleet(false);
+    }
+
+    activeModuleData.scripts.player.onDeath.forEach(script =>
+    {
+      script(this);
+    });
+  }
+  private getFleetIndex(fleet: Fleet): number
+  {
+    return this.fleets.indexOf(fleet);
+  }
+  private updateVisionInStar(star: Star): void
+  {
+    // meet players
+    if (this.diplomacy && this.diplomacy.hasAnUnmetPlayer())
+    {
+      this.meetPlayersInStarByVisibility(star, "visible");
+    }
+  }
+  private updateDetectionInStar(star: Star): void
+  {
+    // meet players
+    if (this.diplomacy && this.diplomacy.hasAnUnmetPlayer())
+    {
+      this.meetPlayersInStarByVisibility(star, "stealthy");
+    }
+    // identify units
+    const unitsToIdentify = star.getUnits();
+    for (let i = 0; i < unitsToIdentify.length; i++)
+    {
+      this.identifyUnit(unitsToIdentify[i]);
+    }
+  }
+  private getDebugVisibleStars(): Star[]
+  {
+    if (this.controlledLocations.length > 0)
+    {
+      return this.controlledLocations[0].getAllLinkedStars();
+    }
+    else if (Object.keys(this.revealedStars).length > 0)
+    {
+      const initialStar: Star = this.revealedStars[Object.keys(this.revealedStars)[0]];
+
+      return initialStar.getAllLinkedStars();
+    }
+    else
+    {
+      return [];
+    }
+  }
+  private meetPlayersInStarByVisibility(star: Star, visibility: string): void
+  {
+    const presentPlayersByVisibility = star.getPresentPlayersByVisibility();
+
+    for (const playerId in presentPlayersByVisibility[visibility])
+    {
+      const player = presentPlayersByVisibility[visibility][playerId];
+      this.diplomacy.meetPlayerIfNeeded(player);
+    }
   }
 }
