@@ -110,6 +110,7 @@ const defaultOptionsValues: OptionsValues =
       modules: true,
       init: true,
       ui: false,
+      game: true,
     },
   },
   display:

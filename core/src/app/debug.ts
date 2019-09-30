@@ -4,7 +4,7 @@ import {options} from "./Options";
 type LogFn = (message?: any, ...optionalParams: any[]) => void;
 type DebugLogFn = (category: LoggingCategory, message?: any, ...optionalParams: any[]) => void;
 
-export type LoggingCategory = "ai" | "graphics" | "saves" | "init" | "modules" | "ui";
+export type LoggingCategory = "ai" | "graphics" | "saves" | "init" | "modules" | "ui" | "game";
 
 export function shouldLog(category: LoggingCategory): boolean
 {

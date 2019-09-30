@@ -24,6 +24,7 @@ export const options =
   modulesLogging: "Modules",
   initLogging: "Init",
   uiLogging: "UI",
+  gameLogging: "Game",
   alwaysExpandTopRightMenuOnLowResolution: "Always expand top right menu on low resolution",
   messageSettings: "Message settings",
   resetTutorials: "Reset tutorials",

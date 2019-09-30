@@ -24,6 +24,7 @@ export type Options =
   modulesLogging: [];
   initLogging: [];
   uiLogging: [];
+  gameLogging: [];
   alwaysExpandTopRightMenuOnLowResolution: [];
   messageSettings: [];
   resetTutorials: [];
