@@ -152,8 +152,8 @@ export class Trade
     {
       case "money":
       {
-        this.player.resources.money -= amount;
-        targetPlayer.resources.money += amount;
+        this.player.removeResources({money: amount});
+        targetPlayer.addResources({money: amount});
       }
     }
   }

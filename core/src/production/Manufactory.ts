@@ -93,12 +93,12 @@ export class Manufactory
   public addThingToQueue(template: ManufacturableThing, kind: UnlockableThingKind): void
   {
     this.buildQueue.push({kind: kind, template: template});
-    this.owner.resources.money -= template.buildCost;
+    this.owner.removeResources({money: template.buildCost});
   }
   public removeThingAtIndex(index: number): void
   {
     const template = this.buildQueue[index].template;
-    this.owner.resources.money += template.buildCost;
+    this.owner.addResources({money: template.buildCost});
     this.buildQueue.splice(index, 1);
   }
   public clearBuildingQueue(): void
@@ -198,7 +198,7 @@ export class Manufactory
   public upgradeCapacity(amount: number): void
   {
     // TODO 2017.02.24 | don't think money should get substracted here
-    this.owner.resources.money -= this.getCapacityUpgradeCost();
+    this.owner.removeResources({money: this.getCapacityUpgradeCost()});
     this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
   }
   public getUnitModifierUpgradeCost(): number
@@ -209,12 +209,12 @@ export class Manufactory
   }
   public upgradeUnitStatsModifier(amount: number): void
   {
-    this.owner.resources.money -= this.getUnitModifierUpgradeCost();
+    this.owner.removeResources({money: this.getUnitModifierUpgradeCost()});
     this.unitStatsModifier += amount;
   }
   public upgradeUnitHealthModifier(amount: number): void
   {
-    this.owner.resources.money -= this.getUnitModifierUpgradeCost();
+    this.owner.removeResources({money: this.getUnitModifierUpgradeCost()});
     this.unitHealthModifier += amount;
   }
   public serialize(): ManufactorySaveData

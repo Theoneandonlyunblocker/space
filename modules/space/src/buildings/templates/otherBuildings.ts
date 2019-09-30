@@ -150,7 +150,7 @@ export const thePyramids: BuildingTemplate =
 
   onBuild: (star, player) =>
   {
-    player.resources.money += 1000;
+    player.addResources({[moneyResource.type]: 1000});
   },
 
   buildCost:
@@ -177,7 +177,7 @@ export const nationalEpic: BuildingTemplate =
 
   onBuild: (star, player) =>
   {
-    player.resources.money += 999;
+    player.addResources({[moneyResource.type]: 999});
   },
 
   buildCost:
