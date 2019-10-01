@@ -2,7 +2,6 @@ import
 {
   Trade,
   TradeableItem,
-  TradeableItemType,
 } from "core/src/trade/Trade";
 
 
@@ -10,26 +9,15 @@ export function evaluateValueOfTrade(trade: Trade): number
 {
   let value = 0;
 
-  for (const key in trade.stagedItems)
+  for (const resourceType in trade.stagedItems.resources)
   {
-    const item = trade.stagedItems[key];
-
-    value += evaluateTradeableItemValue(item);
+    value += evaluateResourceValue(trade.stagedItems.resources[resourceType]);
   }
 
   return value;
 }
-export function evaluateTradeableItemValue(item: TradeableItem): number
+function evaluateResourceValue(item: TradeableItem): number
 {
-  switch (item.type)
-    {
-      case TradeableItemType.Money:
-      {
-        return item.amount;
-      }
-      default:
-      {
-        throw new Error(`Unrecognized trade item ${item}.`);
-      }
-    }
+  // TODO 2019.10.01 | implement
+  return item.amount;
 }

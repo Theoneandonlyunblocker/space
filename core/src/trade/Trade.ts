@@ -1,9 +1,9 @@
 import {Player} from "../player/Player";
+import { Resources } from "../player/PlayerResources";
 
 
 export enum TradeableItemType
 {
-  Money,
   Resource,
 }
 
@@ -15,13 +15,19 @@ export interface TradeableItem
 }
 export interface TradeableItems
 {
-  [key: string]: TradeableItem;
+  resources:
+  {
+    [key: string]: TradeableItem;
+  };
 }
 
 export class Trade
 {
   public allItems: TradeableItems;
-  public stagedItems: TradeableItems = {};
+  public readonly stagedItems: TradeableItems =
+  {
+    resources: {},
+  };
 
   private player: Player;
 
@@ -31,93 +37,84 @@ export class Trade
     this.setAllTradeableItems();
   }
 
-  private static tradeableItemsAreEqual(t1: TradeableItems, t2: TradeableItems): boolean
-  {
-    if (Object.keys(t1).length !== Object.keys(t2).length)
-    {
-      return false;
-    }
-
-    for (const key in t1)
-    {
-      if (!t2[key] || t1[key].amount !== t2[key].amount)
-      {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
   public executeTrade(otherTrade: Trade): void
   {
-    this.executeAllStagedTrades(otherTrade.player);
-    otherTrade.executeAllStagedTrades(this.player);
+    this.tradeAllStagedItems(otherTrade.player);
+    otherTrade.tradeAllStagedItems(this.player);
 
     this.updateAfterExecutedTrade();
     otherTrade.updateAfterExecutedTrade();
   }
-  public stageItem(key: string, amount: number)
+  public stageItem(category: keyof TradeableItems, key: string, amount: number): void
   {
-    if (!this.stagedItems[key])
+    if (!this.stagedItems[category][key])
     {
-      this.stagedItems[key] =
+      this.stagedItems[category][key] =
       {
         key: key,
-        type: this.allItems[key].type,
+        type: this.allItems[category][key].type,
         amount: amount,
       };
     }
     else
     {
-      this.stagedItems[key].amount += amount;
-      if (this.stagedItems[key].amount <= 0)
+      this.stagedItems[category][key].amount += amount;
+      if (this.stagedItems[category][key].amount <= 0)
       {
-        this.removeStagedItem(key);
+        this.removeStagedItem(category, key);
       }
     }
   }
-  public setStagedItemAmount(key: string, newAmount: number)
+  public setStagedItemAmount(category: keyof TradeableItems, key: string, newAmount: number): void
   {
     if (newAmount <= 0)
     {
-      this.removeStagedItem(key);
+      this.removeStagedItem(category, key);
     }
     else
     {
-      const clamped = Math.min(this.allItems[key].amount, newAmount);
-      this.stagedItems[key].amount = clamped;
+      const clamped = Math.min(this.allItems[category][key].amount, newAmount);
+      this.stagedItems[category][key].amount = clamped;
     }
   }
-  public getItemsAvailableForTrade()
+  public getItemsAvailableForTrade(): TradeableItems
   {
-    const available: TradeableItems = {};
-
-    for (const key in this.allItems)
+    const available: TradeableItems =
     {
-      const stagedAmount = this.stagedItems[key] ? this.stagedItems[key].amount : 0;
-      available[key] =
+      resources: {},
+    };
+
+    for (const category in this.allItems)
+    {
+      for (const key in this.allItems[category])
       {
-        key: key,
-        type: this.allItems[key].type,
-        amount: this.allItems[key].amount - stagedAmount,
-      };
+        const stagedAmount = this.stagedItems[category][key] ? this.stagedItems[category][key].amount : 0;
+        available[category][key] =
+        {
+          key: key,
+          type: this.allItems[category][key].type,
+          amount: this.allItems[category][key].amount - stagedAmount,
+        };
+      }
     }
 
     return available;
   }
-  public removeStagedItem(key: string)
+  public removeStagedItem(category: keyof TradeableItems, key: string)
   {
-    delete this.stagedItems[key];
+    delete this.stagedItems[category][key];
   }
-  public removeAllStagedItems()
+  public removeAllStagedItems(): void
   {
-    for (const key in this.stagedItems)
+    for (const category in this.stagedItems)
     {
-      this.removeStagedItem(key);
+      for (const key in this.stagedItems[category])
+      {
+        this.removeStagedItem(<keyof TradeableItems>category, key);
+      }
     }
   }
-  public clone()
+  public clone(): Trade
   {
     const cloned = new Trade(this.player);
 
@@ -131,54 +128,79 @@ export class Trade
   }
   public isEmpty(): boolean
   {
-    return Object.keys(this.stagedItems).length === 0;
+    return Object.keys(this.stagedItems).every(category =>
+    {
+      return Object.keys(this.stagedItems[category]).length === 0
+    })
   }
 
-  private setAllTradeableItems()
+  private setAllTradeableItems(): void
   {
     this.allItems =
     {
-      money:
+      resources: Object.keys(this.player.resources).reduce((allResourceTradeables, resourceType) =>
       {
-        key: "money",
-        type: TradeableItemType.Money,
-        amount: this.player.resources.money,
-      },
+        allResourceTradeables[resourceType] =
+        {
+          key: resourceType,
+          type: TradeableItemType.Resource,
+          amount: this.player.resources[resourceType],
+        };
+
+        return allResourceTradeables;
+      }, <{[key: string]: TradeableItem}>{}),
     };
   }
-  private handleTradeOfItem(key: string, amount: number, targetPlayer: Player)
+  private tradeAllStagedItems(targetPlayer: Player)
   {
-    switch (key)
-    {
-      case "money":
-      {
-        this.player.removeResources({money: amount});
-        targetPlayer.addResources({money: amount});
-      }
-    }
+    this.tradeStagedResources(targetPlayer);
   }
-  private executeAllStagedTrades(targetPlayer: Player)
+  private tradeStagedResources(targetPlayer: Player): void
   {
-    for (const key in this.stagedItems)
+    if (Object.keys(this.stagedItems.resources).length === 0)
     {
-      this.handleTradeOfItem(key, this.stagedItems[key].amount, targetPlayer);
+      return;
     }
+
+    const resourcesToTrade = Object.keys(this.stagedItems.resources).reduce((merged, resourceType) =>
+    {
+      merged[resourceType] = this.stagedItems.resources[resourceType].amount;
+
+      return merged;
+    }, <Resources>{});
+
+    this.player.removeResources(resourcesToTrade);
+    targetPlayer.addResources(resourcesToTrade);
   }
-  private updateAfterExecutedTrade()
+  private updateAfterExecutedTrade(): void
   {
     this.setAllTradeableItems();
     this.removeAllStagedItems();
   }
   private copyStagedItemsFrom(toCopyFrom: Trade): void
   {
-    for (const key in toCopyFrom.stagedItems)
+    for (const category in toCopyFrom.stagedItems)
     {
-      this.stagedItems[key] =
+      for (const key in toCopyFrom.stagedItems[category])
       {
-        key: key,
-        type: toCopyFrom.stagedItems[key].type,
-        amount: toCopyFrom.stagedItems[key].amount,
-      };
+        this.stagedItems[category][key] = {...toCopyFrom.stagedItems[category][key]};
+      }
     }
+  }
+
+  private static tradeableItemsAreEqual(t1: TradeableItems, t2: TradeableItems): boolean
+  {
+    return Object.keys(t1).every(category =>
+    {
+      if (Object.keys(t1[category]).length !== Object.keys(t1[category]).length)
+      {
+        return false;
+      }
+
+      return Object.keys(t1[category]).every(itemKey =>
+      {
+        return t2[category][itemKey] && t1[category][itemKey].amount === t1[category][itemKey].amount;
+      });
+    });
   }
 }

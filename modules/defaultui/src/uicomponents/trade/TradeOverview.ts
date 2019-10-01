@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {Player} from "core/src/player/Player";
-import {Trade} from "core/src/trade/Trade";
+import {Trade, TradeableItems as TradeableItemsType} from "core/src/trade/Trade";
 import
 {
   cloneTradeOffer,
@@ -24,6 +24,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
+  currentDragItemCategory: keyof TradeableItemsType | null;
   currentDragItemKey: string | null;
   currentDragItemPlayer: "self" | "other" | null;
   currentDragItemWasStaged: boolean | null;
@@ -59,6 +60,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
 
     this.state =
     {
+      currentDragItemCategory: null,
       currentDragItemKey: null,
       currentDragItemPlayer: null,
       currentDragItemWasStaged: null,
@@ -68,29 +70,6 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     };
 
     this.bindMethods();
-  }
-
-  private static makeInitialHumanTradeOffer(selfPlayer: Player, otherPlayer: Player): TradeOffer
-  {
-    const ownTrade = new Trade(selfPlayer);
-
-    // TODO 2017.04.25 | smarter way to do this for human player
-    const willingnessToTradeItems: {[key: string]: number} = {};
-    for (const key in ownTrade.allItems)
-    {
-      willingnessToTradeItems[key] = 1;
-    }
-
-    return(
-    {
-      ownTrade: ownTrade,
-      otherTrade: new Trade(otherPlayer),
-      willingnessToTradeItems: willingnessToTradeItems,
-      isInitialOffer: true,
-      message: "",
-      willingToAccept: false,
-      willingToKeepNegotiating: true,
-    });
   }
 
   public render()
@@ -117,20 +96,22 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             header: this.props.selfPlayer.name.baseName,
             tradeableItems: selfAvailableItems,
             isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
-            onDragStart: this.handleAvailableDragStart.bind(this, "self"),
+            onDragStart: (category, key) => this.handleAvailableDragStart("self", category, key),
             onDragEnd: this.handleDragEnd,
             onMouseUp: this.handleAvailableMouseUp,
-            onItemClick: this.handleStageItem.bind(this, "self"),
+            onItemClick: (category, key) => this.handleStageItem("self", category, key),
+            shouldGroupCategories: true,
           }),
           TradeableItems(
           {
             header: this.props.otherPlayer.name.baseName,
             tradeableItems: otherAvailableItems,
             isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
-            onDragStart: this.handleAvailableDragStart.bind(this, "other"),
+            onDragStart: (category, key) => this.handleAvailableDragStart("other", category, key),
             onDragEnd: this.handleDragEnd,
             onMouseUp: this.handleAvailableMouseUp,
-            onItemClick: this.handleStageItem.bind(this, "other"),
+            onItemClick: (category, key) => this.handleStageItem("other", category, key),
+            shouldGroupCategories: true,
           }),
         ),
         ReactDOMElements.div(
@@ -142,22 +123,24 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
             tradeableItems: this.state.activeOffer.ownTrade.stagedItems,
             availableItems: this.state.activeOffer.ownTrade.allItems,
             isInvalidDropTarget: hasDragItem && !selfPlayerAcceptsDrop,
-            onDragStart: this.handleStagingDragStart.bind(this, "self"),
+            onDragStart: (category, key) => this.handleStagingDragStart("self", category, key),
             onDragEnd: this.handleDragEnd,
             onMouseUp: this.handleStagingAreaMouseUp,
-            onItemClick: this.handleRemoveStagedItem.bind(this, "self"),
-            adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "self"),
+            onItemClick: (category, key) => this.handleRemoveStagedItem("self", category, key),
+            adjustItemAmount: (category, key, amount) => this.handleAdjustStagedItemAmount("self", category, key, amount),
+            shouldGroupCategories: false,
           }),
           TradeableItems(
           {
             tradeableItems: this.state.activeOffer.otherTrade.stagedItems,
             availableItems: this.state.activeOffer.otherTrade.allItems,
             isInvalidDropTarget: hasDragItem && !otherPlayerAcceptsDrop,
-            onDragStart: this.handleStagingDragStart.bind(this, "other"),
+            onDragStart: (category, key) => this.handleStagingDragStart("other", category, key),
             onDragEnd: this.handleDragEnd,
             onMouseUp: this.handleStagingAreaMouseUp,
-            onItemClick: this.handleRemoveStagedItem.bind(this, "other"),
-            adjustItemAmount: this.handleAdjustStagedItemAmount.bind(this, "other"),
+            onItemClick: (category, key) => this.handleRemoveStagedItem("other", category, key),
+            adjustItemAmount: (category, key, amount) => this.handleAdjustStagedItemAmount("other", category, key, amount),
+            shouldGroupCategories: false,
           }),
         ),
         ReactDOMElements.div(
@@ -253,51 +236,53 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
       throw new Error(`Invalid player key '${player}'`);
     }
   }
-  private handleStageItem(player: "self" | "other", key: string)
+  private handleStageItem(player: "self" | "other", category: keyof TradeableItemsType, key: string)
   {
     const activeTrade = this.getActiveTradeObjectForPlayer(player);
 
     const availableItems = activeTrade.getItemsAvailableForTrade();
-    const availableAmount = availableItems[key].amount;
+    const availableAmount = availableItems[category][key].amount;
 
     if (availableAmount === 1)
     {
-      activeTrade.stageItem(key, 1);
+      activeTrade.stageItem(category, key, 1);
     }
     else
     {
-      activeTrade.stageItem(key, availableAmount);
+      activeTrade.stageItem(category, key, availableAmount);
     }
 
     this.onTradeChange();
   }
-  private handleAdjustStagedItemAmount(player: "self" | "other", key: string, newAmount: number)
+  private handleAdjustStagedItemAmount(player: "self" | "other", category: keyof TradeableItemsType, key: string, newAmount: number)
   {
     const activeTrade = this.getActiveTradeObjectForPlayer(player);
-    activeTrade.setStagedItemAmount(key, newAmount);
+    activeTrade.setStagedItemAmount(category, key, newAmount);
 
     this.onTradeChange();
   }
-  private handleRemoveStagedItem(player: "self" | "other", key: string)
+  private handleRemoveStagedItem(player: "self" | "other", category: keyof TradeableItemsType, key: string)
   {
     const activeTrade = this.getActiveTradeObjectForPlayer(player);
-    activeTrade.removeStagedItem(key);
+    activeTrade.removeStagedItem(category, key);
 
     this.onTradeChange();
   }
-  private handleAvailableDragStart(player: "self" | "other", key: string)
+  private handleAvailableDragStart(player: "self" | "other", category: keyof TradeableItemsType, key: string)
   {
     this.setState(
     {
+      currentDragItemCategory: category,
       currentDragItemKey: key,
       currentDragItemPlayer: player,
       currentDragItemWasStaged: false,
     });
   }
-  private handleStagingDragStart(player: "self" | "other", key: string)
+  private handleStagingDragStart(player: "self" | "other", category: keyof TradeableItemsType, key: string)
   {
     this.setState(
     {
+      currentDragItemCategory: category,
       currentDragItemKey: key,
       currentDragItemPlayer: player,
       currentDragItemWasStaged: true,
@@ -307,6 +292,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     this.setState(
     {
+      currentDragItemCategory: null,
       currentDragItemKey: null,
       currentDragItemPlayer: null,
       currentDragItemWasStaged: null,
@@ -316,16 +302,16 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     if (this.state.currentDragItemKey && this.state.currentDragItemWasStaged)
     {
+      this.handleRemoveStagedItem(this.state.currentDragItemPlayer!, this.state.currentDragItemCategory, this.state.currentDragItemKey);
       this.handleDragEnd();
-      this.handleRemoveStagedItem(this.state.currentDragItemPlayer!, this.state.currentDragItemKey);
     }
   }
   private handleStagingAreaMouseUp()
   {
     if (this.state.currentDragItemKey && !this.state.currentDragItemWasStaged)
     {
+      this.handleStageItem(this.state.currentDragItemPlayer!, this.state.currentDragItemCategory, this.state.currentDragItemKey);
       this.handleDragEnd();
-      this.handleStageItem(this.state.currentDragItemPlayer!, this.state.currentDragItemKey);
     }
   }
   private onTradeChange(): void
@@ -382,6 +368,29 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
   {
     this.resetSelfTrade();
     this.resetOtherTrade();
+  }
+
+  private static makeInitialHumanTradeOffer(selfPlayer: Player, otherPlayer: Player): TradeOffer
+  {
+    const ownTrade = new Trade(selfPlayer);
+
+    // TODO 2017.04.25 | smarter way to do this for human player
+    const willingnessToTradeItems: {[key: string]: number} = {};
+    for (const key in ownTrade.allItems)
+    {
+      willingnessToTradeItems[key] = 1;
+    }
+
+    return(
+    {
+      ownTrade: ownTrade,
+      otherTrade: new Trade(otherPlayer),
+      willingnessToTradeItems: willingnessToTradeItems,
+      isInitialOffer: true,
+      message: "",
+      willingToAccept: false,
+      willingToKeepNegotiating: true,
+    });
   }
 }
 

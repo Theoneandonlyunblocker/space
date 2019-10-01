@@ -3,7 +3,9 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {TradeableItems as TradeableItemsObj} from "core/src/trade/Trade";
 
-import {TradeableItemsList} from "./TradeableItemsList";
+import { Collapsible } from "../generic/Collapsible";
+import { ResourceList } from "../resources/ResourceList";
+import { TradeResource } from "./TradeResource";
 
 
 export interface PropTypes extends React.Props<any>
@@ -13,11 +15,12 @@ export interface PropTypes extends React.Props<any>
   availableItems?: TradeableItemsObj;
   header?: string;
   onMouseUp: () => void;
-  onDragStart: (tradeableItemKey: string) => void;
+  onDragStart: (tradeableItemCategory: keyof TradeableItemsObj, tradeableItemKey: string) => void;
   onDragEnd: () => void;
   isInvalidDropTarget: boolean;
-  onItemClick: (tradeableItemKey: string) => void;
-  adjustItemAmount?: (tradeableItemKey: string, newAmount: number) => void;
+  onItemClick: (tradeableItemCategory: keyof TradeableItemsObj, tradeableItemKey: string) => void;
+  adjustItemAmount?: (tradeableItemCategory: keyof TradeableItemsObj, tradeableItemKey: string, newAmount: number) => void;
+  shouldGroupCategories: boolean;
 }
 
 interface StateType
@@ -33,19 +36,10 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
   {
     super(props);
 
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
     this.handleMouseUp = this.handleMouseUp.bind(this);
   }
 
-  handleMouseUp()
-  {
-    this.props.onMouseUp();
-  }
-
-  render()
+  public render()
   {
     const divProps: React.HTMLAttributes<HTMLDivElement> =
     {
@@ -69,17 +63,45 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
         },
           this.props.header,
         ),
-        TradeableItemsList(
-        {
-          tradeableItems: this.props.tradeableItems,
-          availableItems: this.props.availableItems,
-          onDragStart: this.props.onDragStart,
-          onDragEnd: this.props.onDragEnd,
-          onItemClick: this.props.onItemClick,
-          adjustItemAmount: this.props.adjustItemAmount,
-        }),
+        this.renderTradeableItemsGroup("Resources",
+          ResourceList(
+          {
+            resourceTypes: Object.keys(this.props.tradeableItems.resources),
+            renderResource: resource => TradeResource(
+            {
+              key: resource.type,
+              resource: resource,
+              amount: this.props.tradeableItems.resources[resource.type].amount,
+              maxAvailable: this.props.availableItems ?
+                this.props.availableItems.resources[resource.type].amount :
+                undefined,
+              onClick: () => this.props.onItemClick("resources", resource.type),
+              onDragStart: () => this.props.onDragStart("resources", resource.type),
+              onDragEnd: () => this.props.onDragEnd(),
+              adjustAmount: this.props.adjustItemAmount ?
+                amount => this.props.adjustItemAmount("resources", resource.type, amount) :
+                undefined,
+            }),
+          }),
+        )
       )
     );
+  }
+
+  private renderTradeableItemsGroup(title: string, group: React.ReactElement<any>): React.ReactElement<any>
+  {
+    if (this.props.shouldGroupCategories)
+    {
+      return Collapsible({title: title}, group);
+    }
+    else
+    {
+      return group;
+    }
+  }
+  private handleMouseUp()
+  {
+    this.props.onMouseUp();
   }
 }
 
