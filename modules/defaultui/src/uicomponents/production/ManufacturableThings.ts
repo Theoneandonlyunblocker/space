@@ -18,7 +18,6 @@ export interface PropTypes extends React.Props<any>
   selectedStar: Star | null;
   player: Player;
   triggerUpdate: () => void;
-  money: number;
 }
 
 interface StateType
@@ -143,7 +142,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
       consolidateLocations: false,
       triggerUpdate: this.props.triggerUpdate,
       canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
-      money: this.props.money,
+      player: this.props.player,
     };
     switch (key)
     {

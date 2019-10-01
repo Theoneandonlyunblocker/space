@@ -4,6 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {ManufacturableThing} from "core/src/templateinterfaces/ManufacturableThing";
 
 import {ManufacturableThingsListItem} from "./ManufacturableThingsListItem";
+import { Player } from "core/src/player/Player";
 
 
 export interface PropTypes extends React.Props<any>
@@ -11,7 +12,7 @@ export interface PropTypes extends React.Props<any>
   manufacturableThings: ManufacturableThing[];
   onClick?: (toManufacture: ManufacturableThing, parentIndex?: number) => void;
   showCost: boolean;
-  money: number;
+  player: Player | null;
 }
 
 interface StateType
@@ -54,8 +55,8 @@ export class ManufacturableThingsListComponent extends React.PureComponent<PropT
         template: manufacturableThings[i],
         parentIndex: i,
         onClick: this.props.onClick,
-        money: this.props.money,
         showCost: this.props.showCost,
+        player: this.props.player,
       });
     });
 

@@ -9,6 +9,7 @@ import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
 import {ManufactoryUpgradeButton} from "./ManufactoryUpgradeButton";
 import {ManufacturableThingsList} from "./ManufacturableThingsList";
+import { Player } from "core/src/player/Player";
 
 
 export interface PropTypes extends React.Props<any>
@@ -18,7 +19,7 @@ export interface PropTypes extends React.Props<any>
   manufacturableThings: ManufacturableThing[];
   triggerUpdate: () => void;
   canBuild: boolean;
-  money: number;
+  player: Player;
 }
 
 interface StateType
@@ -45,10 +46,6 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
 
     }
     if (this.props.canBuild !== newProps.canBuild)
-    {
-      return true;
-    }
-    if (this.props.money !== newProps.money)
     {
       return true;
     }
@@ -108,7 +105,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
       },
         ManufactoryUpgradeButton(
         {
-          money: this.props.money,
+          money: this.props.player.resources.money,
           upgradeCost: unitUpgradeCost,
           actionString: localize("upgradeHealth").toString(),
           currentLevel: manufactory.unitHealthModifier,
@@ -119,7 +116,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
         }),
         ManufactoryUpgradeButton(
         {
-          money: this.props.money,
+          money: this.props.player.resources.money,
           upgradeCost: unitUpgradeCost,
           actionString: localize("upgradeStats").toString(),
           currentLevel: manufactory.unitStatsModifier,
@@ -140,10 +137,9 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
         ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,
-          // @ts-ignore 2322
-          onClick: (this.props.canBuild ? this.addUnitToBuildQueue : null),
+          onClick: (this.props.canBuild ? <any>this.addUnitToBuildQueue : null),
           showCost: true,
-          money: this.props.money,
+          player: this.props.player,
         }),
       )
     );

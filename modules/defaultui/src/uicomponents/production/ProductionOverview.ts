@@ -4,8 +4,6 @@ import * as ReactDOMElements from "react-dom-factories";
 import {Player} from "core/src/player/Player";
 import {Star} from "core/src/map/Star";
 import {eventManager} from "core/src/app/eventManager";
-import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";
-import {applyMixins} from "../mixins/applyMixins";
 
 import {BuildQueue} from "./BuildQueue";
 import {ConstructManufactory} from "./ConstructManufactory";
@@ -43,8 +41,6 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
     this.getStarsWithAndWithoutManufactories = this.getStarsWithAndWithoutManufactories.bind(this);
     this.triggerUpdate = this.triggerUpdate.bind(this);
-
-    applyMixins(this, new UpdateWhenMoneyChanges(this));
   }
 
   public static getDerivedStateFromProps(props: PropTypes): Partial<StateType>
@@ -85,7 +81,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
         {
           manufactory: selectedStar.manufactory,
           triggerUpdate: this.triggerUpdate,
-          money: this.state.money,
+          player: this.props.player,
         });
       }
       else
@@ -121,7 +117,6 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
           {
             selectedStar: selectedStar,
             player: player,
-            money: this.state.money,
             triggerUpdate: this.triggerUpdate,
           }) : null,
         ),

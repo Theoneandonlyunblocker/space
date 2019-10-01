@@ -9,6 +9,7 @@ import {ManufacturableThing} from "core/src/templateinterfaces/ManufacturableThi
 
 import {ManufactoryUpgradeButton} from "./ManufactoryUpgradeButton";
 import {ManufacturableThingsList} from "./ManufacturableThingsList";
+import { Player } from "core/src/player/Player";
 
 
 export interface PropTypes extends React.Props<any>
@@ -18,7 +19,7 @@ export interface PropTypes extends React.Props<any>
   manufacturableThings: ManufacturableThing[];
   triggerUpdate: () => void;
   canBuild: boolean;
-  money: number;
+  player: Player;
 }
 
 interface StateType
@@ -45,10 +46,6 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
 
     }
     if (this.props.canBuild !== newProps.canBuild)
-    {
-      return true;
-    }
-    if (this.props.money !== newProps.money)
     {
       return true;
     }
@@ -95,7 +92,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
         },
           ManufactoryUpgradeButton(
           {
-            money: this.props.money,
+            money: this.props.player.resources.money,
             upgradeCost: 0,
             actionString: localize("upgradeItems").toString(),
             currentLevel: 0,
@@ -107,10 +104,9 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
         ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,
-          // @ts-ignore 2322
-          onClick: (this.props.canBuild ? this.addItemToBuildQueue : undefined),
+          onClick: (this.props.canBuild ? <any>this.addItemToBuildQueue : undefined),
           showCost: true,
-          money: this.props.money,
+          player: this.props.player,
         }),
       )
     );

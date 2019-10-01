@@ -4,7 +4,11 @@ import { useEffect, useState, useRef } from "react";
 
 
 let updaterIdGenerator: number = 0;
-const updaters:
+export function getUpdaterId(): number
+{
+  return updaterIdGenerator++;
+}
+export const updaters:
 {
   [playerId: number]:
   {
@@ -22,7 +26,7 @@ export function useResources(player: Player): Resources
 
   useEffect(function addUseResourcesListener()
   {
-    updaterId.current = updaterIdGenerator++;
+    updaterId.current = getUpdaterId();
 
     if (!updaters[player.id])
     {

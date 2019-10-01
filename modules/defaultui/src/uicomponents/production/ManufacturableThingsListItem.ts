@@ -2,6 +2,11 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {ManufacturableThing} from "core/src/templateinterfaces/ManufacturableThing";
+import { ResourceCost } from "../resources/ResourceCost";
+import { Player } from "core/src/player/Player";
+import {UpdateWhenResourcesChange} from "../mixins/UpdateWhenResourcesChange";
+import {applyMixins} from "../mixins/applyMixins";
+import { Resources } from "core/src/player/PlayerResources";
 
 
 export interface PropTypes extends React.Props<any>
@@ -10,11 +15,13 @@ export interface PropTypes extends React.Props<any>
   parentIndex: number;
   onClick?: (template: ManufacturableThing, parentIndex?: number) => void;
   showCost: boolean;
-  money: number;
+  player: Player | null;
 }
 
 interface StateType
 {
+  canClick: boolean;
+  missingResources: Resources | undefined;
 }
 
 export class ManufacturableThingsListItemComponent extends React.Component<PropTypes, StateType>
@@ -28,9 +35,24 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
   {
     super(props);
 
-    this.state = {};
+    const cost = {money: this.props.template.buildCost};
+    const canAfford = this.props.player && this.props.player.canAfford(cost);
+    this.state =
+    {
+      canClick: this.props.onClick && (!this.props.showCost || canAfford),
+      missingResources: this.props.player ? this.props.player.getMissingResourcesFor(cost) : undefined,
+    };
 
     this.bindMethods();
+
+    applyMixins(this, new UpdateWhenResourcesChange(props.player, () =>
+    {
+      this.setState(
+      {
+        canClick: this.props.onClick && (!this.props.showCost || canAfford),
+        missingResources: this.props.player ? this.props.player.getMissingResourcesFor(cost) : undefined,
+      });
+    }));
   }
   private bindMethods()
   {
@@ -48,8 +70,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
 
   render()
   {
-    const canAfford = this.props.money >= this.props.template.buildCost;
-    const isDisabled = !Boolean(this.props.onClick) || (this.props.showCost && !canAfford);
+    const isDisabled = !this.state.canClick;
 
     return(
       ReactDOMElements.li(
@@ -64,13 +85,11 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
         },
           this.props.template.displayName,
         ),
-        !this.props.showCost ? null : ReactDOMElements.div(
+        !this.props.showCost ? null : ResourceCost(
         {
-          className: "manufacturable-things-list-item-cost money-style" +
-            (canAfford ? "" : " negative"),
-        },
-          this.props.template.buildCost,
-        ),
+          cost: {money: this.props.template.buildCost},
+          missingResources: this.state.missingResources,
+        }),
       )
     );
   }

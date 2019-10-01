@@ -7,13 +7,14 @@ import {ManufacturableThing} from "core/src/templateinterfaces/ManufacturableThi
 
 import {ManufactoryUpgradeButton} from "./ManufactoryUpgradeButton";
 import {ManufacturableThingsList} from "./ManufacturableThingsList";
+import { Player } from "core/src/player/Player";
 
 
 export interface PropTypes extends React.Props<any>
 {
   manufactory: Manufactory;
   triggerUpdate: () => void;
-  money: number;
+  player: Player;
 }
 
 interface StateType
@@ -67,7 +68,7 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
         },
           ManufactoryUpgradeButton(
           {
-            money: this.props.money,
+            money: this.props.player.resources.money,
             upgradeCost: manufactory.getCapacityUpgradeCost(),
             onClick: this.upgradeCapacity,
             actionString: localize("upgradeManufactoryCapacity").toString(),
@@ -82,7 +83,7 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
           manufacturableThings: convertedBuildQueue,
           onClick: this.removeItem,
           showCost: false,
-          money: this.props.money,
+          player: this.props.player,
         }),
       )
     );

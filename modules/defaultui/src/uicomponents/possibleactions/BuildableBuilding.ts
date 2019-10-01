@@ -5,7 +5,7 @@ import {Player} from "core/src/player/Player";
 import {BuildingTemplate} from "core/src/templateinterfaces/BuildingTemplate";
 import {ListItemProps} from "../list/ListItemProps";
 
-import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";
+import {UpdateWhenResourcesChange} from "../mixins/UpdateWhenResourcesChange";
 import {applyMixins} from "../mixins/applyMixins";
 import { Resources } from "core/src/player/PlayerResources";
 import { ResourceCost } from "../resources/ResourceCost";
@@ -37,11 +37,11 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     this.state = this.getInitialStateTODO();
 
     this.bindMethods();
-    applyMixins(this, new UpdateWhenMoneyChanges(this, this.overrideHandleMoneyChange));
+    applyMixins(this, new UpdateWhenResourcesChange(props.player, this.onResourcesChange));
   }
   private bindMethods()
   {
-    this.overrideHandleMoneyChange = this.overrideHandleMoneyChange.bind(this);
+    this.onResourcesChange = this.onResourcesChange.bind(this);
     this.makeCell = this.makeCell.bind(this);
   }
 
@@ -53,7 +53,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     });
   }
 
-  overrideHandleMoneyChange()
+  private onResourcesChange(): void
   {
     this.setState(
     {

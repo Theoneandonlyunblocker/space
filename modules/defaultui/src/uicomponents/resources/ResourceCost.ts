@@ -15,7 +15,6 @@ export interface PropTypes extends React.Props<any>
 
 const ResourceCostComponent: React.FunctionComponent<PropTypes> = props =>
 {
-
   return(
     ReactDOMElements.div(
     {

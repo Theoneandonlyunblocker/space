@@ -4,8 +4,10 @@ import * as ReactDOMElements from "react-dom-factories";
 import {BuildingUpgradeData} from "core/src/building/BuildingUpgradeData";
 import {Player} from "core/src/player/Player";
 
-import {UpdateWhenMoneyChanges} from "../mixins/UpdateWhenMoneyChanges";
+import {UpdateWhenResourcesChange} from "../mixins/UpdateWhenResourcesChange";
 import {applyMixins} from "../mixins/applyMixins";
+import { ResourceCost } from "../resources/ResourceCost";
+import { Resources } from "core/src/player/PlayerResources";
 
 
 export interface PropTypes extends React.Props<any>
@@ -18,6 +20,7 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   canAfford: boolean;
+  missingResources: Resources;
 }
 
 export class BuildingUpgradeListItemComponent extends React.Component<PropTypes, StateType>
@@ -29,10 +32,14 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
+    this.state =
+    {
+      canAfford: this.props.player.canAfford(this.props.upgradeData.cost),
+      missingResources: this.props.player.getMissingResourcesFor(this.props.upgradeData.cost),
+    };
 
     this.bindMethods();
-    applyMixins(this, new UpdateWhenMoneyChanges(this, this.overrideHandleMoneyChange));
+    applyMixins(this, new UpdateWhenResourcesChange(props.player, this.overrideHandleMoneyChange));
   }
   private bindMethods()
   {
@@ -40,19 +47,12 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
     this.overrideHandleMoneyChange = this.overrideHandleMoneyChange.bind(this);
   }
 
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      canAfford: this.props.player.canAfford(this.props.upgradeData.cost),
-    });
-  }
-
   overrideHandleMoneyChange()
   {
     this.setState(
     {
       canAfford: this.props.player.canAfford(this.props.upgradeData.cost),
+      missingResources: this.props.player.getMissingResourcesFor(this.props.upgradeData.cost),
     });
   }
 
@@ -97,7 +97,13 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
         },
           upgradeData.template.displayName,
         ),
-        ReactDOMElements.td(costProps, upgradeData.cost),
+        ReactDOMElements.td(costProps,
+          ResourceCost(
+          {
+            cost: upgradeData.cost,
+            missingResources: this.state.missingResources,
+          }),
+        ),
       )
     );
   }
