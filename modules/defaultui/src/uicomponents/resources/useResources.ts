@@ -18,10 +18,12 @@ export function useResources(player: Player): Resources
   {
     return {...player.resources};
   });
-  const updaterId = useRef(updaterIdGenerator++);
+  const updaterId = useRef<number>(undefined);
 
   useEffect(function addUseResourcesListener()
   {
+    updaterId.current = updaterIdGenerator++;
+
     if (!updaters[player.id])
     {
       updaters[player.id] = {};
@@ -33,7 +35,8 @@ export function useResources(player: Player): Resources
 
     return function removeUseResourcesListener()
     {
-      delete updaters[updaterId.current];
+      updaters[player.id][updaterId.current] = null;
+      delete updaters[player.id][updaterId.current];
     };
   }, []);
 
