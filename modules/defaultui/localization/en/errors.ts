@@ -1,6 +1,6 @@
 export const errors =
 {
-  UIErrorPanicDespiteUserPreference: "This was an uncaught exception while rendering the UI. The entire UI has been forced to unmount despite error handling preference being set to '{0}'.",
+  UIErrorPanicDespiteUserPreference: "This was an uncaught exception while rendering the UI. The entire UI has been forced to unmount despite error handling preference being set to ''{0}''.",
   genericError: "Error",
   genericErrorDescription: "An error has occurred in the game.",
   genericErrorCauseDescription: "This is probably due to a programming oversight in the game and shouldn't cause any damage that can't be fixed by reloading this page. The error may keep happening though.",

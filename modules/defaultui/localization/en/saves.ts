@@ -2,7 +2,7 @@ export const saves =
 {
   saveName: "Name",
   save_action: "Save",
-  promptOverwrite: "Are you sure you want to overwrite '{toOverWrite}'?",
+  promptOverwrite: "Are you sure you want to overwrite ''{toOverWrite}''?",
   confirmOverwrite: "Confirm overwrite",
   load_action: "Load",
   markForDeletion: "Mark for deletion",
@@ -12,7 +12,7 @@ export const saves =
       "other {saves}" +
     "}?",
   loadGame: "Load game",
-  saveSuccessful: "Succesfully saved game as '{saveName}'",
+  saveSuccessful: "Succesfully saved game as ''{saveName}''",
   saveFailure: "Couldn't save game",
   saveData: "Save data",
   // TODO 2018.10.06 | actually implement importing
