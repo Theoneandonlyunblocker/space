@@ -1,23 +1,18 @@
 import {Player} from "../player/Player";
 import { Resources } from "../player/PlayerResources";
-
-
-export enum TradeableItemType
+import
 {
-  Resource,
-}
+  TradeableItemType,
+  TradeableResource,
+} from "./TradeableItem";
+import { activeModuleData } from "../app/activeModuleData";
 
-export interface TradeableItem
-{
-  key: string;
-  type: TradeableItemType;
-  amount: number;
-}
+
 export interface TradeableItems
 {
   resources:
   {
-    [key: string]: TradeableItem;
+    [key: string]: TradeableResource;
   };
 }
 
@@ -49,12 +44,19 @@ export class Trade
   {
     if (!this.stagedItems[category][key])
     {
-      this.stagedItems[category][key] =
+      switch (category)
       {
-        key: key,
-        type: this.allItems[category][key].type,
-        amount: amount,
-      };
+        case "resources":
+        {
+          this.stagedItems.resources[key] =
+          {
+            key: key,
+            type: this.allItems[category][key].type,
+            amount: amount,
+            resource: activeModuleData.templates.Resources[key],
+          };
+        }
+      }
     }
     else
     {
@@ -79,26 +81,24 @@ export class Trade
   }
   public getItemsAvailableForTrade(): TradeableItems
   {
-    const available: TradeableItems =
-    {
-      resources: {},
-    };
-
-    for (const category in this.allItems)
-    {
-      for (const key in this.allItems[category])
+    return {
+      resources: Object.keys(this.allItems.resources).reduce((availableResources, resourceType) =>
       {
-        const stagedAmount = this.stagedItems[category][key] ? this.stagedItems[category][key].amount : 0;
-        available[category][key] =
-        {
-          key: key,
-          type: this.allItems[category][key].type,
-          amount: this.allItems[category][key].amount - stagedAmount,
-        };
-      }
-    }
+        const stagedAmount = this.stagedItems.resources[resourceType] ?
+          this.stagedItems.resources[resourceType].amount :
+          0;
 
-    return available;
+        availableResources[resourceType] =
+        {
+          key: resourceType,
+          type: TradeableItemType.Resource,
+          amount: this.allItems.resources[resourceType].amount - stagedAmount,
+          resource: activeModuleData.templates.Resources[resourceType],
+        };
+
+        return availableResources;
+      }, <TradeableItems["resources"]>{}),
+    };
   }
   public removeStagedItem(category: keyof TradeableItems, key: string)
   {
@@ -145,10 +145,11 @@ export class Trade
           key: resourceType,
           type: TradeableItemType.Resource,
           amount: this.player.resources[resourceType],
+          resource: activeModuleData.templates.Resources[resourceType],
         };
 
         return allResourceTradeables;
-      }, <{[key: string]: TradeableItem}>{}),
+      }, <TradeableItems["resources"]>{}),
     };
   }
   private tradeAllStagedItems(targetPlayer: Player)
