@@ -1,8 +1,5 @@
-import
-{
-  Trade,
-  TradeableItem,
-} from "core/src/trade/Trade";
+import {Trade} from "core/src/trade/Trade";
+import {TradeableResource} from "core/src/trade/TradeableItem";
 
 
 export function evaluateValueOfTrade(trade: Trade): number
@@ -16,8 +13,7 @@ export function evaluateValueOfTrade(trade: Trade): number
 
   return value;
 }
-function evaluateResourceValue(item: TradeableItem): number
+function evaluateResourceValue(item: TradeableResource): number
 {
-  // TODO 2019.10.01 | implement
-  return item.amount;
+  return item.amount * item.resource.baseValuableness;
 }

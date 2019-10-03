@@ -75,6 +75,7 @@ export class MapEvaluator
   {
     let evaluation = 0;
 
+    // TODO 2019.10.02 | account for all resources
     evaluation += star.baseIncome;
     evaluation += (star.getIncome() - star.baseIncome) *
     (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
@@ -87,8 +88,15 @@ export class MapEvaluator
     const allBuildCosts = star.buildings.map(building => building.totalCost);
     const totalCostOfAllBuildings = sumObjectValues(...allBuildCosts);
 
-    // TODO 2019.09.27 | handle other resources
-    return totalCostOfAllBuildings.money / 25;
+    const totalValueOfResourcesForBuildings = Object.keys(totalCostOfAllBuildings).reduce((total, resourceType) =>
+    {
+      const resource = activeModuleData.templates.Resources[resourceType];
+      const value = totalCostOfAllBuildings[resourceType] * resource.baseValuableness;
+
+      return total + value;
+    }, 0);
+
+    return totalValueOfResourcesForBuildings / 25;
   }
 
   evaluateStarProduction(star: Star): number
@@ -148,9 +156,7 @@ export class MapEvaluator
     let evaluation = 0;
     const p = this.evaluationParameters.starDesirability;
 
-    let incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
-    // prioritize income when would make big relative boost, penalize when opposite
-    incomeEvaluation *= incomeEvaluation / (this.player.getResourceIncome().money / 4);
+    const incomeEvaluation = this.evaluateStarIncome(star) * p.totalIncomeWeight;
     evaluation += incomeEvaluation;
 
     const infrastructureEvaluation = this.evaluateStarInfrastructure(star) * p.infrastructureWeight;

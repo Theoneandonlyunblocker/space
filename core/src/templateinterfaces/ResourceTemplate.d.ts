@@ -11,4 +11,5 @@ export interface ResourceTemplate
   // resources with same displayOrder sorted by displayName
   displayOrder: number;
   distributionData: DistributionData;
+  baseValuableness: number;
 }

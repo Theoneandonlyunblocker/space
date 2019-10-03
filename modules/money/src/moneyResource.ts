@@ -32,4 +32,5 @@ export const moneyResource: ResourceTemplate =
     weight: 0,
     distributionGroups: [],
   },
-}
+  baseValuableness: 1,
+};
