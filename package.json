@@ -1,6 +1,6 @@
 {
   "name": "spacegame",
-  "version": "0.4.0",
+  "version": "0.5.2",
   "private": true,
   "dependencies": {
     "@tweenjs/tween.js": "17.4.x",
