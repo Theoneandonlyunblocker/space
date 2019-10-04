@@ -25,9 +25,10 @@ import
 } from "./pathFinding";
 
 import {StarSaveData} from "../savedata/StarSaveData";
-import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
+import { applyFlatAndMultiplierAdjustments, applyAdjustmentsObjects } from "../generic/FlatAndMultiplierAdjustment";
 import {GalaxyMap} from "./GalaxyMap";
-import { getUniqueArrayKeys } from "../generic/utility";
+import { getUniqueArrayKeys, sumObjectValues } from "../generic/utility";
+import { Resources } from "../player/PlayerResources";
 
 
 // represents single location in game world. see Region for a grouping of these locations
@@ -53,7 +54,7 @@ export class Star implements Point
 
   public name: string;
   public owner: Player;
-  public baseIncome: number;
+  public baseIncome: Resources;
   public resource: ResourceTemplate;
   public localRace: RaceTemplate;
   public terrain: TerrainTemplate;
@@ -296,11 +297,15 @@ export class Star implements Point
     eventManager.dispatchEvent("renderLayer", "starOwners", this);
     eventManager.dispatchEvent("renderLayer", "ownerBorders", this);
   }
-  public getIncome(): number
+  public getResourceIncome(): Resources
   {
-    const buildingsEffect = this.buildings.getEffects().income;
+    const miningIncome = this.getMiningIncome();
+    const incomeBeforeBuildings = sumObjectValues(this.baseIncome, miningIncome);
 
-    return applyFlatAndMultiplierAdjustments(this.baseIncome, buildingsEffect);
+    const adjustmentsFromBuildings = this.buildings.getIncomeAdjustments();
+    const income = applyAdjustmentsObjects(incomeBeforeBuildings, adjustmentsFromBuildings);
+
+    return income;
   }
   public getResearchPoints(): number
   {
@@ -308,29 +313,6 @@ export class Star implements Point
     const buildingsEffect = this.buildings.getEffects().researchPoints;
 
     return applyFlatAndMultiplierAdjustments(basePoints, buildingsEffect);
-  }
-  public getResourceIncome(): {resource: ResourceTemplate; amount: number} | null
-  {
-    if (!this.resource)
-    {
-      return null;
-    }
-
-    const baseAmount = 0;
-    const buildingsEffect = this.buildings.getEffects().resourceIncome;
-
-    const finalAmount = applyFlatAndMultiplierAdjustments(baseAmount, buildingsEffect);
-
-    if (finalAmount === 0)
-    {
-      return null;
-    }
-
-    return(
-    {
-      resource: this.resource,
-      amount: finalAmount,
-    });
   }
 
   // FLEETS
@@ -1074,5 +1056,22 @@ export class Star implements Point
     });
 
     return upgradeDataByParentId;
+  }
+  private getMiningIncome(): Resources
+  {
+    const buildingsEffect = this.buildings.getEffects().mining;
+    const baseAmount = 0;
+    const finalAmount = applyFlatAndMultiplierAdjustments(baseAmount, buildingsEffect);
+
+    if (finalAmount === 0)
+    {
+      return {};
+    }
+    else
+    {
+      return {
+        [this.resource.type]: finalAmount,
+      };
+    }
   }
 }

@@ -47,7 +47,8 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
           star: star,
           id: star.id,
           name: star.name,
-          income: star.getIncome(),
+          // TODO 2019.10.04 | implement for resources
+          income: star.getResourceIncome().money || 0,
         }),
       });
     }

@@ -13,6 +13,7 @@ import
 
 import {UnitEvaluator} from "./UnitEvaluator";
 import { activeModuleData } from "core/src/app/activeModuleData";
+import { getBaseValuablenessOfResources } from "core/src/player/PlayerResources";
 
 
 export const defaultEvaluationParameters =
@@ -73,12 +74,16 @@ export class MapEvaluator
 
   evaluateStarIncome(star: Star): number
   {
-    let evaluation = 0;
+    const evaluationOfBaseIncome = getBaseValuablenessOfResources(star.baseIncome);
+    const evaluationOfImprovedIncome = (() =>
+    {
+      const improvedIncomeWeight = 1 - this.evaluationParameters.starDesirability.baseIncomeWeight;
+      const evaluationOfAllIncome = getBaseValuablenessOfResources(star.getResourceIncome());
 
-    // TODO 2019.10.02 | account for all resources
-    evaluation += star.baseIncome;
-    evaluation += (star.getIncome() - star.baseIncome) *
-    (1 - this.evaluationParameters.starDesirability.baseIncomeWeight);
+      return (evaluationOfAllIncome - evaluationOfBaseIncome) * improvedIncomeWeight;
+    })();
+
+    const evaluation = evaluationOfBaseIncome + evaluationOfImprovedIncome;
 
     return evaluation;
   }

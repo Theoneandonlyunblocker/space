@@ -24,12 +24,9 @@ export const commercialPort: BuildingTemplate =
   },
   maxBuiltAtLocation: 1,
 
-  getEffect: () =>
+  income:
   {
-    return(
-    {
-      income: {flat: 20},
-    });
+    [moneyResource.type]: {flat: 20},
   },
 };
 export const deepSpaceRadar: BuildingTemplate =
@@ -53,13 +50,10 @@ export const deepSpaceRadar: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  getEffect: () =>
+  buildingEffect:
   {
-    return(
-    {
-      vision: {flat: 1},
-      detection: {flat: 1},
-    });
+    vision: {flat: 1},
+    detection: {flat: 1},
   },
   techRequirements:
   [
@@ -94,15 +88,9 @@ export const resourceMine: BuildingTemplate =
     return Boolean(star.resource);
   },
 
-  getEffect: () =>
+  buildingEffect:
   {
-    return(
-    {
-      resourceIncome:
-      {
-        flat: 1,
-      },
-    });
+    mining: {flat: 1},
   },
 };
 export const reserachLab: BuildingTemplate =
@@ -126,12 +114,9 @@ export const reserachLab: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  getEffect: () =>
+  buildingEffect:
   {
-    return(
-    {
-      researchPoints: {flat: 10},
-    });
+    researchPoints: {flat: 10},
   },
 };
 export const thePyramids: BuildingTemplate =

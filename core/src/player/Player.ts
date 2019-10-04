@@ -31,6 +31,7 @@ import
 {
   extendObject,
   makeRandomPersonality,
+  sumObjectValues,
 } from "../generic/utility";
 
 import {PlayerNotificationSubscriber} from "../notifications/PlayerNotificationSubscriber";
@@ -398,25 +399,7 @@ export class Player
   }
   public getResourceIncome(): Resources
   {
-    return this.controlledLocations.reduce((total, star) =>
-    {
-      const moneyIncome = star.getIncome();
-      const otherIncome = star.getResourceIncome();
-
-      total.money += moneyIncome;
-      if (otherIncome)
-      {
-        const resourceKey = otherIncome.resource.type;
-        if (!total[resourceKey])
-        {
-          total[resourceKey] = 0;
-        }
-
-        total[resourceKey] += otherIncome.amount;
-      }
-
-      return total;
-    }, {money: 0});
+    return sumObjectValues(...this.controlledLocations.map(star => star.getResourceIncome()));
   }
   public getNeighboringStars(): Star[]
   {

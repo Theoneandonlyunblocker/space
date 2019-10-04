@@ -75,12 +75,6 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
         },
           localize("terrainType").format(star.terrain.displayName),
         ),
-        ReactDOMElements.div(
-        {
-          className: "star-info-income",
-        },
-          localize("incomeAmount").format(star.getIncome()),
-        ),
         TerritoryBuildingList(
         {
           buildings: star.territoryBuildings,

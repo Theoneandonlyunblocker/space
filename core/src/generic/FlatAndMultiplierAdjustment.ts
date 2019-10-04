@@ -91,3 +91,23 @@ export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
     return squashed;
   });
 }
+export function applyAdjustmentsObjects<T extends {[key: string]: number}>(
+  baseValues: T,
+  baseAdjustmentsObject: AdjustmentsObject<T>,
+  ...adjustmentsObjects: PartialAdjustmentsObject<T>[]
+)
+{
+  const squashedAdjustments = squashAdjustmentsObjects(baseAdjustmentsObject, ...adjustmentsObjects);
+
+  const allKeys = Object.keys({...baseValues, ...squashAdjustmentsObjects});
+
+  return allKeys.reduce((finalValuesByKey, key) =>
+  {
+    const baseValue = baseValues[key] || 0;
+    const adjustment = squashedAdjustments[key] || getBaseAdjustment();
+
+    finalValuesByKey[key] = applyFlatAndMultiplierAdjustments(baseValue, adjustment);
+
+    return finalValuesByKey;
+  }, {});
+}

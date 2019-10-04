@@ -9,9 +9,11 @@ export interface BuildingEffect
 {
   vision: FlatAndMultiplierAdjustment;
   detection: FlatAndMultiplierAdjustment;
-  // TODO 2019.09.27 | unify income & resourceincome
-  income: FlatAndMultiplierAdjustment;
-  resourceIncome: FlatAndMultiplierAdjustment;
+
+  /**
+   * amount of local resources extracted
+   */
+  mining: FlatAndMultiplierAdjustment;
   researchPoints: FlatAndMultiplierAdjustment;
 }
 export type PartialBuildingEffect =
@@ -25,8 +27,7 @@ export function getBaseBuildingEffect(): BuildingEffect
   {
     vision: getBaseAdjustment(),
     detection: getBaseAdjustment(),
-    income: getBaseAdjustment(),
-    resourceIncome: getBaseAdjustment(),
+    mining: getBaseAdjustment(),
     researchPoints: getBaseAdjustment(),
   });
 }

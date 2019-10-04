@@ -7,6 +7,7 @@ import {Player} from "../player/Player";
 import {Star} from "./Star";
 import {Building} from "../building/Building";
 import { BuildingCollection } from "../building/BuildingCollection";
+import { getBaseValuablenessOfResources } from "../player/PlayerResources";
 
 
 export class GalaxyMap
@@ -42,7 +43,9 @@ export class GalaxyMap
     for (let i = 0; i < this.stars.length; i++)
     {
       const star = this.stars[i];
-      const income = star.getIncome();
+      const rawIncome = star.getResourceIncome();
+      const income = getBaseValuablenessOfResources(rawIncome);
+
       if (!min) { min = max = income; }
       else
       {

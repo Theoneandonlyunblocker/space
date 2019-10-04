@@ -12,6 +12,7 @@ import { TerritoryBuildingTemplate } from "../templateinterfaces/TerritoryBuildi
 import { BuildingFamily } from "../templateinterfaces/BuildingFamily";
 import { Resources } from "../player/PlayerResources";
 import { sumObjectValues } from "../generic/utility";
+import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
 
 
 export type TerritoryBuilding = Building<TerritoryBuildingTemplate>;
@@ -47,12 +48,11 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
   }
   public getEffect(): PartialBuildingEffect
   {
-    if (!this.template.getEffect)
-    {
-      return {};
-    }
-
-    return this.template.getEffect();
+    return {...this.template.buildingEffect};
+  }
+  public getIncome(): {[resourceType: string]: Partial<FlatAndMultiplierAdjustment>}
+  {
+    return {...this.template.income};
   }
   public getStandardUpgrades(): BuildingUpgradeData[]
   {

@@ -20,7 +20,6 @@ export type GalaxyMapUI =
   attackTargetTooltip: [{enemyName: Name; targetType: string}];
   coordinates: [string, string];
   terrainType: [string];
-  incomeAmount: [number];
 
   topMenuButtonActionExplanation: [];
   topMenuButtonTooltip_production: [];

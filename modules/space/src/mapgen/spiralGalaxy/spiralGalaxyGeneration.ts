@@ -39,6 +39,7 @@ import {setupIndependents} from "../common/setupIndependents";
 
 import {SpiralGalaxyOptionValues} from "./SpiralGalaxyOptionValues";
 import {centerRegionTag, generateSpiralPoints} from "./generateSpiralPoints";
+import { moneyResource } from "modules/money/src/moneyResource";
 
 
 // TODO 2018.05.30 | needs to be broken into multiple functions bad
@@ -358,7 +359,10 @@ export const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOpti
   // set stars base income
   stars.forEach(star =>
   {
-    star.baseIncome = randInt(4, 6) * 10;
+    star.baseIncome =
+    {
+      [moneyResource.type]: randInt(4, 6) * 10,
+    };
   });
 
   // restore Math.random

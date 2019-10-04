@@ -1,5 +1,6 @@
 import {BuildingSaveData} from "./BuildingSaveData";
 import {ManufactorySaveData} from "./ManufactorySaveData";
+import { Resources } from "../player/PlayerResources";
 
 export interface StarSaveData
 {
@@ -7,7 +8,7 @@ export interface StarSaveData
   x: number;
   y: number;
 
-  baseIncome: number;
+  baseIncome: Resources;
   name: string;
   ownerId: number;
   linksToIds: number[];

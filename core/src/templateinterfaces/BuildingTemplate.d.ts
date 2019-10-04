@@ -5,6 +5,7 @@ import {Player} from "../player/Player";
 import { UnlockableThing } from "./UnlockableThing";
 import { BuildingFamily } from "./BuildingFamily";
 import { Resources } from "../player/PlayerResources";
+import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
 
 export interface BuildingTemplate extends UnlockableThing
 {
@@ -22,7 +23,11 @@ export interface BuildingTemplate extends UnlockableThing
   canBeBuiltInLocation?: (star: Star) => boolean;
 
   onBuild?: (location: Star, player: Player) => void;
-  getEffect?: () => PartialBuildingEffect;
+  buildingEffect?: PartialBuildingEffect;
+  income?:
+  {
+    [resourceType: string]: Partial<FlatAndMultiplierAdjustment>;
+  };
 
   // player race can define their own special upgrades as well
   getStandardUpgradeTargets?: (location: Star) => BuildingTemplate[];
