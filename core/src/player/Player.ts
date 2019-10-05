@@ -133,7 +133,7 @@ export class Player
 
     flag?: Flag;
 
-    resources: Resources;
+    resources?: Resources;
     technologyData?: PlayerTechnologySaveData;
   })
   {
@@ -168,9 +168,12 @@ export class Player
       this.flag = Flag.generateRandom(this.color, this.secondaryColor);
     }
 
-    for (const key in props.resources)
+    if (props.resources)
     {
-      this.resources[key] = props.resources[key];
+      for (const key in props.resources)
+      {
+        this.resources[key] = props.resources[key];
+      }
     }
 
     if (!this.isIndependent)
@@ -227,7 +230,6 @@ export class Player
 
         getAiTemplateConstructor: undefined,
       },
-      resources: {money: 0},
     });
   }
 
