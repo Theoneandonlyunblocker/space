@@ -13,6 +13,7 @@ import
 
 import { localize } from "modules/space/localization/localize";
 import { getItemIconSrc } from "modules/space/assets/items/itemAssets";
+import { moneyResource } from "modules/money/src/moneyResource";
 
 
 export const bombLauncher1: ItemTemplate =
@@ -29,7 +30,10 @@ export const bombLauncher1: ItemTemplate =
   getIconSrc: getItemIconSrc.bind(null, "cannon"),
 
   techLevel: 1,
-  buildCost: 100,
+  buildCost:
+  {
+    [moneyResource.type]: 100,
+  },
   kind: "item",
 
   slot: "high",
@@ -49,7 +53,10 @@ export const bombLauncher2: ItemTemplate =
   getIconSrc: getItemIconSrc.bind(null, "cannon"),
 
   techLevel: 2,
-  buildCost: 200,
+  buildCost:
+  {
+    [moneyResource.type]: 200,
+  },
   kind: "item",
 
   attributeAdjustments:
@@ -74,7 +81,10 @@ export const bombLauncher3: ItemTemplate =
   getIconSrc: getItemIconSrc.bind(null, "cannon"),
 
   techLevel: 3,
-  buildCost: 300,
+  buildCost:
+  {
+    [moneyResource.type]: 300,
+  },
   kind: "item",
 
   attributeAdjustments:
@@ -100,7 +110,10 @@ export const afterBurner1: ItemTemplate =
   getIconSrc: getItemIconSrc.bind(null, "blueThing"),
 
   techLevel: 1,
-  buildCost: 100,
+  buildCost:
+  {
+    [moneyResource.type]: 100,
+  },
   kind: "item",
 
   attributeAdjustments:
@@ -125,7 +138,10 @@ export const afterBurner2: ItemTemplate =
   getIconSrc: getItemIconSrc.bind(null, "blueThing"),
 
   techLevel: 2,
-  buildCost: 200,
+  buildCost:
+  {
+    [moneyResource.type]: 200,
+  },
   kind: "item",
 
   attributeAdjustments:
@@ -149,7 +165,10 @@ export const afterBurner3: ItemTemplate =
   getIconSrc: getItemIconSrc.bind(null, "blueThing"),
 
   techLevel: 3,
-  buildCost: 300,
+  buildCost:
+  {
+    [moneyResource.type]: 300,
+  },
   kind: "item",
 
   attributeAdjustments:
@@ -174,7 +193,10 @@ export const shieldPlating1: ItemTemplate =
   getIconSrc: getItemIconSrc.bind(null, "armor"),
 
   techLevel: 1,
-  buildCost: 100,
+  buildCost:
+  {
+    [moneyResource.type]: 100,
+  },
   kind: "item",
 
   attributeAdjustments:
@@ -198,7 +220,10 @@ export const shieldPlating2: ItemTemplate =
   getIconSrc: getItemIconSrc.bind(null, "armor"),
 
   techLevel: 2,
-  buildCost: 200,
+  buildCost:
+  {
+    [moneyResource.type]: 200,
+  },
   kind: "item",
 
   attributeAdjustments:
@@ -222,7 +247,10 @@ export const shieldPlating3: ItemTemplate =
   getIconSrc: getItemIconSrc.bind(null, "armor"),
 
   techLevel: 3,
-  buildCost: 300,
+  buildCost:
+  {
+    [moneyResource.type]: 300,
+  },
   kind: "item",
 
   attributeAdjustments:

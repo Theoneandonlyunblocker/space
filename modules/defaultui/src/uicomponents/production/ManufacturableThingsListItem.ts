@@ -35,40 +35,18 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
   {
     super(props);
 
-    const cost = {money: this.props.template.buildCost};
-    const canAfford = this.props.player && this.props.player.canAfford(cost);
-    this.state =
-    {
-      canClick: this.props.onClick && (!this.props.showCost || canAfford),
-      missingResources: this.props.player ? this.props.player.getMissingResourcesFor(cost) : undefined,
-    };
+    this.state = this.getState();
 
-    this.bindMethods();
+    this.handleClick = this.handleClick.bind(this);
+    this.getState = this.getState.bind(this);
 
     applyMixins(this, new UpdateWhenResourcesChange(props.player, () =>
     {
-      this.setState(
-      {
-        canClick: this.props.onClick && (!this.props.showCost || canAfford),
-        missingResources: this.props.player ? this.props.player.getMissingResourcesFor(cost) : undefined,
-      });
+      this.setState(this.getState());
     }));
   }
-  private bindMethods()
-  {
-    this.handleClick = this.handleClick.bind(this);
-  }
 
-
-  handleClick()
-  {
-    if (this.props.onClick)
-    {
-      this.props.onClick(this.props.template, this.props.parentIndex);
-    }
-  }
-
-  render()
+  public render()
   {
     const isDisabled = !this.state.canClick;
 
@@ -87,11 +65,30 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
         ),
         !this.props.showCost ? null : ResourceCost(
         {
-          cost: {money: this.props.template.buildCost},
+          cost: this.props.template.buildCost,
           missingResources: this.state.missingResources,
         }),
       )
     );
+  }
+
+  private handleClick(): void
+  {
+    if (this.props.onClick)
+    {
+      this.props.onClick(this.props.template, this.props.parentIndex);
+    }
+  }
+  private getState(): StateType
+  {
+    const cost = this.props.template.buildCost;
+    const canAfford = this.props.player && this.props.player.canAfford(cost);
+
+    return(
+    {
+      canClick: this.props.onClick && (!this.props.showCost || canAfford),
+      missingResources: this.props.player ? this.props.player.getMissingResourcesFor(cost) : undefined,
+    });
   }
 }
 

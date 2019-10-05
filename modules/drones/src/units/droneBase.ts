@@ -6,6 +6,7 @@ import {makeDefaultUnitDrawingFunctionForPlaceholder} from "modules/space/src/un
 import * as CommonAbility from "modules/space/src/abilities/abilities";
 import {distributionGroups} from "modules/common/distributionGroups";
 import {getAssetSrc} from "modules/common/assets";
+import {moneyResource} from "modules/money/src/moneyResource";
 
 import {assimilate} from "../abilities/assimilate";
 import {repair} from "../abilities/repair";
@@ -35,7 +36,10 @@ export const droneBase: UnitTemplate =
   ),
 
   isSquadron: false,
-  buildCost: 500,
+  buildCost:
+  {
+    [moneyResource.type]: 500,
+  },
   kind: "unit",
 
   maxHealthLevel: 1.0,

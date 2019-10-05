@@ -14,6 +14,7 @@ import {itemSlot} from "modules/space/src/items/itemSlot";
 import * as technologies from "modules/space/src/technologies/technologyTemplates";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 import { localize } from "modules/space/localization/localize";
+import {moneyResource} from "modules/money/src/moneyResource";
 
 
 export const stealthShip: UnitTemplate =
@@ -36,7 +37,10 @@ export const stealthShip: UnitTemplate =
     () => "scout.png",
   ),
   isSquadron: true,
-  buildCost: 500,
+  buildCost:
+{
+  [moneyResource.type]: 500,
+},
   kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "sc"),
   maxHealthLevel: 0.6,

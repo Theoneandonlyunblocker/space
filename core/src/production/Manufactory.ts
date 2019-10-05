@@ -93,12 +93,12 @@ export class Manufactory
   public addThingToQueue(template: ManufacturableThing, kind: UnlockableThingKind): void
   {
     this.buildQueue.push({kind: kind, template: template});
-    this.owner.removeResources({money: template.buildCost});
+    this.owner.removeResources(template.buildCost);
   }
   public removeThingAtIndex(index: number): void
   {
     const template = this.buildQueue[index].template;
-    this.owner.addResources({money: template.buildCost});
+    this.owner.addResources(template.buildCost);
     this.buildQueue.splice(index, 1);
   }
   public clearBuildingQueue(): void

@@ -35,12 +35,14 @@ import
   getItemsFromProbabilityDistributions,
   getUniqueArrayKeys,
   randInt,
+  sumObjectValues,
 } from "../generic/utility";
 
 import {UnitBattleStatsSaveData} from "../savedata/UnitBattleStatsSaveData";
 import {UnitSaveData} from "../savedata/UnitSaveData";
 import { ProbabilityDistributions } from "../templateinterfaces/ProbabilityDistribution";
 import { Name } from "../localization/Name";
+import { Resources } from "../player/PlayerResources";
 
 
 type PassiveSkillsByPhase =
@@ -906,19 +908,12 @@ export class Unit
 
     return healAmount;
   }
-  public getTotalCost()
+  public getTotalCost(): Resources
   {
-    let totalCost = 0;
-    totalCost += this.template.buildCost;
-    totalCost += this.items.getAllItems().map(item =>
-    {
-      return item.template.buildCost;
-    }).reduce((a, b) =>
-    {
-      return a + b;
-    }, 0);
+    const selfCost = this.template.buildCost;
+    const allItemCosts = this.items.getAllItems().map(item => item.template.buildCost);
 
-    return totalCost;
+    return sumObjectValues(selfCost, ...allItemCosts);
   }
   public getTurnsToReachStar(star: Star)
   {

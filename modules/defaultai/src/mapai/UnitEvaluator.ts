@@ -1,4 +1,5 @@
 import {Unit} from "core/src/unit/Unit";
+import { getBaseValuablenessOfResources } from "core/src/player/PlayerResources";
 
 
 export class UnitEvaluator
@@ -46,7 +47,7 @@ export class UnitEvaluator
     }
 
     // -- cost
-    score /= unit.getTotalCost();
+    score /= getBaseValuablenessOfResources(unit.getTotalCost());
 
     return score;
   }

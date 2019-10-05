@@ -12,6 +12,7 @@ import {distributionGroups} from "modules/common/distributionGroups";
 import {itemSlot} from "modules/space/src/items/itemSlot";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 import { localize } from "modules/space/localization/localize";
+import {moneyResource} from "modules/money/src/moneyResource";
 
 
 export const scout: UnitTemplate =
@@ -34,7 +35,10 @@ export const scout: UnitTemplate =
     () => "scout.png",
   ),
   isSquadron: true,
-  buildCost: 200,
+  buildCost:
+{
+  [moneyResource.type]: 200,
+},
   kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "sc"),
   maxHealthLevel: 0.6,

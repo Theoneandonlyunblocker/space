@@ -3,6 +3,8 @@ import {UnitAttributeAdjustments} from "../unit/UnitAttributes";
 import {AbilityTemplate} from "./AbilityTemplate";
 import {ManufacturableThing} from "./ManufacturableThing";
 import {PassiveSkillTemplate} from "./PassiveSkillTemplate";
+import { Resources } from "../player/PlayerResources";
+
 
 export interface ItemTemplate extends ManufacturableThing
 {
@@ -14,9 +16,9 @@ export interface ItemTemplate extends ManufacturableThing
 
   techLevel: number;
 
-  slot: string; // low, mid, high
+  slot: string;
 
-  buildCost: number;
+  buildCost: Resources;
   kind: "item";
 
   ability?: AbilityTemplate;

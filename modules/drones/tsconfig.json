@@ -11,6 +11,7 @@
     {"path": "../../modules/space"},
     {"path": "../../modules/defaultai"},
     {"path": "../../modules/englishlanguage"},
+    {"path": "../../modules/money"},
   ],
   "include": [
     "**/*",

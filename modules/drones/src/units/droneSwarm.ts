@@ -6,6 +6,7 @@ import {makeDefaultUnitDrawingFunctionForPlaceholder} from "modules/space/src/un
 import * as CommonAbility from "modules/space/src/abilities/abilities";
 import {distributionGroups} from "modules/common/distributionGroups";
 import {getAssetSrc} from "modules/common/assets";
+import {moneyResource} from "modules/money/src/moneyResource";
 
 import {assimilate} from "../abilities/assimilate";
 import {merge} from "../abilities/merge";
@@ -34,7 +35,10 @@ export const droneSwarm: UnitTemplate =
   ),
 
   isSquadron: true,
-  buildCost: 150,
+  buildCost:
+  {
+    [moneyResource.type]: 150,
+  },
   kind: "unit",
 
   maxHealthLevel: 0.6,

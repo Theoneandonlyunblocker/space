@@ -6,6 +6,7 @@ import {PassiveSkillTemplate} from "./PassiveSkillTemplate";
 import {ProbabilityDistributions} from "./ProbabilityDistribution";
 import {UnitArchetype} from "./UnitArchetype";
 import {UnitDrawingFunction} from "./UnitDrawingFunction";
+import { Resources } from "../player/PlayerResources";
 
 
 export interface UnitTemplate extends ManufacturableThing
@@ -14,7 +15,7 @@ export interface UnitTemplate extends ManufacturableThing
   displayName: string;
   description: string;
   isSquadron: boolean;
-  buildCost: number;
+  buildCost: Resources;
   // TODO 2018.12.20 | return element instead
   getIconSrc: () => string;
   /**

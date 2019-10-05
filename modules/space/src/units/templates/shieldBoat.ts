@@ -18,6 +18,7 @@ import
 } from "modules/space/src/passiveskills/passiveSkills";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 import { localize } from "modules/space/localization/localize";
+import {moneyResource} from "modules/money/src/moneyResource";
 
 
 export const shieldBoat: UnitTemplate =
@@ -40,7 +41,10 @@ export const shieldBoat: UnitTemplate =
     () => "shieldBoat.png",
   ),
   isSquadron: true,
-  buildCost: 200,
+  buildCost:
+{
+  [moneyResource.type]: 200,
+},
   kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "sh"),
   maxHealthLevel: 0.9,
