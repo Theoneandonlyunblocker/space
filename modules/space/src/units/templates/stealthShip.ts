@@ -15,6 +15,7 @@ import * as technologies from "modules/space/src/technologies/technologyTemplate
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 import { localize } from "modules/space/localization/localize";
 import {moneyResource} from "modules/money/src/moneyResource";
+import { testResource2 } from "modules/space/src/resources/resourceTemplates";
 
 
 export const stealthShip: UnitTemplate =
@@ -40,6 +41,7 @@ export const stealthShip: UnitTemplate =
   buildCost:
 {
   [moneyResource.type]: 500,
+  [testResource2.type]: 1,
 },
   kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "sc"),

@@ -3,6 +3,7 @@ import {BuildingTemplate} from "core/src/templateinterfaces/BuildingTemplate";
 import * as technologies from "modules/space/src/technologies/technologyTemplates";
 import { localize } from "modules/space/localization/localize";
 import {moneyResource} from "modules/money/src/moneyResource";
+import { testResource1, testResource2, testResource3, testResource4, testResource5 } from "../../resources/resourceTemplates";
 
 export const commercialPort: BuildingTemplate =
 {
@@ -140,7 +141,11 @@ export const thePyramids: BuildingTemplate =
 
   buildCost:
   {
-    [moneyResource.type]: 0,
+    [testResource1.type]: 1,
+    [testResource2.type]: 1,
+    [testResource3.type]: 1,
+    [testResource4.type]: 1,
+    [testResource5.type]: 1,
   },
 
   maxBuiltAtLocation: 1,
@@ -162,7 +167,15 @@ export const nationalEpic: BuildingTemplate =
 
   onBuild: (star, player) =>
   {
-    player.addResources({[moneyResource.type]: 999});
+    player.addResources(
+    {
+      [moneyResource.type]: 999,
+      [testResource1.type]: 2,
+      [testResource2.type]: 2,
+      [testResource3.type]: 2,
+      [testResource4.type]: 2,
+      [testResource5.type]: 2,
+    });
   },
 
   buildCost:
