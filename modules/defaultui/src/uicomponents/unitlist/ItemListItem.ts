@@ -31,7 +31,6 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   onDragEnd: (dropSuccessful?: boolean) => void;
   onDragStart: (item: Item) => void;
   dragPositionerProps?: DragPositionerProps;
-
 }
 
 interface StateType
@@ -122,9 +121,8 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 
   private makeDragClone()
   {
-    const clone = new Image();
-    clone.src = this.props.item.template.getIconSrc();
-    clone.className = "item-icon-base draggable dragging";
+    const clone = this.props.item.template.getIcon();
+    clone.classList.add("item-icon-base", "draggable", "dragging")
 
     return clone;
   }

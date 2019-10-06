@@ -11,8 +11,7 @@ export interface ItemTemplate extends ManufacturableThing
   type: string;
   displayName: string;
   description: string;
-  // TODO 2018.12.19 | return element instead
-  getIconSrc: () => string;
+  getIcon: () => HTMLElement;
 
   techLevel: number;
 

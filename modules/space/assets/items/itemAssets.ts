@@ -8,7 +8,10 @@ const itemIconSources =
   cannon: "./assets/items/img/cannon.png",
 };
 
-export function getItemIconSrc(type: keyof typeof itemIconSources): string
+export function getItemIcon(type: keyof typeof itemIconSources): HTMLImageElement
 {
-  return new URL(itemIconSources[type], baseUrl).toString();
+  const img = new Image();
+  img.src = new URL(itemIconSources[type], baseUrl).toString();
+
+  return img;
 }
