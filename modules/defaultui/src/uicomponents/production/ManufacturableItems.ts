@@ -15,7 +15,6 @@ import { Player } from "core/src/player/Player";
 export interface PropTypes extends React.Props<any>
 {
   selectedStar?: Star;
-  consolidateLocations: boolean;
   manufacturableThings: ManufacturableThing[];
   triggerUpdate: () => void;
   canBuild: boolean;

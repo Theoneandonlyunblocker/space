@@ -139,7 +139,6 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
       key: key,
       selectedStar: this.props.selectedStar,
       manufacturableThings: this.getManufacturableThings(key),
-      consolidateLocations: false,
       triggerUpdate: this.props.triggerUpdate,
       canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
       player: this.props.player,
@@ -154,8 +153,6 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
       }
       case "items":
       {
-        props.consolidateLocations = true;
-
         return(
           ManufacturableItems(props)
         );
