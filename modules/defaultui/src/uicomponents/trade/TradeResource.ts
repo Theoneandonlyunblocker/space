@@ -5,6 +5,7 @@ import { ResourceTemplate } from "core/src/templateinterfaces/ResourceTemplate";
 import { NumberInput } from "../generic/NumberInput";
 import { ResourceAmount } from "../resources/ResourceAmount";
 import { useDragPositioner } from "../generic/useDragPositioner";
+import { ResourceDisplayName } from "../resources/ResourceDisplayName";
 
 
 // tslint:disable-next-line:no-any
@@ -34,26 +35,40 @@ const TradeResourceComponent: React.FunctionComponent<PropTypes> = props =>
     onDragEnd: props.onDragEnd,
   });
 
-  const amountElement = !props.adjustAmount ?
-    ResourceAmount(
+  const amountElement = (() =>
+  {
+    if (!props.adjustAmount)
     {
-      resource: props.resource,
-      amount: props.amount,
-    }) :
-    NumberInput(
+      return ResourceAmount(
+      {
+        resource: props.resource,
+        amount: props.amount,
+      });
+    }
+    else
     {
-      value: props.amount,
-      onChange: props.adjustAmount,
-      min: 0,
-      max: props.maxAvailable,
-      step: 1,
-      attributes:
+      const numberInputAttributes: React.HTMLAttributes<HTMLInputElement> =
       {
         onClick: captureEvent,
         onMouseDown: captureEvent,
         onTouchStart: captureEvent,
+      };
+      if (props.resource.styleTextProps)
+      {
+        props.resource.styleTextProps(numberInputAttributes);
       }
-    });
+
+      return NumberInput(
+      {
+        value: props.amount,
+        onChange: props.adjustAmount,
+        min: 0,
+        max: props.maxAvailable,
+        step: 1,
+        attributes: numberInputAttributes
+      });
+    }
+  })();
 
   const dragPositioner = getDragPositioner();
   const mainProps: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
@@ -77,12 +92,7 @@ const TradeResourceComponent: React.FunctionComponent<PropTypes> = props =>
 
   return(
     ReactDOMElements.div(mainProps,
-      ReactDOMElements.div(
-      {
-        className: "trade-resource-display-name",
-      },
-        props.resource.displayName,
-      ),
+      ResourceDisplayName({resource: props.resource}),
       ReactDOMElements.div(
       {
         className: "trade-resource-amount",

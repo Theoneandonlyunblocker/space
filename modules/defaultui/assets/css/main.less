@@ -4702,6 +4702,11 @@ button.player-setup-remove-player
   {
     border-left: none;
   }
+
+  >*
+  {
+    padding: 0 0.5em;
+  }
 }
 
 .tradeable-items-header
@@ -4740,10 +4745,45 @@ button.player-setup-remove-player
   font-size: 1.33em;
 }
 
-.trade-item-adjust
+.trade-resource
 {
-  border: 1px solid @ui-border-color2;
-  background-color: @bg-color;
+  display: flex;
+  flex-flow: row;
+  justify-content: start;
+  align-items: center;
+
+  @spinner-width: 16px;
+
+  .resource-display-name
+  {
+    .prevent-text-overflow;
+    flex: 1 1 0;
+    margin-right: 0.5em;
+    padding: 1px 0;
+  }
+  .trade-resource-amount
+  {
+    flex: 0 0 auto;
+    max-width: 64px;
+  }
+  .number-input
+  {
+    border: 1px solid @ui-border-color2;
+    background-color: @bg-color;
+    color: @text-color;
+    text-align: end;
+    padding-right: @spinner-width;
+  }
+  .number-input-container .spinner
+  {
+    width: @spinner-width;
+  }
+  .resource-icon
+  {
+    width: 1em;
+    height: 1em;
+    margin-left: 0.333em;
+  }
 }
 
 .battle-scene-test
