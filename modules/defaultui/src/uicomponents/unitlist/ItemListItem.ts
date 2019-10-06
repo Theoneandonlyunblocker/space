@@ -21,7 +21,6 @@ export interface PropTypes extends ListItemProps, React.Props<any>
   abilityIsPassive: boolean;
   isReserved: boolean;
   keyTODO: number;
-  cost: number;
   techLevel: number;
   unit: Unit | null;
   slotIndex: number;

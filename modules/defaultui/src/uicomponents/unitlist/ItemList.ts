@@ -89,7 +89,6 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         slotIndex: this.getSlotIndex(item.template.slot),
         unit: item.unit ? item.unit : null,
         techLevel: item.template.techLevel,
-        cost: item.template.buildCost,
 
         ability: ability,
         abilityIsPassive: abilityIsPassive,
