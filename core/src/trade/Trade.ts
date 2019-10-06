@@ -6,6 +6,7 @@ import
   TradeableResource,
 } from "./TradeableItem";
 import { activeModuleData } from "../app/activeModuleData";
+import { clamp } from "../generic/utility";
 
 
 export interface TradeableItems
@@ -69,15 +70,19 @@ export class Trade
   }
   public setStagedItemAmount(category: keyof TradeableItems, key: string, newAmount: number): void
   {
-    if (newAmount <= 0)
-    {
-      this.removeStagedItem(category, key);
-    }
-    else
-    {
-      const clamped = Math.min(this.allItems[category][key].amount, newAmount);
-      this.stagedItems[category][key].amount = clamped;
-    }
+    const clamped = clamp(newAmount, 0, this.allItems[category][key].amount);
+    this.stagedItems[category][key].amount = clamped;
+
+    /* removes staged item when set to 0. worse ux imo */
+    // if (newAmount <= 0)
+    // {
+    //   this.removeStagedItem(category, key);
+    // }
+    // else
+    // {
+    //   const clamped = Math.min(this.allItems[category][key].amount, newAmount);
+    //   this.stagedItems[category][key].amount = clamped;
+    // }
   }
   public getItemsAvailableForTrade(): TradeableItems
   {
@@ -165,7 +170,10 @@ export class Trade
 
     const resourcesToTrade = Object.keys(this.stagedItems.resources).reduce((merged, resourceType) =>
     {
-      merged[resourceType] = this.stagedItems.resources[resourceType].amount;
+      if (this.stagedItems.resources[resourceType].amount > 0)
+      {
+        merged[resourceType] = this.stagedItems.resources[resourceType].amount;
+      }
 
       return merged;
     }, <Resources>{});
