@@ -3,10 +3,10 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {Player} from "core/src/player/Player";
 import {Star} from "core/src/map/Star";
-import { extendables } from "../../extendables";
+import { Extendables, getExtendables } from "../../extendables";
 
 
-type TabKey = keyof typeof extendables.manufacturableThingKinds;
+type TabKey = keyof Extendables["manufacturableThingKinds"];
 
 export interface PropTypes extends React.Props<any>
 {
@@ -36,6 +36,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
 
   public render()
   {
+    const extendables = getExtendables();
     const activeTabData = extendables.manufacturableThingKinds[this.state.activeTab];
 
     return(

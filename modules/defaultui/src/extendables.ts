@@ -12,6 +12,7 @@ import { localize } from "../localization/localize";
 import { ManufacturableUnits } from "./uicomponents/production/ManufacturableUnits";
 import { ManufacturableItems } from "./uicomponents/production/ManufacturableItems";
 import { Player } from "core/src/player/Player";
+import { activeModuleData } from "core/src/app/activeModuleData";
 
 
 type ManufacturableThingKindUiData<T extends ManufacturableThing> =
@@ -29,27 +30,45 @@ type ManufacturableThingKindUiData<T extends ManufacturableThing> =
   }) => React.ReactElement<any>;
 };
 
-export const extendables:
+export type Extendables =
 {
   manufacturableThingKinds:
   {
-    [key: string]: ManufacturableThingKindUiData<any>
+    [key: string]: ManufacturableThingKindUiData<any>;
   };
-} =
+};
+export function copyExtendables(): Extendables
+{
+  return {
+    manufacturableThingKinds: {...extendables.manufacturableThingKinds},
+  };
+}
+export function getExtendables(): Extendables
+{
+  return activeModuleData.nonCoreData.defaultUi.extendables;
+}
+
+const extendables: Extendables =
 {
   manufacturableThingKinds:
   {
     units:
     {
       displayOrder: 0,
-      get buttonString() {return localize("manufactureUnitsButton").toString();},
+      get buttonString()
+      {
+        return localize("manufactureUnitsButton").toString();
+      },
       getManufacturableThings: manufactory => manufactory.getManufacturableUnits(),
       render: props => ManufacturableUnits(props),
     },
     items:
     {
       displayOrder: 1,
-      get buttonString() {return localize("manufactureItemsButton").toString();},
+      get buttonString()
+      {
+        return localize("manufactureItemsButton").toString();
+      },
       getManufacturableThings: manufactory => manufactory.getManufacturableItems(),
       render: props => ManufacturableItems(props),
     },

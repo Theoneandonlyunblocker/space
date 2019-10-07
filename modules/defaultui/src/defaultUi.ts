@@ -22,6 +22,7 @@ import {VfxEditor} from "./uicomponents/vfxeditor/VfxEditor";
 
 import * as moduleInfo from "../moduleInfo.json";
 import { triggeredScripts } from "./triggeredScripts";
+import { copyExtendables } from "./extendables";
 
 
 function loadCss(url: string, baseUrl: string): void
@@ -83,6 +84,11 @@ export const defaultUi: GameModule =
     moduleData.uiScenes.flagMaker = FlagMaker;
     moduleData.uiScenes.vfxEditor = VfxEditor;
     moduleData.uiScenes.battleSceneTester = BattleSceneTester;
+
+    moduleData.nonCoreData.defaultUi =
+    {
+      extendables: copyExtendables(),
+    };
 
     return moduleData;
   },
