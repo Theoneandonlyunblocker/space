@@ -114,11 +114,16 @@ export class ModuleData
   public scripts: TriggeredScripts;
   public defaultMap: MapGenTemplate;
   public defaultLanguage: Language;
-  public uiScenes: Partial<UIScenes> =
+  public uiScenes: Partial<UIScenes> = {};
+  // for content not used by the core game, but used modularly across modules
+  // f.ex. modular ui components
+  public readonly nonCoreData:
   {
-
-  };
-
+    [moduleKey: string]:
+    {
+      [key: string]: any;
+    };
+  } = {};
   public get technologyUnlocks(): TechnologyUnlocksByLevelByTech
   {
     if (this.technologyUnlocksAreDirty)
