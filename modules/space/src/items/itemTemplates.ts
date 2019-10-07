@@ -27,8 +27,7 @@ export const bombLauncher1: ItemTemplate =
   {
     return localize("bombLauncher1_description").toString();
   },
-  getIcon: getItemIcon.bind(null, "cannon"),
-
+  getIcon: getItemIcon.bind(null, "cannon", 1),
   techLevel: 1,
   buildCost:
   {
@@ -50,8 +49,7 @@ export const bombLauncher2: ItemTemplate =
   {
     return localize("bombLauncher2_description").toString();
   },
-  getIcon: getItemIcon.bind(null, "cannon"),
-
+  getIcon: getItemIcon.bind(null, "cannon", 2),
   techLevel: 2,
   buildCost:
   {
@@ -78,8 +76,7 @@ export const bombLauncher3: ItemTemplate =
   {
     return localize("bombLauncher3_description").toString();
   },
-  getIcon: getItemIcon.bind(null, "cannon"),
-
+  getIcon: getItemIcon.bind(null, "cannon", 3),
   techLevel: 3,
   buildCost:
   {
@@ -107,8 +104,7 @@ export const afterBurner1: ItemTemplate =
   {
     return localize("afterBurner1_description").toString();
   },
-  getIcon: getItemIcon.bind(null, "blueThing"),
-
+  getIcon: getItemIcon.bind(null, "blueThing", 1),
   techLevel: 1,
   buildCost:
   {
@@ -135,8 +131,7 @@ export const afterBurner2: ItemTemplate =
   {
     return localize("afterBurner2_description").toString();
   },
-  getIcon: getItemIcon.bind(null, "blueThing"),
-
+  getIcon: getItemIcon.bind(null, "blueThing", 2),
   techLevel: 2,
   buildCost:
   {
@@ -162,8 +157,7 @@ export const afterBurner3: ItemTemplate =
   {
     return localize("afterBurner3_description").toString();
   },
-  getIcon: getItemIcon.bind(null, "blueThing"),
-
+  getIcon: getItemIcon.bind(null, "blueThing", 3),
   techLevel: 3,
   buildCost:
   {
@@ -190,8 +184,7 @@ export const shieldPlating1: ItemTemplate =
   {
     return localize("shieldPlating1_description").toString();
   },
-  getIcon: getItemIcon.bind(null, "armor"),
-
+  getIcon: getItemIcon.bind(null, "armor", 1),
   techLevel: 1,
   buildCost:
   {
@@ -217,8 +210,7 @@ export const shieldPlating2: ItemTemplate =
   {
     return localize("shieldPlating2_description").toString();
   },
-  getIcon: getItemIcon.bind(null, "armor"),
-
+  getIcon: getItemIcon.bind(null, "armor", 2),
   techLevel: 2,
   buildCost:
   {
@@ -244,8 +236,7 @@ export const shieldPlating3: ItemTemplate =
   {
     return localize("shieldPlating3_description").toString();
   },
-  getIcon: getItemIcon.bind(null, "armor"),
-
+  getIcon: getItemIcon.bind(null, "armor", 3),
   techLevel: 3,
   buildCost:
   {

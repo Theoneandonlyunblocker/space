@@ -3275,11 +3275,13 @@ ul, ol
   }
 }
 
+@unit-item-size: 32px;
+
 .unit-item-wrapper
 {
   position: relative;
-  width: 32px;
-  height: 32px;
+  width: @unit-item-size;
+  height: @unit-item-size;
 
   border: 1px solid @ui-border-color2;
 
@@ -3298,19 +3300,18 @@ ul, ol
   }
 }
 
-.item-icon-container
+.item-icon
 {
   >*
-  {
-    position: absolute;
-    top: 0;
-    left: 0;
-  }
-  .item-icon-base
   {
     width: 100%;
     height: 100%;
   }
+}
+.item-icon-drag-clone
+{
+  width: @unit-item-size;
+  height: @unit-item-size;
 }
 
 

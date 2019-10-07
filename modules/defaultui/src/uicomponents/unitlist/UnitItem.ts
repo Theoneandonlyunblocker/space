@@ -8,7 +8,7 @@ import {Item} from "core/src/items/Item";
 import * as debug from "core/src/app/debug";
 
 import {localize} from "../../../localization/localize";
-import { getAssetSrc } from "modules/defaultui/assets/assets";
+import { ItemIcon } from "./ItemIcon";
 
 
 export interface PropTypes extends React.Props<any>
@@ -38,51 +38,16 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
 
-    this.bindMethods();
-
+    this.onDragEnd = this.onDragEnd.bind(this);
+    this.onDragStart = this.onDragStart.bind(this);
 
     this.dragPositioner = new DragPositioner(this, this.ownDOMNode, this.props.dragPositionerProps);
     this.dragPositioner.onDragStart = this.onDragStart;
     this.dragPositioner.onDragEnd = this.onDragEnd;
     applyMixins(this, this.dragPositioner);
   }
-  private bindMethods()
-  {
-    this.onDragEnd = this.onDragEnd.bind(this);
-    this.getTechIcon = this.getTechIcon.bind(this);
-    this.onDragStart = this.onDragStart.bind(this);
-  }
 
-  onDragStart()
-  {
-    debug.log("ui", `Start item drag ´${this.props.item.template.displayName}`);
-    this.props.onDragStart(this.props.item);
-  }
-  onDragEnd()
-  {
-    debug.log("ui", `End item drag ´${this.props.item.template.displayName}`);
-    this.props.onDragEnd();
-  }
-  getTechIcon(techLevel: number)
-  {
-    switch (techLevel)
-    {
-      case 2:
-      {
-        return getAssetSrc("tech2Icon");
-      }
-      case 3:
-      {
-        return getAssetSrc("tech3Icon");
-      }
-      default:
-      {
-        throw new Error(`Couldn't find icon for item tech level ${techLevel}`);
-      }
-    }
-  }
-
-  render()
+  public render()
   {
     if (!this.props.item)
     {
@@ -119,23 +84,20 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
 
     return(
       ReactDOMElements.div(divProps,
-        ReactDOMElements.div(
-        {
-          className: "item-icon-container",
-        },
-          ReactDOMElements.img(
-          {
-            className: "item-icon-base",
-            src: item.template.getIconSrc(),
-          }),
-          item.template.techLevel > 1 ? ReactDOMElements.img(
-          {
-            className: "item-icon-tech-level",
-            src: this.getTechIcon(item.template.techLevel),
-          }) : null,
-        ),
+        ItemIcon({itemTemplate: this.props.item.template}),
       )
     );
+  }
+
+  private onDragStart(): void
+  {
+    debug.log("ui", `Start item drag ´${this.props.item.template.displayName}`);
+    this.props.onDragStart(this.props.item);
+  }
+  private onDragEnd(): void
+  {
+    debug.log("ui", `End item drag ´${this.props.item.template.displayName}`);
+    this.props.onDragEnd();
   }
 }
 

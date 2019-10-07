@@ -8,9 +8,6 @@ export const assetSources =
   hoveredActionPoint: "./assets/img/icons/hoveredAction.png",
   spentActionPoint: "./assets/img/icons/spentAction.png",
 
-  tech3Icon: "./assets/img/icons/t2icon.png",
-  tech2Icon: "./assets/img/icons/t3icon.png",
-
   statusEffect_negative_attack:       "./assets/img/icons/statusEffect_negative_attack.png",
   statusEffect_negative_defence:      "./assets/img/icons/statusEffect_negative_defence.png",
   statusEffect_negative_intelligence: "./assets/img/icons/statusEffect_negative_intelligence.png",
