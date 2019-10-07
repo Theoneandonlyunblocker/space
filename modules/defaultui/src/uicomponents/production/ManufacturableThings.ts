@@ -1,17 +1,12 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
 import {Player} from "core/src/player/Player";
 import {Star} from "core/src/map/Star";
-import {ItemTemplate} from "core/src/templateinterfaces/ItemTemplate";
-import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
-
-import {ManufacturableItems} from "./ManufacturableItems";
-import {ManufacturableUnits} from "./ManufacturableUnits";
+import { extendables } from "../../extendables";
 
 
-type TabKey = "units" | "items";
+type TabKey = keyof typeof extendables.manufacturableThingKinds;
 
 export interface PropTypes extends React.Props<any>
 {
@@ -36,13 +31,13 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   {
     super(props);
 
-    this.state = this.getInitialStateTODO();
-
-    this.bindMethods();
+    this.state = {activeTab: "units"};
   }
 
   public render()
   {
+    const activeTabData = extendables.manufacturableThingKinds[this.state.activeTab];
+
     return(
       ReactDOMElements.div(
       {
@@ -52,112 +47,42 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
         {
           className: "manufacturable-things-tab-buttons",
         },
-          this.makeTabButton("units"),
-          this.makeTabButton("items"),
+          Object.keys(extendables.manufacturableThingKinds).map(key =>
+          {
+            return ReactDOMElements.button(
+            {
+              key: key,
+              className: "manufacturable-things-tab-button" +
+                (this.state.activeTab === key ? " active-tab" : ""),
+              onClick: () =>
+              {
+                if (this.state.activeTab !== key)
+                {
+                  this.setState({activeTab: key});
+                }
+              },
+            },
+              extendables.manufacturableThingKinds[key].buttonString,
+            );
+          }),
         ),
         ReactDOMElements.div(
         {
           className: "manufacturable-things-active-tab",
         },
-          this.makeTab(this.state.activeTab),
+          activeTabData.render(
+          {
+            manufacturableThings: (this.props.selectedStar && this.props.selectedStar.manufactory) ?
+              activeTabData.getManufacturableThings(this.props.selectedStar.manufactory) :
+              [],
+            selectedLocation: this.props.selectedStar,
+            player: this.props.player,
+            canManufacture: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
+            triggerParentUpdate: this.props.triggerUpdate,
+          }),
         ),
       )
     );
-  }
-
-  private bindMethods(): void
-  {
-    this.makeTabButton = this.makeTabButton.bind(this);
-    this.selectTab = this.selectTab.bind(this);
-    this.makeTab = this.makeTab.bind(this);
-  }
-  private getInitialStateTODO(): StateType
-  {
-    return(
-    {
-      activeTab: "units",
-    });
-  }
-
-  private selectTab(key: TabKey): void
-  {
-    if (this.state.activeTab === key) { return; }
-    this.setState(
-    {
-      activeTab: key,
-    });
-  }
-  private makeTabButton(key: TabKey): React.ReactHTMLElement<HTMLButtonElement>
-  {
-    let displayString: string;
-    switch (key)
-    {
-      case "units":
-      {
-        displayString = localize("manufactureUnitsButton").toString();
-        break;
-      }
-      case "items":
-      {
-        displayString = localize("manufactureItemsButton").toString();
-        break;
-      }
-    }
-
-    return(
-      ReactDOMElements.button(
-      {
-        key: key,
-        className: "manufacturable-things-tab-button" +
-          (this.state.activeTab === key ? " active-tab" : ""),
-        onClick: this.selectTab.bind(this, key),
-      },
-        displayString!,
-      )
-    );
-  }
-  private getManufacturableThings(key: TabKey): ItemTemplate[] | UnitTemplate[]
-  {
-    if (!this.props.selectedStar || !this.props.selectedStar.manufactory)
-    {
-      return [];
-    }
-
-    if (key === "items")
-    {
-      return this.props.selectedStar.manufactory.getManufacturableItems();
-    }
-    else
-    {
-      return this.props.selectedStar.manufactory.getManufacturableUnits();
-    }
-  }
-  private makeTab(key: TabKey)
-  {
-    const props =
-    {
-      key: key,
-      selectedStar: this.props.selectedStar,
-      manufacturableThings: this.getManufacturableThings(key),
-      triggerUpdate: this.props.triggerUpdate,
-      canBuild: Boolean(this.props.selectedStar && this.props.selectedStar.manufactory),
-      player: this.props.player,
-    };
-    switch (key)
-    {
-      case "units":
-      {
-        return(
-          ManufacturableUnits(props)
-        );
-      }
-      case "items":
-      {
-        return(
-          ManufacturableItems(props)
-        );
-      }
-    }
   }
 }
 

@@ -14,10 +14,10 @@ import { Player } from "core/src/player/Player";
 
 export interface PropTypes extends React.Props<any>
 {
-  selectedStar?: Star;
+  selectedLocation: Star | undefined;
   manufacturableThings: ManufacturableThing[];
-  triggerUpdate: () => void;
-  canBuild: boolean;
+  triggerParentUpdate: () => void;
+  canManufacture: boolean;
   player: Player;
 }
 
@@ -32,7 +32,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
 
   shouldComponentUpdate(newProps: PropTypes)
   {
-    if (this.props.selectedStar !== newProps.selectedStar)
+    if (this.props.selectedLocation !== newProps.selectedLocation)
     {
       return true;
     }
@@ -44,7 +44,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
     {
 
     }
-    if (this.props.canBuild !== newProps.canBuild)
+    if (this.props.canManufacture !== newProps.canManufacture)
     {
       return true;
     }
@@ -54,9 +54,9 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
 
   addItemToBuildQueue(template: ItemTemplate)
   {
-    const manufactory: Manufactory = this.props.selectedStar.manufactory;
+    const manufactory: Manufactory = this.props.selectedLocation.manufactory;
     manufactory.addThingToQueue(template, "item");
-    this.props.triggerUpdate();
+    this.props.triggerParentUpdate();
   }
 
   public state: StateType;
@@ -85,7 +85,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
       {
         className: "manufacturable-items",
       },
-        (!this.props.selectedStar || !this.props.selectedStar.manufactory) ? null : ReactDOMElements.div(
+        (!this.props.selectedLocation || !this.props.selectedLocation.manufactory) ? null : ReactDOMElements.div(
         {
           className: "manufactory-upgrade-buttons-container",
         },
@@ -103,7 +103,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
         ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,
-          onClick: (this.props.canBuild ? <any>this.addItemToBuildQueue : undefined),
+          onClick: (this.props.canManufacture ? <any>this.addItemToBuildQueue : undefined),
           showCost: true,
           player: this.props.player,
         }),

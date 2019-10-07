@@ -14,10 +14,10 @@ import { Player } from "core/src/player/Player";
 
 export interface PropTypes extends React.Props<any>
 {
-  selectedStar?: Star;
+  selectedLocation: Star | undefined;
   manufacturableThings: ManufacturableThing[];
-  triggerUpdate: () => void;
-  canBuild: boolean;
+  triggerParentUpdate: () => void;
+  canManufacture: boolean;
   player: Player;
 }
 
@@ -32,7 +32,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
 
   shouldComponentUpdate(newProps: PropTypes)
   {
-    if (this.props.selectedStar !== newProps.selectedStar)
+    if (this.props.selectedLocation !== newProps.selectedLocation)
     {
       return true;
     }
@@ -44,7 +44,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
     {
 
     }
-    if (this.props.canBuild !== newProps.canBuild)
+    if (this.props.canManufacture !== newProps.canManufacture)
     {
       return true;
     }
@@ -54,9 +54,9 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
 
   addUnitToBuildQueue(template: UnitTemplate)
   {
-    const manufactory: Manufactory = this.props.selectedStar.manufactory;
+    const manufactory: Manufactory = this.props.selectedLocation.manufactory;
     manufactory.addThingToQueue(template, "unit");
-    this.props.triggerUpdate();
+    this.props.triggerParentUpdate();
   }
 
   public state: StateType;
@@ -76,26 +76,26 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
 
   upgradeHealth()
   {
-    const manufactory: Manufactory = this.props.selectedStar.manufactory;
+    const manufactory: Manufactory = this.props.selectedLocation.manufactory;
     manufactory.upgradeUnitHealthModifier(0.1);
-    this.props.triggerUpdate();
+    this.props.triggerParentUpdate();
   }
 
   upgradeStats()
   {
-    const manufactory: Manufactory = this.props.selectedStar.manufactory;
+    const manufactory: Manufactory = this.props.selectedLocation.manufactory;
     manufactory.upgradeUnitStatsModifier(0.1);
-    this.props.triggerUpdate();
+    this.props.triggerParentUpdate();
   }
 
   render()
   {
-    const selectedStarHasManufactory = this.props.selectedStar && this.props.selectedStar.manufactory;
+    const selectedStarHasManufactory = this.props.selectedLocation && this.props.selectedLocation.manufactory;
 
     let manufactoryUpgradeButtons: React.ReactElement<any> = null;
     if (selectedStarHasManufactory)
     {
-      const manufactory: Manufactory = this.props.selectedStar.manufactory;
+      const manufactory: Manufactory = this.props.selectedLocation.manufactory;
       const unitUpgradeCost = manufactory.getUnitModifierUpgradeCost();
 
       manufactoryUpgradeButtons = ReactDOMElements.div(
@@ -136,7 +136,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
         ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,
-          onClick: (this.props.canBuild ? <any>this.addUnitToBuildQueue : null),
+          onClick: (this.props.canManufacture ? <any>this.addUnitToBuildQueue : null),
           showCost: true,
           player: this.props.player,
         }),
