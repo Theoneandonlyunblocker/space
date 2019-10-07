@@ -4,7 +4,7 @@ import {Rect} from "core/src/math/Rect";
 import {WindowContainerComponent} from "./WindowContainer";
 
 
-const baseZIndex = 10000;
+const baseZIndex = 1000;
 const windowCascadeMargin = 20;
 
 let zIndex = baseZIndex;
