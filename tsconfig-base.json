@@ -6,6 +6,7 @@
       "es2015.promise",
       "es2015.iterable", // not used, https://github.com/microsoft/TypeScript/issues/31722
       "es2015.proxy",
+      "es2015.collection",
       "scripthost"
     ],
 

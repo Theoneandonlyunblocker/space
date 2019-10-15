@@ -29,6 +29,7 @@ import { applyFlatAndMultiplierAdjustments, applyAdjustmentsObjects } from "../g
 import {GalaxyMap} from "./GalaxyMap";
 import { getUniqueArrayKeys, sumObjectValues } from "../generic/utility";
 import { Resources } from "../player/PlayerResources";
+import { StarModifiersCollection } from "../maplevelmodifiers/StarModifiersCollection";
 
 
 // represents single location in game world. see Region for a grouping of these locations
@@ -75,6 +76,7 @@ export class Star implements Point
     });
   }
   public manufactory: Manufactory;
+  public readonly modifiers: StarModifiersCollection = new StarModifiersCollection(this);
 
   private readonly indexedNeighborsInRange:
   {
@@ -302,17 +304,17 @@ export class Star implements Point
     const miningIncome = this.getMiningIncome();
     const incomeBeforeBuildings = sumObjectValues(this.baseIncome, miningIncome);
 
-    const adjustmentsFromBuildings = this.buildings.getIncomeAdjustments();
-    const income = applyAdjustmentsObjects(incomeBeforeBuildings, adjustmentsFromBuildings);
+    const localAdjustment = this.modifiers.getSelfModifiers().income;
+    const income = applyAdjustmentsObjects(incomeBeforeBuildings, localAdjustment);
 
     return income;
   }
   public getResearchPoints(): number
   {
     const basePoints = activeModuleData.ruleSet.research.baseResearchPointsPerStar;
-    const buildingsEffect = this.buildings.getEffects().researchPoints;
+    const localAdjustment = this.modifiers.getSelfModifiers().adjustments.researchPoints;
 
-    return applyFlatAndMultiplierAdjustments(basePoints, buildingsEffect);
+    return applyFlatAndMultiplierAdjustments(basePoints, localAdjustment);
   }
 
   // FLEETS
@@ -709,9 +711,9 @@ export class Star implements Point
   public getVisionRange(): number
   {
     const baseRange = activeModuleData.ruleSet.vision.baseStarVisionRange;
-    const buildingsEffect = this.buildings.getEffects().vision;
+    const localEffect = this.modifiers.getSelfModifiers().adjustments.vision;
 
-    return applyFlatAndMultiplierAdjustments(baseRange, buildingsEffect);
+    return applyFlatAndMultiplierAdjustments(baseRange, localEffect);
   }
   public getVision(): Star[]
   {
@@ -720,9 +722,9 @@ export class Star implements Point
   public getDetectionRange(): number
   {
     const baseRange = activeModuleData.ruleSet.vision.baseStarDetectionRange;
-    const buildingsEffect = this.buildings.getEffects().detection;
+    const localEffect = this.modifiers.getSelfModifiers().adjustments.detection;
 
-    return applyFlatAndMultiplierAdjustments(baseRange, buildingsEffect);
+    return applyFlatAndMultiplierAdjustments(baseRange, localEffect);
   }
   public getDetection(): Star[]
   {
@@ -1059,9 +1061,9 @@ export class Star implements Point
   }
   private getMiningIncome(): Resources
   {
-    const buildingsEffect = this.buildings.getEffects().mining;
+    const localAdjustment = this.modifiers.getSelfModifiers().adjustments.mining;
     const baseAmount = 0;
-    const finalAmount = applyFlatAndMultiplierAdjustments(baseAmount, buildingsEffect);
+    const finalAmount = applyFlatAndMultiplierAdjustments(baseAmount, localAdjustment);
 
     if (finalAmount === 0)
     {

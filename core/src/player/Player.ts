@@ -45,6 +45,7 @@ import { BuildingTemplate } from "../templateinterfaces/BuildingTemplate";
 import { Building } from "../building/Building";
 import {BuildingUpgradeData} from "../building/BuildingUpgradeData";
 import { Resources } from "./PlayerResources";
+import { PlayerModifiersCollection } from "../maplevelmodifiers/PlayerModifiersCollection";
 
 
 const resourcesProxyHandler: ProxyHandler<Resources> =
@@ -86,7 +87,7 @@ export class Player
   public playerTechnology: PlayerTechnology;
   public notificationLog: PlayerNotificationSubscriber;
   public controlledLocations: Star[] = [];
-
+  public modifiers: PlayerModifiersCollection = new PlayerModifiersCollection(this);
   public visionIsDirty: boolean = true;
   public visibleStars:
   {
@@ -100,6 +101,7 @@ export class Player
   {
     [id: number]: Star;
   } = {};
+
   private identifiedUnits:
   {
     [id: number]: Unit;

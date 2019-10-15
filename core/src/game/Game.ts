@@ -13,6 +13,7 @@ import {FullSaveData} from "../savedata/FullSaveData";
 import {GameSaveData} from "../savedata/GameSaveData";
 import { activeModuleData } from "../app/activeModuleData";
 import { storageStrings } from "../saves/storageStrings";
+import { GlobalModifiersCollection } from "../maplevelmodifiers/GlobalModifiersCollection";
 
 
 export class Game
@@ -23,6 +24,7 @@ export class Game
   public hasEnded: boolean = false;
   public playerToAct: Player;
   public gameStorageKey: string;
+  public globalModifiers: GlobalModifiersCollection = new GlobalModifiersCollection(this);
 
   private actingPlayerIndex: number = 0;
 

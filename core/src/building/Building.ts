@@ -3,7 +3,6 @@
 import {BuildingUpgradeData} from "./BuildingUpgradeData";
 import {idGenerators} from "../app/idGenerators";
 import {BuildingSaveData} from "../savedata/BuildingSaveData";
-import {PartialBuildingEffect} from "./BuildingEffect";
 import {BuildingTemplate} from "../templateinterfaces/BuildingTemplate";
 
 import {Player} from "../player/Player";
@@ -12,7 +11,7 @@ import { TerritoryBuildingTemplate } from "../templateinterfaces/TerritoryBuildi
 import { BuildingFamily } from "../templateinterfaces/BuildingFamily";
 import { Resources } from "../player/PlayerResources";
 import { sumObjectValues } from "../generic/utility";
-import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
+import { BuildingModifiersCollection } from "../maplevelmodifiers/BuildingModifiersCollection";
 
 
 export type TerritoryBuilding = Building<TerritoryBuildingTemplate>;
@@ -26,6 +25,7 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
   public controller: Player;
 
   public totalCost: Resources;
+  public readonly modifiers: BuildingModifiersCollection = new BuildingModifiersCollection(this);
 
   constructor(props:
   {
@@ -37,7 +37,6 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     totalCost?: Resources;
 
     id?: number;
-
   })
   {
     this.template = props.template;
@@ -45,14 +44,8 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     this.location = props.location;
     this.controller = props.controller || this.location.owner;
     this.totalCost = props.totalCost || this.template.buildCost || {};
-  }
-  public getEffect(): PartialBuildingEffect
-  {
-    return {...this.template.buildingEffect};
-  }
-  public getIncome(): {[resourceType: string]: Partial<FlatAndMultiplierAdjustment>}
-  {
-    return {...this.template.income};
+
+    this.modifiers.handleConstruct();
   }
   public getStandardUpgrades(): BuildingUpgradeData[]
   {
@@ -81,6 +74,8 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     this.template = upgradeData.template;
     this.totalCost = sumObjectValues(this.totalCost, upgradeData.cost);
 
+    this.modifiers.handleUpgrade();
+
     // TODO 2018.06.13 | better way to do this?
     this.location.buildings.handleBuidlingUpgrade(this, oldTemplate);
   }
@@ -99,6 +94,21 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     {
       return templateFamily === familyToCheck;
     });
+  }
+  // TODO 2019.10.10 | clean up for typescript 3.7 or rename or remove altogether
+  public getEffect(): BuildingTemplate["mapLevelModifiers"]["localStar"]["self"]["adjustments"]
+  {
+    if (this.template.mapLevelModifiers &&
+      this.template.mapLevelModifiers.localStar &&
+      this.template.mapLevelModifiers.localStar.self &&
+      this.template.mapLevelModifiers.localStar.self.adjustments)
+    {
+      return this.template.mapLevelModifiers.localStar.self.adjustments;
+    }
+    else
+    {
+      return {};
+    }
   }
   public serialize(): BuildingSaveData
   {

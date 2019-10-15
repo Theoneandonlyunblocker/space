@@ -1,17 +1,10 @@
-import {BuildingEffect, getBaseBuildingEffect} from "./BuildingEffect";
-
 import {Building} from "./Building";
-import {squashAdjustmentsObjects, getBaseAdjustment, FlatAndMultiplierAdjustment, squashFlatAndMultiplierAdjustments, applyFlatAndMultiplierAdjustments} from "../generic/FlatAndMultiplierAdjustment";
 import {BuildingSaveData} from "../savedata/BuildingSaveData";
 
 
 export class BuildingCollection<T extends Building>
 {
   private readonly buildings: T[] = [];
-  private cachedEffects: BuildingEffect;
-  private cachedEffectsAreDirty: boolean = true;
-  private cachedIncomeAdjustments: {[resourceType: string]: FlatAndMultiplierAdjustment};
-  private cachedIncomeAdjustmentsAreDirty: boolean = true;
 
   /**
    * should be used for non-specific effects
@@ -99,27 +92,8 @@ export class BuildingCollection<T extends Building>
   {
     return this.buildings.filter(filterFn);
   }
-  public getEffects(): BuildingEffect
-  {
-    if (this.cachedEffectsAreDirty)
-    {
-      this.cachedEffects = this.calculateBuildingEffects();
-    }
-
-    return this.cachedEffects;
-  }
-  public getIncomeAdjustments(): {[resourceType: string]: FlatAndMultiplierAdjustment}
-  {
-    if (this.cachedIncomeAdjustmentsAreDirty)
-    {
-      this.cachedIncomeAdjustments = this.calculateIncome();
-    }
-
-    return this.cachedIncomeAdjustments;
-  }
   public handleBuidlingUpgrade(building: T, oldTemplate: T["template"]): void
   {
-    this.cachedEffectsAreDirty = true;
     if (this.onUpgradeBuilding)
     {
       this.onUpgradeBuilding(building, oldTemplate);
@@ -128,45 +102,5 @@ export class BuildingCollection<T extends Building>
   public serialize(): BuildingSaveData[]
   {
     return this.buildings.map(building => building.serialize());
-  }
-
-  private calculateBuildingEffects(): BuildingEffect
-  {
-    const baseEffect = getBaseBuildingEffect();
-    const buildingEffects = this.buildings.map(building => building.getEffect());
-
-    const squashed = squashAdjustmentsObjects(baseEffect, ...buildingEffects);
-
-    return squashed;
-  }
-  private calculateIncome(): {[resourceType: string]: FlatAndMultiplierAdjustment}
-  {
-    const allBuildingIncomes = this.buildings.map(building => building.getIncome());
-
-    const adjustmentsByResource = allBuildingIncomes.reduce((squashedIncome: {[resourceType: string]: FlatAndMultiplierAdjustment}, incomeForBuilding) =>
-    {
-      for (const resourceType in incomeForBuilding)
-      {
-        if (!squashedIncome[resourceType])
-        {
-          squashedIncome[resourceType] = getBaseAdjustment();
-        }
-
-        squashFlatAndMultiplierAdjustments(squashedIncome[resourceType], incomeForBuilding[resourceType]);
-      }
-
-      return squashedIncome;
-    }, {});
-
-    return adjustmentsByResource;
-
-    const incomeByResource = Object.keys(adjustmentsByResource).reduce((income, resourceType) =>
-    {
-      income[resourceType] = applyFlatAndMultiplierAdjustments(0, adjustmentsByResource[resourceType]);
-
-      return income;
-    }, {});
-
-    return incomeByResource;
   }
 }

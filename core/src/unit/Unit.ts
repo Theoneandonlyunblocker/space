@@ -43,6 +43,7 @@ import {UnitSaveData} from "../savedata/UnitSaveData";
 import { ProbabilityDistributions } from "../templateinterfaces/ProbabilityDistribution";
 import { Name } from "../localization/Name";
 import { Resources } from "../player/PlayerResources";
+import { UnitModifiersCollection } from "../maplevelmodifiers/UnitModifiersCollection";
 
 
 type PassiveSkillsByPhase =
@@ -110,6 +111,8 @@ export class Unit
 
   public uiDisplayIsDirty: boolean = true;
   public lastHealthDrawnAt: number;
+
+  public mapLevelModifiers: UnitModifiersCollection = new UnitModifiersCollection(this);
 
   constructor(props:
   {

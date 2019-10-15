@@ -25,9 +25,18 @@ export const commercialPort: BuildingTemplate =
   },
   maxBuiltAtLocation: 1,
 
-  income:
+  mapLevelModifiers:
   {
-    [moneyResource.type]: {flat: 20},
+    localStar:
+    {
+      self:
+      {
+        income:
+        {
+          [moneyResource.type]: {flat: 20},
+        },
+      },
+    },
   },
 };
 export const deepSpaceRadar: BuildingTemplate =
@@ -51,10 +60,19 @@ export const deepSpaceRadar: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  buildingEffect:
+  mapLevelModifiers:
   {
-    vision: {flat: 1},
-    detection: {flat: 1},
+    localStar:
+    {
+      self:
+      {
+        adjustments:
+        {
+          vision: {flat: 1},
+          detection: {flat: 1},
+        },
+      },
+    },
   },
   techRequirements:
   [
@@ -89,9 +107,18 @@ export const resourceMine: BuildingTemplate =
     return Boolean(star.resource);
   },
 
-  buildingEffect:
+  mapLevelModifiers:
   {
-    mining: {flat: 1},
+    localStar:
+    {
+      self:
+      {
+        adjustments:
+        {
+          mining: {flat: 1},
+        },
+      },
+    },
   },
 };
 export const reserachLab: BuildingTemplate =
@@ -115,9 +142,18 @@ export const reserachLab: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  buildingEffect:
+  mapLevelModifiers:
   {
-    researchPoints: {flat: 10},
+    localStar:
+    {
+      self:
+      {
+        adjustments:
+        {
+          researchPoints: {flat: 10},
+        },
+      },
+    },
   },
 };
 export const thePyramids: BuildingTemplate =
@@ -176,6 +212,32 @@ export const nationalEpic: BuildingTemplate =
       [testResource4.type]: 2,
       [testResource5.type]: 2,
     });
+  },
+  mapLevelModifiers:
+  {
+    owningPlayer:
+    {
+      ownedStars:
+      {
+        self:
+        {
+          income:
+          {
+            [testResource1.type]: {flat: 10},
+          }
+        }
+      }
+    },
+    localStar:
+    {
+      self:
+      {
+        income:
+        {
+          [testResource2.type]: {flat: 100},
+        }
+      }
+    }
   },
 
   buildCost:
