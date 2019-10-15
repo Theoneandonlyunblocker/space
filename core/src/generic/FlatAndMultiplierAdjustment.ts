@@ -99,7 +99,7 @@ export function applyAdjustmentsObjects<T extends {[key: string]: number}>(
 {
   const squashedAdjustments = squashAdjustmentsObjects(baseAdjustmentsObject, ...adjustmentsObjects);
 
-  const allKeys = Object.keys({...baseValues, ...squashAdjustmentsObjects});
+  const allKeys = Object.keys({...baseValues, ...squashedAdjustments});
 
   return allKeys.reduce((finalValuesByKey, key) =>
   {
