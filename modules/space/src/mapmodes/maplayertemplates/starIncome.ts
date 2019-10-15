@@ -9,6 +9,7 @@ import
 } from "core/src/graphics/pixiWrapperFunctions";
 import { clamp } from "core/src/generic/utility";
 import { localize } from "modules/space/localization/localize";
+import { getBaseValuablenessOfResources } from "core/src/player/PlayerResources";
 
 
 export const starIncome: MapRendererLayerTemplate =
@@ -62,7 +63,7 @@ export const starIncome: MapRendererLayerTemplate =
     for (let i = 0; i < points.length; i++)
     {
       const star = points[i];
-      const income = star.getIncome();
+      const income = getBaseValuablenessOfResources(star.getResourceIncome());
       const relativeIncome = getRelativeValueWithSteps(incomeBounds.min, incomeBounds.max, income, 10);
       const color = getColorForRelativeValue(incomeBounds.min, incomeBounds.max, relativeIncome);
 
