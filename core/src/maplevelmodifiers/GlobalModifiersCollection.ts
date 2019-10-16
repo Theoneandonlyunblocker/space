@@ -21,21 +21,21 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
   }
   protected getPropagationsFor(toPropagate: GlobalModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<GlobalModifier, any>[] = [];
+    const propagations: MapLevelModifiersPropagationWithoutId<GlobalModifier>[] = [];
 
-    if (toPropagate.stars)
+    if (toPropagate.propagations && toPropagate.propagations.stars)
     {
       this.game.galaxyMap.stars.forEach(location =>
       {
         propagations.push(
         {
-          modifier: toPropagate.stars,
+          modifier: toPropagate.propagations.stars,
           targetType: "stars",
           target: location.modifiers,
         });
       });
     }
-    if (toPropagate.units)
+    if (toPropagate.propagations && toPropagate.propagations.units)
     {
       const allUnitsInGame = this.game.players.map(player => player.units).reduce((allUnits, playerUnits) =>
       {
@@ -48,7 +48,7 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
       {
         propagations.push(
         {
-          modifier: toPropagate.units,
+          modifier: toPropagate.propagations.units,
           targetType: "units",
           target: unit.mapLevelModifiers,
         });

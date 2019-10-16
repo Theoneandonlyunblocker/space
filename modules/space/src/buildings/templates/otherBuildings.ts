@@ -27,13 +27,18 @@ export const commercialPort: BuildingTemplate =
 
   mapLevelModifier:
   {
-    localStar:
+    key: "commercialPort",
+    propagations:
     {
-      self:
+      localStar:
       {
-        income:
+        key: "localCommercialPort",
+        self:
         {
-          [moneyResource.type]: {flat: 20},
+          income:
+          {
+            [moneyResource.type]: {flat: 20},
+          },
         },
       },
     },
@@ -62,17 +67,22 @@ export const deepSpaceRadar: BuildingTemplate =
 
   mapLevelModifier:
   {
-    localStar:
+    key: "deepSpaceRadar",
+    propagations:
     {
-      self:
+      localStar:
       {
-        adjustments:
+        key: "localDeepSpaceRadar",
+        self:
         {
-          vision: {flat: 1},
-          detection: {flat: 1},
+          adjustments:
+          {
+            vision: {flat: 1},
+            detection: {flat: 1},
+          },
         },
       },
-    },
+    }
   },
   techRequirements:
   [
@@ -109,13 +119,18 @@ export const resourceMine: BuildingTemplate =
 
   mapLevelModifier:
   {
-    localStar:
+    key: "resourceMine",
+    propagations:
     {
-      self:
+      localStar:
       {
-        adjustments:
+        key: "localResourceMine",
+        self:
         {
-          mining: {flat: 1},
+          adjustments:
+          {
+            mining: {flat: 1},
+          },
         },
       },
     },
@@ -144,13 +159,18 @@ export const reserachLab: BuildingTemplate =
 
   mapLevelModifier:
   {
-    localStar:
+    key: "researchLab",
+    propagations:
     {
-      self:
+      localStar:
       {
-        adjustments:
+        key: "localResearchLab",
+        self:
         {
-          researchPoints: {flat: 10},
+          adjustments:
+          {
+            researchPoints: {flat: 10},
+          },
         },
       },
     },
@@ -215,29 +235,39 @@ export const nationalEpic: BuildingTemplate =
   },
   mapLevelModifier:
   {
-    owningPlayer:
+    key: "nationalEpic",
+    propagations:
     {
-      ownedStars:
+      owningPlayer:
       {
+        key: "hasNationalEpic",
+        propagations:
+        {
+          ownedStars:
+          {
+            key: "ownerHasNationalEpic",
+            self:
+            {
+              income:
+              {
+                [testResource1.type]: {flat: 10},
+              },
+            },
+          },
+        },
+      },
+      localStar:
+      {
+        key: "localNationalEpic",
         self:
         {
           income:
           {
-            [testResource1.type]: {flat: 10},
-          }
-        }
-      }
+            [testResource2.type]: {flat: 100},
+          },
+        },
+      },
     },
-    localStar:
-    {
-      self:
-      {
-        income:
-        {
-          [testResource2.type]: {flat: 100},
-        }
-      }
-    }
   },
 
   buildCost:

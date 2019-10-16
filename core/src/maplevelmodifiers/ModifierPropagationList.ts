@@ -2,9 +2,9 @@ import { MapLevelModifiersPropagation } from "./ModifierPropagation";
 import { Modifier } from "./Modifier";
 
 
-export class ModifierPropagationList<T extends Modifier>
+export class ModifierPropagationList<T extends Modifier<any>>
 {
-  private propagations: MapLevelModifiersPropagation<T>[] = [];
+  private propagations: MapLevelModifiersPropagation<T, any>[] = [];
 
   constructor()
   {
@@ -18,14 +18,14 @@ export class ModifierPropagationList<T extends Modifier>
   public some = this.propagations.some.bind(this.propagations);
   // tslint:enable member-ordering
 
-  public remove(toRemove: MapLevelModifiersPropagation<T>): void
+  public remove(toRemove: MapLevelModifiersPropagation<T, any>): void
   {
     this.filterAndRemove(propagation => propagation === toRemove);
   }
-  public filterAndRemove(filterFN: (propagation: MapLevelModifiersPropagation<T>) => boolean): MapLevelModifiersPropagation<T>[]
+  public filterAndRemove(filterFN: (propagation: MapLevelModifiersPropagation<T, any>) => boolean): MapLevelModifiersPropagation<T, any>[]
   {
-    const propagationsToKeep: MapLevelModifiersPropagation<T>[] = [];
-    const removedPropagations: MapLevelModifiersPropagation<T>[] = [];
+    const propagationsToKeep: MapLevelModifiersPropagation<T, any>[] = [];
+    const removedPropagations: MapLevelModifiersPropagation<T, any>[] = [];
 
     this.propagations.forEach(propagation =>
     {

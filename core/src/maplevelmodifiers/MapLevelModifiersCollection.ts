@@ -5,11 +5,11 @@ import { ModifierPropagationList } from "./ModifierPropagationList";
 // doesn't need to be consistent across saves so just store here
 let modifierIdGenerator: number = 0;
 
-export abstract class MapLevelModifiersCollection<T extends Modifier>
+export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
 {
   private readonly originatingModifiers:
   {
-    [modifierId: number]: Modifier;
+    [modifierId: number]: T;
   } = {};
   private incomingModifiers: ModifierPropagationList<T> = new ModifierPropagationList<T>();
   private propagations: ModifierPropagationList<T> = new ModifierPropagationList<T>();
@@ -72,7 +72,7 @@ export abstract class MapLevelModifiersCollection<T extends Modifier>
       target.removeIncomingModifier(propagation);
     });
   }
-  public propagateModifiersOfTypeTo<K extends PropagationTypes<T>>(propagationType: K, target: MapLevelModifiersCollection<T[K]>): void
+  public propagateModifiersOfTypeTo<K extends PropagationTypes<T>>(propagationType: K, target: MapLevelModifiersCollection<T["propagations"][K]>): void
   {
     const modifiersWithIdsToPropagate = this.getAllActiveModifiersWithIds().filter(modifierWithId =>
     {
@@ -109,14 +109,14 @@ export abstract class MapLevelModifiersCollection<T extends Modifier>
   protected abstract getPropagationsFor(toPropagate: T): MapLevelModifiersPropagationWithoutId<T>[];
   protected abstract modifierPassesFilter(modifier: T): boolean;
 
-  private incomingModifierFormsCycle(toCheck: MapLevelModifiersPropagation<T>): boolean
+  private incomingModifierFormsCycle(toCheck: MapLevelModifiersPropagation<T, any>): boolean
   {
     return this.incomingModifiers.some(propagation =>
     {
       return propagation.modifierId === toCheck.modifierId && propagation.targetType === toCheck.targetType;
     });
   }
-  private addIncomingModifier(propagation: MapLevelModifiersPropagation<T>): void
+  private addIncomingModifier(propagation: MapLevelModifiersPropagation<T, any>): void
   {
     if (this.incomingModifierFormsCycle(propagation))
     {
@@ -170,7 +170,7 @@ export abstract class MapLevelModifiersCollection<T extends Modifier>
     this.removePropagationsForModifier(id);
     delete this.originatingModifiers[id];
   }
-  private removeIncomingModifier(propagation: MapLevelModifiersPropagation<T>): void
+  private removeIncomingModifier(propagation: MapLevelModifiersPropagation<T, any>): void
   {
     this.removePropagationsForModifier(propagation.modifierId);
     this.incomingModifiers.remove(propagation);

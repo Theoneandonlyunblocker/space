@@ -36,34 +36,34 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
   }
   protected getPropagationsFor(toPropagate: StarModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<StarModifier, any>[] = [];
+    const propagations: MapLevelModifiersPropagationWithoutId<StarModifier>[] = [];
 
-    if (toPropagate.localUnits)
+    if (toPropagate.propagations && toPropagate.propagations.localUnits)
     {
       this.star.getUnits().forEach(unit =>
       {
         propagations.push(
         {
-          modifier: toPropagate.localUnits,
+          modifier: toPropagate.propagations.localUnits,
           targetType: "localUnits",
           target: unit.mapLevelModifiers,
         });
       });
     }
-    if (toPropagate.global)
+    if (toPropagate.propagations && toPropagate.propagations.global)
     {
       propagations.push(
       {
-        modifier: toPropagate.global,
+        modifier: toPropagate.propagations.global,
         targetType: "global",
         target: app.game.globalModifiers,
       });
     }
-    if (toPropagate.owningPlayer)
+    if (toPropagate.propagations && toPropagate.propagations.owningPlayer)
     {
       propagations.push(
       {
-        modifier: toPropagate.owningPlayer,
+        modifier: toPropagate.propagations.owningPlayer,
         targetType: "owningPlayer",
         target: this.star.owner.modifiers,
       });

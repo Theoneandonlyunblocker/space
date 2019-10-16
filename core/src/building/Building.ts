@@ -96,14 +96,15 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     });
   }
   // TODO 2019.10.10 | clean up for typescript 3.7 or rename or remove altogether
-  public getEffect(): BuildingTemplate["mapLevelModifier"]["localStar"]["self"]["adjustments"]
+  public getEffect(): BuildingTemplate["mapLevelModifier"]["propagations"]["localStar"]["self"]["adjustments"]
   {
     if (this.template.mapLevelModifier &&
-      this.template.mapLevelModifier.localStar &&
-      this.template.mapLevelModifier.localStar.self &&
-      this.template.mapLevelModifier.localStar.self.adjustments)
+      this.template.mapLevelModifier.propagations &&
+      this.template.mapLevelModifier.propagations.localStar &&
+      this.template.mapLevelModifier.propagations.localStar.self &&
+      this.template.mapLevelModifier.propagations.localStar.self.adjustments)
     {
-      return this.template.mapLevelModifier.localStar.self.adjustments;
+      return this.template.mapLevelModifier.propagations.localStar.self.adjustments;
     }
     else
     {

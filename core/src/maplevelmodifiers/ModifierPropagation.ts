@@ -2,14 +2,14 @@ import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Modifier } from "./Modifier";
 
 
-export type PropagationTypes<T extends Modifier> = Exclude<keyof T, "filter" | "self">;
+export type PropagationTypes<T extends Modifier<any>> = keyof T["propagations"];
 
-export type MapLevelModifiersPropagation<T extends Modifier, P extends T[PropagationTypes<T>] = T[PropagationTypes<T>]> =
+export type MapLevelModifiersPropagation<Source extends Modifier<any>, Target extends Source["propagations"][PropagationTypes<Source>]> =
 {
-  modifier: P;
+  modifier: Target;
   modifierId: number;
-  targetType: PropagationTypes<T>;
-  target: MapLevelModifiersCollection<P>;
+  targetType: PropagationTypes<Source>;
+  target: MapLevelModifiersCollection<Target>;
 };
-export type MapLevelModifiersPropagationWithoutId<T extends Modifier, P extends T[PropagationTypes<T>] = T[PropagationTypes<T>]> =
-  Omit<MapLevelModifiersPropagation<T, P>, "modifierId">;
+
+export type MapLevelModifiersPropagationWithoutId<T extends Modifier<any>> = Omit<MapLevelModifiersPropagation<T, any>, "modifierId">;

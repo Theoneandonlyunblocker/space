@@ -5,12 +5,15 @@ import { GlobalModifier } from "./GlobalModifier";
 import { UnitModifier } from "./UnitModifier";
 import { Modifier } from "./Modifier";
 
-
-export interface StarModifier extends Modifier
+type StarModifierPropagations =
 {
-  filter?: (star: Star) => boolean;
-  self?: PartialMapLevelModifier;
   owningPlayer?: PlayerModifier;
   global?: GlobalModifier;
   localUnits?: UnitModifier;
+};
+export interface StarModifier extends Modifier<StarModifierPropagations>
+{
+  filter?: (star: Star) => boolean;
+  self?: PartialMapLevelModifier;
+
 }

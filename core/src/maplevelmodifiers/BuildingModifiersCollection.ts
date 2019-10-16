@@ -48,31 +48,31 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
   }
   protected getPropagationsFor(toPropagate: BuildingModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<BuildingModifier, any>[] = [];
+    const propagations: MapLevelModifiersPropagationWithoutId<BuildingModifier>[] = [];
 
-    if (toPropagate.localStar)
+    if (toPropagate.propagations && toPropagate.propagations.localStar)
     {
       propagations.push(
       {
-        modifier: toPropagate.localStar,
+        modifier: toPropagate.propagations.localStar,
         targetType: "localStar",
         target: this.building.location.modifiers,
       });
     }
-    if (toPropagate.global)
+    if (toPropagate.propagations && toPropagate.propagations.global)
     {
       propagations.push(
       {
-        modifier: toPropagate.global,
+        modifier: toPropagate.propagations.global,
         targetType: "global",
         target: app.game.globalModifiers,
       });
     }
-    if (toPropagate.owningPlayer)
+    if (toPropagate.propagations && toPropagate.propagations.owningPlayer)
     {
       propagations.push(
       {
-        modifier: toPropagate.owningPlayer,
+        modifier: toPropagate.propagations.owningPlayer,
         targetType: "owningPlayer",
         target: this.building.controller.modifiers,
       });

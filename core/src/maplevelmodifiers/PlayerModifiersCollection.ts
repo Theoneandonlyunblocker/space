@@ -21,27 +21,27 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
   }
   protected getPropagationsFor(toPropagate: PlayerModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<PlayerModifier, any>[] = [];
+    const propagations: MapLevelModifiersPropagationWithoutId<PlayerModifier>[] = [];
 
-    if (toPropagate.ownedStars)
+    if (toPropagate.propagations && toPropagate.propagations.ownedStars)
     {
       this.player.controlledLocations.forEach(location =>
       {
         propagations.push(
         {
-          modifier: toPropagate.ownedStars,
+          modifier: toPropagate.propagations.ownedStars,
           targetType: "ownedStars",
           target: location.modifiers,
         });
       });
     }
-    if (toPropagate.ownedUnits)
+    if (toPropagate.propagations && toPropagate.propagations.ownedUnits)
     {
       this.player.units.forEach(unit =>
       {
         propagations.push(
         {
-          modifier: toPropagate.ownedUnits,
+          modifier: toPropagate.propagations.ownedUnits,
           targetType: "ownedUnits",
           target: unit.mapLevelModifiers,
         });
