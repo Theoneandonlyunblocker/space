@@ -74,17 +74,17 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
   }
   public propagateModifiersOfTypeTo<K extends PropagationTypes<T>>(propagationType: K, target: MapLevelModifiersCollection<T["propagations"][K]>): void
   {
-    const modifiersWithIdsToPropagate = this.getAllActiveModifiersWithIds().filter(modifierWithId =>
+    const modifiersWithIdsWithMatchingPropagation = this.getAllActiveModifiersWithIds().filter(modifierWithId =>
     {
-      return modifierWithId.modifier[propagationType];
+      return modifierWithId.modifier.propagations[propagationType];
     });
 
-    modifiersWithIdsToPropagate.forEach(modifierWithId =>
+    modifiersWithIdsWithMatchingPropagation.forEach(modifierWithId =>
     {
       const {modifier, id} = modifierWithId;
 
-      const propagations = this.getPropagationsFor(modifier).filter(propagation => propagation.targetType === propagationType);
-      propagations.forEach(propagationWithoutId =>
+      const propagationsToTarget = this.getPropagationsFor(modifier).filter(propagation => propagation.target === target);
+      propagationsToTarget.forEach(propagationWithoutId =>
       {
         const propagation = {...propagationWithoutId, modifierId: id};
         target.addIncomingModifier(propagation);
