@@ -1,10 +1,10 @@
 import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Game } from "../game/Game";
 import { MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
-import { GlobalModifiers } from "./GlobalModifiers";
+import { GlobalModifier } from "./GlobalModifier";
 
 
-export class GlobalModifiersCollection extends MapLevelModifiersCollection<GlobalModifiers>
+export class GlobalModifiersCollection extends MapLevelModifiersCollection<GlobalModifier>
 {
   private game: Game;
 
@@ -15,13 +15,13 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
     this.game = game;
   }
 
-  protected modifierPassesFilter(modifier: GlobalModifiers): boolean
+  protected modifierPassesFilter(modifier: GlobalModifier): boolean
   {
     return true;
   }
-  protected getPropagationsFor(toPropagate: GlobalModifiers)
+  protected getPropagationsFor(toPropagate: GlobalModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<GlobalModifiers, any>[] = [];
+    const propagations: MapLevelModifiersPropagationWithoutId<GlobalModifier, any>[] = [];
 
     if (toPropagate.stars)
     {

@@ -5,10 +5,10 @@ import { app } from "../app/App";
 import { Star } from "../map/Star";
 import { Player } from "../player/Player";
 import { MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
-import { UnitModifiers } from "./UnitModifiers";
+import { UnitModifier } from "./UnitModifier";
 
 
-export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitModifiers>
+export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitModifier>
 {
   private unit: Unit;
   private get location(): Star
@@ -63,13 +63,13 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
     this.removeAllModifiers();
   }
 
-  protected modifierPassesFilter(modifier: UnitModifiers): boolean
+  protected modifierPassesFilter(modifier: UnitModifier): boolean
   {
     return !modifier.filter || modifier.filter(this.unit);
   }
-  protected getPropagationsFor(toPropagate: UnitModifiers)
+  protected getPropagationsFor(toPropagate: UnitModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<UnitModifiers, any>[] = [];
+    const propagations: MapLevelModifiersPropagationWithoutId<UnitModifier, any>[] = [];
 
     if (toPropagate.localStar)
     {

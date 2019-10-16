@@ -1,10 +1,10 @@
 import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Player } from "../player/Player";
 import { MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
-import { PlayerModifiers } from "./PlayerModifiers";
+import { PlayerModifier } from "./PlayerModifier";
 
 
-export class PlayerModifiersCollection extends MapLevelModifiersCollection<PlayerModifiers>
+export class PlayerModifiersCollection extends MapLevelModifiersCollection<PlayerModifier>
 {
   private player: Player;
 
@@ -15,13 +15,13 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
     this.player = player;
   }
 
-  protected modifierPassesFilter(modifier: PlayerModifiers): boolean
+  protected modifierPassesFilter(modifier: PlayerModifier): boolean
   {
     return true;
   }
-  protected getPropagationsFor(toPropagate: PlayerModifiers)
+  protected getPropagationsFor(toPropagate: PlayerModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<PlayerModifiers, any>[] = [];
+    const propagations: MapLevelModifiersPropagationWithoutId<PlayerModifier, any>[] = [];
 
     if (toPropagate.ownedStars)
     {

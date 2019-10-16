@@ -1,15 +1,15 @@
-import { Modifiers } from "./Modifiers";
+import { Modifier } from "./Modifier";
 import { MapLevelModifiersPropagation, PropagationTypes, MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
 import { ModifierPropagationList } from "./ModifierPropagationList";
 
 // doesn't need to be consistent across saves so just store here
 let modifierIdGenerator: number = 0;
 
-export abstract class MapLevelModifiersCollection<T extends Modifiers>
+export abstract class MapLevelModifiersCollection<T extends Modifier>
 {
   private readonly originatingModifiers:
   {
-    [modifierId: number]: Modifiers;
+    [modifierId: number]: Modifier;
   } = {};
   private incomingModifiers: ModifierPropagationList<T> = new ModifierPropagationList<T>();
   private propagations: ModifierPropagationList<T> = new ModifierPropagationList<T>();

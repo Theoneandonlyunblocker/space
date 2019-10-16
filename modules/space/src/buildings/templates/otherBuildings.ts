@@ -25,7 +25,7 @@ export const commercialPort: BuildingTemplate =
   },
   maxBuiltAtLocation: 1,
 
-  mapLevelModifiers:
+  mapLevelModifier:
   {
     localStar:
     {
@@ -60,7 +60,7 @@ export const deepSpaceRadar: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  mapLevelModifiers:
+  mapLevelModifier:
   {
     localStar:
     {
@@ -107,7 +107,7 @@ export const resourceMine: BuildingTemplate =
     return Boolean(star.resource);
   },
 
-  mapLevelModifiers:
+  mapLevelModifier:
   {
     localStar:
     {
@@ -142,7 +142,7 @@ export const reserachLab: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  mapLevelModifiers:
+  mapLevelModifier:
   {
     localStar:
     {
@@ -213,7 +213,7 @@ export const nationalEpic: BuildingTemplate =
       [testResource5.type]: 2,
     });
   },
-  mapLevelModifiers:
+  mapLevelModifier:
   {
     owningPlayer:
     {

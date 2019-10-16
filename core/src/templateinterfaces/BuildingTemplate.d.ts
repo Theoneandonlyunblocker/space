@@ -5,7 +5,7 @@ import { UnlockableThing } from "./UnlockableThing";
 import { BuildingFamily } from "./BuildingFamily";
 import { Resources } from "../player/PlayerResources";
 import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
-import { BuildingModifiers } from "../maplevelmodifiers/BuildingModifiers";
+import { BuildingModifier } from "../maplevelmodifiers/BuildingModifier";
 
 
 export interface BuildingTemplate extends UnlockableThing
@@ -24,7 +24,7 @@ export interface BuildingTemplate extends UnlockableThing
   canBeBuiltInLocation?: (star: Star) => boolean;
 
   onBuild?: (location: Star, player: Player) => void;
-  mapLevelModifiers?: BuildingModifiers;
+  mapLevelModifier?: BuildingModifier;
 
   // player race can define their own special upgrades as well
   getStandardUpgradeTargets?: (location: Star) => BuildingTemplate[];

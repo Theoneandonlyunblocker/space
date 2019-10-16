@@ -1,8 +1,8 @@
 import { MapLevelModifiersPropagation } from "./ModifierPropagation";
-import { Modifiers } from "./Modifiers";
+import { Modifier } from "./Modifier";
 
 
-export class ModifierPropagationList<T extends Modifiers>
+export class ModifierPropagationList<T extends Modifier>
 {
   private propagations: MapLevelModifiersPropagation<T>[] = [];
 

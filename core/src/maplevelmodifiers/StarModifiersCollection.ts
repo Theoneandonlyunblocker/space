@@ -3,10 +3,10 @@ import { Star } from "../map/Star";
 import { squashMapLevelModifiers, getBaseMapLevelModifier, MapLevelModifier } from "./MapLevelModifiers";
 import { app } from "../app/App";
 import { MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
-import { StarModifiers } from "./StarModifiers";
+import { StarModifier } from "./StarModifier";
 
 
-export class StarModifiersCollection extends MapLevelModifiersCollection<StarModifiers>
+export class StarModifiersCollection extends MapLevelModifiersCollection<StarModifier>
 {
   private star: Star;
 
@@ -30,13 +30,13 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
     return squashedSelfModifiers;
   }
 
-  protected modifierPassesFilter(modifier: StarModifiers): boolean
+  protected modifierPassesFilter(modifier: StarModifier): boolean
   {
     return !modifier.filter || modifier.filter(this.star);
   }
-  protected getPropagationsFor(toPropagate: StarModifiers)
+  protected getPropagationsFor(toPropagate: StarModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<StarModifiers, any>[] = [];
+    const propagations: MapLevelModifiersPropagationWithoutId<StarModifier, any>[] = [];
 
     if (toPropagate.localUnits)
     {
