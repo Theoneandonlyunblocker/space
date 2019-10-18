@@ -960,6 +960,7 @@ export class Unit
   {
     this.experienceForCurrentLevel -= this.getExperienceToNextLevel();
     this.level++;
+    this.mapLevelModifiers.handleUpgrade();
   }
   public getCurrentLearnableAbilities(): AbilityBase[]
   {
@@ -1047,7 +1048,6 @@ export class Unit
   {
     this.baseAttributes[attribute] += amountToIncrease;
     this.attributesAreDirty = true;
-    this.handleLevelUp();
   }
   public upgradeAbility(source: AbilityBase, newAbility: AbilityBase): void
   {

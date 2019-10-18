@@ -72,6 +72,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   private upgradeAttribute(attribute: keyof UnitAttributesObject)
   {
     this.props.unit.upgradeAttribute(attribute, 1);
+    this.props.unit.handleLevelUp();
     this.props.onUnitUpgrade();
   }
 }
