@@ -1037,6 +1037,12 @@ export class Unit
     return Unit.getUpgradableAbilitiesData(template, newUpgradeCandidates, fullUpgradeData);
   }
 
+  public upgradeAttribute(attribute: keyof UnitAttributesObject, amountToIncrease: number): void
+  {
+    this.baseAttributes[attribute] += amountToIncrease;
+    this.attributesAreDirty = true;
+    this.handleLevelUp();
+  }
   public upgradeAbility(source: AbilityBase, newAbility: AbilityBase): void
   {
     const sourceIsPassiveSkill = !source.mainEffect;

@@ -4,12 +4,13 @@ import * as ReactDOMElements from "react-dom-factories";
 import {Unit} from "core/src/unit/Unit";
 
 import {localize} from "../../../localization/localize";
+import { getAttributeKeysSortedForDisplay, UnitAttributesObject } from "core/src/unit/UnitAttributes";
 
 
 export interface PropTypes extends React.Props<any>
 {
   unit: Unit;
-  handleClick: (attribute: string) => void;
+  handleClick: (attribute: keyof UnitAttributesObject) => void;
 }
 
 interface StateType
@@ -37,7 +38,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
     const unit = this.props.unit;
     const rows: React.ReactHTMLElement<any>[] = [];
 
-    const attributes = unit.baseAttributes.getAttributesTypesSortedForDisplay();
+    const attributes = getAttributeKeysSortedForDisplay();
 
     attributes.forEach(attribute =>
     {
@@ -81,7 +82,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
     );
   }
 
-  private upgradeAttribute(attribute: string, e: React.MouseEvent<HTMLLIElement>)
+  private upgradeAttribute(attribute: keyof UnitAttributesObject, e: React.MouseEvent<HTMLLIElement>)
   {
     if (e.button) { return; }
     this.props.handleClick(attribute);

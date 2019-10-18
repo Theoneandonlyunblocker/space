@@ -37,7 +37,7 @@ export interface UnitAttributesObject
   speed: number;
 }
 
-export function getUnitAttributesObjectKeyForAttribute(attribute: UnitAttribute): Exclude<keyof UnitAttributesObject, "maxActionPoints">
+export function getKeyForAttribute(attribute: UnitAttribute): Exclude<keyof UnitAttributesObject, "maxActionPoints">
 {
   switch (attribute)
   {
@@ -46,6 +46,17 @@ export function getUnitAttributesObjectKeyForAttribute(attribute: UnitAttribute)
     case UnitAttribute.Intelligence: return "intelligence";
     case UnitAttribute.Speed: return "speed";
   }
+}
+export function getAttributeKeysSortedForDisplay(): (keyof UnitAttributesObject)[]
+{
+  return(
+  [
+    "maxActionPoints",
+    "attack",
+    "defence",
+    "intelligence",
+    "speed",
+  ]);
 }
 
 export class UnitAttributes implements UnitAttributesObject
@@ -150,17 +161,6 @@ export class UnitAttributes implements UnitAttributesObject
       speed: this.speed - toCompare.speed,
     });
   }
-  public getAttributesTypesSortedForDisplay(): (keyof UnitAttributesObject)[]
-  {
-    return(
-    [
-      "maxActionPoints",
-      "attack",
-      "defence",
-      "intelligence",
-      "speed",
-    ]);
-  }
   public serialize(): UnitAttributesObject
   {
     return JSON.parse(JSON.stringify(this));
@@ -177,7 +177,7 @@ export class UnitAttributes implements UnitAttributesObject
   }
   private forEachAttribute(cb: (attribute: keyof UnitAttributesObject) => void): void
   {
-    this.getAttributesTypesSortedForDisplay().forEach(attribute =>
+    getAttributeKeysSortedForDisplay().forEach(attribute =>
     {
       cb(attribute);
     });

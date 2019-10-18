@@ -6,6 +6,7 @@ import {Unit} from "core/src/unit/Unit";
 
 import {UpgradeAbilities} from "./UpgradeAbilities";
 import {UpgradeAttributes} from "./UpgradeAttributes";
+import { UnitAttributesObject } from "core/src/unit/UnitAttributes";
 
 
 export interface PropTypes extends React.Props<any>
@@ -68,17 +69,11 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
   {
     this.upgradeAttribute = this.upgradeAttribute.bind(this);
   }
-  private upgradeAttribute(attribute: string)
+  private upgradeAttribute(attribute: keyof UnitAttributesObject)
   {
-    const unit = this.props.unit;
-
-    unit.baseAttributes[attribute] += 1;
-    unit.attributesAreDirty = true;
-
-    unit.handleLevelUp();
+    this.props.unit.upgradeAttribute(attribute, 1);
     this.props.onUnitUpgrade();
   }
-
 }
 
 export const UpgradeUnit: React.Factory<PropTypes> = React.createFactory(UpgradeUnitComponent);

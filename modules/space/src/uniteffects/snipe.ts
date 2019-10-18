@@ -1,6 +1,6 @@
 import {UnitEffectTemplate} from "core/src/templateinterfaces/UnitEffectTemplate";
 
-import {UnitAttribute, getUnitAttributesObjectKeyForAttribute} from "core/src/unit/UnitAttributes";
+import {UnitAttribute, getKeyForAttribute} from "core/src/unit/UnitAttributes";
 import { FlatAndMultiplierAdjustment } from "core/src/generic/FlatAndMultiplierAdjustment";
 import { localize } from "modules/space/localization/localize";
 
@@ -55,7 +55,7 @@ function makeSnipeStatusEffect(attribute: UnitAttribute): UnitEffectTemplate
     },
     attributes:
     {
-      [getUnitAttributesObjectKeyForAttribute(attribute)]: attributeAdjustment,
+      [getKeyForAttribute(attribute)]: attributeAdjustment,
     },
   });
 }
