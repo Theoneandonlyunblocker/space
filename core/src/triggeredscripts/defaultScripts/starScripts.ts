@@ -7,6 +7,15 @@ export const starScripts: PartialTriggeredScriptsWithData =
   {
     onOwnerChange:
     {
+      transferBuildingsFromOldOwner:
+      {
+        triggerPriority: -1,
+        script: (star, oldOwner, newOwner) =>
+        {
+          const oldOwnerBuildings = star.buildings.filter(building => building.controller === oldOwner);
+          oldOwnerBuildings.forEach(building => building.setController(newOwner));
+        },
+      },
       destroyPerPlayerLimitedBuildings:
       {
         triggerPriority: 0,

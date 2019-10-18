@@ -84,9 +84,12 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     const oldController = this.controller;
     if (oldController === newController) { return; }
 
-
     this.controller = newController;
-    this.location.updateController();
+    if ((<TerritoryBuildingTemplate><unknown>this.template).isTerritoryBuilding)
+    {
+      this.location.updateController();
+    }
+    this.modifiers.handleOwnerChange();
   }
   public isOfFamily(familyToCheck: BuildingFamily): boolean
   {

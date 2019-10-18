@@ -29,6 +29,22 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
 
     return squashedSelfModifiers;
   }
+  public handleOwnerChange(): void
+  {
+    this.removeAllIncomingModifiers();
+    this.depropagateOriginatedModifiers();
+    this.propagateOriginatedModifiers();
+    this.star.buildings.forEach(building =>
+    {
+      building.modifiers.propagateModifiersOfTypeTo("localStar", this);
+    });
+    this.star.owner.modifiers.propagateModifiersOfTypeTo("ownedStars", this);
+    app.game.globalModifiers.propagateModifiersOfTypeTo("stars", this);
+    this.star.getUnits().forEach(unit =>
+    {
+      unit.mapLevelModifiers.propagateModifiersOfTypeTo("localStar", this);
+    });
+  }
 
   protected modifierPassesFilter(modifier: StarModifier): boolean
   {

@@ -285,15 +285,17 @@ export class Star implements Point
     oldOwner.removeStar(this);
     newOwner.addStar(this);
 
-    if (this.manufactory)
-    {
-      this.manufactory.handleOwnerChange();
-    }
-
     activeModuleData.scripts.star.onOwnerChange.forEach(script =>
     {
       script(this, oldOwner, newOwner);
     });
+
+    this.modifiers.handleOwnerChange();
+
+    if (this.manufactory)
+    {
+      this.manufactory.handleOwnerChange();
+    }
 
     eventManager.dispatchEvent("renderLayer", "nonFillerStars", this);
     eventManager.dispatchEvent("renderLayer", "starOwners", this);
