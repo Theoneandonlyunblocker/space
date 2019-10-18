@@ -858,6 +858,8 @@ export class Unit
     });
     newPlayer.addFleet(fleet);
     location.addFleet(fleet);
+
+    this.mapLevelModifiers.handleOwnerChange();
   }
   public removeGuard(amount: number)
   {
