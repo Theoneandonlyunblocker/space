@@ -330,11 +330,13 @@ export class Fleet
       return;
     }
 
+    this.units.forEach(unit => unit.mapLevelModifiers.clearModifiersForLocation());
     const oldLocation = this.location;
     oldLocation.removeFleet(this);
 
     this.location = newLocation;
     newLocation.addFleet(this);
+    this.units.forEach(unit => unit.mapLevelModifiers.setModifiersForLocation());
 
     this.units.forEach(unit => unit.currentMovePoints -= 1);
 
