@@ -817,7 +817,7 @@ export class Unit
     this.battleStats.lastHealthBeforeReceivingDamage = this.currentHealth;
     this.addHealth(-amount);
   }
-  public removeFromPlayer()
+  private removeFromPlayer()
   {
     const fleet = this.fleet;
     const player = fleet.player;
@@ -831,13 +831,17 @@ export class Unit
       fleet.deleteFleet();
     }
 
-
     activeModuleData.scripts.unit.removeFromPlayer.forEach(scriptFN =>
     {
       scriptFN(this);
     });
 
     this.uiDisplayIsDirty = true;
+  }
+  public die(): void
+  {
+    this.mapLevelModifiers.handleDestroy();
+    this.removeFromPlayer();
   }
   public transferToPlayer(newPlayer: Player)
   {

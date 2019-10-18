@@ -310,7 +310,7 @@ export class Battle
 
     for (let i = 0; i < this.deadUnits.length; i++)
     {
-      this.deadUnits[i].removeFromPlayer();
+      this.deadUnits[i].die();
     }
 
     const experienceGainedPerSide =
