@@ -114,6 +114,10 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
       return {};
     }
   }
+  public handleDestroy(): void
+  {
+    this.modifiers.handleDestroy();
+  }
   public serialize(): BuildingSaveData
   {
     return(

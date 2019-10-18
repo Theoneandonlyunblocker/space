@@ -30,6 +30,7 @@ export const starScripts: PartialTriggeredScriptsWithData =
               });
           }).forEach(building =>
           {
+            building.handleDestroy();
             star.buildings.remove(building);
           });
         },
