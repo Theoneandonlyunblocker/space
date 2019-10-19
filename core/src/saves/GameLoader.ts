@@ -59,7 +59,7 @@ export class GameLoader
   {
     [id: number]: Unit;
   } = {};
-  public buildingsByControllerId:
+  public buildingsById:
   {
     [id: number]: Building;
   } = {};
@@ -159,7 +159,6 @@ export class GameLoader
 
     return game;
   }
-
   private deserializeNotificationStore(data: NotificationStoreSaveData): NotificationStore
   {
     const notificationStore = new NotificationStore();
@@ -284,6 +283,7 @@ export class GameLoader
         const building = this.deserializeBuilding(buildingData);
 
         star.buildings.add(building);
+        this.buildingsById[building.id] = building;
       });
 
       if (starData.manufactory)

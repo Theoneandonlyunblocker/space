@@ -114,7 +114,7 @@ export class Unit
 
   public mapLevelModifiers: UnitModifiersCollection = new UnitModifiersCollection(this);
 
-  constructor(props:
+  private constructor(props:
   {
     template: UnitTemplate;
 

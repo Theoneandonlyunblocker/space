@@ -685,7 +685,8 @@ export class Star implements Point
   public getDistanceToStar(target: Star): number
   {
     // don't index distance while generating map as distance can change
-    if (!app.game)
+    const hasFinalizedMap = Boolean(app.game);
+    if (!hasFinalizedMap)
     {
       const a = aStar(this, target);
 
