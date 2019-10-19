@@ -72,7 +72,7 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
   {
     const modifiersWithIdsWithMatchingPropagation = this.getAllActiveModifiersWithIds().filter(modifierWithId =>
     {
-      return modifierWithId.modifier.propagations[propagationType];
+      return modifierWithId.modifier.propagations && modifierWithId.modifier.propagations[propagationType];
     });
 
     modifiersWithIdsWithMatchingPropagation.forEach(modifierWithId =>
