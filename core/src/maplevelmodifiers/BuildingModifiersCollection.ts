@@ -16,20 +16,20 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
     this.building = building;
   }
 
+  // TODO 2019.10.19 | not called anywhere
   public handleConstruct(): void
   {
     if (this.building.template.mapLevelModifier)
     {
       this.addOriginatingModifier(this.building.template.mapLevelModifier);
+
+      this.propagateOriginatedModifiers();
     }
   }
   public handleUpgrade(): void
   {
     this.removeAllOriginatingModifiers();
-    if (this.building.template.mapLevelModifier)
-    {
-      this.addOriginatingModifier(this.building.template.mapLevelModifier);
-    }
+    this.handleConstruct();
   }
   public handleOwnerChange(): void
   {

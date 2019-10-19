@@ -22,10 +22,6 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
   public addOriginatingModifier(modifier: T, id: number = modifierIdGenerator++): void
   {
     this.originatingModifiers[id] = modifier;
-    if (this.modifierPassesFilter(modifier))
-    {
-      this.propagateModifier(modifier, id);
-    }
   }
   public getAllActiveModifiers(): T[]
   {
