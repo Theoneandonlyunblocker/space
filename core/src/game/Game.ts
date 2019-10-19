@@ -28,19 +28,26 @@ export class Game
 
   private actingPlayerIndex: number = 0;
 
-
-  constructor(map: GalaxyMap, players: Player[])
+  constructor(props:
   {
-    this.galaxyMap = map;
-    this.players = [...players];
-    this.playerToAct = players[0];
+    map: GalaxyMap;
+    players: Player[];
+    turnNumber?: number;
+  })
+  {
+    this.galaxyMap = props.map;
+    this.players = [...props.players];
+
+    this.turnNumber = isFinite(props.turnNumber) ? props.turnNumber : 1;
+
+    this.playerToAct = this.players[0];
 
     // TODO 2017.07.24 | this seems kinda weird
-    if (map.independents)
+    if (this.galaxyMap.independents)
     {
-      this.players.push(...map.independents);
-      map.independents = null;
-      delete map.independents;
+      this.players.push(...this.galaxyMap.independents);
+      this.galaxyMap.independents = null;
+      delete this.galaxyMap.independents;
     }
 
     this.players.filter(player =>
@@ -50,8 +57,6 @@ export class Game
     {
       player.diplomacy = new PlayerDiplomacy(player, this);
     });
-
-    this.turnNumber = 1;
   }
 
   public destroy()

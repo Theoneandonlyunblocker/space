@@ -112,8 +112,12 @@ export class GameLoader
     this.deserializeBuildings(data.galaxyMap);
 
     // create game
-    const game = new Game(this.map, this.players);
-    game.turnNumber = data.turnNumber;
+    const game = new Game(
+    {
+      map: this.map,
+      players: this.players,
+      turnNumber: data.turnNumber,
+    });
 
     // player diplomacy status. dependant on other players & game
     data.players.forEach(playerData =>

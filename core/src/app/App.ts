@@ -117,7 +117,13 @@ class App
 
     this.moduleAssetLoader.loadAssetsNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
     {
-      this.initGame(new Game(map, players)).then(() =>
+      const game = new Game(
+      {
+        map: map,
+        players: players,
+      });
+
+      this.initGame(game).then(() =>
       {
         this.reactUI.switchScene("galaxyMap");
       });
@@ -364,7 +370,11 @@ class App
     const players = playerData.players;
     const map = this.makeMap(playerData);
 
-    const game = new Game(map, players);
+    const game = new Game(
+    {
+      map: map,
+      players: players,
+    });
 
     return game;
   }
