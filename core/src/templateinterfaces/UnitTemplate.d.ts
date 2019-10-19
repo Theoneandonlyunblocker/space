@@ -7,6 +7,7 @@ import {ProbabilityDistributions} from "./ProbabilityDistribution";
 import {UnitArchetype} from "./UnitArchetype";
 import {UnitDrawingFunction} from "./UnitDrawingFunction";
 import { Resources } from "../player/PlayerResources";
+import { UnitModifier } from "../maplevelmodifiers/UnitModifier";
 
 
 export interface UnitTemplate extends ManufacturableThing
@@ -69,4 +70,5 @@ export interface UnitTemplate extends ManufacturableThing
 
   unitDrawingFN: UnitDrawingFunction;
   distributionData: DistributionData;
+  mapLevelModifier?: UnitModifier;
 }
