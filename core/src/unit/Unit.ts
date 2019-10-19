@@ -847,6 +847,8 @@ export class Unit
   {
     const location = this.fleet.location;
 
+    this.mapLevelModifiers.clearModifiersForOwner();
+
     this.removeFromPlayer();
 
     newPlayer.addUnit(this);
@@ -859,7 +861,7 @@ export class Unit
     newPlayer.addFleet(fleet);
     location.addFleet(fleet);
 
-    this.mapLevelModifiers.handleOwnerChange();
+    this.mapLevelModifiers.setModifiersForOwner();
   }
   public removeGuard(amount: number)
   {

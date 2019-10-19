@@ -46,12 +46,14 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
     this.propagateModifiersOfTypeTo("localStar", this.location.modifiers);
     this.location.modifiers.propagateModifiersOfTypeTo("localUnits", this);
   }
-  public handleOwnerChange(): void
+  public clearModifiersForOwner(): void
   {
-    this.removeAllIncomingModifiers();
-    this.depropagateOriginatedModifiers();
-    this.propagateOriginatedModifiers();
-    this.location.modifiers.propagateModifiersOfTypeTo("localUnits", this);
+    this.removePropagationsTo(this.owner.modifiers);
+    this.owner.modifiers.removePropagationsTo(this);
+  }
+  public setModifiersForOwner(): void
+  {
+    this.propagateModifiersOfTypeTo("owningPlayer", this.owner.modifiers);
     this.owner.modifiers.propagateModifiersOfTypeTo("ownedUnits", this);
   }
   public handleUpgrade(): void
