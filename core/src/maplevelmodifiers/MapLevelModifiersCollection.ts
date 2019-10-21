@@ -80,11 +80,7 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
       const {modifier, id} = modifierWithId;
 
       const propagationsToTarget = this.getPropagationsFor(modifier).filter(propagation => propagation.target === target);
-      propagationsToTarget.forEach(propagationWithoutId =>
-      {
-        const propagation = {...propagationWithoutId, modifierId: id};
-        target.addIncomingModifier(propagation);
-      });
+      this.applyPropagations(propagationsToTarget, id);
     });
   }
   public propagateOriginatedModifiers(): void
@@ -137,7 +133,11 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
   private propagateModifier(modifier: T, id: number): void
   {
     const allPropagations = this.getPropagationsFor(modifier);
-    allPropagations.forEach(propagationWithoutId =>
+    this.applyPropagations(allPropagations, id);
+  }
+  private applyPropagations(propagations: MapLevelModifiersPropagationWithoutId<T>[], id: number): void
+  {
+    propagations.forEach(propagationWithoutId =>
     {
       const propagation = {...propagationWithoutId, modifierId: id};
       propagation.target.addIncomingModifier(propagation);
