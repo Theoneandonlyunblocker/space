@@ -44,8 +44,6 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
     this.location = props.location;
     this.controller = props.controller || this.location.owner;
     this.totalCost = props.totalCost || this.template.buildCost || {};
-
-    this.modifiers.handleConstruct();
   }
   public getStandardUpgrades(): BuildingUpgradeData[]
   {

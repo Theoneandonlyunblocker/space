@@ -812,6 +812,8 @@ export class Player
     {
       template.onBuild(location, this);
     }
+
+    building.modifiers.handleConstruct();
   }
   public upgradeBuilding(upgradeData: BuildingUpgradeData): void
   {

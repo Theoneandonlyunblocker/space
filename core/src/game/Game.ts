@@ -14,6 +14,8 @@ import {GameSaveData} from "../savedata/GameSaveData";
 import { activeModuleData } from "../app/activeModuleData";
 import { storageStrings } from "../saves/storageStrings";
 import { GlobalModifiersCollection } from "../maplevelmodifiers/GlobalModifiersCollection";
+import { Unit } from "../unit/Unit";
+import { Building } from "../building/Building";
 
 
 export class Game
@@ -147,6 +149,31 @@ export class Game
     {
       return !player.isDead && !player.isIndependent;
     });
+  }
+  public getAllUnits(): Unit[]
+  {
+    return this.players.map(player => player.units).reduce((allUnits, playerUnits) =>
+    {
+      allUnits.push(...playerUnits);
+
+      return allUnits;
+    }, []);
+  }
+  public getAllBuildings(): Building[]
+  {
+    return this.players.map(player => player.getAllOwnedBuildings()).reduce((allBuildings, playerBuildings) =>
+    {
+      allBuildings.push(...playerBuildings);
+
+      return allBuildings;
+    }, []);
+  }
+  // unit modifiers can depend on stars which can depend on units etc.
+  // so this has to be done after everything is already in place
+  public initializeAllModifiers(): void
+  {
+    this.getAllUnits().forEach(unit => unit.mapLevelModifiers.handleConstruct());
+    this.getAllBuildings().forEach(building => building.modifiers.handleConstruct());
   }
 
   // for every player, not just human

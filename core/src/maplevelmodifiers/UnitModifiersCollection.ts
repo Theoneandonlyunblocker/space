@@ -36,12 +36,12 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
 
     return squashedSelfModifiers;
   }
-  // TODO 2019.10.19 | not called anywhere
   public handleConstruct(): void
   {
     if (this.unit.template.mapLevelModifier)
     {
       this.addOriginatingModifier(this.unit.template.mapLevelModifier);
+      this.propagateOriginatedModifiers();
     }
 
     this.propagateModifiersOfTypeTo("global", app.game.globalModifiers);

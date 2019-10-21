@@ -134,6 +134,7 @@ export class Manufactory
 
           units.push(unit);
           this.owner.addUnit(unit);
+          unit.mapLevelModifiers.handleConstruct();
           break;
         }
         case "item":

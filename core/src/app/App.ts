@@ -288,6 +288,8 @@ class App
       }
     });
 
+    game.initializeAllModifiers();
+
     // notification filter is loaded here as it's dependant on notifications having been loaded
     return activeNotificationFilter.load().then(() =>
     {

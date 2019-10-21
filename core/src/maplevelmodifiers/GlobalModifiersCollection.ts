@@ -37,14 +37,7 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
     }
     if (toPropagate.propagations && toPropagate.propagations.units)
     {
-      const allUnitsInGame = this.game.players.map(player => player.units).reduce((allUnits, playerUnits) =>
-      {
-        allUnits.push(...playerUnits);
-
-        return allUnits;
-      }, []);
-
-      allUnitsInGame.forEach(unit =>
+      this.game.getAllUnits().forEach(unit =>
       {
         propagations.push(
         {
