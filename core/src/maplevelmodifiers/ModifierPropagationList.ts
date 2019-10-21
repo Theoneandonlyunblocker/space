@@ -11,12 +11,26 @@ export class ModifierPropagationList<T extends Modifier<any>>
 
   }
 
-  // tslint:disable member-ordering
-  public push = this.propagations.push.bind(this.propagations);
-  public forEach = this.propagations.forEach.bind(this.propagations);
-  public filter = this.propagations.filter.bind(this.propagations);
-  public some = this.propagations.some.bind(this.propagations);
-  // tslint:enable member-ordering
+  public push(...items: MapLevelModifiersPropagation<T, any>[]): void
+  {
+    this.propagations.push(...items);
+  }
+  public forEach(callback: (item: MapLevelModifiersPropagation<T, any>) => void): void
+  {
+    this.propagations.forEach(callback);
+  }
+  public map<R>(callback: (item: MapLevelModifiersPropagation<T, any>) => R): R[]
+  {
+    return this.propagations.map(callback);
+  }
+  public filter(filter: (item: MapLevelModifiersPropagation<T, any>) => boolean): MapLevelModifiersPropagation<T, any>[]
+  {
+    return this.propagations.filter(filter);
+  }
+  public some(filter: (item: MapLevelModifiersPropagation<T, any>) => boolean): boolean
+  {
+    return this.propagations.some(filter);
+  }
 
   public remove(toRemove: MapLevelModifiersPropagation<T, any>): void
   {
