@@ -144,9 +144,9 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
       this.propagations.push(propagation);
     });
   }
-  private getAllActiveModifiersWithIds(): {modifier: T, id: number}[]
+  private getAllActiveModifiersWithIds(): {modifier: T; id: number}[]
   {
-    const allModifiersWIthIds: {modifier: T, id: number}[] = [];
+    const allModifiersWIthIds: {modifier: T; id: number}[] = [];
 
     for (const id in this.originatingModifiers)
     {

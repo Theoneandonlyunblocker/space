@@ -102,14 +102,6 @@ export class Fleet
 
     return a.id - b.id;
   }
-  private static makeAlreadyInFleetError(unit: Unit): Error
-  {
-    return new Error(`Unit ${unit.name} is already part of fleet ${unit.fleet.name.toString()}`);
-  }
-  private static makeNotInFleetError(unit: Unit, fleet: Fleet): Error
-  {
-    return new Error(`Unit ${unit.name} is not part of fleet ${fleet.name.toString()}`);
-  }
 
   public deleteFleet(shouldRender: boolean = true): void
   {
@@ -374,5 +366,14 @@ export class Fleet
     this.detectedStars = inDetection.all;
 
     this.visionIsDirty = false;
+  }
+
+  private static makeAlreadyInFleetError(unit: Unit): Error
+  {
+    return new Error(`Unit ${unit.name} is already part of fleet ${unit.fleet.name.toString()}`);
+  }
+  private static makeNotInFleetError(unit: Unit, fleet: Fleet): Error
+  {
+    return new Error(`Unit ${unit.name} is not part of fleet ${fleet.name.toString()}`);
   }
 }
