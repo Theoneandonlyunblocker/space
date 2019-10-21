@@ -134,7 +134,6 @@ export class Manufactory
 
           units.push(unit);
           this.owner.addUnit(unit);
-          unit.mapLevelModifiers.handleConstruct();
           break;
         }
         case "item":
@@ -155,6 +154,7 @@ export class Manufactory
         this.owner.addFleet(fleet);
         this.star.addFleet(fleet);
       });
+      units.forEach(unit => unit.mapLevelModifiers.handleConstruct());
     }
 
     if (!this.owner.isAi)
