@@ -2,7 +2,7 @@ import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Star } from "../map/Star";
 import { squashMapLevelModifiers, getBaseMapLevelModifier, MapLevelModifier } from "./MapLevelModifiers";
 import { app } from "../app/App";
-import { MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
+import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { StarModifier } from "./StarModifier";
 
 
@@ -19,12 +19,9 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
 
   public getSelfModifiers(): MapLevelModifier
   {
-    const activeModifiers = this.getAllActiveModifiers().filter(modifiers =>
-    {
-      return !modifiers.filter || modifiers.filter(this.star);
-    });
+    const activeModifiers = this.getAllActiveModifiers();
 
-    const selfModifiers = activeModifiers.map(modifiers => modifiers.self);
+    const selfModifiers = activeModifiers.filter(modifier => modifier.template.self).map(modifiers => modifiers.template.self);
     const squashedSelfModifiers = squashMapLevelModifiers(getBaseMapLevelModifier(), ...selfModifiers);
 
     return squashedSelfModifiers;
@@ -46,13 +43,13 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
     });
   }
 
-  protected modifierPassesFilter(modifier: StarModifier): boolean
+  protected templateShouldBeActive(modifier: StarModifier): boolean
   {
     return !modifier.filter || modifier.filter(this.star);
   }
-  protected getPropagationsFor(toPropagate: StarModifier)
+  protected getPropagationsForTemplate(toPropagate: StarModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<StarModifier>[] = [];
+    const propagations: SimpleMapLevelModifiersPropagation<StarModifier>[] = [];
 
     if (toPropagate.propagations && toPropagate.propagations.localUnits)
     {
@@ -60,8 +57,7 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
       {
         propagations.push(
         {
-          modifier: toPropagate.propagations.localUnits,
-          targetType: "localUnits",
+          template: toPropagate.propagations.localUnits,
           target: unit.mapLevelModifiers,
         });
       });
@@ -70,8 +66,7 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
     {
       propagations.push(
       {
-        modifier: toPropagate.propagations.global,
-        targetType: "global",
+        template: toPropagate.propagations.global,
         target: app.game.globalModifiers,
       });
     }
@@ -79,8 +74,7 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
     {
       propagations.push(
       {
-        modifier: toPropagate.propagations.owningPlayer,
-        targetType: "owningPlayer",
+        template: toPropagate.propagations.owningPlayer,
         target: this.star.owner.modifiers,
       });
     }

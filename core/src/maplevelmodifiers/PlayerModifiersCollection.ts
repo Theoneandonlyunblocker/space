@@ -1,6 +1,6 @@
 import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Player } from "../player/Player";
-import { MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
+import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { PlayerModifier } from "./PlayerModifier";
 
 
@@ -15,13 +15,13 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
     this.player = player;
   }
 
-  protected modifierPassesFilter(modifier: PlayerModifier): boolean
+  protected templateShouldBeActive(modifier: PlayerModifier): boolean
   {
     return true;
   }
-  protected getPropagationsFor(toPropagate: PlayerModifier)
+  protected getPropagationsForTemplate(toPropagate: PlayerModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<PlayerModifier>[] = [];
+    const propagations: SimpleMapLevelModifiersPropagation<PlayerModifier>[] = [];
 
     if (toPropagate.propagations && toPropagate.propagations.ownedStars)
     {
@@ -29,8 +29,7 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
       {
         propagations.push(
         {
-          modifier: toPropagate.propagations.ownedStars,
-          targetType: "ownedStars",
+          template: toPropagate.propagations.ownedStars,
           target: location.modifiers,
         });
       });
@@ -41,8 +40,7 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
       {
         propagations.push(
         {
-          modifier: toPropagate.propagations.ownedUnits,
-          targetType: "ownedUnits",
+          template: toPropagate.propagations.ownedUnits,
           target: unit.mapLevelModifiers,
         });
       });

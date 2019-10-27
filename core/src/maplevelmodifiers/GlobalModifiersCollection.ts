@@ -1,6 +1,6 @@
 import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Game } from "../game/Game";
-import { MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
+import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { GlobalModifier } from "./GlobalModifier";
 
 
@@ -15,13 +15,13 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
     this.game = game;
   }
 
-  protected modifierPassesFilter(modifier: GlobalModifier): boolean
+  protected templateShouldBeActive(modifier: GlobalModifier): boolean
   {
     return true;
   }
-  protected getPropagationsFor(toPropagate: GlobalModifier)
+  protected getPropagationsForTemplate(toPropagate: GlobalModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<GlobalModifier>[] = [];
+    const propagations: SimpleMapLevelModifiersPropagation<GlobalModifier>[] = [];
 
     if (toPropagate.propagations && toPropagate.propagations.stars)
     {
@@ -29,8 +29,7 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
       {
         propagations.push(
         {
-          modifier: toPropagate.propagations.stars,
-          targetType: "stars",
+          template: toPropagate.propagations.stars,
           target: location.modifiers,
         });
       });
@@ -41,8 +40,7 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
       {
         propagations.push(
         {
-          modifier: toPropagate.propagations.units,
-          targetType: "units",
+          template: toPropagate.propagations.units,
           target: unit.mapLevelModifiers,
         });
       });

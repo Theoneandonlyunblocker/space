@@ -1,16 +1,12 @@
-import { Modifier } from "./Modifier";
-import { MapLevelModifiersPropagation, PropagationTypes, MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
+import { ModifierTemplate } from "./ModifierTemplate";
+import { MapLevelModifiersPropagation, PropagationTypes, SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { ModifierPropagationList } from "./ModifierPropagationList";
+import { Modifier } from "./Modifier";
 
-// doesn't need to be consistent across saves so just store here
-let modifierIdGenerator: number = 0;
 
-export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
+export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any>>
 {
-  private readonly originatingModifiers:
-  {
-    [modifierId: number]: T;
-  } = {};
+  private readonly originatingModifiers: Modifier<T>[] = [];
   private incomingModifiers: ModifierPropagationList<T> = new ModifierPropagationList<T>();
   private propagations: ModifierPropagationList<T> = new ModifierPropagationList<T>();
 
@@ -19,17 +15,36 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
 
   }
 
-  public addOriginatingModifier(modifier: T, id: number = modifierIdGenerator++): void
+  public addOriginatingModifier(modifierTemplate: T): void
   {
-    this.originatingModifiers[id] = modifier;
+    const modifier = new Modifier(
+      modifierTemplate,
+      this.templateShouldBeActive(modifierTemplate),
+    );
+    this.originatingModifiers.push(modifier);
   }
-  public getAllActiveModifiers(): T[]
+  public getAllActiveModifiers(): Modifier<T>[]
   {
-    return this.getAllActiveModifiersWithIds().map(modifierWithId => modifierWithId.modifier);
+    const allModifiers: Modifier<T>[] =
+    [
+      ...this.originatingModifiers,
+      ...this.incomingModifiers.map(propagation => propagation.modifier),
+    ];
+
+    const activeModifiers = allModifiers.filter(modifier => modifier.isActive);
+
+    return activeModifiers;
+  }
+  public printAllActiveModifiers(): string
+  {
+    return this.getAllActiveModifiers().map(modifier =>
+    {
+      return modifier.template.key;
+    }).join("\n");
   }
   public removeAllOriginatingModifiers(): void
   {
-    Object.keys(this.originatingModifiers).forEach(id => this.removeOriginatingModifier(Number(id)));
+    this.originatingModifiers.forEach(modifier => this.removeOriginatingModifier(modifier));
   }
   public removeAllIncomingModifiers(): void
   {
@@ -44,18 +59,20 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
   {
     this.incomingModifiers.forEach(propagation =>
     {
-      if (!this.modifierPassesFilter(propagation.modifier))
+      if (!this.templateShouldBeActive(propagation.modifier.template))
       {
-        if (this.hasPropagatedModifier(propagation.modifierId))
+        propagation.modifier.isActive = true;
+        if (this.hasPropagatedModifier(propagation.modifier))
         {
-          this.removePropagationsForModifier(propagation.modifierId)
+          this.removePropagationsForModifier(propagation.modifier)
         }
       }
       else
       {
-        if (!this.hasPropagatedModifier(propagation.modifierId))
+        propagation.modifier.isActive = false;
+        if (!this.hasPropagatedModifier(propagation.modifier))
         {
-          this.propagateModifier(propagation.modifier, propagation.modifierId);
+          this.propagateModifier(propagation.modifier);
         }
       }
     });
@@ -70,42 +87,34 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
   }
   public propagateModifiersOfTypeTo<K extends PropagationTypes<T>>(propagationType: K, target: MapLevelModifiersCollection<T["propagations"][K]>): void
   {
-    const modifiersWithIdsWithMatchingPropagation = this.getAllActiveModifiersWithIds().filter(modifierWithId =>
+    const modifiersWithMatchingPropagation = this.getAllActiveModifiers().filter(modifier =>
     {
-      return modifierWithId.modifier.propagations && modifierWithId.modifier.propagations[propagationType];
+      return modifier.template.propagations && modifier.template.propagations[propagationType];
     });
 
-    modifiersWithIdsWithMatchingPropagation.forEach(modifierWithId =>
+    modifiersWithMatchingPropagation.forEach(modifier =>
     {
-      const {modifier, id} = modifierWithId;
-
-      const propagationsToTarget = this.getPropagationsFor(modifier).filter(propagation => propagation.target === target);
-      this.applyPropagations(propagationsToTarget, id);
+      const propagationsToTarget = this.getPropagationsForTemplate(modifier.template).filter(propagation => propagation.target === target);
+      this.applySimplePropagations(propagationsToTarget, modifier);
     });
   }
   public propagateOriginatedModifiers(): void
   {
-    for (const id in this.originatingModifiers)
-    {
-      this.propagateModifier(this.originatingModifiers[id], Number(id));
-    }
+    this.originatingModifiers.forEach(modifier => this.propagateModifier(modifier));
   }
   public depropagateOriginatedModifiers(): void
   {
-    for (const id in this.originatingModifiers)
-    {
-      this.removePropagationsForModifier(Number(id));
-    }
+    this.originatingModifiers.forEach(modifier => this.removePropagationsForModifier(modifier));
   }
 
-  protected abstract getPropagationsFor(toPropagate: T): MapLevelModifiersPropagationWithoutId<T>[];
-  protected abstract modifierPassesFilter(modifier: T): boolean;
+  protected abstract templateShouldBeActive(template: T): boolean;
+  protected abstract getPropagationsForTemplate(templateToPropagate: T): SimpleMapLevelModifiersPropagation<T>[];
 
   private incomingModifierFormsCycle(toCheck: MapLevelModifiersPropagation<T, any>): boolean
   {
     return this.incomingModifiers.some(propagation =>
     {
-      return propagation.modifierId === toCheck.modifierId && propagation.targetType === toCheck.targetType;
+      return propagation.modifier.parent === toCheck.modifier.parent && propagation.modifier.template.key === toCheck.modifier.template.key;
     });
   }
   private addIncomingModifier(propagation: MapLevelModifiersPropagation<T, any>): void
@@ -117,58 +126,51 @@ export abstract class MapLevelModifiersCollection<T extends Modifier<any>>
     }
 
     this.incomingModifiers.push(propagation);
-    if (this.modifierPassesFilter(propagation.modifier))
+    if (propagation.modifier.isActive)
     {
-      this.propagateModifier(propagation.modifier, propagation.modifierId);
+      this.propagateModifier(propagation.modifier);
     }
   }
-  private hasPropagatedModifier(id: number): boolean
+  private hasPropagatedModifier(modifier: Modifier<T>): boolean
   {
-    return this.propagations.some(propagation => propagation.modifierId === id);
+    return this.propagations.some(propagation => propagation.modifier === modifier);
   }
-  private removePropagationsForModifier(id: number): void
+  private removePropagationsForModifier(modifier: Modifier<T>): void
   {
-    this.propagations.filterAndRemove(propagation => propagation.modifierId === id);
+    this.propagations.filterAndRemove(propagation => propagation.modifier === modifier);
   }
-  private propagateModifier(modifier: T, id: number): void
+  private propagateModifier(modifier: Modifier<T>): void
   {
-    const allPropagations = this.getPropagationsFor(modifier);
-    this.applyPropagations(allPropagations, id);
+    const allPropagations = this.getPropagationsForTemplate(modifier.template);
+    this.applySimplePropagations(allPropagations, modifier);
   }
-  private applyPropagations(propagations: MapLevelModifiersPropagationWithoutId<T>[], id: number): void
+  private applySimplePropagations(simplePropagations: SimpleMapLevelModifiersPropagation<T>[], parent: Modifier<T>): void
   {
-    propagations.forEach(propagationWithoutId =>
+    simplePropagations.forEach(simplePropagation =>
     {
-      const propagation = {...propagationWithoutId, modifierId: id};
+      const propagation =
+      {
+        target: simplePropagation.target,
+        modifier: new Modifier(
+          simplePropagation.template,
+          simplePropagation.target.templateShouldBeActive(simplePropagation.template),
+          parent,
+        ),
+      };
+
       propagation.target.addIncomingModifier(propagation);
       this.propagations.push(propagation);
     });
   }
-  private getAllActiveModifiersWithIds(): {modifier: T; id: number}[]
+  private removeOriginatingModifier(modifier: Modifier<T>): void
   {
-    const allModifiersWIthIds: {modifier: T; id: number}[] = [];
-
-    for (const id in this.originatingModifiers)
-    {
-      allModifiersWIthIds.push({modifier: this.originatingModifiers[id], id: Number(id)});
-    }
-    this.incomingModifiers.forEach(propagation =>
-    {
-      allModifiersWIthIds.push({modifier: propagation.modifier, id: propagation.modifierId});
-    });
-
-    const activeModifiers = allModifiersWIthIds.filter(modifierWithId => this.modifierPassesFilter(modifierWithId.modifier));
-
-    return activeModifiers;
-  }
-  private removeOriginatingModifier(id: number): void
-  {
-    this.removePropagationsForModifier(id);
-    delete this.originatingModifiers[id];
+    this.removePropagationsForModifier(modifier);
+    const index = this.originatingModifiers.indexOf(modifier);
+    this.originatingModifiers.splice(index, 1);
   }
   private removeIncomingModifier(propagation: MapLevelModifiersPropagation<T, any>): void
   {
-    this.removePropagationsForModifier(propagation.modifierId);
+    this.removePropagationsForModifier(propagation.modifier);
     this.incomingModifiers.remove(propagation);
   }
 }

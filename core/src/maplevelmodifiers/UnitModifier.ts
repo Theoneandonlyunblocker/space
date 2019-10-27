@@ -3,7 +3,7 @@ import { PartialMapLevelModifier } from "./MapLevelModifiers";
 import { PlayerModifier } from "./PlayerModifier";
 import { GlobalModifier } from "./GlobalModifier";
 import { StarModifier } from "./StarModifier";
-import { Modifier } from "./Modifier";
+import { ModifierTemplate } from "./ModifierTemplate";
 
 
 type UnitModifierPropagations =
@@ -12,7 +12,7 @@ type UnitModifierPropagations =
   global?: GlobalModifier;
   localStar?: StarModifier;
 };
-export interface UnitModifier extends Modifier<UnitModifierPropagations>
+export interface UnitModifier extends ModifierTemplate<UnitModifierPropagations>
 {
   filter?: (unit: Unit) => boolean;
   self?: PartialMapLevelModifier;

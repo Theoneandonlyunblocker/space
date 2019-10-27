@@ -1,7 +1,7 @@
 import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Building } from "../building/Building";
 import { app } from "../app/App";
-import { MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
+import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { BuildingModifier } from "./BuildingModifier";
 
 
@@ -40,20 +40,19 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
   }
 
 
-  protected modifierPassesFilter(modifier: BuildingModifier): boolean
+  protected templateShouldBeActive(modifier: BuildingModifier): boolean
   {
     return true;
   }
-  protected getPropagationsFor(toPropagate: BuildingModifier)
+  protected getPropagationsForTemplate(toPropagate: BuildingModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<BuildingModifier>[] = [];
+    const propagations: SimpleMapLevelModifiersPropagation<BuildingModifier>[] = [];
 
     if (toPropagate.propagations && toPropagate.propagations.localStar)
     {
       propagations.push(
       {
-        modifier: toPropagate.propagations.localStar,
-        targetType: "localStar",
+        template: toPropagate.propagations.localStar,
         target: this.building.location.modifiers,
       });
     }
@@ -61,8 +60,7 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
     {
       propagations.push(
       {
-        modifier: toPropagate.propagations.global,
-        targetType: "global",
+        template: toPropagate.propagations.global,
         target: app.game.globalModifiers,
       });
     }
@@ -70,8 +68,7 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
     {
       propagations.push(
       {
-        modifier: toPropagate.propagations.owningPlayer,
-        targetType: "owningPlayer",
+        template: toPropagate.propagations.owningPlayer,
         target: this.building.controller.modifiers,
       });
     }

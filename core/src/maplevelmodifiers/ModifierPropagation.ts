@@ -1,15 +1,18 @@
 import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
+import { ModifierTemplate } from "./ModifierTemplate";
 import { Modifier } from "./Modifier";
 
 
-export type PropagationTypes<T extends Modifier<any>> = keyof T["propagations"];
+export type PropagationTypes<T extends ModifierTemplate<any>> = keyof T["propagations"];
 
-export type MapLevelModifiersPropagation<Source extends Modifier<any>, Target extends Source["propagations"][PropagationTypes<Source>]> =
+export type MapLevelModifiersPropagation<Source extends ModifierTemplate<any>, Target extends Source["propagations"][PropagationTypes<Source>]> =
 {
-  modifier: Target;
-  modifierId: number;
-  targetType: PropagationTypes<Source>;
+  modifier: Modifier<Target>;
   target: MapLevelModifiersCollection<Target>;
 };
 
-export type MapLevelModifiersPropagationWithoutId<T extends Modifier<any>> = Omit<MapLevelModifiersPropagation<T, any>, "modifierId">;
+export type SimpleMapLevelModifiersPropagation<Source extends ModifierTemplate<any>, Target extends Source["propagations"][PropagationTypes<Source>] = any> =
+  Omit<MapLevelModifiersPropagation<Source, Target>, "modifier"> &
+  {
+    template: Target;
+  };

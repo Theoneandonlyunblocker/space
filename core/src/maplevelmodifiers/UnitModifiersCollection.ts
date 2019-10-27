@@ -4,7 +4,7 @@ import { squashMapLevelModifiers, getBaseMapLevelModifier, MapLevelModifier } fr
 import { app } from "../app/App";
 import { Star } from "../map/Star";
 import { Player } from "../player/Player";
-import { MapLevelModifiersPropagationWithoutId } from "./ModifierPropagation";
+import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { UnitModifier } from "./UnitModifier";
 
 
@@ -31,7 +31,7 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
   {
     const activeModifiers = this.getAllActiveModifiers();
 
-    const selfModifiers = activeModifiers.map(modifiers => modifiers.self);
+    const selfModifiers = activeModifiers.filter(modifier => modifier.template.self).map(modifier => modifier.template.self);
     const squashedSelfModifiers = squashMapLevelModifiers(getBaseMapLevelModifier(), ...selfModifiers);
 
     return squashedSelfModifiers;
@@ -76,20 +76,19 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
     this.removeAllModifiers();
   }
 
-  protected modifierPassesFilter(modifier: UnitModifier): boolean
+  protected templateShouldBeActive(modifier: UnitModifier): boolean
   {
     return !modifier.filter || modifier.filter(this.unit);
   }
-  protected getPropagationsFor(toPropagate: UnitModifier)
+  protected getPropagationsForTemplate(toPropagate: UnitModifier)
   {
-    const propagations: MapLevelModifiersPropagationWithoutId<UnitModifier>[] = [];
+    const propagations: SimpleMapLevelModifiersPropagation<UnitModifier>[] = [];
 
     if (toPropagate.propagations && toPropagate.propagations.localStar)
     {
       propagations.push(
       {
-        modifier: toPropagate.propagations.localStar,
-        targetType: "localStar",
+        template: toPropagate.propagations.localStar,
         target: this.unit.fleet.location.modifiers,
       });
     }
@@ -97,8 +96,7 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
     {
       propagations.push(
       {
-        modifier: toPropagate.propagations.global,
-        targetType: "global",
+        template: toPropagate.propagations.global,
         target: app.game.globalModifiers,
       });
     }
@@ -106,8 +104,7 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
     {
       propagations.push(
       {
-        modifier: toPropagate.propagations.owningPlayer,
-        targetType: "owningPlayer",
+        template: toPropagate.propagations.owningPlayer,
         target: this.unit.fleet.player.modifiers,
       });
     }

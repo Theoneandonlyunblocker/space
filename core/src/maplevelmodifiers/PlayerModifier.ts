@@ -1,13 +1,13 @@
 import { StarModifier } from "./StarModifier";
 import { UnitModifier } from "./UnitModifier";
-import { Modifier } from "./Modifier";
+import { ModifierTemplate } from "./ModifierTemplate";
 
 type PlayerModifierPropagations =
 {
   ownedStars?: StarModifier;
   ownedUnits?: UnitModifier;
 };
-export interface PlayerModifier extends Modifier<PlayerModifierPropagations>
+export interface PlayerModifier extends ModifierTemplate<PlayerModifierPropagations>
 {
 
 }

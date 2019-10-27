@@ -1,7 +1,7 @@
 import { PlayerModifier } from "./PlayerModifier";
 import { GlobalModifier } from "./GlobalModifier";
 import { StarModifier } from "./StarModifier";
-import { Modifier } from "./Modifier";
+import { ModifierTemplate } from "./ModifierTemplate";
 
 type BuildingModifierPropagations =
 {
@@ -10,7 +10,7 @@ type BuildingModifierPropagations =
   localStar?: StarModifier;
 };
 
-export interface BuildingModifier extends Modifier<BuildingModifierPropagations>
+export interface BuildingModifier extends ModifierTemplate<BuildingModifierPropagations>
 {
 
 }
