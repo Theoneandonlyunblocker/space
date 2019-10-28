@@ -21,7 +21,6 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
     if (this.building.template.mapLevelModifier)
     {
       this.addOriginatingModifier(this.building.template.mapLevelModifier);
-      this.propagateOriginatedModifiers();
     }
   }
   public handleUpgrade(): void
@@ -31,8 +30,7 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
   }
   public handleOwnerChange(): void
   {
-    this.depropagateOriginatedModifiers();
-    this.propagateOriginatedModifiers();
+    this.recheckAllModifiers();
   }
   public handleDestroy(): void
   {

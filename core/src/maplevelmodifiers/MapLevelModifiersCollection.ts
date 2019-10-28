@@ -19,18 +19,13 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
   {
     const modifier = new Modifier(
       modifierTemplate,
-      this.templateShouldBeActive(modifierTemplate),
     );
     this.originatingModifiers.push(modifier);
+    this.recheckAllModifiers();
   }
   public getAllActiveModifiers(): Modifier<T>[]
   {
-    const allModifiers: Modifier<T>[] =
-    [
-      ...this.originatingModifiers,
-      ...this.incomingModifiers.map(propagation => propagation.modifier),
-    ];
-
+    const allModifiers = this.getAllModifiers();
     const activeModifiers = allModifiers.filter(modifier => modifier.isActive);
 
     return activeModifiers;
@@ -55,27 +50,51 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
     this.removeAllOriginatingModifiers();
     this.removeAllIncomingModifiers();
   }
-  public recheckIncomingModifiers(): void
+  public recheckAllModifiers(
+    updateChain: {[modifierKey: string]: Modifier<T>}[] = [],
+  ): void
   {
-    this.incomingModifiers.forEach(propagation =>
+    const updateDepth = updateChain.length;
+    const maxUpdateDepth = 1000;
+    if (updateDepth > maxUpdateDepth)
     {
-      if (!this.templateShouldBeActive(propagation.modifier.template))
+      console.error(updateChain);
+      throw new Error(`Reached maximum update depth (${maxUpdateDepth}) when updating modifiers`);
+    }
+
+    const changedModifiersByKey:
+    {
+      [modifierKey: string]: Modifier<T>;
+    } = {};
+
+    this.getAllModifiers().forEach(modifier =>
+    {
+      const modifierShouldBeActive = this.templateShouldBeActive(modifier.template);
+      if (!modifier.isActive && modifierShouldBeActive)
       {
-        propagation.modifier.isActive = true;
-        if (this.hasPropagatedModifier(propagation.modifier))
+        modifier.isActive = true;
+        if (!this.hasPropagatedModifier(modifier))
         {
-          this.removePropagationsForModifier(propagation.modifier)
+          this.propagateModifier(modifier, updateChain);
         }
+        changedModifiersByKey[modifier.template.key] = modifier;
       }
-      else
+      else if (modifier.isActive && !modifierShouldBeActive)
       {
-        propagation.modifier.isActive = false;
-        if (!this.hasPropagatedModifier(propagation.modifier))
+        modifier.isActive = false;
+        if (this.hasPropagatedModifier(modifier))
         {
-          this.propagateModifier(propagation.modifier);
+          this.removePropagationsForModifier(modifier, updateChain);
         }
+        changedModifiersByKey[modifier.template.key] = modifier;
       }
     });
+
+    const modifiersDidChange = Object.keys(changedModifiersByKey).length > 0;
+    if (modifiersDidChange)
+    {
+      this.recheckAllModifiers([...updateChain, changedModifiersByKey]);
+    }
   }
   public removePropagationsTo(target: MapLevelModifiersCollection<any>): void
   {
@@ -98,18 +117,17 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
       this.applySimplePropagations(propagationsToTarget, modifier);
     });
   }
-  public propagateOriginatedModifiers(): void
-  {
-    this.originatingModifiers.forEach(modifier => this.propagateModifier(modifier));
-  }
-  public depropagateOriginatedModifiers(): void
-  {
-    this.originatingModifiers.forEach(modifier => this.removePropagationsForModifier(modifier));
-  }
 
   protected abstract templateShouldBeActive(template: T): boolean;
   protected abstract getPropagationsForTemplate(templateToPropagate: T): SimpleMapLevelModifiersPropagation<T>[];
 
+  private getAllModifiers(): Modifier<T>[]
+  {
+    return [
+      ...this.originatingModifiers,
+      ...this.incomingModifiers.map(propagation => propagation.modifier),
+    ];
+  }
   private incomingModifierFormsCycle(toCheck: MapLevelModifiersPropagation<T, any>): boolean
   {
     return this.incomingModifiers.some(propagation =>
@@ -117,7 +135,10 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
       return propagation.modifier.parent === toCheck.modifier.parent && propagation.modifier.template.key === toCheck.modifier.template.key;
     });
   }
-  private addIncomingModifier(propagation: MapLevelModifiersPropagation<T, any>): void
+  private addIncomingModifier(
+    propagation: MapLevelModifiersPropagation<T, any>,
+    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+  ): void
   {
     if (this.incomingModifierFormsCycle(propagation))
     {
@@ -126,25 +147,38 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
     }
 
     this.incomingModifiers.push(propagation);
-    if (propagation.modifier.isActive)
-    {
-      this.propagateModifier(propagation.modifier);
-    }
+    this.recheckAllModifiers(updateChain);
   }
   private hasPropagatedModifier(modifier: Modifier<T>): boolean
   {
     return this.propagations.some(propagation => propagation.modifier === modifier);
   }
-  private removePropagationsForModifier(modifier: Modifier<T>): void
+  private removePropagationsForModifier(
+    modifier: Modifier<T>,
+    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+  ): void
   {
-    this.propagations.filterAndRemove(propagation => propagation.modifier === modifier);
+    const removedPropagations = this.propagations.filterAndRemove(propagation => propagation.modifier === modifier);
+    const removedPropagation = removedPropagations[0];
+    removedPropagation.target.removeIncomingModifier(removedPropagation, updateChain);
   }
-  private propagateModifier(modifier: Modifier<T>): void
+  private propagateModifier(
+    modifier: Modifier<T>,
+    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+  ): void
   {
+    if (this.hasPropagatedModifier(modifier))
+    {
+      throw new Error(`Has already propagated modifier ${modifier.template.key}`);
+    }
     const allPropagations = this.getPropagationsForTemplate(modifier.template);
-    this.applySimplePropagations(allPropagations, modifier);
+    this.applySimplePropagations(allPropagations, modifier, updateChain);
   }
-  private applySimplePropagations(simplePropagations: SimpleMapLevelModifiersPropagation<T>[], parent: Modifier<T>): void
+  private applySimplePropagations(
+    simplePropagations: SimpleMapLevelModifiersPropagation<T>[],
+    parent: Modifier<T>,
+    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+    ): void
   {
     simplePropagations.forEach(simplePropagation =>
     {
@@ -153,24 +187,34 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
         target: simplePropagation.target,
         modifier: new Modifier(
           simplePropagation.template,
-          simplePropagation.target.templateShouldBeActive(simplePropagation.template),
           parent,
         ),
       };
 
-      propagation.target.addIncomingModifier(propagation);
       this.propagations.push(propagation);
+      propagation.target.addIncomingModifier(propagation, updateChain);
     });
   }
   private removeOriginatingModifier(modifier: Modifier<T>): void
   {
-    this.removePropagationsForModifier(modifier);
+    if (this.hasPropagatedModifier(modifier))
+    {
+      this.removePropagationsForModifier(modifier);
+    }
     const index = this.originatingModifiers.indexOf(modifier);
     this.originatingModifiers.splice(index, 1);
+    this.recheckAllModifiers();
   }
-  private removeIncomingModifier(propagation: MapLevelModifiersPropagation<T, any>): void
+  private removeIncomingModifier(
+    propagation: MapLevelModifiersPropagation<T, any>,
+    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+  ): void
   {
-    this.removePropagationsForModifier(propagation.modifier);
+    if (this.hasPropagatedModifier(propagation.modifier))
+    {
+      this.removePropagationsForModifier(propagation.modifier);
+    }
     this.incomingModifiers.remove(propagation);
+    this.recheckAllModifiers(updateChain);
   }
 }
