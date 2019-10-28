@@ -24,7 +24,7 @@ export interface BuildingTemplate extends UnlockableThing
   canBeBuiltInLocation?: (star: Star) => boolean;
 
   onBuild?: (location: Star, player: Player) => void;
-  mapLevelModifier?: BuildingModifier;
+  mapLevelModifiers?: BuildingModifier[];
 
   // player race can define their own special upgrades as well
   getStandardUpgradeTargets?: (location: Star) => BuildingTemplate[];

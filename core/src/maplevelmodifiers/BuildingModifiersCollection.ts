@@ -18,9 +18,9 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
 
   public handleConstruct(): void
   {
-    if (this.building.template.mapLevelModifier)
+    if (this.building.template.mapLevelModifiers)
     {
-      this.addOriginatingModifier(this.building.template.mapLevelModifier);
+      this.addOriginatingModifiers(...this.building.template.mapLevelModifiers);
     }
   }
   public handleUpgrade(): void
@@ -48,27 +48,33 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
 
     if (toPropagate.propagations && toPropagate.propagations.localStar)
     {
-      propagations.push(
+      propagations.push(...toPropagate.propagations.localStar.map(modifierTemplate =>
       {
-        template: toPropagate.propagations.localStar,
-        target: this.building.location.modifiers,
-      });
+        return {
+          template: modifierTemplate,
+          target: this.building.location.modifiers,
+        };
+      }));
     }
     if (toPropagate.propagations && toPropagate.propagations.global)
     {
-      propagations.push(
+      propagations.push(...toPropagate.propagations.global.map(modifierTemplate =>
       {
-        template: toPropagate.propagations.global,
-        target: app.game.globalModifiers,
-      });
+        return {
+          template: modifierTemplate,
+          target: app.game.globalModifiers,
+        };
+      }));
     }
     if (toPropagate.propagations && toPropagate.propagations.owningPlayer)
     {
-      propagations.push(
+      propagations.push(...toPropagate.propagations.owningPlayer.map(modifierTemplate =>
       {
-        template: toPropagate.propagations.owningPlayer,
-        target: this.building.controller.modifiers,
-      });
+        return {
+          template: modifierTemplate,
+          target: this.building.controller.modifiers,
+        };
+      }));
     }
 
     return propagations;

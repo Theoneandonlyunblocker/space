@@ -4,8 +4,8 @@ import { ModifierTemplate } from "./ModifierTemplate";
 
 type GlobalModifierPropagations =
 {
-  stars?: StarModifier;
-  units?: UnitModifier;
+  stars?: StarModifier[];
+  units?: UnitModifier[];
 }
 export interface GlobalModifier extends ModifierTemplate<GlobalModifierPropagations>
 {

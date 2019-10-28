@@ -27,22 +27,26 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
     {
       this.game.galaxyMap.stars.forEach(location =>
       {
-        propagations.push(
+        propagations.push(...toPropagate.propagations.stars.map(modifierTemplate =>
         {
-          template: toPropagate.propagations.stars,
-          target: location.modifiers,
-        });
+          return {
+            template: modifierTemplate,
+            target: location.modifiers,
+          };
+        }));
       });
     }
     if (toPropagate.propagations && toPropagate.propagations.units)
     {
       this.game.getAllUnits().forEach(unit =>
       {
-        propagations.push(
+        propagations.push(...toPropagate.propagations.units.map(modifierTemplate =>
         {
-          template: toPropagate.propagations.units,
-          target: unit.mapLevelModifiers,
-        });
+          return {
+            template: modifierTemplate,
+            target: unit.mapLevelModifiers,
+          };
+        }));
       });
     }
 

@@ -25,24 +25,28 @@ export const commercialPort: BuildingTemplate =
   },
   maxBuiltAtLocation: 1,
 
-  mapLevelModifier:
-  {
-    key: "commercialPort",
-    propagations:
+  mapLevelModifiers:
+  [
     {
-      localStar:
+      key: "commercialPort",
+      propagations:
       {
-        key: "localCommercialPort",
-        self:
-        {
-          income:
+        localStar:
+        [
           {
-            [moneyResource.type]: {flat: 20},
+            key: "localCommercialPort",
+            self:
+            {
+              income:
+              {
+                [moneyResource.type]: {flat: 20},
+              },
+            },
           },
-        },
+        ],
       },
     },
-  },
+  ],
 };
 export const deepSpaceRadar: BuildingTemplate =
 {
@@ -65,25 +69,29 @@ export const deepSpaceRadar: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  mapLevelModifier:
-  {
-    key: "deepSpaceRadar",
-    propagations:
+  mapLevelModifiers:
+  [
     {
-      localStar:
+      key: "deepSpaceRadar",
+      propagations:
       {
-        key: "localDeepSpaceRadar",
-        self:
-        {
-          adjustments:
+        localStar:
+        [
           {
-            vision: {flat: 1},
-            detection: {flat: 1},
+            key: "localDeepSpaceRadar",
+            self:
+            {
+              adjustments:
+              {
+                vision: {flat: 1},
+                detection: {flat: 1},
+              },
+            },
           },
-        },
-      },
-    }
-  },
+        ],
+      }
+    },
+  ],
   techRequirements:
   [
     {
@@ -117,24 +125,28 @@ export const resourceMine: BuildingTemplate =
     return Boolean(star.resource);
   },
 
-  mapLevelModifier:
-  {
-    key: "resourceMine",
-    propagations:
+  mapLevelModifiers:
+  [
     {
-      localStar:
+      key: "resourceMine",
+      propagations:
       {
-        key: "localResourceMine",
-        self:
-        {
-          adjustments:
+        localStar:
+        [
           {
-            mining: {flat: 1},
+            key: "localResourceMine",
+            self:
+            {
+              adjustments:
+              {
+                mining: {flat: 1},
+              },
+            },
           },
-        },
+        ],
       },
     },
-  },
+  ],
 };
 export const reserachLab: BuildingTemplate =
 {
@@ -157,24 +169,28 @@ export const reserachLab: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  mapLevelModifier:
-  {
-    key: "researchLab",
-    propagations:
+  mapLevelModifiers:
+  [
     {
-      localStar:
+      key: "researchLab",
+      propagations:
       {
-        key: "localResearchLab",
-        self:
-        {
-          adjustments:
+        localStar:
+        [
           {
-            researchPoints: {flat: 10},
+            key: "localResearchLab",
+            self:
+            {
+              adjustments:
+              {
+                researchPoints: {flat: 10},
+              },
+            },
           },
-        },
+        ],
       },
     },
-  },
+  ],
 };
 export const thePyramids: BuildingTemplate =
 {
@@ -233,42 +249,50 @@ export const nationalEpic: BuildingTemplate =
       [testResource5.type]: 2,
     });
   },
-  mapLevelModifier:
-  {
-    key: "nationalEpic",
-    propagations:
+  mapLevelModifiers:
+  [
     {
-      owningPlayer:
+      key: "nationalEpic",
+      propagations:
       {
-        key: "hasNationalEpic",
-        propagations:
-        {
-          ownedStars:
+        owningPlayer:
+        [
           {
-            key: "ownerHasNationalEpic",
+            key: "hasNationalEpic",
+            propagations:
+            {
+              ownedStars:
+              [
+                {
+                  key: "ownerHasNationalEpic",
+                  self:
+                  {
+                    income:
+                    {
+                      [testResource1.type]: {flat: 10},
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        localStar:
+        [
+          {
+            key: "localNationalEpic",
             self:
             {
               income:
               {
-                [testResource1.type]: {flat: 10},
+                [testResource2.type]: {flat: 100},
               },
             },
           },
-        },
-      },
-      localStar:
-      {
-        key: "localNationalEpic",
-        self:
-        {
-          income:
-          {
-            [testResource2.type]: {flat: 100},
-          },
-        },
+        ],
       },
     },
-  },
+  ],
 
   buildCost:
   {

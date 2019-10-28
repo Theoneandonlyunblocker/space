@@ -148,22 +148,26 @@ export const debugShip: UnitTemplate =
     weight: 0,
     distributionGroups: [],
   },
-  mapLevelModifier:
-  {
-    key: "debugShip",
-    propagations:
+  mapLevelModifiers:
+  [
     {
-      localStar:
+      key: "debugShip",
+      propagations:
       {
-        key: "localDebugShip",
-        self:
-        {
-          income:
+        localStar:
+        [
           {
-            [moneyResource.type]: {additiveMultiplier: 10},
+            key: "localDebugShip",
+            self:
+            {
+              income:
+              {
+                [moneyResource.type]: {additiveMultiplier: 10},
+              },
+            },
           },
-        },
+        ],
       },
     },
-  },
+  ],
 };

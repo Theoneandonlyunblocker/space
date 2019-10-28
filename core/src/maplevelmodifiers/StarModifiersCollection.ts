@@ -29,8 +29,7 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
   public handleOwnerChange(): void
   {
     this.removeAllIncomingModifiers();
-    this.depropagateOriginatedModifiers();
-    this.propagateOriginatedModifiers();
+    this.recheckAllModifiers();
     this.star.buildings.forEach(building =>
     {
       building.modifiers.propagateModifiersOfTypeTo("localStar", this);
@@ -55,28 +54,34 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
     {
       this.star.getUnits().forEach(unit =>
       {
-        propagations.push(
+        propagations.push(...toPropagate.propagations.localUnits.map(modifierTemplate =>
         {
-          template: toPropagate.propagations.localUnits,
-          target: unit.mapLevelModifiers,
-        });
+          return {
+            template: modifierTemplate,
+            target: unit.mapLevelModifiers,
+          };
+        }));
       });
     }
     if (toPropagate.propagations && toPropagate.propagations.global)
     {
-      propagations.push(
+      propagations.push(...toPropagate.propagations.global.map(modifierTemplate =>
       {
-        template: toPropagate.propagations.global,
-        target: app.game.globalModifiers,
-      });
+        return {
+          template: modifierTemplate,
+          target: app.game.globalModifiers,
+        };
+      }));
     }
     if (toPropagate.propagations && toPropagate.propagations.owningPlayer)
     {
-      propagations.push(
+      propagations.push(...toPropagate.propagations.owningPlayer.map(modifierTemplate =>
       {
-        template: toPropagate.propagations.owningPlayer,
-        target: this.star.owner.modifiers,
-      });
+        return {
+          template: modifierTemplate,
+          target: this.star.owner.modifiers,
+        };
+      }));
     }
 
     return propagations;

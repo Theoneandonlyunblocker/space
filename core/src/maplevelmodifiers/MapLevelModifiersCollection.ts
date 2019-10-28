@@ -4,6 +4,8 @@ import { ModifierPropagationList } from "./ModifierPropagationList";
 import { Modifier } from "./Modifier";
 
 
+type Unpacked<T> = T extends (infer U)[] ? U : T;
+
 export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any>>
 {
   private readonly originatingModifiers: Modifier<T>[] = [];
@@ -15,12 +17,16 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
 
   }
 
-  public addOriginatingModifier(modifierTemplate: T): void
+  public addOriginatingModifiers(...modifierTemplates: T[]): void
   {
-    const modifier = new Modifier(
-      modifierTemplate,
-    );
-    this.originatingModifiers.push(modifier);
+    modifierTemplates.forEach(modifierTemplate =>
+    {
+      const modifier = new Modifier(
+        modifierTemplate,
+      );
+      this.originatingModifiers.push(modifier);
+    });
+
     this.recheckAllModifiers();
   }
   public getAllActiveModifiers(): Modifier<T>[]
@@ -104,7 +110,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
       target.removeIncomingModifier(propagation);
     });
   }
-  public propagateModifiersOfTypeTo<K extends PropagationTypes<T>>(propagationType: K, target: MapLevelModifiersCollection<T["propagations"][K]>): void
+  public propagateModifiersOfTypeTo<K extends PropagationTypes<T>>(propagationType: K, target: MapLevelModifiersCollection<Unpacked<T["propagations"][K]>>): void
   {
     const modifiersWithMatchingPropagation = this.getAllActiveModifiers().filter(modifier =>
     {

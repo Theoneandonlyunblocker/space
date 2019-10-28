@@ -10,8 +10,10 @@ import {Star} from "../map/Star";
 import { TerritoryBuildingTemplate } from "../templateinterfaces/TerritoryBuildingTemplate";
 import { BuildingFamily } from "../templateinterfaces/BuildingFamily";
 import { Resources } from "../player/PlayerResources";
-import { sumObjectValues } from "../generic/utility";
+import { sumObjectValues, flatten2dArray } from "../generic/utility";
 import { BuildingModifiersCollection } from "../maplevelmodifiers/BuildingModifiersCollection";
+import { PartialMapLevelModifier } from "../maplevelmodifiers/MapLevelModifiers";
+import { squashAdjustmentsObjects } from "../generic/FlatAndMultiplierAdjustment";
 
 
 export type TerritoryBuilding = Building<TerritoryBuildingTemplate>;
@@ -96,16 +98,29 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
       return templateFamily === familyToCheck;
     });
   }
-  // TODO 2019.10.10 | clean up for typescript 3.7 or rename or remove altogether
-  public getEffect(): BuildingTemplate["mapLevelModifier"]["propagations"]["localStar"]["self"]["adjustments"]
+  // TODO 2019.10.10 | rename or remove altogether
+  public getEffect(): PartialMapLevelModifier["adjustments"]
   {
-    if (this.template.mapLevelModifier &&
-      this.template.mapLevelModifier.propagations &&
-      this.template.mapLevelModifier.propagations.localStar &&
-      this.template.mapLevelModifier.propagations.localStar.self &&
-      this.template.mapLevelModifier.propagations.localStar.self.adjustments)
+    if (this.template.mapLevelModifiers)
     {
-      return this.template.mapLevelModifier.propagations.localStar.self.adjustments;
+      const ownModifiersAffectingLocalStar = this.template.mapLevelModifiers.filter(modifier => modifier.propagations.localStar);
+      const localStarModifiers = flatten2dArray(ownModifiersAffectingLocalStar.map(modifier => modifier.propagations.localStar));
+      const localStarAdjustments = localStarModifiers.filter(modifier => modifier.self && modifier.self.adjustments).map(modifier =>
+      {
+        return modifier.self.adjustments;
+      });
+
+      if (localStarAdjustments.length === 0)
+      {
+        return {};
+      }
+      else
+      {
+        const squashedLocalStarAdjustments = squashAdjustmentsObjects(...localStarAdjustments);
+
+        return squashedLocalStarAdjustments;
+      }
+
     }
     else
     {

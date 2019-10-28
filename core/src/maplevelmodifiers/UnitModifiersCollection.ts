@@ -38,10 +38,9 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
   }
   public handleConstruct(): void
   {
-    if (this.unit.template.mapLevelModifier)
+    if (this.unit.template.mapLevelModifiers)
     {
-      this.addOriginatingModifier(this.unit.template.mapLevelModifier);
-      this.propagateOriginatedModifiers();
+      this.addOriginatingModifiers(...this.unit.template.mapLevelModifiers);
     }
 
     this.propagateModifiersOfTypeTo("global", app.game.globalModifiers);
@@ -69,7 +68,7 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
   }
   public handleUpgrade(): void
   {
-    this.recheckIncomingModifiers();
+    this.recheckAllModifiers();
   }
   public handleDestroy(): void
   {
@@ -86,27 +85,33 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
 
     if (toPropagate.propagations && toPropagate.propagations.localStar)
     {
-      propagations.push(
+      propagations.push(...toPropagate.propagations.localStar.map(modifierTemplate =>
       {
-        template: toPropagate.propagations.localStar,
-        target: this.unit.fleet.location.modifiers,
-      });
+        return {
+          template: modifierTemplate,
+          target: this.unit.fleet.location.modifiers,
+        };
+      }));
     }
     if (toPropagate.propagations && toPropagate.propagations.global)
     {
-      propagations.push(
+      propagations.push(...toPropagate.propagations.global.map(modifierTemplate =>
       {
-        template: toPropagate.propagations.global,
-        target: app.game.globalModifiers,
-      });
+        return {
+          template: modifierTemplate,
+          target: app.game.globalModifiers,
+        };
+      }));
     }
     if (toPropagate.propagations && toPropagate.propagations.owningPlayer)
     {
-      propagations.push(
+      propagations.push(...toPropagate.propagations.owningPlayer.map(modifierTemplate =>
       {
-        template: toPropagate.propagations.owningPlayer,
-        target: this.unit.fleet.player.modifiers,
-      });
+        return {
+          template: modifierTemplate,
+          target: this.unit.fleet.player.modifiers,
+        };
+      }));
     }
 
     return propagations;

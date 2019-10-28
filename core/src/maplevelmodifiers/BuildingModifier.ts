@@ -5,9 +5,9 @@ import { ModifierTemplate } from "./ModifierTemplate";
 
 type BuildingModifierPropagations =
 {
-  owningPlayer?: PlayerModifier;
-  global?: GlobalModifier;
-  localStar?: StarModifier;
+  owningPlayer?: PlayerModifier[];
+  global?: GlobalModifier[];
+  localStar?: StarModifier[];
 };
 
 export interface BuildingModifier extends ModifierTemplate<BuildingModifierPropagations>

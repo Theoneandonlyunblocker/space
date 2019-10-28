@@ -4,8 +4,8 @@ import { ModifierTemplate } from "./ModifierTemplate";
 
 type PlayerModifierPropagations =
 {
-  ownedStars?: StarModifier;
-  ownedUnits?: UnitModifier;
+  ownedStars?: StarModifier[];
+  ownedUnits?: UnitModifier[];
 };
 export interface PlayerModifier extends ModifierTemplate<PlayerModifierPropagations>
 {

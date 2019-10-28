@@ -27,22 +27,26 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
     {
       this.player.controlledLocations.forEach(location =>
       {
-        propagations.push(
+        propagations.push(...toPropagate.propagations.ownedStars.map(modifierTemplate =>
         {
-          template: toPropagate.propagations.ownedStars,
-          target: location.modifiers,
-        });
+          return {
+            template: modifierTemplate,
+            target: location.modifiers,
+          }
+        }));
       });
     }
     if (toPropagate.propagations && toPropagate.propagations.ownedUnits)
     {
       this.player.units.forEach(unit =>
       {
-        propagations.push(
+        propagations.push(...toPropagate.propagations.ownedUnits.map(modifierTemplate =>
         {
-          template: toPropagate.propagations.ownedUnits,
-          target: unit.mapLevelModifiers,
-        });
+          return {
+            template: modifierTemplate,
+            target: unit.mapLevelModifiers,
+          }
+        }));
       });
     }
 
