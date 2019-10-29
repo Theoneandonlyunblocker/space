@@ -41,7 +41,8 @@ export function getIcon(key: keyof typeof iconSources, ...id: (string | number)[
   maskBase.setAttribute("width", `${width}`);
   maskBase.setAttribute("height", `${height}`);
 
-  const stencilElement = stencil.firstChild;
+  // const stencilElement = stencil.firstChild;
+  const stencilElement = stencil;
   const mask = document.createElementNS("http://www.w3.org/2000/svg", "mask");
   mask.id = `notification-icon-mask-${idSuffix}`;
   mask.appendChild(maskBase);
