@@ -55,11 +55,15 @@ export function squashMapLevelModifiers(...modifiersToSquash: PartialMapLevelMod
 {
   const modifiersWithAdjustments = modifiersToSquash.filter(modifier => modifier.adjustments);
   const allAdjustments = modifiersWithAdjustments.map(modifier => modifier.adjustments);
-  const squashedAdjustments = squashAdjustmentsObjects(...allAdjustments);
+  const squashedAdjustments = allAdjustments.length > 0 ?
+    squashAdjustmentsObjects(...allAdjustments) :
+    {};
 
   const modifiersWithIncome = modifiersToSquash.filter(modifier =>modifier.income);
   const allIncome = modifiersWithIncome.map(modifier => modifier.income);
-  const squashedIncome = squashAdjustmentsObjects(...allIncome);
+  const squashedIncome = allIncome.length > 0 ?
+    squashAdjustmentsObjects(...allIncome) :
+    {};
 
   const modifiersWithFlags = modifiersToSquash.filter(modifier =>modifier.flags);
   const allFlags = modifiersWithFlags.map(modifier => modifier.flags);

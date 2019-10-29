@@ -131,14 +131,6 @@ export class Star implements Point
           this.galaxyMap.globallyLimitedBuildings.add(building);
         }
 
-        const effect = building.getEffect();
-
-        const buildingChangesVision = effect.vision || effect.detection;
-        if (buildingChangesVision)
-        {
-          this.owner.updateVisibleStars();
-        }
-
         const isTerritoryBuilding = (<TerritoryBuilding>building).template.isTerritoryBuilding;
         if (isTerritoryBuilding)
         {
@@ -147,6 +139,8 @@ export class Star implements Point
 
         if (this.owner === activePlayer)
         {
+          const effect = building.getEffect();
+
           for (const key in effect)
           {
             eventManager.dispatchEvent("builtBuildingWithEffect_" + key);

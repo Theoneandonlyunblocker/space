@@ -27,8 +27,8 @@ export class Fleet
   public location: Star;
 
   public isStealthy: boolean;
+  public visionIsDirty: boolean = true;
 
-  private visionIsDirty: boolean = true;
   private visibleStars: Star[] = [];
   private detectedStars: Star[] = [];
 

@@ -4,17 +4,33 @@ import { squashMapLevelModifiers, getBaseMapLevelModifier, MapLevelModifier } fr
 import { app } from "../app/App";
 import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { StarModifier } from "./StarModifier";
+import { Player } from "../player/Player";
 
 
 export class StarModifiersCollection extends MapLevelModifiersCollection<StarModifier>
 {
   private star: Star;
+  private get owner(): Player
+  {
+    return this.star.owner;
+  }
 
   constructor(star: Star)
   {
     super();
 
     this.star = star;
+    this.onChange = changedModifiers =>
+    {
+      const allSelfModifiers = changedModifiers.filter(modifier => modifier.template.self).map(modifier => modifier.template.self);
+      const changes = squashMapLevelModifiers(...allSelfModifiers);
+
+      const didModifyVision = changes.adjustments.vision || changes.adjustments.detection;
+      if (didModifyVision)
+      {
+        this.owner.updateVisibleStars();
+      }
+    };
   }
 
   public getSelfModifiers(): MapLevelModifier

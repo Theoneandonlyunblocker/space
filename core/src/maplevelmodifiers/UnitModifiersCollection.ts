@@ -25,6 +25,18 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
     super();
 
     this.unit = unit;
+    this.onChange = changedModifiers =>
+    {
+      const allSelfModifiers = changedModifiers.filter(modifier => modifier.template.self).map(modifier => modifier.template.self);
+      const changes = squashMapLevelModifiers(...allSelfModifiers);
+
+      const didModifyVision = changes.adjustments.vision || changes.adjustments.detection;
+      if (didModifyVision)
+      {
+        this.unit.fleet.visionIsDirty = true;
+        this.owner.updateVisibleStars();
+      }
+    };
   }
 
   public getSelfModifiers(): MapLevelModifier
