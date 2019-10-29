@@ -2,12 +2,14 @@ import { ModifierTemplate } from "./ModifierTemplate";
 import { MapLevelModifiersPropagation, PropagationTypes, SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { ModifierPropagationList } from "./ModifierPropagationList";
 import { Modifier } from "./Modifier";
+import { flatten2dArray } from "../generic/utility";
 
 
 type Unpacked<T> = T extends (infer U)[] ? U : T;
 
 export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any>>
 {
+  protected onChange: (changedModifiers: Modifier<T>[]) => void;
   private readonly originatingModifiers: Modifier<T>[] = [];
   private incomingModifiers: ModifierPropagationList<T> = new ModifierPropagationList<T>();
   private propagations: ModifierPropagationList<T> = new ModifierPropagationList<T>();
@@ -23,6 +25,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
     {
       const modifier = new Modifier(
         modifierTemplate,
+        this,
       );
       this.originatingModifiers.push(modifier);
     });
@@ -57,21 +60,18 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
     this.removeAllIncomingModifiers();
   }
   public recheckAllModifiers(
-    updateChain: {[modifierKey: string]: Modifier<T>}[] = [],
+    updateChain: Modifier<T>[][] = [],
   ): void
   {
     const updateDepth = updateChain.length;
-    const maxUpdateDepth = 1000;
-    if (updateDepth > maxUpdateDepth)
+    const maxUpdateDepth = 100;
+    if (updateDepth >= maxUpdateDepth)
     {
-      console.error(updateChain);
-      throw new Error(`Reached maximum update depth (${maxUpdateDepth}) when updating modifiers`);
+      console.error("Modifier update chain:", updateChain);
+      throw new Error(`Reached maximum update depth (${maxUpdateDepth}) when updating modifiers. This was likely caused by an infinite loop in conditional modifiers validating/invalidating themselves. See above for update chain.`);
     }
 
-    const changedModifiersByKey:
-    {
-      [modifierKey: string]: Modifier<T>;
-    } = {};
+    const changedModifiers: Modifier<T>[] = [];
 
     this.getAllModifiers().forEach(modifier =>
     {
@@ -83,7 +83,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
         {
           this.propagateModifier(modifier, updateChain);
         }
-        changedModifiersByKey[modifier.template.key] = modifier;
+        changedModifiers.push(modifier);
       }
       else if (modifier.isActive && !modifierShouldBeActive)
       {
@@ -92,14 +92,21 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
         {
           this.removePropagationsForModifier(modifier, updateChain);
         }
-        changedModifiersByKey[modifier.template.key] = modifier;
+        changedModifiers.push(modifier);
       }
     });
 
-    const modifiersDidChange = Object.keys(changedModifiersByKey).length > 0;
+    const modifiersDidChange = changedModifiers.length > 0;
     if (modifiersDidChange)
     {
-      this.recheckAllModifiers([...updateChain, changedModifiersByKey]);
+      this.recheckAllModifiers([...updateChain, changedModifiers]);
+    }
+    else
+    {
+      if (this.onChange)
+      {
+        this.onChange(this.getAllOwnModifiersInUpdateChain(updateChain))
+      }
     }
   }
   public removePropagationsTo(target: MapLevelModifiersCollection<any>): void
@@ -143,7 +150,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
   }
   private addIncomingModifier(
     propagation: MapLevelModifiersPropagation<T, any>,
-    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+    updateChain?: Modifier<any>[][],
   ): void
   {
     if (this.incomingModifierFormsCycle(propagation))
@@ -161,7 +168,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
   }
   private removePropagationsForModifier(
     modifier: Modifier<T>,
-    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+    updateChain?: Modifier<any>[][],
   ): void
   {
     const removedPropagations = this.propagations.filterAndRemove(propagation => propagation.modifier === modifier);
@@ -170,7 +177,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
   }
   private propagateModifier(
     modifier: Modifier<T>,
-    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+    updateChain?: Modifier<any>[][],
   ): void
   {
     if (this.hasPropagatedModifier(modifier))
@@ -183,7 +190,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
   private applySimplePropagations(
     simplePropagations: SimpleMapLevelModifiersPropagation<T>[],
     parent: Modifier<T>,
-    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+    updateChain?: Modifier<any>[][],
     ): void
   {
     simplePropagations.forEach(simplePropagation =>
@@ -193,6 +200,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
         target: simplePropagation.target,
         modifier: new Modifier(
           simplePropagation.template,
+          simplePropagation.target,
           parent,
         ),
       };
@@ -213,7 +221,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
   }
   private removeIncomingModifier(
     propagation: MapLevelModifiersPropagation<T, any>,
-    updateChain?: {[modifierKey: string]: Modifier<T>}[],
+    updateChain?: Modifier<any>[][],
   ): void
   {
     if (this.hasPropagatedModifier(propagation.modifier))
@@ -222,5 +230,11 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
     }
     this.incomingModifiers.remove(propagation);
     this.recheckAllModifiers(updateChain);
+  }
+  private getAllOwnModifiersInUpdateChain(updateChain: Modifier<any>[][]): Modifier<T>[]
+  {
+    const flattenedUpdateChain = flatten2dArray(updateChain);
+
+    return flattenedUpdateChain.filter(modifier => modifier.collection === this);
   }
 }
