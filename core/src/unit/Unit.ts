@@ -44,6 +44,7 @@ import { ProbabilityDistributions } from "../templateinterfaces/ProbabilityDistr
 import { Name } from "../localization/Name";
 import { Resources } from "../player/PlayerResources";
 import { UnitModifiersCollection } from "../maplevelmodifiers/UnitModifiersCollection";
+import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
 
 
 type PassiveSkillsByPhase =
@@ -902,11 +903,17 @@ export class Unit
   }
   public getVisionRange(): number
   {
-    return this.template.visionRange;
+    const baseRange = this.template.visionRange;
+    const modifiers = this.mapLevelModifiers.getSelfModifiers().adjustments.vision;
+
+    return applyFlatAndMultiplierAdjustments(baseRange, modifiers);
   }
   public getDetectionRange(): number
   {
-    return this.template.detectionRange;
+    const baseRange = this.template.detectionRange;
+    const modifiers = this.mapLevelModifiers.getSelfModifiers().adjustments.detection;
+
+    return applyFlatAndMultiplierAdjustments(baseRange, modifiers);
   }
   public getHealingForGameTurnStart(): number
   {
