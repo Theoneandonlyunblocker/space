@@ -147,7 +147,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     {
       makeContent: () => TechnologiesList(
       {
-        playerTechnology: this.props.player.playerTechnology,
+        player: this.props.player,
       }),
       get title()
       {

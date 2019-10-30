@@ -77,6 +77,7 @@ export class TriggeredScripts
       onDeath: {},
       onResourcesChange: {},
       onIncomeChange: {},
+      onResearchSpeedChange: {},
     },
     star:
     {

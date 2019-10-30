@@ -2,82 +2,55 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
-import {PlayerTechnology} from "core/src/player/PlayerTechnology";
-import {eventManager} from "core/src/app/eventManager";
 
 import {Technology} from "./Technology";
+import { Player } from "core/src/player/Player";
+import { useResearchSpeed } from "./useResearchSpeed";
 
 
+// tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
-  playerTechnology: PlayerTechnology;
+  player: Player;
 }
 
-interface StateType
+const TechnologiesListComponent: React.FunctionComponent<PropTypes> = props =>
 {
-}
+  const researchSpeed = useResearchSpeed(props.player);
+  const playerTechnology = props.player.playerTechnology;
 
-export class TechnologiesListComponent extends React.Component<PropTypes, StateType>
-{
-  public displayName = "TechnologiesList";
-  private updateListener: () => void;
+  const rows: React.ReactElement<any>[] = [];
 
-
-  public state: StateType;
-
-  constructor(props: PropTypes)
+  for (const key in playerTechnology.technologies)
   {
-    super(props);
-  }
-
-  componentDidMount()
-  {
-    this.updateListener = eventManager.addEventListener(
-      "builtBuildingWithEffect_research", this.forceUpdate.bind(this));
-  }
-
-  componentWillUnmount()
-  {
-    eventManager.removeEventListener("builtBuildingWithEffect_research", this.updateListener);
-  }
-  render()
-  {
-    const playerTechnology = this.props.playerTechnology;
-
-    const researchSpeed = playerTechnology.getResearchSpeed();
-    const rows: React.ReactElement<any>[] = [];
-
-    for (const key in playerTechnology.technologies)
+    rows.push(Technology(
     {
-      rows.push(Technology(
-      {
-        playerTechnology: playerTechnology,
-        technology: playerTechnology.technologies[key].technology,
-        researchPoints: researchSpeed,
-        key: key,
-      }));
-    }
+      playerTechnology: playerTechnology,
+      technology: playerTechnology.technologies[key].technology,
+      researchPoints: researchSpeed,
+      key: key,
+    }));
+  }
 
-    return(
+  return(
+    ReactDOMElements.div(
+    {
+      className: "technologies-list-container",
+    },
       ReactDOMElements.div(
       {
-        className: "technologies-list-container",
+        className: "technologies-list",
       },
-        ReactDOMElements.div(
-        {
-          className: "technologies-list",
-        },
-          rows,
-        ),
-        ReactDOMElements.div(
-        {
-          className: "technologies-list-research-speed",
-        },
-          `${localize("researchSpeed")}: ${researchSpeed} ${localize("perTurn")}`,
-        ),
-      )
-    );
-  }
-}
+        rows,
+      ),
+      ReactDOMElements.div(
+      {
+        className: "technologies-list-research-speed",
+      },
+        `${localize("researchSpeed")}: ${researchSpeed} ${localize("perTurn")}`,
+      ),
+    )
+  );
+};
 
-export const TechnologiesList: React.Factory<PropTypes> = React.createFactory(TechnologiesListComponent);
+export const TechnologiesList: React.FunctionComponentFactory<PropTypes> = React.createFactory(TechnologiesListComponent);

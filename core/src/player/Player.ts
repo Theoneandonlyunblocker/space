@@ -110,11 +110,6 @@ export class Player
   // TODO 2019.09.30 | remove?
   // private tempOverflowedResearchAmount: number = 0;
 
-  private listeners:
-  {
-    [key: string]: (...args: any[]) => void;
-  } = {};
-
   constructor(props:
   {
     isAi: boolean;
@@ -244,11 +239,6 @@ export class Player
     }
 
     this.aiController = null;
-
-    for (const key in this.listeners)
-    {
-      eventManager.removeEventListener(key, this.listeners[key]);
-    }
   }
   public shouldDie(): boolean
   {
@@ -934,12 +924,10 @@ export class Player
   private initTechnologies(savedData?: PlayerTechnologySaveData): void
   {
     const race = this.race;
-    this.playerTechnology = new PlayerTechnology(this.getResearchSpeed.bind(this),
-      race.technologies, savedData);
-
-    this.listeners["builtBuildingWithEffect_research"] = eventManager.addEventListener(
-      "builtBuildingWithEffect_research",
-      this.playerTechnology.capTechnologyPrioritiesToMaxNeeded.bind(this.playerTechnology),
+    this.playerTechnology = new PlayerTechnology(
+      this.getResearchSpeed.bind(this),
+      race.technologies,
+      savedData,
     );
   }
   private die(): void

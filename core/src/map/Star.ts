@@ -139,13 +139,6 @@ export class Star implements Point
 
         if (this.owner === activePlayer)
         {
-          const effect = building.getEffect();
-
-          for (const key in effect)
-          {
-            eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
-          }
-
           eventManager.dispatchEvent("humanPlayerBuiltBuilding");
         }
       },
@@ -163,15 +156,8 @@ export class Star implements Point
       },
       onUpgradeBuilding: (building, oldTemplate) =>
       {
-        const effect = building.getEffect();
-
         if (this.owner === activePlayer)
         {
-          for (const key in effect)
-          {
-            eventManager.dispatchEvent("builtBuildingWithEffect_" + key);
-          }
-
           eventManager.dispatchEvent("humanPlayerBuiltBuilding");
         }
       }

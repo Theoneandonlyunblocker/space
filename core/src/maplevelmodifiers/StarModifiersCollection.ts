@@ -5,6 +5,7 @@ import { app } from "../app/App";
 import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { StarModifier } from "./StarModifier";
 import { Player } from "../player/Player";
+import { activeModuleData } from "../app/activeModuleData";
 
 
 export class StarModifiersCollection extends MapLevelModifiersCollection<StarModifier>
@@ -29,6 +30,13 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
       if (didModifyVision)
       {
         this.owner.updateVisibleStars();
+      }
+      if (changes.adjustments.researchPoints)
+      {
+        activeModuleData.scripts.player.onResearchSpeedChange.forEach(script =>
+        {
+          script(this.owner);
+        });
       }
     };
   }
