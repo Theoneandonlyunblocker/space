@@ -22,17 +22,16 @@ export class UpdateWhenResourcesChange<T extends React.Component<any, any>> impl
 
   public componentDidMount()
   {
-    if (!updaters[this.player.id])
-    {
-      updaters[this.player.id] = {};
-    }
-    updaters[this.player.id][this.updaterId] = this.handleResourceChange;
+    updaters[this.updaterId] = {
+      update: this.handleResourceChange,
+      shouldUpdate: player => player === this.player,
+    };
   }
 
   public componentWillUnmount()
   {
-    updaters[this.player.id][this.updaterId] = null;
-    delete updaters[this.player.id][this.updaterId];
+    updaters[this.updaterId] = null;
+    delete updaters[this.updaterId];
   }
 
   private handleResourceChange()
