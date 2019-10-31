@@ -31,6 +31,14 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
       {
         this.owner.updateVisibleStars();
       }
+
+      if (changes.income)
+      {
+        activeModuleData.scripts.player.onIncomeChange.forEach(script =>
+        {
+          script(this.owner);
+        });
+      }
       if (changes.adjustments.researchPoints)
       {
         activeModuleData.scripts.player.onResearchSpeedChange.forEach(script =>

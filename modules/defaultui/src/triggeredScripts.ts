@@ -1,6 +1,7 @@
 import { PartialTriggeredScriptsWithData } from "core/src/triggeredscripts/TriggeredScripts";
 import { updateResources } from "./uicomponents/resources/useResources";
 import { updateResearchSpeed } from "./uicomponents/technologies/useResearchSpeed";
+import { updateIncome } from "./uicomponents/resources/useIncome";
 
 
 export const triggeredScripts: PartialTriggeredScriptsWithData =
@@ -15,6 +16,17 @@ export const triggeredScripts: PartialTriggeredScriptsWithData =
         script: player =>
         {
           updateResources(player);
+        },
+      },
+    },
+    onIncomeChange:
+    {
+      updateIncomeForUi:
+      {
+        triggerPriority: 0,
+        script: player =>
+        {
+          updateIncome(player);
         },
       },
     },
