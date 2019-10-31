@@ -1,11 +1,12 @@
 import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Star } from "../map/Star";
-import { squashMapLevelModifiers, getBaseMapLevelModifier, MapLevelModifier } from "./MapLevelModifiers";
+import { squashMapLevelModifiers, MapLevelModifier } from "./MapLevelModifiers";
 import { app } from "../app/App";
 import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
-import { StarModifier } from "./StarModifier";
+import { StarModifier, StarModifierAdjustments, getBaseStarSelfModifier } from "./StarModifier";
 import { Player } from "../player/Player";
 import { activeModuleData } from "../app/activeModuleData";
+import { onMapPresentModifierChange, onIncomeModifierChange } from "./onModifierChangeTriggers";
 
 
 export class StarModifiersCollection extends MapLevelModifiersCollection<StarModifier>
@@ -26,35 +27,28 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
       const allSelfModifiers = changedModifiers.filter(modifier => modifier.template.self).map(modifier => modifier.template.self);
       const changes = squashMapLevelModifiers(...allSelfModifiers);
 
-      const didModifyVision = changes.adjustments.vision || changes.adjustments.detection;
-      if (didModifyVision)
+      onMapPresentModifierChange(changes, this.owner);
+      onIncomeModifierChange(changes, this.owner);
+      if (changes.adjustments.mining)
       {
-        this.owner.updateVisibleStars();
-      }
-
-      if (changes.income)
-      {
-        activeModuleData.scripts.player.onIncomeChange.forEach(script =>
+        // has already triggered income updates if changes.income is present
+        if (!changes.income)
         {
-          script(this.owner);
-        });
-      }
-      if (changes.adjustments.researchPoints)
-      {
-        activeModuleData.scripts.player.onResearchSpeedChange.forEach(script =>
-        {
-          script(this.owner);
-        });
+          activeModuleData.scripts.player.onIncomeChange.forEach(onIncomeChangeScript =>
+          {
+            onIncomeChangeScript(this.owner);
+          });
+        }
       }
     };
   }
 
-  public getSelfModifiers(): MapLevelModifier
+  public getSelfModifiers(): MapLevelModifier<StarModifierAdjustments>
   {
     const activeModifiers = this.getAllActiveModifiers();
 
     const selfModifiers = activeModifiers.filter(modifier => modifier.template.self).map(modifiers => modifiers.template.self);
-    const squashedSelfModifiers = squashMapLevelModifiers(getBaseMapLevelModifier(), ...selfModifiers);
+    const squashedSelfModifiers = squashMapLevelModifiers(getBaseStarSelfModifier(), ...selfModifiers);
 
     return squashedSelfModifiers;
   }

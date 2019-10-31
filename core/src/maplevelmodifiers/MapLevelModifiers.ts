@@ -1,19 +1,9 @@
-import { FlatAndMultiplierAdjustment, getBaseAdjustment, squashAdjustmentsObjects } from "../generic/FlatAndMultiplierAdjustment";
+import { FlatAndMultiplierAdjustment, squashAdjustmentsObjects } from "../generic/FlatAndMultiplierAdjustment";
 
 
-export type MapLevelModifier =
+export type MapLevelModifier<T extends {[key: string]: FlatAndMultiplierAdjustment}> =
 {
-  adjustments:
-  {
-    vision: FlatAndMultiplierAdjustment;
-    detection: FlatAndMultiplierAdjustment;
-
-    /**
-     * amount of local resources extracted
-     */
-    mining: FlatAndMultiplierAdjustment;
-    researchPoints: FlatAndMultiplierAdjustment;
-  };
+  adjustments: T;
   income:
   {
     [resourceType: string]: FlatAndMultiplierAdjustment;
@@ -21,37 +11,22 @@ export type MapLevelModifier =
   flags: Set<string>;
 };
 
-export type PartialMapLevelModifier =
+export type PartialMapLevelModifier<T extends {[key: string]: FlatAndMultiplierAdjustment}> =
 {
   adjustments?:
   {
-    [K in keyof MapLevelModifier["adjustments"]]?: Partial<MapLevelModifier["adjustments"][K]>;
+    [K in keyof MapLevelModifier<T>["adjustments"]]?: Partial<MapLevelModifier<T>["adjustments"][K]>;
   };
   income?:
   {
-    [K in keyof MapLevelModifier["income"]]?: Partial<MapLevelModifier["income"][K]>;
+    [K in keyof MapLevelModifier<T>["income"]]?: Partial<MapLevelModifier<T>["income"][K]>;
   };
   flags?: Set<string>;
 };
 
-export function getBaseMapLevelModifier(): MapLevelModifier
-{
-  return {
-    adjustments:
-    {
-      vision: getBaseAdjustment(),
-      detection: getBaseAdjustment(),
-      mining: getBaseAdjustment(),
-      researchPoints: getBaseAdjustment(),
-    },
-    income: {},
-    flags: new Set(),
-  };
-}
-
-export function squashMapLevelModifiers(baseModifier: MapLevelModifier, ...modifiersToSquash: PartialMapLevelModifier[]): MapLevelModifier;
-export function squashMapLevelModifiers(...modifiersToSquash: PartialMapLevelModifier[]): PartialMapLevelModifier;
-export function squashMapLevelModifiers(...modifiersToSquash: PartialMapLevelModifier[]): PartialMapLevelModifier
+export function squashMapLevelModifiers<T extends {[key: string]: FlatAndMultiplierAdjustment}>(baseModifier: MapLevelModifier<T>, ...modifiersToSquash: PartialMapLevelModifier<T>[]): MapLevelModifier<T>;
+export function squashMapLevelModifiers<T extends {[key: string]: FlatAndMultiplierAdjustment}>(...modifiersToSquash: PartialMapLevelModifier<T>[]): PartialMapLevelModifier<T>;
+export function squashMapLevelModifiers<T extends {[key: string]: FlatAndMultiplierAdjustment}>(...modifiersToSquash: PartialMapLevelModifier<T>[]): PartialMapLevelModifier<T>
 {
   const modifiersWithAdjustments = modifiersToSquash.filter(modifier => modifier.adjustments);
   const allAdjustments = modifiersWithAdjustments.map(modifier => modifier.adjustments);

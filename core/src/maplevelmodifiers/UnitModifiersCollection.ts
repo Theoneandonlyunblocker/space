@@ -1,11 +1,12 @@
 import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Unit } from "../unit/Unit";
-import { squashMapLevelModifiers, getBaseMapLevelModifier, MapLevelModifier } from "./MapLevelModifiers";
+import { squashMapLevelModifiers, MapLevelModifier } from "./MapLevelModifiers";
 import { app } from "../app/App";
 import { Star } from "../map/Star";
 import { Player } from "../player/Player";
 import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
-import { UnitModifier } from "./UnitModifier";
+import { UnitModifier, UnitModifierAdjustments, getBaseUnitSelfModifier } from "./UnitModifier";
+import { onMapPresentModifierChange, onIncomeModifierChange } from "./onModifierChangeTriggers";
 
 
 export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitModifier>
@@ -34,17 +35,20 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
       if (didModifyVision)
       {
         this.unit.fleet.visionIsDirty = true;
-        this.owner.updateVisibleStars();
+        // this.owner.updateVisibleStars(); done in onMapPresentModifierChange
       }
+
+      onMapPresentModifierChange(changes, this.owner);
+      onIncomeModifierChange(changes, this.owner);
     };
   }
 
-  public getSelfModifiers(): MapLevelModifier
+  public getSelfModifiers(): MapLevelModifier<UnitModifierAdjustments>
   {
     const activeModifiers = this.getAllActiveModifiers();
 
     const selfModifiers = activeModifiers.filter(modifier => modifier.template.self).map(modifier => modifier.template.self);
-    const squashedSelfModifiers = squashMapLevelModifiers(getBaseMapLevelModifier(), ...selfModifiers);
+    const squashedSelfModifiers = squashMapLevelModifiers(getBaseUnitSelfModifier(), ...selfModifiers);
 
     return squashedSelfModifiers;
   }
