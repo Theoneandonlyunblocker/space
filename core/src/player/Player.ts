@@ -46,6 +46,7 @@ import { Building } from "../building/Building";
 import {BuildingUpgradeData} from "../building/BuildingUpgradeData";
 import { Resources } from "./PlayerResources";
 import { PlayerModifiersCollection } from "../maplevelmodifiers/PlayerModifiersCollection";
+import { applyAdjustmentsObjects, applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
 
 
 const resourcesProxyHandler: ProxyHandler<Resources> =
@@ -393,7 +394,9 @@ export class Player
   }
   public getResourceIncome(): Resources
   {
-    return sumObjectValues(...this.controlledLocations.map(star => star.getResourceIncome()));
+    const locationIncome = sumObjectValues(...this.controlledLocations.map(star => star.getResourceIncome()));
+
+    return applyAdjustmentsObjects(locationIncome, this.modifiers.getSelfModifiers().income);
   }
   public getNeighboringStars(): Star[]
   {
@@ -812,13 +815,22 @@ export class Player
   }
   public getResearchSpeed(): number
   {
-    let research = 0;
-    research += activeModuleData.ruleSet.research.baseResearchPoints;
+    // TODO 2019.10.31 | remove research points from ruleset. replace with game-wide base modifier
+    const fromRuleSet = activeModuleData.ruleSet.research.baseResearchPoints;
 
-    for (let i = 0; i < this.controlledLocations.length; i++)
+    const fromControlledLocations = this.controlledLocations.map(location =>
     {
-      research += this.controlledLocations[i].getResearchPoints();
-    }
+      return location.getResearchPoints();
+    }).reduce((total, forLocation) =>
+    {
+      return total + forLocation;
+    }, 0);
+
+    const baseResearch = fromRuleSet + fromControlledLocations;
+    const research = applyFlatAndMultiplierAdjustments(
+      baseResearch,
+      this.modifiers.getSelfModifiers().adjustments.researchPoints,
+    );
 
     return research;
   }

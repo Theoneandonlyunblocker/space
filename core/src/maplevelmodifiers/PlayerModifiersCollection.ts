@@ -1,7 +1,9 @@
 import { MapLevelModifiersCollection } from "./MapLevelModifiersCollection";
 import { Player } from "../player/Player";
 import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
-import { PlayerModifier } from "./PlayerModifier";
+import { PlayerModifier, PlayerModifierAdjustments, getBasePlayerSelfModifier } from "./PlayerModifier";
+import { squashMapLevelModifiers, MapLevelModifier } from "./MapLevelModifiers";
+import { onIncomeModifierChange } from "./onModifierChangeTriggers";
 
 
 export class PlayerModifiersCollection extends MapLevelModifiersCollection<PlayerModifier>
@@ -13,11 +15,28 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
     super();
 
     this.player = player;
+    this.onChange = changedModifiers =>
+    {
+      const allSelfModifiers = changedModifiers.filter(modifier => modifier.template.self).map(modifier => modifier.template.self);
+      const changes = squashMapLevelModifiers(...allSelfModifiers);
+
+      onIncomeModifierChange(changes, this.player);
+    };
+  }
+
+  public getSelfModifiers(): MapLevelModifier<PlayerModifierAdjustments>
+  {
+    const activeModifiers = this.getAllActiveModifiers();
+
+    const selfModifiers = activeModifiers.filter(modifier => modifier.template.self).map(modifiers => modifiers.template.self);
+    const squashedSelfModifiers = squashMapLevelModifiers(getBasePlayerSelfModifier(), ...selfModifiers);
+
+    return squashedSelfModifiers;
   }
 
   protected templateShouldBeActive(modifier: PlayerModifier): boolean
   {
-    return true;
+    return !modifier.filter || modifier.filter(this.player);
   }
   protected getPropagationsForTemplate(toPropagate: PlayerModifier)
   {
