@@ -160,6 +160,7 @@ export class UnitItems
       toAdd.positionInUnit = position;
 
       this.addItemToUnit(toAdd);
+      toAdd.modifiers.setModifiersForUnit();
       this.updateUnit(toAdd);
     }
   }
@@ -185,6 +186,7 @@ export class UnitItems
       throw new Error("");
     }
 
+    toRemove.modifiers.clearModifiersForUnit();
     this.items.splice(this.indexOf(toRemove), 1);
 
     toRemove.unit = undefined;

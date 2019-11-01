@@ -141,6 +141,7 @@ export class Manufactory
           const itemTemplate = <ItemTemplate> thingData.template;
           const item = new Item(itemTemplate);
           this.owner.addItem(item);
+          item.modifiers.handleConstruct();
           break;
         }
       }

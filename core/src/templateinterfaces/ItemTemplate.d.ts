@@ -4,6 +4,7 @@ import {AbilityTemplate} from "./AbilityTemplate";
 import {ManufacturableThing} from "./ManufacturableThing";
 import {PassiveSkillTemplate} from "./PassiveSkillTemplate";
 import { Resources } from "../player/PlayerResources";
+import { ItemModifier } from "../maplevelmodifiers/ItemModifier";
 
 
 export interface ItemTemplate extends ManufacturableThing
@@ -23,4 +24,5 @@ export interface ItemTemplate extends ManufacturableThing
   ability?: AbilityTemplate;
   passiveSkill?: PassiveSkillTemplate;
   attributeAdjustments?: UnitAttributeAdjustments;
+  mapLevelModifiers?: ItemModifier[];
 }

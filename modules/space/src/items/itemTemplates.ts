@@ -253,6 +253,71 @@ export const shieldPlating3: ItemTemplate =
   slot: "low",
   ability: guardRow,
 };
+export const debugItem: ItemTemplate =
+{
+  type: "debugItem",
+  get displayName()
+  {
+    return localize("debugItem_displayName").toString();
+  },
+  get description()
+  {
+    return localize("debugItem_description").toString();
+  },
+  getIcon: getItemIcon.bind(null, "armor", 1),
+  techLevel: 1,
+  buildCost:
+  {
+    [moneyResource.type]: 0,
+  },
+  kind: "item",
+
+  slot: "high",
+  mapLevelModifiers:
+  [
+    {
+      key: "debugItem",
+      propagations:
+      {
+        owningPlayer:
+        [
+          {
+            key: "ownedDebugItem",
+            self:
+            {
+              income:
+              {
+                [moneyResource.type]: {flat: 200},
+              },
+            },
+          },
+        ],
+        equippingUnit:
+        [
+          {
+            key: "equippedDebugItem",
+            propagations:
+            {
+              owningPlayer:
+              [
+                {
+                  key: "ownedUnitHasEquippedDebugItem",
+                  self:
+                  {
+                    income:
+                    {
+                      [moneyResource.type]: {multiplicativeMultiplier: 1.3333},
+                    },
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
+};
 
 export const itemTemplates: TemplateCollection<ItemTemplate> =
 {
@@ -265,4 +330,5 @@ export const itemTemplates: TemplateCollection<ItemTemplate> =
   [shieldPlating1.type]: shieldPlating1,
   [shieldPlating2.type]: shieldPlating2,
   [shieldPlating3.type]: shieldPlating3,
+  [debugItem.type]: debugItem,
 };

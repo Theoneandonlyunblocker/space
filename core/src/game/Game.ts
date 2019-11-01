@@ -16,6 +16,8 @@ import { storageStrings } from "../saves/storageStrings";
 import { GlobalModifiersCollection } from "../maplevelmodifiers/GlobalModifiersCollection";
 import { Unit } from "../unit/Unit";
 import { Building } from "../building/Building";
+import { flatten2dArray } from "../generic/utility";
+import { Item } from "../items/Item";
 
 
 export class Game
@@ -152,21 +154,15 @@ export class Game
   }
   public getAllUnits(): Unit[]
   {
-    return this.players.map(player => player.units).reduce((allUnits, playerUnits) =>
-    {
-      allUnits.push(...playerUnits);
-
-      return allUnits;
-    }, []);
+    return flatten2dArray(this.players.map(player => player.units));
   }
   public getAllBuildings(): Building[]
   {
-    return this.players.map(player => player.getAllOwnedBuildings()).reduce((allBuildings, playerBuildings) =>
-    {
-      allBuildings.push(...playerBuildings);
-
-      return allBuildings;
-    }, []);
+    return flatten2dArray(this.players.map(player => player.getAllOwnedBuildings()));
+  }
+  public getAllItems(): Item[]
+  {
+    return flatten2dArray(this.players.map(player => player.items));
   }
   // unit modifiers can depend on stars which can depend on units etc.
   // so this has to be done after everything is already in place
@@ -174,6 +170,7 @@ export class Game
   {
     this.getAllUnits().forEach(unit => unit.mapLevelModifiers.handleConstruct());
     this.getAllBuildings().forEach(building => building.modifiers.handleConstruct());
+    this.getAllItems().forEach(item => item.modifiers.handleConstruct());
   }
 
   // for every player, not just human

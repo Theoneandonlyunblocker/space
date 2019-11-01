@@ -4,6 +4,8 @@ import {idGenerators} from "../app/idGenerators";
 import {ItemTemplate} from "../templateinterfaces/ItemTemplate";
 
 import {ItemSaveData} from "../savedata/ItemSaveData";
+import { Player } from "../player/Player";
+import { ItemModifiersCollection } from "../maplevelmodifiers/ItemModifiersCollection";
 
 
 export class Item
@@ -12,6 +14,8 @@ export class Item
   public template: ItemTemplate;
   public unit: Unit | undefined;
   public positionInUnit: number | undefined;
+  public owner: Player | undefined;
+  public modifiers: ItemModifiersCollection = new ItemModifiersCollection(this);
 
   constructor(
     template: ItemTemplate,

@@ -731,6 +731,7 @@ export class Player
   public addItem(item: Item): void
   {
     this.items.push(item);
+    item.owner = this;
   }
   public removeItem(item: Item): void
   {
@@ -741,6 +742,7 @@ export class Player
     }
 
     this.items.splice(index, 1);
+    item.owner = undefined;
   }
   public getNearestOwnedStarTo(targetStar: Star): Star
   {
