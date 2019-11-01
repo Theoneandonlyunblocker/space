@@ -9,6 +9,7 @@ import {fighterSquadron} from  "./templates/fighterSquadron";
 import {scout} from  "./templates/scout";
 import {shieldBoat} from  "./templates/shieldBoat";
 import {stealthShip} from  "./templates/stealthShip";
+import { miningBarge } from "./templates/miningBarge";
 
 
 export const unitTemplates: TemplateCollection<UnitTemplate> =
@@ -21,4 +22,5 @@ export const unitTemplates: TemplateCollection<UnitTemplate> =
   [bomberSquadron.type]: bomberSquadron,
   [fighterSquadron.type]: fighterSquadron,
   [shieldBoat.type]: shieldBoat,
+  [miningBarge.type]: miningBarge,
 };

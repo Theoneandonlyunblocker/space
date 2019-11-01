@@ -63,6 +63,17 @@ export const defence: UnitArchetype =
     return multiplier + totalDefenceUnderThreshhold * 0.2;
   },
 };
+export const economic: UnitArchetype =
+{
+  type: "economic",
+  idealWeightInBattle: 0.01,
+  idealWeightInFleet: 0.01,
+  rowScores:
+  {
+    ROW_FRONT: 0.01,
+    ROW_BACK: 0.02,
+  },
+}
 
 export const unitArchetypes: TemplateCollection<UnitArchetype> =
 {
@@ -70,4 +81,5 @@ export const unitArchetypes: TemplateCollection<UnitArchetype> =
   [utility.type]: utility,
   [scouting.type]: scouting,
   [defence.type]: defence,
+  [economic.type]: economic,
 };

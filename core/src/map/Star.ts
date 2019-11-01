@@ -1044,6 +1044,11 @@ export class Star implements Point
   }
   private getMiningIncome(): Resources
   {
+    if (!this.resource)
+    {
+      return {};
+    }
+
     const localAdjustment = this.modifiers.getSelfModifiers().adjustments.mining;
     const baseAmount = 0;
     const finalAmount = applyFlatAndMultiplierAdjustments(baseAmount, localAdjustment);

@@ -16,4 +16,6 @@ export const units =
   shieldBoat_description: "Great defence and ability to protect allies in same row",
   stealthShip_displayName: "Stealth Ship",
   stealthShip_description: "Weak ship that is undetectable by regular vision",
+  miningBarge_displayName: "Mining barge",
+  miningBarge_description: "Extracts resources from owned locations",
 };

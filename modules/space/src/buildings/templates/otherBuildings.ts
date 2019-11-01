@@ -219,6 +219,79 @@ export const thePyramids: BuildingTemplate =
     [testResource4.type]: 1,
     [testResource5.type]: 1,
   },
+  mapLevelModifiers:
+  [
+    {
+      key: "thePyramids",
+      propagations:
+      {
+        localStar:
+        [
+          {
+            key: "localPyramids",
+            self:
+            {
+              adjustments: {researchPoints: {flat: 500}},
+            },
+            propagations:
+            {
+              localUnits:
+              [
+                {
+                  key: "locationHasPyramids",
+                  filter: unit =>
+                  {
+                    return unit.mapLevelModifiers.getSelfModifiers().flags.has("tombGuard");
+                  },
+                  // self:
+                  // {
+                  //   adjustments:
+                  //   {
+                  //     vision: {flat: 3},
+                  //     detection: {flat: 20},
+                  //   },
+                  // },
+                  propagations:
+                  {
+                    localStar:
+                    [
+                      {
+                        key: "localTombGuard",
+                        self:
+                        {
+                          income: {[testResource5.type]: {flat: 10}},
+                          adjustments: {vision: {flat: 3}},
+                        },
+                      },
+                    ],
+                  },
+                },
+              ],
+            },
+          },
+        ],
+        owningPlayer:
+        [
+          {
+            key: "ownedPyramids",
+            propagations:
+            {
+              ownedUnits:
+              [
+                {
+                  key: "ownerHasPyramids",
+                  self:
+                  {
+                    flags: new Set(["tombGuard"]),
+                  },
+                },
+              ],
+            },
+          },
+        ],
+      },
+    },
+  ],
 
   maxBuiltAtLocation: 1,
   maxBuiltGlobally: 1,
@@ -259,6 +332,17 @@ export const nationalEpic: BuildingTemplate =
         [
           {
             key: "hasNationalEpic",
+            self:
+            {
+              income:
+              {
+                [moneyResource.type]: {multiplicativeMultiplier: 0.5},
+              },
+              adjustments:
+              {
+                researchPoints: {additiveMultiplier: 1},
+              },
+            },
             propagations:
             {
               ownedStars:

@@ -14,6 +14,7 @@ export function getDefaultBuildableUnits(): UnitTemplate[]
     units.bomberSquadron,
     // units.fighterSquadron,
     units.shieldBoat,
+    units.miningBarge,
   ];
 
   if (options.debug.enabled)
