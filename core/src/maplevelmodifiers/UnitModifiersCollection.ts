@@ -59,6 +59,7 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
       this.addOriginatingModifiers(...this.unit.template.mapLevelModifiers);
     }
 
+    // TODO 2019.11.01 | necessary?
     this.propagateModifiersOfTypeTo("global", app.game.globalModifiers);
     app.game.globalModifiers.propagateModifiersOfTypeTo("units", this);
   }
