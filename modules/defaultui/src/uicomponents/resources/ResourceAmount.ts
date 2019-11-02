@@ -16,6 +16,7 @@ const ResourceAmountComponent: React.FunctionComponent<PropTypes> = props =>
   const elementProps: React.HTMLProps<HTMLSpanElement> =
   {
     className: "resource-amount" + (props.isInsufficient ? " insufficient" : ""),
+    title: props.amount.toFixed(2),
   };
 
   if (props.resource.styleTextProps)
@@ -25,7 +26,7 @@ const ResourceAmountComponent: React.FunctionComponent<PropTypes> = props =>
 
   return(
     ReactDOMElements.span(elementProps,
-      "" + props.amount,
+      props.amount.toFixed(0),
     )
   );
 };

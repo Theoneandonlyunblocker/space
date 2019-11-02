@@ -10,11 +10,17 @@ export interface PropTypes extends React.Props<any>
   income: number;
 }
 
+function renderIncomeString(amount: number, decimals: number)
+{
+  return `(${amount >= 0 ? "+" : "-"}${amount.toFixed(decimals)})`;
+}
+
 const ResourceIncomeComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const elementProps: React.HTMLProps<HTMLSpanElement> =
   {
     className: "resource-income" + (props.income >= 0 ? " positive" : " negative"),
+    title: renderIncomeString(props.income, 2),
   };
 
   if (props.resource.styleTextProps)
@@ -24,7 +30,7 @@ const ResourceIncomeComponent: React.FunctionComponent<PropTypes> = props =>
 
   return(
     ReactDOMElements.span(elementProps,
-      `(${props.income >= 0 ? "+" : "-"}${props.income})`
+      renderIncomeString(props.income, 0),
     )
   );
 };
