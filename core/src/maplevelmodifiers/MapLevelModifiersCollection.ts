@@ -12,7 +12,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
   protected onChange: (changedModifiers: Modifier<T>[]) => void;
   private readonly originatingModifiers: Modifier<T>[] = [];
   private incomingModifiers: ModifierPropagationList<T> = new ModifierPropagationList<T>();
-  private propagations: ModifierPropagationList<T> = new ModifierPropagationList<T>();
+  private propagations: ModifierPropagationList<any> = new ModifierPropagationList<any>();
 
   constructor()
   {
@@ -164,16 +164,18 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
   }
   private hasPropagatedModifier(modifier: Modifier<T>): boolean
   {
-    return this.propagations.some(propagation => propagation.modifier === modifier);
+    return this.propagations.some(propagation => propagation.modifier.parent === modifier);
   }
   private removePropagationsForModifier(
     modifier: Modifier<T>,
     updateChain?: Modifier<any>[][],
   ): void
   {
-    const removedPropagations = this.propagations.filterAndRemove(propagation => propagation.modifier === modifier);
-    const removedPropagation = removedPropagations[0];
-    removedPropagation.target.removeIncomingModifier(removedPropagation, updateChain);
+    const removedPropagations = this.propagations.filterAndRemove(propagation => propagation.modifier.parent === modifier);
+    removedPropagations.forEach(removedPropagation =>
+    {
+      removedPropagation.target.removeIncomingModifier(removedPropagation, updateChain);
+    });
   }
   private propagateModifier(
     modifier: Modifier<T>,
@@ -191,7 +193,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
     simplePropagations: SimpleMapLevelModifiersPropagation<T>[],
     parent: Modifier<T>,
     updateChain?: Modifier<any>[][],
-    ): void
+  ): void
   {
     simplePropagations.forEach(simplePropagation =>
     {
