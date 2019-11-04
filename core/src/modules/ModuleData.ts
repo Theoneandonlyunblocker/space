@@ -38,6 +38,7 @@ import
 import { UnlockableThing } from "../templateinterfaces/UnlockableThing";
 
 import {UIScenes} from "../ui/UIScenes";
+import { CustomModifierAdjustments } from "../maplevelmodifiers/CustomModifierAdjustments";
 
 
 // tslint:disable:no-any
@@ -115,6 +116,7 @@ export class ModuleData
   public defaultMap: MapGenTemplate;
   public defaultLanguage: Language;
   public uiScenes: Partial<UIScenes> = {};
+  public readonly mapLevelModifierAdjustments: CustomModifierAdjustments = new CustomModifierAdjustments();
   // for content not used by the core game, but used modularly across modules
   // f.ex. modular ui components
   public readonly nonCoreData:

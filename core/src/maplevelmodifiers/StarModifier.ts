@@ -5,6 +5,7 @@ import { GlobalModifier } from "./GlobalModifier";
 import { UnitModifier } from "./UnitModifier";
 import { ModifierTemplate } from "./ModifierTemplate";
 import { FlatAndMultiplierAdjustment, getBaseAdjustment } from "../generic/FlatAndMultiplierAdjustment";
+import { activeModuleData } from "../app/activeModuleData";
 
 
 type StarModifierPropagations =
@@ -19,6 +20,7 @@ export type StarModifierAdjustments =
   detection: FlatAndMultiplierAdjustment;
   mining: FlatAndMultiplierAdjustment;
   researchPoints: FlatAndMultiplierAdjustment;
+  // [customModifierKey: string]: FlatAndMultiplierAdjustment;
 };
 export interface StarModifier extends ModifierTemplate<StarModifierPropagations>
 {
@@ -34,6 +36,7 @@ export function getBaseStarSelfModifier(): MapLevelModifier<StarModifierAdjustme
       detection: getBaseAdjustment(),
       mining: getBaseAdjustment(),
       researchPoints: getBaseAdjustment(),
+      ...activeModuleData.mapLevelModifierAdjustments.getBaseAdjustmentsFor("star"),
     },
     income: {},
     flags: new Set(),
