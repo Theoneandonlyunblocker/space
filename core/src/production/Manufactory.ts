@@ -32,8 +32,7 @@ export class Manufactory
   public maxCapacity: number;
   public unitStatsModifier: number = 1;
   public unitHealthModifier: number = 1;
-
-  private get owner(): Player
+  public get owner(): Player
   {
     return this.star.owner;
   }

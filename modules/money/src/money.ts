@@ -5,7 +5,7 @@ import * as debug from "core/src/app/debug";
 import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 
 import * as moduleInfo from "../moduleInfo.json";
-import { moneyResource } from "./moneyResource.js";
+import { moneyResource } from "./moneyResource";
 
 
 export const money: GameModule =

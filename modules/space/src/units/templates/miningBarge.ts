@@ -78,6 +78,7 @@ export const miningBarge: UnitTemplate =
   [
     {
       key: "miningBarge",
+      // TODO 2019.11.05 | never gets rechecked if the star is captured while the unit is in it. same problem with other modifiers relying on checks outside their own scope
       filter: unit =>
       {
         const locationHasResources = Boolean(unit.fleet.location.resource);
