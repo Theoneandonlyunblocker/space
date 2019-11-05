@@ -1,44 +1,41 @@
-import { PartialTriggeredScriptsWithData } from "core/src/triggeredscripts/TriggeredScripts";
+import { PartialCoreScriptsWithData } from "core/src/triggeredscripts/AllCoreScriptsWithData";
 import { updateResources } from "./uicomponents/resources/useResources";
 import { updateResearchSpeed } from "./uicomponents/technologies/useResearchSpeed";
 import { updateIncome } from "./uicomponents/resources/useIncome";
 
 
-export const triggeredScripts: PartialTriggeredScriptsWithData =
+export const triggeredScripts: PartialCoreScriptsWithData =
 {
-  player:
+  onPlayerResourcesChange:
   {
-    onResourcesChange:
+    updateResourcesForUi:
     {
-      updateResourcesForUi:
+      triggerPriority: 0,
+      callback: player =>
       {
-        triggerPriority: 0,
-        script: player =>
-        {
-          updateResources(player);
-        },
+        updateResources(player);
       },
     },
-    onIncomeChange:
+  },
+  onPlayerIncomeChange:
+  {
+    updateIncomeForUi:
     {
-      updateIncomeForUi:
+      triggerPriority: 0,
+      callback: player =>
       {
-        triggerPriority: 0,
-        script: player =>
-        {
-          updateIncome(player);
-        },
+        updateIncome(player);
       },
     },
-    onResearchSpeedChange:
+  },
+  onPlayerResearchSpeedChange:
+  {
+    updateResearchSpeedForUi:
     {
-      updateResearchSpeedForUi:
+      triggerPriority: 0,
+      callback: player =>
       {
-        triggerPriority: 0,
-        script: player =>
-        {
-          updateResearchSpeed(player);
-        },
+        updateResearchSpeed(player);
       },
     },
   },

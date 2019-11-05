@@ -1,19 +1,16 @@
-import { PartialTriggeredScriptsWithData } from "../TriggeredScripts";
+import { PartialCoreScriptsWithData } from "../AllCoreScriptsWithData";
 
 
-export const playerScripts: PartialTriggeredScriptsWithData =
+export const playerScripts: PartialCoreScriptsWithData =
 {
-  player:
+  onPlayerResearchSpeedChange:
   {
-    onResearchSpeedChange:
+    capTechnologyPrioritiesToMaxNeeded:
     {
-      capTechnologyPrioritiesToMaxNeeded:
+      triggerPriority: 0,
+      callback: player =>
       {
-        triggerPriority: 0,
-        script: player =>
-        {
-          player.playerTechnology.capTechnologyPrioritiesToMaxNeeded();
-        },
+        player.playerTechnology.capTechnologyPrioritiesToMaxNeeded();
       },
     },
   },

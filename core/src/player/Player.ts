@@ -953,10 +953,7 @@ export class Player
       this.fleets[i].deleteFleet(false);
     }
 
-    activeModuleData.scripts.player.onDeath.forEach(script =>
-    {
-      script(this);
-    });
+    activeModuleData.scripts.call("onPlayerDeath", this);
   }
   private getFleetIndex(fleet: Fleet): number
   {
@@ -1013,9 +1010,6 @@ export class Player
   }
   private onResourcesChange(): void
   {
-    activeModuleData.scripts.player.onResourcesChange.forEach(script =>
-    {
-      script(this);
-    });
+    activeModuleData.scripts.call("onPlayerResourcesChange", this);
   }
 }

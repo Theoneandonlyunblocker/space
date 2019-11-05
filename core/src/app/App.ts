@@ -293,10 +293,7 @@ class App
     // notification filter is loaded here as it's dependant on notifications having been loaded
     return activeNotificationFilter.load().then(() =>
     {
-      activeModuleData.scripts.game.afterInit.forEach(script =>
-      {
-        script(game);
-      });
+      activeModuleData.scripts.call("afterGameInit", game);
 
       this.initDisplay(game, activePlayer);
       this.hookUI(

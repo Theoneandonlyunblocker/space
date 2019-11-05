@@ -1,21 +1,18 @@
-import { PartialTriggeredScriptsWithData } from "../TriggeredScripts";
+import { PartialCoreScriptsWithData } from "../AllCoreScriptsWithData";
 
 
-export const autoSaveScripts: PartialTriggeredScriptsWithData =
+export const autoSaveScripts: PartialCoreScriptsWithData =
 {
-  game:
+  beforePlayerTurnEnd:
   {
-    beforePlayerTurnEnd:
+    autoSaveBeforePlayerTurnEnd:
     {
-      autoSaveBeforePlayerTurnEnd:
+      triggerPriority: 0,
+      callback: (game) =>
       {
-        triggerPriority: 0,
-        script: (game) =>
-        {
-          const wasManuallyTriggered = false;
-          game.save("autosave", wasManuallyTriggered);
-        }
-      },
+        const wasManuallyTriggered = false;
+        game.save("autosave", wasManuallyTriggered);
+      }
     },
-  }
+  },
 };

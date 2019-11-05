@@ -34,16 +34,10 @@ export function onIncomeModifierChange<T extends IncomeModifierAdjustments>(
 {
   if (changes.income)
   {
-    activeModuleData.scripts.player.onIncomeChange.forEach(script =>
-    {
-      script(player);
-    });
+    activeModuleData.scripts.call("onPlayerIncomeChange", player);
   }
   if (changes.adjustments.researchPoints)
   {
-    activeModuleData.scripts.player.onResearchSpeedChange.forEach(script =>
-    {
-      script(player);
-    });
+    activeModuleData.scripts.call("onPlayerResearchSpeedChange", player);
   }
 }

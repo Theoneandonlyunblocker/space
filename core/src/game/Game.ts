@@ -74,10 +74,7 @@ export class Game
   {
     if (!this.playerToAct.isAi)
     {
-      activeModuleData.scripts.game.beforePlayerTurnEnd.forEach(script =>
-      {
-        script(this);
-      });
+      activeModuleData.scripts.call("beforePlayerTurnEnd", this);
     }
 
     this.processPlayerEndTurn(this.playerToAct);

@@ -27,7 +27,7 @@ export const defaultNotifications: GameModule =
   addToModuleData: (moduleData: ModuleData) =>
   {
     moduleData.copyTemplates(notificationTemplates, "Notifications");
-    moduleData.scripts.add(...notificationCreationScripts);
+    moduleData.scripts.add(notificationCreationScripts);
 
     return moduleData;
   },

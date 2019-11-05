@@ -34,10 +34,7 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
         // has already triggered income updates if changes.income is present
         if (!changes.income)
         {
-          activeModuleData.scripts.player.onIncomeChange.forEach(onIncomeChangeScript =>
-          {
-            onIncomeChangeScript(this.owner);
-          });
+          activeModuleData.scripts.call("onPlayerIncomeChange", this.owner);
         }
       }
     };

@@ -1,39 +1,36 @@
-import { PartialTriggeredScriptsWithData } from "../TriggeredScripts";
+import { PartialCoreScriptsWithData } from "../AllCoreScriptsWithData";
 
 
-export const starScripts: PartialTriggeredScriptsWithData =
+export const starScripts: PartialCoreScriptsWithData =
 {
-  star:
+  onStarOwnerChange:
   {
-    onOwnerChange:
+    transferBuildingsFromOldOwner:
     {
-      transferBuildingsFromOldOwner:
+      triggerPriority: -1,
+      callback: (star, oldOwner, newOwner) =>
       {
-        triggerPriority: -1,
-        script: (star, oldOwner, newOwner) =>
-        {
-          const oldOwnerBuildings = star.buildings.filter(building => building.controller === oldOwner);
-          oldOwnerBuildings.forEach(building => building.setController(newOwner));
-        },
+        const oldOwnerBuildings = star.buildings.filter(building => building.controller === oldOwner);
+        oldOwnerBuildings.forEach(building => building.setController(newOwner));
       },
-      destroyPerPlayerLimitedBuildings:
+    },
+    destroyPerPlayerLimitedBuildings:
+    {
+      triggerPriority: 0,
+      callback: (star, oldOwner, newOwner) =>
       {
-        triggerPriority: 0,
-        script: (star, oldOwner, newOwner) =>
+        star.buildings.filter((building) =>
         {
-          star.buildings.filter((building) =>
-          {
-            return isFinite(building.template.maxBuiltForPlayer) ||
-              building.template.families.some(family =>
-              {
-                return isFinite(family.maxBuiltForPlayer);
-              });
-          }).forEach(building =>
-          {
-            building.handleDestroy();
-            star.buildings.remove(building);
-          });
-        },
+          return isFinite(building.template.maxBuiltForPlayer) ||
+            building.template.families.some(family =>
+            {
+              return isFinite(family.maxBuiltForPlayer);
+            });
+        }).forEach(building =>
+        {
+          building.handleDestroy();
+          star.buildings.remove(building);
+        });
       },
     },
   },

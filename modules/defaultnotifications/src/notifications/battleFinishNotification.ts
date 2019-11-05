@@ -10,7 +10,7 @@ import {localize, localizeString} from "../../localization/localize";
 import {getIcon} from "../../assets/assets";
 
 import {BattleFinishNotification as UIComponent} from "./uicomponents/BattleFinishNotification";
-import { PartialTriggeredScriptsWithData } from "core/src/triggeredscripts/TriggeredScripts";
+import { PartialCoreScriptsWithData } from "core/src/triggeredscripts/AllCoreScriptsWithData";
 
 
 export interface PropTypes
@@ -100,32 +100,29 @@ export const battleFinishNotification: NotificationTemplate<PropTypes, Serialize
   },
 };
 
-export const battleFinishNotificationCreationScripts: PartialTriggeredScriptsWithData =
+export const battleFinishNotificationCreationScripts: PartialCoreScriptsWithData =
 {
-  battle:
+  onBattleFinish:
   {
-    battleFinish:
+    makeBattleFinishNotification:
     {
-      makeBattleFinishNotification:
+      triggerPriority: 0,
+      callback: (battle: Battle) =>
       {
-        triggerPriority: 0,
-        script: (battle: Battle) =>
+        activeNotificationStore.makeNotification<PropTypes, SerializedPropTypes>(
         {
-          activeNotificationStore.makeNotification<PropTypes, SerializedPropTypes>(
+          template: battleFinishNotification,
+          props:
           {
-            template: battleFinishNotification,
-            props:
-            {
-              location: battle.battleData.location,
-              attacker: battle.battleData.attacker.player,
-              defender: battle.battleData.defender.player,
-              victor: battle.victor,
-              newController: battle.battleData.location.owner,
-            },
-            involvedPlayers: [battle.side1Player, battle.side2Player],
             location: battle.battleData.location,
-          });
-        },
+            attacker: battle.battleData.attacker.player,
+            defender: battle.battleData.defender.player,
+            victor: battle.victor,
+            newController: battle.battleData.location.owner,
+          },
+          involvedPlayers: [battle.side1Player, battle.side2Player],
+          location: battle.battleData.location,
+        });
       },
     },
   },

@@ -116,10 +116,7 @@ export class PlayerDiplomacy
     this.statusByPlayer.set(targetPlayer, DiplomacyState.War);
     targetPlayer.diplomacy.statusByPlayer.set(this.player, DiplomacyState.War);
 
-    activeModuleData.scripts.diplomacy.onWarDeclaration.forEach(script =>
-    {
-      script(this.player, targetPlayer, this.game);
-    });
+    activeModuleData.scripts.call("onWarDeclaration", this.player, targetPlayer, this.game);
   }
   public makePeaceWith(targetPlayer: Player): void
   {
@@ -286,9 +283,6 @@ export class PlayerDiplomacy
   private triggerMeetingWithPlayer(player: Player): void
   {
     this.statusByPlayer.set(player, DiplomacyState.ColdWar);
-    activeModuleData.scripts.diplomacy.onFirstMeeting.forEach(script =>
-    {
-      script(this.player, player, this.game);
-    });
+    activeModuleData.scripts.call("onFirstMeeting", this.player, player, this.game);
   }
 }

@@ -832,10 +832,7 @@ export class Unit
       fleet.deleteFleet();
     }
 
-    activeModuleData.scripts.unit.removeFromPlayer.forEach(scriptFN =>
-    {
-      scriptFN(this);
-    });
+    activeModuleData.scripts.call("onUnitRemovedFromPlayer", this);
 
     this.uiDisplayIsDirty = true;
   }

@@ -8,7 +8,7 @@ import
 } from "core/src/generic/utility";
 
 import {Front} from "./mapai/Front";
-import { PartialTriggeredScriptsWithData } from "core/src/triggeredscripts/TriggeredScripts";
+import { PartialCoreScriptsWithData } from "core/src/triggeredscripts/AllCoreScriptsWithData";
 
 
 interface AttachedUnitData
@@ -59,25 +59,22 @@ class AttachedUnitDataManager
 
 export const attachedUnitData = new AttachedUnitDataManager();
 
-export const attachedUnitDataScripts: PartialTriggeredScriptsWithData =
+export const attachedUnitDataScripts: PartialCoreScriptsWithData =
 {
-  unit:
+  onUnitRemovedFromPlayer:
   {
-    removeFromPlayer:
+    removeFromFront:
     {
-      removeFromFront:
+      triggerPriority: 0,
+      callback: (unit: Unit) =>
       {
-        triggerPriority: 0,
-        script: (unit: Unit) =>
+        const front = attachedUnitData.get(unit).front;
+        if (front)
         {
-          const front = attachedUnitData.get(unit).front;
-          if (front)
-          {
-            front.removeUnit(unit);
-          }
+          front.removeUnit(unit);
+        }
 
-          attachedUnitData.delete(unit);
-        },
+        attachedUnitData.delete(unit);
       },
     },
   },

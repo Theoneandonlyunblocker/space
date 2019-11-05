@@ -337,10 +337,7 @@ export class Battle
     {
       this.capturedUnits.forEach(unit =>
       {
-        activeModuleData.scripts.unit.onCapture.forEach(script =>
-        {
-          script(unit, this.loser, this.victor);
-        });
+        activeModuleData.scripts.call("onUnitCapture", unit, this.loser, this.victor);
       });
     }
 
@@ -363,10 +360,7 @@ export class Battle
       eventManager.dispatchEvent("switchScene", "galaxyMap");
     }
 
-    activeModuleData.scripts.battle.battleFinish.forEach(script =>
-    {
-      script(this);
-    });
+    activeModuleData.scripts.call("onBattleFinish", this);
 
     for (let i = 0; i < this.afterFinishCallbacks.length; i++)
     {

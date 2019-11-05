@@ -1,36 +1,33 @@
-import { PartialTriggeredScriptsWithData } from "../TriggeredScripts";
+import { PartialCoreScriptsWithData } from "../AllCoreScriptsWithData";
 
 
-export const unitScripts: PartialTriggeredScriptsWithData =
+export const unitScripts: PartialCoreScriptsWithData =
 {
-  unit:
+  onUnitCapture:
   {
-    onCapture:
+    transferCapturedUnit:
     {
-      transferCapturedUnit:
+      triggerPriority: 0,
+      callback: (unit, oldPlayer, newPlayer) =>
       {
-        triggerPriority: 0,
-        script: (unit, oldPlayer, newPlayer) =>
-        {
-          unit.transferToPlayer(newPlayer);
-        },
+        unit.transferToPlayer(newPlayer);
       },
-      resetExperience:
+    },
+    resetExperience:
+    {
+      triggerPriority: 0,
+      callback: (unit, oldPlayer, newPlayer) =>
       {
-        triggerPriority: 0,
-        script: (unit, oldPlayer, newPlayer) =>
-        {
-          unit.experienceForCurrentLevel = 0;
-        },
+        unit.experienceForCurrentLevel = 0;
       },
-      exhaustUnit:
+    },
+    exhaustUnit:
+    {
+      triggerPriority: 0,
+      callback: (unit, oldPlayer, newPlayer) =>
       {
-        triggerPriority: 0,
-        script: (unit, oldPlayer, newPlayer) =>
-        {
-          unit.currentMovePoints = 0;
-          unit.offensiveBattlesFoughtThisTurn = Infinity;
-        },
+        unit.currentMovePoints = 0;
+        unit.offensiveBattlesFoughtThisTurn = Infinity;
       },
     },
   },

@@ -10,7 +10,7 @@ import {activeNotificationStore} from "core/src/app/activeNotificationStore";
 
 import {PlayerDiedNotification as UIComponent} from "./uicomponents/PlayerDiedNotification";
 import {getIcon} from "../../assets/assets";
-import { PartialTriggeredScriptsWithData } from "core/src/triggeredscripts/TriggeredScripts";
+import { PartialCoreScriptsWithData } from "core/src/triggeredscripts/AllCoreScriptsWithData";
 
 
 export interface PropTypes
@@ -69,28 +69,25 @@ export const playerDiedNotification: NotificationTemplate<PropTypes, SerializedP
   },
 };
 
-export const playerDiedNotificationCreationScripts: PartialTriggeredScriptsWithData =
+export const playerDiedNotificationCreationScripts: PartialCoreScriptsWithData =
 {
-  player:
+  onPlayerDeath:
   {
-    onDeath:
+    playerDiedNotification:
     {
-      playerDiedNotification:
+      triggerPriority: 0,
+      callback: (player: Player) =>
       {
-        triggerPriority: 0,
-        script: (player: Player) =>
+        activeNotificationStore.makeNotification<PropTypes, SerializedPropTypes>(
         {
-          activeNotificationStore.makeNotification<PropTypes, SerializedPropTypes>(
+          template: playerDiedNotification,
+          props:
           {
-            template: playerDiedNotification,
-            props:
-            {
-              player: player,
-            },
-            involvedPlayers: [player],
-            location: null,
-          });
-        },
+            player: player,
+          },
+          involvedPlayers: [player],
+          location: null,
+        });
       },
     },
   },

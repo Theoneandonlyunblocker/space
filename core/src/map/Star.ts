@@ -265,10 +265,7 @@ export class Star implements Point
     oldOwner.removeStar(this);
     newOwner.addStar(this);
 
-    activeModuleData.scripts.star.onOwnerChange.forEach(script =>
-    {
-      script(this, oldOwner, newOwner);
-    });
+    activeModuleData.scripts.call("onStarOwnerChange", this, oldOwner, newOwner);
 
     this.modifiers.handleOwnerChange();
 

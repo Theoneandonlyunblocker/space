@@ -27,8 +27,8 @@ export const notificationTemplates: TemplateCollection<NotificationTemplate<any,
 };
 
 export const notificationCreationScripts =
-[
-  battleFinishNotificationCreationScripts,
-  playerDiedNotificationCreationScripts,
-  warDeclarationNotificationCreationScripts,
-];
+{
+  ...battleFinishNotificationCreationScripts,
+  ...playerDiedNotificationCreationScripts,
+  ...warDeclarationNotificationCreationScripts,
+};

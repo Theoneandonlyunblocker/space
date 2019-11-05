@@ -3,7 +3,6 @@ import {TemplateCollection} from "../templateinterfaces/TemplateCollection";
 
 import {BackgroundDrawingFunction} from "../graphics/BackgroundDrawingFunction";
 import {GameModule, ModuleSaveData } from "./GameModule";
-import {TriggeredScripts} from "../triggeredscripts/TriggeredScripts";
 import
 {
   PartialRuleSetValues,
@@ -40,6 +39,9 @@ import { UnlockableThing } from "../templateinterfaces/UnlockableThing";
 import {UIScenes} from "../ui/UIScenes";
 import { CustomModifierAdjustments } from "../maplevelmodifiers/CustomModifierAdjustments";
 
+import { TriggeredScriptCollection } from "../triggeredscripts/TriggeredScriptCollection";
+import { allDefaultScripts } from "../triggeredscripts/defaultScripts/allDefaultScripts";
+import { AllCoreScripts } from "../triggeredscripts/AllCoreScriptsWithData";
 
 // tslint:disable:no-any
 interface Templates
@@ -112,7 +114,7 @@ export class ModuleData
   };
 
   public ruleSet: RuleSetValues;
-  public scripts: TriggeredScripts;
+  public readonly scripts = new TriggeredScriptCollection<AllCoreScripts>(allDefaultScripts);
   public defaultMap: MapGenTemplate;
   public defaultLanguage: Language;
   public uiScenes: Partial<UIScenes> = {};
@@ -141,7 +143,6 @@ export class ModuleData
 
   constructor()
   {
-    this.scripts = new TriggeredScripts();
   }
   public copyTemplates<T extends keyof Templates>(source: Templates[T], category: T): void
   {
