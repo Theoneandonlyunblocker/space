@@ -725,3 +725,12 @@ export function sumObjectValues<T extends {[key: string]: number}>(...toSum: T[]
     return summed;
   }, <any>{});
 }
+export function loadCss(url: string, baseUrl: string): void
+{
+  const link = document.createElement("link");
+  link.href = new URL(url, baseUrl).toString();
+  link.type = "text/css";
+  link.rel = "stylesheet";
+
+  document.getElementsByTagName("head")[0].appendChild(link);
+}

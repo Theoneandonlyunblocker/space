@@ -3,6 +3,7 @@ import * as PIXI from "pixi.js";
 import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 import {GameModule} from "core/src/modules/GameModule";
 import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
+import {loadCss} from "core/src/generic/utility";
 import
 {
   cachedAssets,
@@ -24,16 +25,6 @@ import * as moduleInfo from "../moduleInfo.json";
 import { triggeredScripts } from "./triggeredScripts";
 import { copyExtendables } from "./extendables";
 
-
-function loadCss(url: string, baseUrl: string): void
-{
-  const link = document.createElement("link");
-  link.href = new URL(url, baseUrl).toString();
-  link.type = "text/css";
-  link.rel = "stylesheet";
-
-  document.getElementsByTagName("head")[0].appendChild(link);
-}
 
 export const defaultUi: GameModule =
 {
