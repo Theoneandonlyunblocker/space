@@ -7,6 +7,7 @@ import { Player } from "../player/Player";
 import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { UnitModifier, UnitModifierAdjustments, getBaseUnitSelfModifier } from "./UnitModifier";
 import { onMapPresentModifierChange, onIncomeModifierChange } from "./onModifierChangeTriggers";
+import { activeModuleData } from "../app/activeModuleData";
 
 
 export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitModifier>
@@ -40,6 +41,7 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
 
       onMapPresentModifierChange(changes, this.owner);
       onIncomeModifierChange(changes, this.owner);
+      activeModuleData.mapLevelModifierAdjustments.onUnitModifierChange(this.unit, changes);
     };
   }
 

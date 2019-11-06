@@ -75,4 +75,43 @@ export class CustomModifierAdjustments
 
     return baseAdjustments;
   }
+  public onStarModifierChange(
+    target: Star,
+    changes: PartialMapLevelModifier<StarModifierAdjustments>,
+    ): void
+  {
+    for (const adjustment in changes.adjustments)
+    {
+      if (this.customAdjustments.star[adjustment])
+      {
+        this.customAdjustments.star[adjustment].onChange(target, changes);
+      }
+    }
+  }
+  public onPlayerModifierChange(
+    target: Player,
+    changes: PartialMapLevelModifier<PlayerModifierAdjustments>,
+    ): void
+  {
+    for (const adjustment in changes.adjustments)
+    {
+      if (this.customAdjustments.player[adjustment])
+      {
+        this.customAdjustments.player[adjustment].onChange(target, changes);
+      }
+    }
+  }
+  public onUnitModifierChange(
+    target: Unit,
+    changes: PartialMapLevelModifier<UnitModifierAdjustments>,
+    ): void
+  {
+    for (const adjustment in changes.adjustments)
+    {
+      if (this.customAdjustments.unit[adjustment])
+      {
+        this.customAdjustments.unit[adjustment].onChange(target, changes);
+      }
+    }
+  }
 }

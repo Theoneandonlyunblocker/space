@@ -37,6 +37,7 @@ export class StarModifiersCollection extends MapLevelModifiersCollection<StarMod
           activeModuleData.scripts.call("onPlayerIncomeChange", this.owner);
         }
       }
+      activeModuleData.mapLevelModifierAdjustments.onStarModifierChange(this.star, changes);
     };
   }
 

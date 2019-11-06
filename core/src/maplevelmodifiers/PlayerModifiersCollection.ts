@@ -4,6 +4,7 @@ import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { PlayerModifier, PlayerModifierAdjustments, getBasePlayerSelfModifier } from "./PlayerModifier";
 import { squashMapLevelModifiers, MapLevelModifier } from "./MapLevelModifiers";
 import { onIncomeModifierChange } from "./onModifierChangeTriggers";
+import { activeModuleData } from "../app/activeModuleData";
 
 
 export class PlayerModifiersCollection extends MapLevelModifiersCollection<PlayerModifier>
@@ -21,6 +22,7 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
       const changes = squashMapLevelModifiers(...allSelfModifiers);
 
       onIncomeModifierChange(changes, this.player);
+      activeModuleData.mapLevelModifierAdjustments.onPlayerModifierChange(this.player, changes);
     };
   }
 
