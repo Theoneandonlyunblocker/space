@@ -34,7 +34,7 @@
     "mkdirp": "0.5.x",
     "ts-loader": "5.3.x",
     "tslint": "5.11.x",
-    "typescript": "3.5.x"
+    "typescript": "3.7.x"
   },
   "scripts": {
     "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-ui-module-css && npm run replace-pixi-typedefs && npm run convert-shaders && npm run copy-moduleinfo-files && npm run copy-external-css",

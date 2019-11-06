@@ -261,9 +261,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    const nativeEvent = <MouseEvent> e.nativeEvent;
+    const nativeEvent = e.nativeEvent;
 
-    const toElement = nativeEvent.toElement || <HTMLElement> nativeEvent.relatedTarget;
+    // TODO 2019.11.06 | remove toElement? idk if any browser uses it anymore
+    const toElement = (nativeEvent as any).toElement || <HTMLElement> nativeEvent.relatedTarget;
 
     if (!toElement)
     {
