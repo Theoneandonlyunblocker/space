@@ -1,3 +1,6 @@
+/**
+ * used for map generation / anything else where things need to be randomly distributed
+ */
 export interface DistributionData
 {
   /**

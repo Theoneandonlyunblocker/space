@@ -12,6 +12,7 @@ import {RaceTemplate} from "core/src/templateinterfaces/RaceTemplate";
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
 import {distributionGroups} from "./distributionGroups";
+import { getBuildableUnitsForRace } from "core/src/production/getBuildableUnitsForRace";
 
 
 type UnitRole = "normal" |
@@ -80,7 +81,7 @@ export function generateIndependentFleets(
 {
   const locationShouldHaveLeader = localStrength > 0.8;
 
-  const allBuildableUnitTypes = race.getBuildableUnits();
+  const allBuildableUnitTypes = getBuildableUnitsForRace(race);
 
   const unitCountFromGlobalStrength = maxUnitsPerSideInBattle * 0.34 + maxUnitsPerSideInBattle * 0.66 * globalStrength;
   const unitCountFromLocalStrength = locationShouldHaveLeader ? 1 : 0;

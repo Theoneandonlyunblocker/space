@@ -8,6 +8,7 @@ import {UnitArchetype} from "./UnitArchetype";
 import {UnitDrawingFunction} from "./UnitDrawingFunction";
 import { Resources } from "../player/PlayerResources";
 import { UnitModifier } from "../maplevelmodifiers/UnitModifier";
+import { AvailabilityData } from "./AvailabilityData";
 
 
 export interface UnitTemplate extends ManufacturableThing
@@ -70,5 +71,6 @@ export interface UnitTemplate extends ManufacturableThing
 
   unitDrawingFN: UnitDrawingFunction;
   distributionData: DistributionData;
+  availabilityData: AvailabilityData;
   mapLevelModifiers?: UnitModifier[];
 }

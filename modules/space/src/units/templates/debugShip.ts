@@ -27,7 +27,8 @@ import
 } from "modules/space/src/passiveskills/passiveSkills";
 import { localize } from "modules/space/localization/localize";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
-import {moneyResource} from "modules/money/src/moneyResource";
+import { moneyResource } from "modules/money/src/moneyResource";
+import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 
 
 export const debugShip: UnitTemplate =
@@ -147,6 +148,10 @@ export const debugShip: UnitTemplate =
   {
     weight: 0,
     distributionGroups: [],
+  },
+  availabilityData:
+  {
+    flags: [coreAvailabilityFlags.alwaysInDebugMode],
   },
   mapLevelModifiers:
   [

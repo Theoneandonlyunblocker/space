@@ -12,6 +12,7 @@ import {assimilate} from "../abilities/assimilate";
 import {repair} from "../abilities/repair";
 import {massRepair} from "../abilities/massRepair";
 import { localize } from "../../localization/localize";
+import { availabilityFlags } from "../availabilityFlags";
 
 
 export const droneBase: UnitTemplate =
@@ -84,5 +85,9 @@ export const droneBase: UnitTemplate =
   {
     weight: 1,
     distributionGroups: [distributionGroups.unique],
+  },
+  availabilityData:
+  {
+    flags: [availabilityFlags.drone],
   },
 };

@@ -11,6 +11,7 @@ import {moneyResource} from "modules/money/src/moneyResource";
 import {assimilate} from "../abilities/assimilate";
 import {merge} from "../abilities/merge";
 import { localize } from "../../localization/localize";
+import { availabilityFlags } from "../availabilityFlags";
 
 
 export const droneSwarm: UnitTemplate =
@@ -80,5 +81,9 @@ export const droneSwarm: UnitTemplate =
   {
     weight: 1,
     distributionGroups: [distributionGroups.common],
+  },
+  availabilityData:
+  {
+    flags: [availabilityFlags.drone],
   },
 };

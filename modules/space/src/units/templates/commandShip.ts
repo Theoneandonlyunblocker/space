@@ -17,7 +17,8 @@ import
 } from "modules/space/src/passiveskills/passiveSkills";
 import { localize } from "modules/space/localization/localize";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
-import {moneyResource} from "modules/money/src/moneyResource";
+import { moneyResource } from "modules/money/src/moneyResource";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
 
 
 export const commandShip: UnitTemplate =
@@ -93,5 +94,9 @@ export const commandShip: UnitTemplate =
       distributionGroups.rare,
       distributionGroups.unique,
     ],
+  },
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
   },
 };

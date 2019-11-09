@@ -9,16 +9,12 @@ import {generateIndependentFleets} from "modules/common/generateIndependentFleet
 import {generateIndependentPlayer} from "modules/common/generateIndependentPlayer";
 import {defaultAiConstructor} from "modules/defaultai/src/mapai/DefaultAiConstructor";
 import * as TechnologyTemplates from "modules/space/src/technologies/technologyTemplates";
-import * as items from "modules/space/src/items/itemTemplates";
-import {unitTemplates as units} from "modules/space/src/units/unitTemplates";
-import * as buildings from "modules/space/src/buildings/templates/otherBuildings";
 
-import {getDefaultBuildableBuildings} from "../common/getDefaultBuildableBuildings";
-import {getDefaultBuildableItems} from "../common/getDefaultBuildableItems";
-import {getDefaultBuildableUnits} from "../common/getDefaultBuildableUnits";
 import {defaultRaceTechnologyValues} from "../common/defaultRaceTechnologyValues";
 import {mergeTechnologyValues} from "../common/utility";
 import { localizeName } from "modules/space/localization/localize";
+import { getHumanLikeBuildableThings } from "../common/getHumanLikeBuildableThings";
+import { activeModuleData } from "core/src/app/activeModuleData";
 
 
 export const wormThings: RaceTemplate =
@@ -34,27 +30,9 @@ export const wormThings: RaceTemplate =
     weight: 0,
     distributionGroups: [],
   },
-  getBuildableBuildings: () =>
-  {
-    return [
-      ...getDefaultBuildableBuildings(),
-      buildings.reserachLab,
-    ];
-  },
-  getBuildableItems: () =>
-  {
-    return [
-      ...getDefaultBuildableItems(),
-      items.shieldPlating3,
-    ];
-  },
-  getBuildableUnits: () =>
-  {
-    return [
-      ...getDefaultBuildableUnits(),
-      units.fighterSquadron,
-    ];
-  },
+  getBuildableBuildings: () => getHumanLikeBuildableThings(activeModuleData.templates.Buildings),
+  getBuildableItems: () => getHumanLikeBuildableThings(activeModuleData.templates.Items),
+  getBuildableUnits: () => getHumanLikeBuildableThings(activeModuleData.templates.Units),
   getPlayerName: player => player.isIndependent ?
     localizeName("wormThingsIndependents")() :
     localizeName("genericPlayer")(player.id),

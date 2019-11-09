@@ -30,6 +30,7 @@ import {GalaxyMap} from "./GalaxyMap";
 import { getUniqueArrayKeys, sumObjectValues } from "../generic/utility";
 import { Resources } from "../player/PlayerResources";
 import { StarModifiersCollection } from "../maplevelmodifiers/StarModifiersCollection";
+import { getBuildableBuildingsForRace } from "../production/getBuildableBuildingsForRace";
 
 
 // represents single location in game world. see Region for a grouping of these locations
@@ -965,8 +966,8 @@ export class Star implements Point
 
     const allBuildings =
     [
-      ...this.owner.race.getBuildableBuildings(),
-      ...this.localRace.getBuildableBuildings(),
+      ...getBuildableBuildingsForRace(this.owner.race),
+      ...getBuildableBuildingsForRace(this.localRace),
     ];
     const uniqueBuildings = getUniqueArrayKeys(allBuildings, template => template.type);
 

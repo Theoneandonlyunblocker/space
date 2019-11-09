@@ -17,6 +17,8 @@ import
 {
   getUniqueArrayKeys,
 } from "../generic/utility";
+import { getBuildableUnitsForRace } from "./getBuildableUnitsForRace";
+import { getBuildableItemsForRace } from "./getBuildableItemsForRace";
 
 
 interface ManufacturableThingWithKind
@@ -164,7 +166,11 @@ export class Manufactory
   }
   public getManufacturableUnits(): UnitTemplate[]
   {
-    const allUnits = [...this.owner.race.getBuildableUnits(), ...this.getLocalUnitTypes()];
+    const allUnits =
+    [
+      ...getBuildableUnitsForRace(this.owner.race),
+      ...getBuildableUnitsForRace(this.star.localRace),
+    ];
     const uniqueUnits = getUniqueArrayKeys(allUnits, unit => unit.type);
 
     const manufacturableUnits = uniqueUnits.filter(unitTemplate =>
@@ -177,7 +183,11 @@ export class Manufactory
   }
   public getManufacturableItems(): ItemTemplate[]
   {
-    const allItems = [...this.owner.race.getBuildableItems(), ...this.getLocalItemTypes()];
+    const allItems =
+    [
+      ...getBuildableItemsForRace(this.owner.race),
+      ...getBuildableItemsForRace(this.star.localRace),
+    ];
     const uniqueItems = getUniqueArrayKeys(allItems, item => item.type);
 
     const manufacturableItems = uniqueItems.filter(itemTemplate =>
@@ -237,14 +247,5 @@ export class Manufactory
       unitHealthModifier: this.unitHealthModifier,
       buildQueue: buildQueue,
     });
-  }
-
-  private getLocalUnitTypes(): UnitTemplate[]
-  {
-    return this.star.localRace.getBuildableUnits();
-  }
-  private getLocalItemTypes(): ItemTemplate[]
-  {
-    return this.star.localRace.getBuildableItems();
   }
 }

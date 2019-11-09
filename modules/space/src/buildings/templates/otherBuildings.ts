@@ -4,6 +4,9 @@ import * as technologies from "modules/space/src/technologies/technologyTemplate
 import { localize } from "modules/space/localization/localize";
 import {moneyResource} from "modules/money/src/moneyResource";
 import { testResource1, testResource2, testResource3, testResource4, testResource5 } from "../../resources/resourceTemplates";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
+
 
 export const commercialPort: BuildingTemplate =
 {
@@ -25,6 +28,10 @@ export const commercialPort: BuildingTemplate =
   },
   maxBuiltAtLocation: 1,
 
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
   mapLevelModifiers:
   [
     {
@@ -69,6 +76,10 @@ export const deepSpaceRadar: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
   mapLevelModifiers:
   [
     {
@@ -125,6 +136,10 @@ export const resourceMine: BuildingTemplate =
     return Boolean(star.resource);
   },
 
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike, coreAvailabilityFlags.crucial],
+  },
   mapLevelModifiers:
   [
     {
@@ -169,6 +184,10 @@ export const reserachLab: BuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
   mapLevelModifiers:
   [
     {
@@ -205,6 +224,10 @@ export const thePyramids: BuildingTemplate =
     return localize("thePyramids_description").toString();
   },
   families: [],
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 
   onBuild: (star, player) =>
   {
@@ -309,6 +332,10 @@ export const nationalEpic: BuildingTemplate =
     return localize("nationalEpic_description").toString();
   },
   families: [],
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 
   onBuild: (star, player) =>
   {

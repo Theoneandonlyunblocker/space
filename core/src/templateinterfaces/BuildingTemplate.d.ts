@@ -6,6 +6,7 @@ import { BuildingFamily } from "./BuildingFamily";
 import { Resources } from "../player/PlayerResources";
 import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
 import { BuildingModifier } from "../maplevelmodifiers/BuildingModifier";
+import { AvailabilityData } from "./AvailabilityData";
 
 
 export interface BuildingTemplate extends UnlockableThing
@@ -30,4 +31,5 @@ export interface BuildingTemplate extends UnlockableThing
   getStandardUpgradeTargets?: (location: Star) => BuildingTemplate[];
 
   battleEffects?: UnitEffectTemplate[];
+  availabilityData: AvailabilityData;
 }

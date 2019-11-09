@@ -10,7 +10,7 @@ import
   standBy,
 } from "modules/space/src/abilities/abilities";
 import { itemSlot } from "../../items/itemSlot";
-
+import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
 
 
 export const miningBarge: UnitTemplate =
@@ -73,6 +73,10 @@ export const miningBarge: UnitTemplate =
   {
     weight: 0,
     distributionGroups: [],
+  },
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
   },
   mapLevelModifiers:
   [

@@ -13,7 +13,8 @@ import {distributionGroups} from "modules/common/distributionGroups";
 import {itemSlot} from "modules/space/src/items/itemSlot";
 import { localize } from "modules/space/localization/localize";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
-import {moneyResource} from "modules/money/src/moneyResource";
+import { moneyResource } from "modules/money/src/moneyResource";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
 
 
 export const battleCruiser: UnitTemplate =
@@ -81,5 +82,9 @@ export const battleCruiser: UnitTemplate =
       distributionGroups.rare,
       distributionGroups.unique,
     ],
+  },
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
   },
 };

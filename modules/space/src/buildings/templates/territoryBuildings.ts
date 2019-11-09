@@ -8,6 +8,8 @@ import
 import { localize } from "modules/space/localization/localize";
 import { getBuildingIconElement } from "modules/space/assets/buildings/buildingAssets";
 import {moneyResource} from "modules/money/src/moneyResource";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 
 
 export const sectorCommand: TerritoryBuildingTemplate =
@@ -31,6 +33,10 @@ export const sectorCommand: TerritoryBuildingTemplate =
   },
 
   maxBuiltAtLocation: 1,
+  availabilityData:
+  {
+    flags: [coreAvailabilityFlags.crucial, commonAvailabilityFlags.humanLike],
+  },
 
   getStandardUpgradeTargets: () =>
   [
@@ -62,6 +68,10 @@ export const sectorCommand1: TerritoryBuildingTemplate =
   maxBuiltAtLocation: 1,
 
   battleEffects: [makeDefenderAdvantageEffect(0.3)],
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 export const sectorCommand2: TerritoryBuildingTemplate =
 {
@@ -86,6 +96,10 @@ export const sectorCommand2: TerritoryBuildingTemplate =
   maxBuiltAtLocation: 1,
 
   battleEffects: [makeDefenderAdvantageEffect(0.3)],
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 export const starBase: TerritoryBuildingTemplate =
 {
@@ -112,4 +126,8 @@ export const starBase: TerritoryBuildingTemplate =
   [
     sectorCommand,
   ],
+  availabilityData:
+  {
+    flags: [coreAvailabilityFlags.crucial, commonAvailabilityFlags.humanLike],
+  },
 };

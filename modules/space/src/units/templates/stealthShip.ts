@@ -14,7 +14,8 @@ import {itemSlot} from "modules/space/src/items/itemSlot";
 import * as technologies from "modules/space/src/technologies/technologyTemplates";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 import { localize } from "modules/space/localization/localize";
-import {moneyResource} from "modules/money/src/moneyResource";
+import { moneyResource } from "modules/money/src/moneyResource";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
 import { testResource2 } from "modules/space/src/resources/resourceTemplates";
 
 
@@ -91,5 +92,9 @@ export const stealthShip: UnitTemplate =
       distributionGroups.rare,
       distributionGroups.unique,
     ],
+  },
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
   },
 };

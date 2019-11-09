@@ -14,6 +14,8 @@ import
 import { localize } from "modules/space/localization/localize";
 import { getItemIcon } from "modules/space/assets/items/itemAssets";
 import { moneyResource } from "modules/money/src/moneyResource";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 
 
 export const bombLauncher1: ItemTemplate =
@@ -37,6 +39,10 @@ export const bombLauncher1: ItemTemplate =
 
   slot: "high",
   ability: bombAttack,
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 export const bombLauncher2: ItemTemplate =
 {
@@ -64,6 +70,10 @@ export const bombLauncher2: ItemTemplate =
 
   slot: "high",
   ability: bombAttack,
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 export const bombLauncher3: ItemTemplate =
 {
@@ -91,6 +101,10 @@ export const bombLauncher3: ItemTemplate =
 
   slot: "high",
   ability: bombAttack,
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 
 export const afterBurner1: ItemTemplate =
@@ -119,6 +133,10 @@ export const afterBurner1: ItemTemplate =
 
   slot: "mid",
   passiveSkill: overdrive,
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 export const afterBurner2: ItemTemplate =
 {
@@ -145,6 +163,10 @@ export const afterBurner2: ItemTemplate =
   },
 
   slot: "mid",
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 export const afterBurner3: ItemTemplate =
 {
@@ -172,6 +194,10 @@ export const afterBurner3: ItemTemplate =
   },
 
   slot: "mid",
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 export const shieldPlating1: ItemTemplate =
 {
@@ -198,6 +224,10 @@ export const shieldPlating1: ItemTemplate =
   },
 
   slot: "low",
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 export const shieldPlating2: ItemTemplate =
 {
@@ -224,6 +254,10 @@ export const shieldPlating2: ItemTemplate =
   },
 
   slot: "low",
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
 };
 export const shieldPlating3: ItemTemplate =
 {
@@ -251,6 +285,10 @@ export const shieldPlating3: ItemTemplate =
   },
 
   slot: "low",
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
+  },
   ability: guardRow,
 };
 export const debugItem: ItemTemplate =
@@ -273,6 +311,10 @@ export const debugItem: ItemTemplate =
   kind: "item",
 
   slot: "high",
+  availabilityData:
+  {
+    flags: [coreAvailabilityFlags.alwaysInDebugMode],
+  },
   mapLevelModifiers:
   [
     {

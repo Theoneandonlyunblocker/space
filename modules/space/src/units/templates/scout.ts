@@ -12,7 +12,8 @@ import {distributionGroups} from "modules/common/distributionGroups";
 import {itemSlot} from "modules/space/src/items/itemSlot";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 import { localize } from "modules/space/localization/localize";
-import {moneyResource} from "modules/money/src/moneyResource";
+import { moneyResource } from "modules/money/src/moneyResource";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
 
 
 export const scout: UnitTemplate =
@@ -78,5 +79,9 @@ export const scout: UnitTemplate =
       distributionGroups.common,
       distributionGroups.rare,
     ],
+  },
+  availabilityData:
+  {
+    flags: [commonAvailabilityFlags.humanLike],
   },
 };
