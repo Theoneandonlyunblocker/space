@@ -19,7 +19,8 @@ import {GalaxyMap} from "./uicomponents/galaxymap/GalaxyMap";
 import {SetupGame} from "./uicomponents/setupgame/SetupGame";
 import {SaveRecoveryWithDetails} from "./uicomponents/errors/SaveRecoveryWithDetails";
 import {TopLevelErrorBoundary} from "./uicomponents/errors/TopLevelErrorBoundary";
-import {VfxEditor} from "./uicomponents/vfxeditor/VfxEditor";
+// TODO 2019.11.11 | reimplement
+// import {VfxEditor} from "./uicomponents/vfxeditor/VfxEditor";
 
 import * as moduleInfo from "../moduleInfo.json";
 import { triggeredScripts } from "./triggeredScripts";
@@ -73,7 +74,7 @@ export const defaultUi: GameModule =
     moduleData.uiScenes.errorRecovery = SaveRecoveryWithDetails;
     moduleData.uiScenes.topLevelErrorBoundary = TopLevelErrorBoundary;
     moduleData.uiScenes.flagMaker = FlagMaker;
-    moduleData.uiScenes.vfxEditor = VfxEditor;
+    // moduleData.uiScenes.vfxEditor = VfxEditor;
     moduleData.uiScenes.battleSceneTester = BattleSceneTester;
 
     moduleData.nonCoreData.defaultUi =

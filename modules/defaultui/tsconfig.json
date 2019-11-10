@@ -8,10 +8,13 @@
   "references": [
     {"path": "../../core"},
     {"path": "../../modules/englishlanguage"},
-    {"path": "../../modules/space"}, // for battlesfx editor
+    // {"path": "../../modules/space"}, // for battlesfx editor
   ],
   "include": [
     "**/*",
     "**/*.json",
+  ],
+  "exclude": [
+    "src/uicomponents/vfxeditor/**/*",
   ],
 }
