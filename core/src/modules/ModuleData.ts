@@ -119,6 +119,12 @@ export class ModuleData
   public defaultLanguage: Language;
   public uiScenes: Partial<UIScenes> = {};
   public readonly mapLevelModifierAdjustments: CustomModifierAdjustments = new CustomModifierAdjustments();
+  public readonly templateCollectionsWithUnlockables: TemplateCollection<UnlockableThing>[] =
+  [
+    this.templates.Buildings,
+    this.templates.Items,
+    this.templates.Units,
+  ];
   // for content not used by the core game, but used modularly across modules
   // f.ex. modular ui components
   public readonly nonCoreData:
@@ -137,8 +143,8 @@ export class ModuleData
 
     return this.cachedTechnologyUnlocks;
   }
+  public technologyUnlocksAreDirty: boolean = true;
 
-  private technologyUnlocksAreDirty: boolean = true;
   private cachedTechnologyUnlocks: TechnologyUnlocksByLevelByTech = {};
 
   constructor()
@@ -272,14 +278,7 @@ export class ModuleData
   {
     const technologyUnlocks: TechnologyUnlocksByLevelByTech = {};
 
-    const allUnlockableTemplateCollections =
-    [
-      this.templates.Buildings,
-      this.templates.Items,
-      this.templates.Units,
-    ];
-
-    const allUnlockableThings = allUnlockableTemplateCollections.map(templateCollection =>
+    const allUnlockableThings = this.templateCollectionsWithUnlockables.map(templateCollection =>
     {
       return Object.keys(templateCollection).map(key =>
       {
