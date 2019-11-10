@@ -219,6 +219,7 @@ export class Player
         getBuildableBuildings: undefined,
         getBuildableUnits: undefined,
         getBuildableItems: undefined,
+        associatedAvailabilityFlags: [],
         getFleetName: undefined,
         getPlayerName: undefined,
         getUnitName: undefined,

@@ -33,6 +33,11 @@ export interface RaceTemplate
   getBuildableItems: () => ItemTemplate[];
   getBuildableBuildings: () => BuildingTemplate[];
   getSpecialBuildingUpgrades?: (buildings: Building[], location: Star, player: Player) => BuildingUpgradeData[];
+  /**
+   * used when a module implements a new type of buildable thing, but available things for this race aren't provided
+   * only used for non-core buildables, as core buildables are required to be explicitly defined per race
+   */
+  associatedAvailabilityFlags: string[];
 
   getPlayerName: (player: Player) => Name;
   getFleetName: (fleet: Fleet) => Name;

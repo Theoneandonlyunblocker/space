@@ -14,6 +14,7 @@ import {mergeTechnologyValues} from "../common/utility";
 import { localizeName } from "modules/space/localization/localize";
 import { getHumanLikeBuildableThings } from "../common/getHumanLikeBuildableThings";
 import { activeModuleData } from "core/src/app/activeModuleData";
+import { availabilityFlags as commonAvailabilityFlags } from "modules/common/availabilityFlags";
 
 
 export const federationAlliance: RaceTemplate =
@@ -32,6 +33,7 @@ export const federationAlliance: RaceTemplate =
   getBuildableBuildings: () => getHumanLikeBuildableThings(activeModuleData.templates.Buildings),
   getBuildableItems: () => getHumanLikeBuildableThings(activeModuleData.templates.Items),
   getBuildableUnits: () => getHumanLikeBuildableThings(activeModuleData.templates.Units),
+  associatedAvailabilityFlags: [commonAvailabilityFlags.humanLike],
   getPlayerName: player => player.isIndependent ?
     localizeName("federationAllianceIndependents")() :
     localizeName("genericPlayer")(player.id),

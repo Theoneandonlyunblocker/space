@@ -43,6 +43,7 @@ export const drones: RaceTemplate =
   getBuildableBuildings: () => getBuildableThings(activeModuleData.templates.Buildings),
   getBuildableItems: () => getBuildableThings(activeModuleData.templates.Items),
   getBuildableUnits: () => getBuildableThings(activeModuleData.templates.Units),
+  associatedAvailabilityFlags: [availabilityFlags.drone],
   getPlayerName: player => localizeName("droneHost")(randInt(0, 20000)),
   getFleetName: fleet => localizeName("swarm")(fleet.id),
   getUnitName: unitTemplate => localizeName("unitName")(unitTemplate.displayName, randInt(0, 20000)),
