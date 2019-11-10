@@ -176,8 +176,7 @@ export class ModuleData
         throw new Error(`Duplicate '${category}' template '${templateType}'`);
       }
 
-      // TODO 2017.02.05 | bad typing
-      this.templates[category][templateType] = <any> source[templateType];
+      this.templates[category][templateType] = source[templateType];
     }
 
     this.technologyUnlocksAreDirty = true;

@@ -15,6 +15,7 @@ export interface ItemTemplate extends ManufacturableThing
   description: string;
   getIcon: () => HTMLElement;
 
+  // TODO 2019.11.09 | remove
   techLevel: number;
 
   slot: string;
