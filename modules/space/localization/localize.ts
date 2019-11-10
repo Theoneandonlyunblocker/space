@@ -15,7 +15,7 @@ import {technologies as en_technologies} from "./en/technologies";
 import {terrains as en_terrains} from "./en/terrains";
 import {units as en_units} from "./en/units";
 import {unitEffects as en_unitEffects} from "./en/unitEffects";
-
+import {titanComponents as en_titanComponents} from "./en/titanComponents";
 
 import {names as en_names} from "./en/names";
 
@@ -34,6 +34,7 @@ const allStrings =
   ...en_terrains,
   ...en_units,
   ...en_unitEffects,
+  ...en_titanComponents,
 };
 
 export const localizer = new StringLocalizer<typeof allStrings>("space");

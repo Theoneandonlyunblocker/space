@@ -27,6 +27,10 @@
     "spaceTechnologies",
     "spaceUnits"
   ],
+  "modsToLoadBefore":
+  [
+    "titans"
+  ],
   "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/index.js"],
   "moduleObjRequireJsName": "modules/space/src/space",
   "gameModuleVariableName": "space"

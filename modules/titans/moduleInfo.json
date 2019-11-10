@@ -1,0 +1,9 @@
+{
+  "key": "titans",
+  "version": "0.5.0",
+  "author": "giraluna",
+  "description": "Adds support for titans — a special type of unit that must be built from components",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/titans/index.js"],
+  "moduleObjRequireJsName": "modules/titans/src/titans",
+  "gameModuleVariableName": "titans"
+}

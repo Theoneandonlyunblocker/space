@@ -16,6 +16,7 @@ console.log("bundling modules");
   {root: "modules/englishlanguage",          include: "**/*.js"},
   {root: "modules/paintingportraits",        include: "**/*.js"},
   {root: "modules/space",                    include: "**/*.js"},
+  {root: "modules/titans",                   include: "**/*.js"},
   {root: "core",                             include: "**/*.js"},
   {root: "_temp_app",                        include: "**/*.js"},
 ].forEach(toBundle =>

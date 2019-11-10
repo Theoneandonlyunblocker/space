@@ -6,6 +6,9 @@ const itemIconSources =
   armor: "./assets/items/img/armor.png",
   blueThing: "./assets/items/img/blueThing.png",
   cannon: "./assets/items/img/cannon.png",
+
+  targetingSupercomputer: "./assets/items/img/blueThing.png",
+  monoblocArmor: "./assets/items/img/armor.png",
 };
 const techLevelIconSources =
 {
