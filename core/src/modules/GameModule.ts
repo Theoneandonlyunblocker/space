@@ -17,7 +17,7 @@ export interface GameModule<SaveData = any>
   info: ModuleInfo;
   supportedLanguages: Language[] | "all";
   assetLoaders?: Partial<ValuesByGameModuleInitializationPhase<AssetLoadingFunction[]>>;
-  addToModuleData?: (moduleData: ModuleData) => void;
+  addToModuleData?: ((moduleData: ModuleData) => void) | ((moduleData: ModuleData) => Promise<void>);
   serializeModuleSpecificData?: () => SaveData;
   deserializeModuleSpecificData?: (saveData: SaveData) => void;
   reviveGameData?: (saveData: any) => void;

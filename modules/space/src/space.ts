@@ -69,22 +69,6 @@ export const space: GameModule =
     moduleData.copyTemplates(unitEffectTemplates, "UnitEffects");
     moduleData.copyTemplates(unitTemplates, "Units");
 
-    // TODO 2019.11.11 | addToModuleData should be async to facilitate stuff like this
-    const titansModuleIsLoaded = Boolean(moduleData.nonCoreData.titans);
-    if (titansModuleIsLoaded)
-    {
-      import("./titancomponents/titanComponentTemplates").then(templatesModule =>
-      {
-        import("modules/titans/src/nonCoreModuleData").then(titansModuleDataModule =>
-        {
-          titansModuleDataModule.addTitanComponentsToModuleData(
-            moduleData,
-            templatesModule.titanComponentTemplates,
-          );
-        });
-      });
-    }
-
     if (!moduleData.mapBackgroundDrawingFunction)
     {
       moduleData.mapBackgroundDrawingFunction = drawNebula;
@@ -100,5 +84,22 @@ export const space: GameModule =
     }
 
     moduleData.ruleSet = ruleSet;
+
+    const titansModuleIsLoaded = Boolean(moduleData.nonCoreData.titans);
+    if (titansModuleIsLoaded)
+    {
+      return import("./titancomponents/titanComponentTemplates").then(templatesModule =>
+      {
+        import("modules/titans/src/nonCoreModuleData").then(titansModuleDataModule =>
+        {
+          titansModuleDataModule.addTitanComponentsToModuleData(
+            moduleData,
+            templatesModule.titanComponentTemplates,
+          );
+        });
+      });
+    }
+
+    return null;
   }
 };

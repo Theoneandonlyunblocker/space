@@ -78,10 +78,12 @@ class App
     this.initialModules = initialModules;
     activeModuleStore.getModules(...initialModules).then((gameModules) =>
     {
-      initializeModules(gameModules, activeModuleData);
+      const moduleInitializationPromise = initializeModules(gameModules, activeModuleData);
       this.moduleAssetLoader = new ModuleAssetLoader(activeModuleStore, gameModules);
 
-      return loadDom();
+      const domLoadingPromise = loadDom();
+
+      return Promise.all([moduleInitializationPromise, domLoadingPromise]);
     }).then(() =>
     {
       debug.log("init", "DOM loaded");

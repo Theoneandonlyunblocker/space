@@ -191,13 +191,19 @@ export class ModuleData
       }
     }
   }
-  public addGameModule(gameModule: GameModule): void
+  public addGameModule(gameModule: GameModule): Promise<void>
   {
     this.gameModules.push(gameModule);
     if (gameModule.addToModuleData)
     {
-      gameModule.addToModuleData(this);
+      const loadingPromise = gameModule.addToModuleData(this);
+      if (loadingPromise)
+      {
+        return loadingPromise;
+      }
     }
+
+    return Promise.resolve();
   }
   public getDefaultMap(): MapGenTemplate
   {

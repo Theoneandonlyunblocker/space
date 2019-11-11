@@ -3,12 +3,13 @@ import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
 import {GameModule} from "./GameModule";
 
 
-export function initializeModules(gameModules: GameModule[], moduleData: ModuleData): void
+export function initializeModules(gameModules: GameModule[], moduleData: ModuleData): Promise<void>
 {
   const modulesByKey: {[key: string]: GameModule} = {};
   const dependencyGraph = new ModuleDependencyGraph();
 
   const modulesToInitialize = gameModules.filter(gameModule => Boolean(gameModule.addToModuleData));
+  const allLoadingPromises: Promise<void>[] = [];
 
   modulesToInitialize.forEach(gameModule =>
   {
@@ -21,6 +22,9 @@ export function initializeModules(gameModules: GameModule[], moduleData: ModuleD
   {
     const gameModule = modulesByKey[moduleInfo.key];
 
-    moduleData.addGameModule(gameModule);
+    const loadingPromise = moduleData.addGameModule(gameModule);
+    allLoadingPromises.push(loadingPromise);
   });
+
+  return Promise.all(allLoadingPromises);
 }
