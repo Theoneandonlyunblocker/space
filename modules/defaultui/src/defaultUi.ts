@@ -11,20 +11,10 @@ import
   assetSources,
 } from "../assets/assets";
 
-import {BattleSceneTester} from "./uicomponents/BattleSceneTester";
-import {FlagMaker} from "./uicomponents/FlagMaker";
-import {Battle} from "./uicomponents/battle/Battle";
-import {BattlePrep} from "./uicomponents/battleprep/BattlePrep";
-import {GalaxyMap} from "./uicomponents/galaxymap/GalaxyMap";
-import {SetupGame} from "./uicomponents/setupgame/SetupGame";
-import {SaveRecoveryWithDetails} from "./uicomponents/errors/SaveRecoveryWithDetails";
-import {TopLevelErrorBoundary} from "./uicomponents/errors/TopLevelErrorBoundary";
-// TODO 2019.11.11 | reimplement
-// import {VfxEditor} from "./uicomponents/vfxeditor/VfxEditor";
-
 import * as moduleInfo from "../moduleInfo.json";
 import { triggeredScripts } from "./triggeredScripts";
 import { copyExtendables } from "./extendables";
+import { uiScenes } from "./uiScenes";
 
 
 export const defaultUi: GameModule =
@@ -67,15 +57,10 @@ export const defaultUi: GameModule =
   {
     moduleData.scripts.add(triggeredScripts);
 
-    moduleData.uiScenes.battle = Battle;
-    moduleData.uiScenes.battlePrep = BattlePrep;
-    moduleData.uiScenes.galaxyMap = GalaxyMap;
-    moduleData.uiScenes.setupGame = SetupGame;
-    moduleData.uiScenes.errorRecovery = SaveRecoveryWithDetails;
-    moduleData.uiScenes.topLevelErrorBoundary = TopLevelErrorBoundary;
-    moduleData.uiScenes.flagMaker = FlagMaker;
-    // moduleData.uiScenes.vfxEditor = VfxEditor;
-    moduleData.uiScenes.battleSceneTester = BattleSceneTester;
+    for (const key in uiScenes)
+    {
+      moduleData.uiScenes[key] = uiScenes[key];
+    }
 
     moduleData.nonCoreData.defaultUi =
     {

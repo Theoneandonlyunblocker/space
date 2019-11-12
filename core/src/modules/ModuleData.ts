@@ -36,7 +36,7 @@ import
 } from "../generic/utility";
 import { UnlockableThing } from "../templateinterfaces/UnlockableThing";
 
-import {UIScenes} from "../ui/UIScenes";
+import {CoreUIScenes, NonCoreUIScenes} from "../ui/CoreUIScenes";
 import { CustomModifierAdjustments } from "../maplevelmodifiers/CustomModifierAdjustments";
 
 import { TriggeredScriptCollection } from "../triggeredscripts/TriggeredScriptCollection";
@@ -117,7 +117,7 @@ export class ModuleData
   public readonly scripts = new TriggeredScriptCollection<AllCoreScripts>(allDefaultScripts);
   public defaultMap: MapGenTemplate;
   public defaultLanguage: Language;
-  public uiScenes: Partial<UIScenes> = {};
+  public uiScenes: Partial<CoreUIScenes> & NonCoreUIScenes = {};
   public readonly mapLevelModifierAdjustments: CustomModifierAdjustments = new CustomModifierAdjustments();
   public readonly templateCollectionsWithUnlockables: TemplateCollection<UnlockableThing>[] =
   [

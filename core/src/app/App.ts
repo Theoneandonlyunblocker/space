@@ -11,7 +11,6 @@ import {options} from "./Options";
 import {Player} from "../player/Player";
 import {PlayerControl} from "../interaction/PlayerControl";
 import {ReactUI} from "../ui/ReactUI";
-import {ReactUIScene} from "../ui/UIScenes";
 import {Renderer} from "../graphics/Renderer";
 import {activeModuleData} from "./activeModuleData";
 import {activePlayer, setActivePlayer} from "./activePlayer";
@@ -175,9 +174,9 @@ class App
     const optionsInUrl = this.getOptionsInUrl();
     const initialScene = optionsInUrl.initialScene;
 
-    const finalizeMakingApp = (scene: ReactUIScene) =>
+    const finalizeMakingApp = (scene: string) =>
     {
-      this.reactUI.switchScene(scene).then(() =>
+      this.reactUI.switchScene<{[key: string]: any}>(scene).then(() =>
       {
         debug.log("init", `Init app in ${Date.now() - startTime}ms`);
       });
@@ -339,7 +338,7 @@ class App
     this.reactUI.mapRenderer = mapRenderer;
   }
   private getOptionsInUrl(): {
-    initialScene: ReactUIScene;
+    initialScene: string;
     params:
     {
       save?: string;
@@ -351,7 +350,7 @@ class App
     const hash = urlParser.hash;
 
     const initialScene = hash ?
-      <ReactUIScene> hash.slice(1) :
+      hash.slice(1) :
       "setupGame";
 
     const params = new URLSearchParams(urlParser.search.slice(1));
