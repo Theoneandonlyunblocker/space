@@ -3,7 +3,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {VfxFragment} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
 
-import {NumberInput} from "../../generic/NumberInput";
+import {NumberInput} from "modules/defaultui/src/uicomponents/generic/NumberInput";
 
 
 export interface PropTypes extends React.Props<any>

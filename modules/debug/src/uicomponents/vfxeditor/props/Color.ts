@@ -4,7 +4,7 @@ import {VfxFragment} from "modules/space/src/battlevfx/drawingfunctions/vfxfragm
 
 import {Color} from "core/src/color/Color";
 
-import {ColorSetter} from "../../setupgame/ColorSetter";
+import {ColorSetter} from "modules/defaultui/src/uicomponents/setupgame/ColorSetter";
 
 
 export interface PropTypes extends React.Props<any>

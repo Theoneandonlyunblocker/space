@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {Flag} from "core/src/flag/Flag";
 import {generateColorScheme} from "core/src/color/colorGeneration";
 
-import {PlayerFlag} from "./PlayerFlag";
+import {PlayerFlag} from "modules/defaultui/src/uicomponents/PlayerFlag";
 
 
 export interface PropTypes extends React.Props<any>

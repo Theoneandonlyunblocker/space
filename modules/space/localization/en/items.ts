@@ -18,6 +18,4 @@ export const items =
   shieldPlating2_description: "",
   shieldPlating3_displayName: "Shield Plating 3",
   shieldPlating3_description: "",
-  debugItem_displayName: "Debug item",
-  debugItem_description: "",
 };

@@ -6,8 +6,6 @@ export const units =
   bomberSquadron_description: "Can damage multiple targets with special bomb attack",
   commandShip_displayName: "Command Ship",
   commandShip_description: "todo",
-  debugShip_displayName: "Debug Ship",
-  debugShip_description: "debug",
   fighterSquadron_displayName: "Fighter Squadron",
   fighterSquadron_description: "Fast and cheap unit with good attack and speed but low defence",
   scout_displayName: "Scout",

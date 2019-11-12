@@ -1,14 +1,13 @@
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "modules/common/unitArchetypes";
-import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunctionForPlaceholder} from "modules/space/src/units/defaultUnitDrawingFunction";
 
 import
 {
   boardingHook,
   bombAttack,
   closeAttack,
-  debugAbility,
   guardRow,
   rangedAttack,
   snipeAttack,
@@ -25,10 +24,11 @@ import
   medic,
   warpJammer,
 } from "modules/space/src/passiveskills/passiveSkills";
-import { localize } from "modules/space/localization/localize";
-import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
+import { localize } from "../localization/localize";
+import {getAssetSrc} from "modules/common/assets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
+import { debugAbility } from "./abilities";
 
 
 export const debugShip: UnitTemplate =
@@ -43,12 +43,12 @@ export const debugShip: UnitTemplate =
     return localize("debugShip_description").toString();
   },
   archetype: unitArchetypes.combat,
-  unitDrawingFN: makeDefaultUnitDrawingFunction(
+  unitDrawingFN: makeDefaultUnitDrawingFunctionForPlaceholder(
   {
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
-    () => "debugShip.png",
+    "debugShip",
   ),
   isSquadron: false,
   buildCost:
@@ -56,7 +56,7 @@ export const debugShip: UnitTemplate =
   [moneyResource.type]: 0,
 },
   kind: "unit",
-  getIconSrc: getUnitIconSrc.bind(null, "f"),
+  getIconSrc: getAssetSrc.bind(null, "placeHolder"),
   maxHealthLevel: 1,
   maxMovePoints: 999,
   maxOffensiveBattlesPerTurn: 999,

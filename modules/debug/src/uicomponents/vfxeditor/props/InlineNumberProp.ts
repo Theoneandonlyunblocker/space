@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {NumberInput} from "../../generic/NumberInput";
+import {NumberInput} from "modules/defaultui/src/uicomponents/generic/NumberInput";
 
 
 export interface PropTypes extends React.Props<any>

@@ -8,10 +8,6 @@ export const buildings =
   resourceMine_description: "Gathers 1 resource per turn from current star",
   reserachLab_displayName: "Research Lab",
   reserachLab_description: "Increase research speed by 10",
-  thePyramids_displayName: "The Pyramids",
-  thePyramids_description: "testing globally limited buildings, +1000 money on build",
-  nationalEpic_displayName: "National Epic",
-  nationalEpic_description: "testing player limited buildings, +999 money on build",
 
   sectorCommand_displayName: "Sector Command",
   sectorCommand_description: "Defence building with slight defender advantage. (All defence buildings must be captured to gain control of area)",

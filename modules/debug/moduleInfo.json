@@ -1,0 +1,9 @@
+{
+  "key": "debug",
+  "version": "0.1.0",
+  "author": "giraluna",
+  "description": "Adds content for testing and debugging features",
+  "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/debug/index.js"],
+  "moduleObjRequireJsName": "modules/debug/src/debug",
+  "gameModuleVariableName": "debug"
+}

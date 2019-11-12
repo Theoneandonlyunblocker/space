@@ -15,5 +15,6 @@
     {"path": "./space"},
     {"path": "./money"},
     {"path": "./titans"},
+    {"path": "./debug"},
   ]
 }

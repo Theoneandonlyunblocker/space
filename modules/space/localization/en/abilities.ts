@@ -10,8 +10,6 @@ export const abilities =
   guardRow_description: "Protect allies in the same row and boost defence against physical attacks",
   boardingHook_displayName: "Boarding Hook",
   boardingHook_description: "0.8x damage but increases target capture chance",
-  debugAbility_displayName: "Debug Ability",
-  debugAbility_description: "who knows what its going to do today",
   rangedAttack_displayName: "Ranged Attack",
   rangedAttack_description: "Standard ranged attack",
   standBy_displayName: "Standby",

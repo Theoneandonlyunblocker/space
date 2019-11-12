@@ -15,7 +15,6 @@ import { localize } from "modules/space/localization/localize";
 import { getItemIcon } from "modules/space/assets/items/itemAssets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
-import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 
 
 export const bombLauncher1: ItemTemplate =
@@ -291,75 +290,7 @@ export const shieldPlating3: ItemTemplate =
   },
   ability: guardRow,
 };
-export const debugItem: ItemTemplate =
-{
-  type: "debugItem",
-  get displayName()
-  {
-    return localize("debugItem_displayName").toString();
-  },
-  get description()
-  {
-    return localize("debugItem_description").toString();
-  },
-  getIcon: getItemIcon.bind(null, "armor", 1),
-  techLevel: 1,
-  buildCost:
-  {
-    [moneyResource.type]: 0,
-  },
-  kind: "item",
 
-  slot: "high",
-  availabilityData:
-  {
-    flags: [coreAvailabilityFlags.alwaysInDebugMode],
-  },
-  mapLevelModifiers:
-  [
-    {
-      key: "debugItem",
-      propagations:
-      {
-        owningPlayer:
-        [
-          {
-            key: "ownedDebugItem",
-            self:
-            {
-              income:
-              {
-                [moneyResource.type]: {flat: 200},
-              },
-            },
-          },
-        ],
-        equippingUnit:
-        [
-          {
-            key: "equippedDebugItem",
-            propagations:
-            {
-              owningPlayer:
-              [
-                {
-                  key: "ownedUnitHasEquippedDebugItem",
-                  self:
-                  {
-                    income:
-                    {
-                      [moneyResource.type]: {multiplicativeMultiplier: 1.3333},
-                    },
-                  },
-                },
-              ],
-            },
-          },
-        ],
-      },
-    },
-  ],
-};
 
 export const itemTemplates: TemplateCollection<ItemTemplate> =
 {
@@ -372,5 +303,4 @@ export const itemTemplates: TemplateCollection<ItemTemplate> =
   [shieldPlating1.type]: shieldPlating1,
   [shieldPlating2.type]: shieldPlating2,
   [shieldPlating3.type]: shieldPlating3,
-  [debugItem.type]: debugItem,
 };

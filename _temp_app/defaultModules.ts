@@ -10,6 +10,7 @@ import * as defaultUi from "modules/defaultui/moduleInfo.json";
 import * as space from "modules/space/moduleInfo.json";
 import * as money from "modules/money/moduleInfo.json";
 import * as titans from "modules/titans/moduleInfo.json";
+import * as debug from "modules/debug/moduleInfo.json";
 
 import {ModuleInfo} from "core/src/modules/ModuleInfo";
 
@@ -29,4 +30,5 @@ export const defaultModules: ModuleInfo[] =
   space,
   drones,
   titans,
+  debug,
 ];

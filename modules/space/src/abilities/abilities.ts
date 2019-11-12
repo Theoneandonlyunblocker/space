@@ -18,7 +18,6 @@ import
   areaSingle,
   GetUnitsInAreaFN,
   makeGetAbilityTargetDisplayDataFN,
-  targetAll,
   targetEnemies,
   targetNextRow,
   targetSelf,
@@ -246,38 +245,6 @@ export const boardingHook: AbilityTemplate =
         }),
       },
     ],
-  },
-};
-
-export const debugAbility: AbilityTemplate =
-{
-  type: "debugAbility",
-  get displayName()
-  {
-    return localize("debugAbility_displayName");
-  },
-  get description()
-  {
-    return localize("debugAbility_description");
-  },
-  moveDelay: 0,
-  actionsUse: 1,
-  getPossibleTargets: targetAll,
-  mainEffect:
-  {
-    id: "debugAbility",
-    getUnitsInArea: areaSingle,
-    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
-    {
-      areaFN: areaSingle,
-      targetType: AbilityTargetType.Primary,
-      targetEffect: AbilityTargetEffect.Positive,
-    }),
-    executeAction: EffectActions.increaseCaptureChance.bind(null,
-    {
-      flat: 1,
-    }),
-    vfx: BattleVfx.guard,
   },
 };
 
