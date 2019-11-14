@@ -6,6 +6,7 @@ import { nationalEpic, thePyramids } from "./buildings";
 import { debugShip } from "./units";
 import { debugItem } from "./items";
 import { uiScenes } from "./uiScenes";
+import { debugAbility } from "./abilities";
 
 
 export const debug: GameModule =
@@ -27,6 +28,10 @@ export const debug: GameModule =
     {
       [debugItem.type]: debugItem,
     }, "Items");
+    moduleData.copyTemplates(
+    {
+      [debugAbility.type]: debugAbility,
+    }, "Abilities");
 
     for (const key in uiScenes)
     {
