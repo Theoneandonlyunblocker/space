@@ -10,6 +10,7 @@ import {EconomicObjective} from "./common/EconomicObjective";
 import {FrontObjective} from "./common/FrontObjective";
 import {Objective} from "./common/Objective";
 import {ObjectiveFamily} from "./common/ObjectiveFamily";
+import { coreManufacturableThingKinds } from "core/src/production/coreManufacturableThingKinds";
 
 
 // can't actually ignore specific errors
@@ -93,7 +94,7 @@ export class BuildUnitsForFront extends EconomicObjective
 
     if (this.player.canAfford(unitType.buildCost))
     {
-      manufactory.addThingToQueue(unitType, "unit");
+      manufactory.addThingToQueue(unitType, coreManufacturableThingKinds.unit);
     }
 
     afterDoneCallback();

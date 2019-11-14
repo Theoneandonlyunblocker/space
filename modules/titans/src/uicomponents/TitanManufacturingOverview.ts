@@ -2,19 +2,20 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import { Star } from "core/src/map/Star";
-import { TitanComponent } from "../TitanComponent";
+import { TitanComponentTemplate } from "../TitanComponentTemplate";
 import {ManufacturableThingsList} from "modules/defaultui/src/uicomponents/production/ManufacturableThingsList";
 import { Player } from "core/src/player/Player";
 import { localize } from "modules/titans/localization/localize";
 import { useTitanAssemblingCapacity } from "./useTitanAssemblingCapacity";
 import { titanForge } from "../buildings/templates/titanForge";
+import { manufacturableThingKinds } from "../manufacturableThingKinds";
 
 
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
   selectedLocation: Star | undefined;
-  manufacturableThings: TitanComponent[];
+  manufacturableThings: TitanComponentTemplate[];
   triggerParentUpdate: () => void;
   canManufacture: boolean;
   player: Player;
@@ -24,9 +25,10 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
 {
   const assemblingCapacity = useTitanAssemblingCapacity(props.selectedLocation);
 
-  function addComponentToBuildQueue(component: TitanComponent): void
+  function addComponentToBuildQueue(component: TitanComponentTemplate): void
   {
-
+    props.selectedLocation.manufactory.addThingToQueue(component, manufacturableThingKinds.titanComponent);
+    props.triggerParentUpdate();
   }
 
   function makeActionButton(): React.ReactElement<any>

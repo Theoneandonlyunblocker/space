@@ -42,6 +42,10 @@ import { CustomModifierAdjustments } from "../maplevelmodifiers/CustomModifierAd
 import { TriggeredScriptCollection } from "../triggeredscripts/TriggeredScriptCollection";
 import { allDefaultScripts } from "../triggeredscripts/defaultScripts/allDefaultScripts";
 import { AllCoreScripts } from "../triggeredscripts/AllCoreScriptsWithData";
+import { ManufacturableThing, ManufacturableThingKind } from "../templateinterfaces/ManufacturableThing";
+import { Item } from "../items/Item";
+import { Unit } from "../unit/Unit";
+import { coreManufacturableThingKinds } from "../production/coreManufacturableThingKinds";
 
 // tslint:disable:no-any
 interface Templates
@@ -78,6 +82,11 @@ export type TechnologyUnlocksByLevel =
 type TechnologyUnlocksByLevelByTech =
 {
   [technologyKey: string]: TechnologyUnlocksByLevel;
+};
+type ManufacturableThingKindWithTemplates<Template extends ManufacturableThing, BuiltThing> =
+{
+  kind: ManufacturableThingKind<Template, BuiltThing>;
+  templates: TemplateCollection<Template>;
 };
 
 export class ModuleData
@@ -125,6 +134,24 @@ export class ModuleData
     this.templates.Items,
     this.templates.Units,
   ];
+  public readonly manufacturableThingKinds:
+  {
+    [key: string]: ManufacturableThingKindWithTemplates<any, any>;
+    item: ManufacturableThingKindWithTemplates<ItemTemplate, Item>;
+    unit: ManufacturableThingKindWithTemplates<UnitTemplate, Unit>;
+  } =
+  {
+    item:
+    {
+      kind: coreManufacturableThingKinds.item,
+      templates: this.templates.Items,
+    },
+    unit:
+    {
+      kind: coreManufacturableThingKinds.unit,
+      templates: this.templates.Units,
+    },
+  };
   // for content not used by the core game, but used modularly across modules
   // f.ex. modular ui components
   public readonly nonCoreData:

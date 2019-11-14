@@ -1,4 +1,4 @@
-import { ItemTemplate } from "core/src/templateinterfaces/ItemTemplate";
+export class TitanComponent
+{
 
-
-export type TitanComponent = ItemTemplate;
+}

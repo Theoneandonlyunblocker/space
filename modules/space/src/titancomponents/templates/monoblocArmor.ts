@@ -2,12 +2,12 @@
 import { getItemIcon } from "modules/space/assets/items/itemAssets";
 import { localize } from "modules/space/localization/localize";
 
-import { TitanComponent } from "modules/titans/src/TitanComponent";
+import { TitanComponentTemplate } from "modules/titans/src/TitanComponentTemplate";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
 import { moneyResource } from "modules/money/src/moneyResource";
 
 
-export const monoblocArmor: TitanComponent =
+export const monoblocArmor: TitanComponentTemplate =
 {
   type: "monoblocArmor",
   kind: "item",

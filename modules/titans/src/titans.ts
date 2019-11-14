@@ -17,6 +17,7 @@ import { getBuildableComponentsForRace } from "./getBuildableComponentsForRace";
 import { getAlwaysAvailableBuildableThings } from "core/src/production/getAlwaysAvailableBuildableThings";
 import { activeModuleData } from "core/src/app/activeModuleData";
 import { buildingTemplates } from "./buildings/buildingTemplates";
+import { manufacturableThingKinds } from "./manufacturableThingKinds.js";
 
 
 export const titans: GameModule =
@@ -40,6 +41,11 @@ export const titans: GameModule =
     const customModuleData = copyNonCoreModuleData();
     moduleData.nonCoreData.titans = customModuleData;
     moduleData.templateCollectionsWithUnlockables.push(customModuleData.titanComponents);
+    moduleData.manufacturableThingKinds.titanComponents =
+    {
+      kind: manufacturableThingKinds.titanComponent,
+      templates: customModuleData.titanComponents,
+    };
 
     registerMapLevelModifiers(moduleData);
 

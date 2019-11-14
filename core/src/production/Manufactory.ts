@@ -1,17 +1,13 @@
 
 import {activeModuleData} from "../app/activeModuleData";
 import {ItemTemplate} from "../templateinterfaces/ItemTemplate";
-import {ManufacturableThing} from "../templateinterfaces/ManufacturableThing";
+import {ManufacturableThing, ManufacturableThingKind} from "../templateinterfaces/ManufacturableThing";
 import {UnitTemplate} from "../templateinterfaces/UnitTemplate";
-import {UnlockableThingKind} from "../templateinterfaces/UnlockableThing";
 
 import {ManufactorySaveData} from "../savedata/ManufactorySaveData";
 
-import {Fleet} from "../fleets/Fleet";
-import {Item} from "../items/Item";
 import {Player} from "../player/Player";
 import {Star} from "../map/Star";
-import {Unit} from "../unit/Unit";
 import {eventManager} from "../app/eventManager";
 import
 {
@@ -21,15 +17,20 @@ import { getBuildableUnitsForRace } from "./getBuildableUnitsForRace";
 import { getBuildableItemsForRace } from "./getBuildableItemsForRace";
 
 
-interface ManufacturableThingWithKind
+interface ManufacturableThingWithKind<Template extends ManufacturableThing, BuiltThing>
 {
-  kind: UnlockableThingKind;
-  template: ManufacturableThing;
+  kind: ManufacturableThingKind<Template, BuiltThing>;
+  template: Template;
+}
+interface BuiltThingsWithKind<Template extends ManufacturableThing, BuiltThing>
+{
+  kind: ManufacturableThingKind<Template, BuiltThing>;
+  builtThings: BuiltThing[];
 }
 export class Manufactory
 {
   public star: Star;
-  public buildQueue: ManufacturableThingWithKind[] = [];
+  public buildQueue: ManufacturableThingWithKind<any, any>[] = [];
   public capacity: number;
   public maxCapacity: number;
   public unitStatsModifier: number = 1;
@@ -66,24 +67,13 @@ export class Manufactory
 
     this.buildQueue = data.buildQueue.map(savedThing =>
     {
-      let templatesString: string;
-      switch (savedThing.kind)
-      {
-        case "unit":
-        {
-          templatesString = "Units";
-          break;
-        }
-        case "item":
-        {
-          templatesString = "Items";
-        }
-      }
+      const kind = activeModuleData.manufacturableThingKinds[savedThing.kind].kind;
+      const templates = activeModuleData.manufacturableThingKinds[savedThing.kind].templates;
 
       return(
       {
-        kind: savedThing.kind,
-        template: activeModuleData.templates[templatesString][savedThing.templateType],
+        kind: kind,
+        template: templates[savedThing.templateType],
       });
     });
   }
@@ -91,7 +81,7 @@ export class Manufactory
   {
     return this.buildQueue.length >= this.capacity;
   }
-  public addThingToQueue(template: ManufacturableThing, kind: UnlockableThingKind): void
+  public addThingToQueue<T extends ManufacturableThing, B>(template: T, kind: ManufacturableThingKind<T, B>): void
   {
     this.buildQueue.push({kind: kind, template: template});
     this.owner.removeResources(template.buildCost);
@@ -111,7 +101,10 @@ export class Manufactory
   }
   public buildAllThings(): void
   {
-    const units: Unit[] = [];
+    const builtThingsByKind:
+    {
+      [key: string]: BuiltThingsWithKind<any, any>;
+    } = {};
 
     const toBuild = this.buildQueue.slice(0, this.capacity);
     this.buildQueue = this.buildQueue.slice(this.capacity);
@@ -119,44 +112,27 @@ export class Manufactory
     while (toBuild.length > 0)
     {
       const thingData = toBuild.pop();
-      switch (thingData.kind)
+      const kind = thingData.kind;
+
+      const built = kind.buildFromTemplate(thingData.template, this);
+
+      if (!builtThingsByKind[kind.key])
       {
-        case "unit":
+        builtThingsByKind[kind.key] =
         {
-          const unitTemplate = <UnitTemplate> thingData.template;
-
-          const unit = Unit.fromTemplate(
-          {
-            template: unitTemplate,
-            race: this.star.localRace,
-            attributeMultiplier: this.unitStatsModifier,
-            healthMultiplier: this.unitHealthModifier,
-          });
-
-          units.push(unit);
-          this.owner.addUnit(unit);
-          break;
-        }
-        case "item":
-        {
-          const itemTemplate = <ItemTemplate> thingData.template;
-          const item = new Item(itemTemplate);
-          this.owner.addItem(item);
-          item.modifiers.handleConstruct();
-          break;
-        }
+          kind: kind,
+          builtThings: [],
+        };
       }
+      builtThingsByKind[kind.key].builtThings.push(built);
     }
 
-    if (units.length > 0)
+    for (const key in builtThingsByKind)
     {
-      const fleets = Fleet.createFleetsFromUnits(units, this.owner);
-      fleets.forEach(fleet =>
-      {
-        this.owner.addFleet(fleet);
-        this.star.addFleet(fleet);
-      });
-      units.forEach(unit => unit.mapLevelModifiers.handleConstruct());
+      const kind = builtThingsByKind[key].kind;
+      const builtThings = builtThingsByKind[key].builtThings;
+
+      kind.afterBuilt(builtThings, this);
     }
 
     if (!this.owner.isAi)
@@ -230,12 +206,12 @@ export class Manufactory
   }
   public serialize(): ManufactorySaveData
   {
-    const buildQueue = this.buildQueue.map(thingData =>
+    const buildQueueData = this.buildQueue.map(manufacturableThingWithKind =>
     {
       return(
       {
-        kind: thingData.kind,
-        templateType: thingData.template.type,
+        kind: manufacturableThingWithKind.kind.key,
+        templateType: manufacturableThingWithKind.template,
       });
     });
 
@@ -245,7 +221,7 @@ export class Manufactory
       maxCapacity: this.maxCapacity,
       unitStatsModifier: this.unitStatsModifier,
       unitHealthModifier: this.unitHealthModifier,
-      buildQueue: buildQueue,
+      buildQueue: buildQueueData,
     });
   }
 }

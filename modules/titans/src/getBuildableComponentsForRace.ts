@@ -1,11 +1,11 @@
-import { TitanComponent } from "./TitanComponent";
+import { TitanComponentTemplate } from "./TitanComponentTemplate";
 import { RaceTemplate } from "core/src/templateinterfaces/RaceTemplate";
 import { activeModuleData } from "core/src/app/activeModuleData";
 import { getDefaultBuildableNonCoreThingsForRace } from "core/src/production/getDefaultBuildableNonCoreThingsForRace";
 import { NonCoreModuleData } from "./nonCoreModuleData";
 
 
-export function getBuildableComponentsForRace(race: RaceTemplate): TitanComponent[]
+export function getBuildableComponentsForRace(race: RaceTemplate): TitanComponentTemplate[]
 {
   const titansModuleData = (activeModuleData.nonCoreData.titans as NonCoreModuleData);
 

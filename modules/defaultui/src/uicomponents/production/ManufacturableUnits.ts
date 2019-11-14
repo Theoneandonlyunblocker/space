@@ -10,6 +10,7 @@ import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 import {ManufactoryUpgradeButton} from "./ManufactoryUpgradeButton";
 import {ManufacturableThingsList} from "./ManufacturableThingsList";
 import { Player } from "core/src/player/Player";
+import { coreManufacturableThingKinds } from "core/src/production/coreManufacturableThingKinds";
 
 
 export interface PropTypes extends React.Props<any>
@@ -55,7 +56,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
   addUnitToBuildQueue(template: UnitTemplate)
   {
     const manufactory: Manufactory = this.props.selectedLocation.manufactory;
-    manufactory.addThingToQueue(template, "unit");
+    manufactory.addThingToQueue(template, coreManufacturableThingKinds.unit);
     this.props.triggerParentUpdate();
   }
 

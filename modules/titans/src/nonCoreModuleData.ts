@@ -1,14 +1,14 @@
-import { TitanComponent } from "./TitanComponent";
+import { TitanComponentTemplate } from "./TitanComponentTemplate";
 import { TemplateCollection } from "core/src/templateinterfaces/TemplateCollection";
 import { ModuleData } from "core/src/modules/ModuleData";
 
 
 export type NonCoreModuleData =
 {
-  titanComponents: TemplateCollection<TitanComponent>;
+  titanComponents: TemplateCollection<TitanComponentTemplate>;
   getBuildableTitanComponentsForRace:
   {
-    [raceKey: string]: () => TitanComponent[];
+    [raceKey: string]: () => TitanComponentTemplate[];
   };
 };
 
@@ -28,7 +28,7 @@ export function copyNonCoreModuleData(): NonCoreModuleData
 
 export function addTitanComponentsToModuleData(
   moduleData: ModuleData,
-  componentsToAdd: TemplateCollection<TitanComponent>,
+  componentsToAdd: TemplateCollection<TitanComponentTemplate>,
 ): void
 {
   const existingComponents = (moduleData.nonCoreData.titans as NonCoreModuleData).titanComponents;
