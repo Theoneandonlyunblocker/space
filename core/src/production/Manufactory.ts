@@ -211,7 +211,7 @@ export class Manufactory
       return(
       {
         kind: manufacturableThingWithKind.kind.key,
-        templateType: manufacturableThingWithKind.template,
+        templateType: manufacturableThingWithKind.template.type,
       });
     });
 

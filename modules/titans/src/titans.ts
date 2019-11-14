@@ -41,7 +41,7 @@ export const titans: GameModule =
     const customModuleData = copyNonCoreModuleData();
     moduleData.nonCoreData.titans = customModuleData;
     moduleData.templateCollectionsWithUnlockables.titanComponents = customModuleData.titanComponents;
-    moduleData.manufacturableThingKinds.titanComponents =
+    moduleData.manufacturableThingKinds.titanComponent =
     {
       kind: manufacturableThingKinds.titanComponent,
       templates: customModuleData.titanComponents,
