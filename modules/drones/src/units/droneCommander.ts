@@ -41,7 +41,6 @@ export const droneCommander: UnitTemplate =
   {
     [moneyResource.type]: 200,
   },
-  kind: "unit",
 
   maxHealthLevel: 0.75,
   maxMovePoints: 1,

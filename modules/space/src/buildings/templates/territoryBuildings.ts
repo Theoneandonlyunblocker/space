@@ -16,7 +16,6 @@ export const sectorCommand: TerritoryBuildingTemplate =
 {
   type: "sectorCommand",
   isTerritoryBuilding: true,
-  kind: "building",
   families: [territoryBuildings, sectorCommandFamily],
   get displayName()
   {
@@ -49,7 +48,6 @@ export const sectorCommand1: TerritoryBuildingTemplate =
 {
   type: "sectorCommand1",
   isTerritoryBuilding: true,
-  kind: "building",
   families: [territoryBuildings, sectorCommandFamily],
   get displayName()
   {
@@ -77,7 +75,6 @@ export const sectorCommand2: TerritoryBuildingTemplate =
 {
   type: "sectorCommand2",
   isTerritoryBuilding: true,
-  kind: "building",
   families: [territoryBuildings, sectorCommandFamily],
   get displayName()
   {
@@ -105,7 +102,6 @@ export const starBase: TerritoryBuildingTemplate =
 {
   type: "starBase",
   isTerritoryBuilding: true,
-  kind: "building",
   families: [territoryBuildings],
   get displayName()
   {

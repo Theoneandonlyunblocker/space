@@ -38,8 +38,6 @@ export const miningBarge: UnitTemplate =
   {
     [moneyResource.type]: 500,
   },
-  kind: "unit",
-
   maxHealthLevel: 1,
   maxMovePoints: 1,
   maxOffensiveBattlesPerTurn: 1,

@@ -34,7 +34,6 @@ export const bombLauncher1: ItemTemplate =
   {
     [moneyResource.type]: 100,
   },
-  kind: "item",
 
   slot: "high",
   ability: bombAttack,
@@ -60,7 +59,6 @@ export const bombLauncher2: ItemTemplate =
   {
     [moneyResource.type]: 200,
   },
-  kind: "item",
 
   attributeAdjustments:
   {
@@ -91,7 +89,6 @@ export const bombLauncher3: ItemTemplate =
   {
     [moneyResource.type]: 300,
   },
-  kind: "item",
 
   attributeAdjustments:
   {
@@ -123,7 +120,6 @@ export const afterBurner1: ItemTemplate =
   {
     [moneyResource.type]: 100,
   },
-  kind: "item",
 
   attributeAdjustments:
   {
@@ -154,7 +150,6 @@ export const afterBurner2: ItemTemplate =
   {
     [moneyResource.type]: 200,
   },
-  kind: "item",
 
   attributeAdjustments:
   {
@@ -184,7 +179,6 @@ export const afterBurner3: ItemTemplate =
   {
     [moneyResource.type]: 300,
   },
-  kind: "item",
 
   attributeAdjustments:
   {
@@ -215,7 +209,6 @@ export const shieldPlating1: ItemTemplate =
   {
     [moneyResource.type]: 100,
   },
-  kind: "item",
 
   attributeAdjustments:
   {
@@ -245,7 +238,6 @@ export const shieldPlating2: ItemTemplate =
   {
     [moneyResource.type]: 200,
   },
-  kind: "item",
 
   attributeAdjustments:
   {
@@ -275,7 +267,6 @@ export const shieldPlating3: ItemTemplate =
   {
     [moneyResource.type]: 300,
   },
-  kind: "item",
 
   attributeAdjustments:
   {

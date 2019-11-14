@@ -16,7 +16,6 @@ export interface BuildingTemplate extends UnlockableThing
   description: string;
 
   buildCost: Resources;
-  kind: "building";
 
   families: BuildingFamily[];
   maxBuiltAtLocation?: number;

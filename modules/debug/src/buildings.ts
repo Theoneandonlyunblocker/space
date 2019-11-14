@@ -8,7 +8,6 @@ import { localize } from "../localization/localize";
 export const thePyramids: BuildingTemplate =
 {
   type: "thePyramids",
-  kind: "building",
   get displayName()
   {
     return localize("thePyramids_displayName").toString();
@@ -116,7 +115,6 @@ export const thePyramids: BuildingTemplate =
 export const nationalEpic: BuildingTemplate =
 {
   type: "nationalEpic",
-  kind: "building",
   get displayName()
   {
     return localize("nationalEpic_displayName").toString();

@@ -41,7 +41,6 @@ export const battleCruiser: UnitTemplate =
 {
   [moneyResource.type]: 200,
 },
-  kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "bc"),
   maxHealthLevel: 1,
   maxMovePoints: 1,

@@ -46,7 +46,6 @@ export const shieldBoat: UnitTemplate =
 {
   [moneyResource.type]: 200,
 },
-  kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "sh"),
   maxHealthLevel: 0.9,
   maxMovePoints: 1,

@@ -40,7 +40,6 @@ export const droneSwarm: UnitTemplate =
   {
     [moneyResource.type]: 150,
   },
-  kind: "unit",
 
   maxHealthLevel: 0.6,
   maxMovePoints: 1,

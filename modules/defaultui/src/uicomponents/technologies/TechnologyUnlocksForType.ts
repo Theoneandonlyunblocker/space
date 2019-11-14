@@ -1,27 +1,21 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
-
-import {UnlockableThing, UnlockableThingKind} from "core/src/templateinterfaces/UnlockableThing";
+import {UnlockableThing} from "core/src/templateinterfaces/UnlockableThing";
 
 import {TechnologyUnlock} from "./TechnologyUnlock";
+import { getExtendables } from "../../extendables";
 
 
 
-function localizeUnlockableThingKind(unlockableThingKind: UnlockableThingKind)
+function localizeUnlockableThingKind(unlockableThingKind: string)
 {
-  switch (unlockableThingKind)
-  {
-    case "building": return localize("techUnlock_buildings").toString();
-    case "item":     return localize("techUnlock_items").toString();
-    case "unit":     return localize("techUnlock_units").toString();
-  }
+  return getExtendables().unlockableThingKinds[unlockableThingKind].displayName;
 }
 
 export interface PropTypes extends React.Props<any>
 {
-  kind: UnlockableThingKind;
+  kind: string;
   unlocks: UnlockableThing[];
 }
 

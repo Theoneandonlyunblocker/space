@@ -40,7 +40,6 @@ export const scout: UnitTemplate =
 {
   [moneyResource.type]: 200,
 },
-  kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "sc"),
   maxHealthLevel: 0.6,
   maxMovePoints: 2,

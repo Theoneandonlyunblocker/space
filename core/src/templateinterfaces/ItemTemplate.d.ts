@@ -21,7 +21,6 @@ export interface ItemTemplate extends ManufacturableThing
   slot: string;
 
   buildCost: Resources;
-  kind: "item";
 
   ability?: AbilityTemplate;
   passiveSkill?: PassiveSkillTemplate;

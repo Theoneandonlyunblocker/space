@@ -45,7 +45,6 @@ export const commandShip: UnitTemplate =
 {
   [moneyResource.type]: 300,
 },
-  kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "sh"),
   maxHealthLevel: 0.7,
   maxMovePoints: 1,

@@ -10,7 +10,6 @@ import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityD
 export const commercialPort: BuildingTemplate =
 {
   type: "commercialPort",
-  kind: "building",
   get displayName()
   {
     return localize("commercialPort_displayName").toString();
@@ -57,7 +56,6 @@ export const commercialPort: BuildingTemplate =
 export const deepSpaceRadar: BuildingTemplate =
 {
   type: "deepSpaceRadar",
-  kind: "building",
   get displayName()
   {
     return localize("deepSpaceRadar_displayName").toString();
@@ -113,7 +111,6 @@ export const deepSpaceRadar: BuildingTemplate =
 export const resourceMine: BuildingTemplate =
 {
   type: "resourceMine",
-  kind: "building",
   get displayName()
   {
     return localize("resourceMine_displayName").toString();
@@ -165,7 +162,6 @@ export const resourceMine: BuildingTemplate =
 export const reserachLab: BuildingTemplate =
 {
   type: "reserachLab",
-  kind: "building",
   get displayName()
   {
     return localize("reserachLab_displayName").toString();

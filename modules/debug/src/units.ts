@@ -55,7 +55,6 @@ export const debugShip: UnitTemplate =
 {
   [moneyResource.type]: 0,
 },
-  kind: "unit",
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),
   maxHealthLevel: 1,
   maxMovePoints: 999,

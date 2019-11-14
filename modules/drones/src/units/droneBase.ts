@@ -41,7 +41,6 @@ export const droneBase: UnitTemplate =
   {
     [moneyResource.type]: 500,
   },
-  kind: "unit",
 
   maxHealthLevel: 1.0,
   maxMovePoints: 1,

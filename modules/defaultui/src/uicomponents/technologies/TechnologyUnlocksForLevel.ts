@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {UnlockableThing, UnlockableThingKind} from "core/src/templateinterfaces/UnlockableThing";
+import {UnlockableThingWithKind, UnlockableThing} from "core/src/templateinterfaces/UnlockableThing";
 
 import {localize} from "../../../localization/localize";
 
@@ -11,7 +11,7 @@ import {TechnologyUnlocksForType} from "./TechnologyUnlocksForType";
 export interface PropTypes extends React.Props<any>
 {
   level: number;
-  unlocks: UnlockableThing[];
+  unlocks: UnlockableThingWithKind[];
 }
 
 interface StateType
@@ -30,17 +30,19 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
 
   public render()
   {
-    const unlockableThingsByType: {[kind in UnlockableThingKind]?: UnlockableThing[]} = {};
-
-    this.props.unlocks.forEach(unlockableThing =>
+    const unlocksByKind = this.props.unlocks.reduce((unlocksByKind, unlockableThingWithKind) =>
     {
-      if (!unlockableThingsByType[unlockableThing.kind])
+      const {unlockableThing, unlockableThingKind} = unlockableThingWithKind;
+
+      if (!unlocksByKind[unlockableThingKind])
       {
-        unlockableThingsByType[unlockableThing.kind] = [];
+        unlocksByKind[unlockableThingKind] = [];
       }
 
-      unlockableThingsByType[unlockableThing.kind]!.push(unlockableThing);
-    });
+      unlocksByKind[unlockableThingKind].push(unlockableThing);
+
+      return unlocksByKind;
+    }, <{[unlockableThingKind: string]: UnlockableThing[]}>{});
 
     return(
       ReactDOMElements.div(
@@ -57,7 +59,7 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
         {
           className: "technology-unlocks-for-level-list",
         },
-          Object.keys(unlockableThingsByType).sort().map(kind =>
+          Object.keys(unlocksByKind).sort().map(kind =>
           {
             return ReactDOMElements.li(
             {
@@ -66,8 +68,8 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
             },
               TechnologyUnlocksForType(
               {
-                kind: <UnlockableThingKind> kind,
-                unlocks: unlockableThingsByType[kind],
+                kind: kind,
+                unlocks: unlocksByKind[kind],
               }),
             );
           }),

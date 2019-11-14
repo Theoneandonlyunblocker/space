@@ -10,7 +10,6 @@ import { moneyResource } from "modules/money/src/moneyResource";
 export const targetingSupercomputer: TitanComponentTemplate =
 {
   type: "targetingSupercomputer",
-  kind: "item",
   get displayName()
   {
     return localize("targetingSupercomputer_displayName");

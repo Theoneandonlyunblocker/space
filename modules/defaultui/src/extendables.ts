@@ -29,6 +29,10 @@ type ManufacturableThingKindUiData<T extends ManufacturableThing> =
     triggerParentUpdate: () => void;
   }) => React.ReactElement<any>;
 };
+type UnlockableThingUiData =
+{
+  displayName: string;
+};
 
 export type Extendables =
 {
@@ -36,11 +40,16 @@ export type Extendables =
   {
     [key: string]: ManufacturableThingKindUiData<any>;
   };
+  unlockableThingKinds:
+  {
+    [key: string]: UnlockableThingUiData;
+  };
 };
 export function copyExtendables(): Extendables
 {
   return {
     manufacturableThingKinds: {...extendables.manufacturableThingKinds},
+    unlockableThingKinds: {...extendables.unlockableThingKinds},
   };
 }
 export function getExtendables(): Extendables
@@ -73,4 +82,28 @@ const extendables: Extendables =
       render: props => ManufacturableItems(props),
     },
   },
+  unlockableThingKinds:
+  {
+    building:
+    {
+      get displayName()
+      {
+        return localize("techUnlock_buildings").toString();
+      },
+    },
+    item:
+    {
+      get displayName()
+      {
+        return localize("techUnlock_items").toString();
+      },
+    },
+    unit:
+    {
+      get displayName()
+      {
+        return localize("techUnlock_units").toString();
+      },
+    },
+  }
 };

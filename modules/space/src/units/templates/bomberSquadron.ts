@@ -41,7 +41,6 @@ export const bomberSquadron: UnitTemplate =
 {
   [moneyResource.type]: 200,
 },
-  kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "fb"),
   maxHealthLevel: 0.5,
   maxMovePoints: 1,

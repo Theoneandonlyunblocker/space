@@ -22,7 +22,6 @@ export const debugItem: ItemTemplate =
   {
     [moneyResource.type]: 0,
   },
-  kind: "item",
 
   slot: "high",
   availabilityData:

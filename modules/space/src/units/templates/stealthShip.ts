@@ -44,7 +44,6 @@ export const stealthShip: UnitTemplate =
   [moneyResource.type]: 500,
   [testResource2.type]: 1,
 },
-  kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "sc"),
   maxHealthLevel: 0.6,
   maxMovePoints: 1,

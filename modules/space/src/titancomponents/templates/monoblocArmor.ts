@@ -10,7 +10,6 @@ import { moneyResource } from "modules/money/src/moneyResource";
 export const monoblocArmor: TitanComponentTemplate =
 {
   type: "monoblocArmor",
-  kind: "item",
   get displayName()
   {
     return localize("monoblocArmor_displayName");

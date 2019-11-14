@@ -19,7 +19,6 @@ const localTitanForgeEffect: PartialMapLevelModifier<StarModifierAdjustments & T
 export const titanForge: BuildingTemplate =
 {
   type: "titanForge",
-  kind: "building",
   get displayName()
   {
     return localize("titanForge_displayName");

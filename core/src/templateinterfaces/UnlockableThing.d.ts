@@ -1,15 +1,16 @@
 import {TechRequirement} from "./TechRequirement";
 
 
-export type UnlockableThingKind = "unit" | "item" | "building";
-
 export interface UnlockableThing
 {
   type: string;
   displayName: string;
   description: string;
 
-  kind: UnlockableThingKind;
-
   techRequirements?: TechRequirement[];
+}
+export interface UnlockableThingWithKind
+{
+  unlockableThing: UnlockableThing;
+  unlockableThingKind: string;
 }

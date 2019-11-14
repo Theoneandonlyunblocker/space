@@ -34,7 +34,7 @@ import
   deepMerge,
   getRandomProperty,
 } from "../generic/utility";
-import { UnlockableThing } from "../templateinterfaces/UnlockableThing";
+import { UnlockableThing, UnlockableThingWithKind } from "../templateinterfaces/UnlockableThing";
 
 import {CoreUIScenes, NonCoreUIScenes} from "../ui/CoreUIScenes";
 import { CustomModifierAdjustments } from "../maplevelmodifiers/CustomModifierAdjustments";
@@ -77,7 +77,7 @@ interface Templates
 
 export type TechnologyUnlocksByLevel =
 {
-  [techLevel: number]: UnlockableThing[];
+  [techLevel: number]: UnlockableThingWithKind[];
 };
 type TechnologyUnlocksByLevelByTech =
 {
@@ -128,12 +128,18 @@ export class ModuleData
   public defaultLanguage: Language;
   public uiScenes: Partial<CoreUIScenes> & NonCoreUIScenes = {};
   public readonly mapLevelModifierAdjustments: CustomModifierAdjustments = new CustomModifierAdjustments();
-  public readonly templateCollectionsWithUnlockables: TemplateCollection<UnlockableThing>[] =
-  [
-    this.templates.Buildings,
-    this.templates.Items,
-    this.templates.Units,
-  ];
+  public readonly templateCollectionsWithUnlockables:
+  {
+    [key: string]: TemplateCollection<UnlockableThing>;
+    building: TemplateCollection<BuildingTemplate>;
+    item: TemplateCollection<ItemTemplate>;
+    unit: TemplateCollection<UnitTemplate>;
+  } =
+  {
+    building: this.templates.Buildings,
+    item: this.templates.Items,
+    unit: this.templates.Units,
+  };
   public readonly manufacturableThingKinds:
   {
     [key: string]: ManufacturableThingKindWithTemplates<any, any>;
@@ -310,38 +316,42 @@ export class ModuleData
   {
     const technologyUnlocks: TechnologyUnlocksByLevelByTech = {};
 
-    const allUnlockableThings = this.templateCollectionsWithUnlockables.map(templateCollection =>
+    const allUnlockableThings = Object.keys(this.templateCollectionsWithUnlockables).map(unlockableThingKindKey =>
     {
-      return Object.keys(templateCollection).map(key =>
+      const templateCollection = this.templateCollectionsWithUnlockables[unlockableThingKindKey];
+
+      return Object.keys(templateCollection).map(templateKey =>
       {
-        return templateCollection[key];
+        return {
+          unlockableThingKind: unlockableThingKindKey,
+          unlockableThing: templateCollection[templateKey],
+        };
       });
     }).reduce((allUnlockables, unlockablesOfType) =>
     {
       return allUnlockables.concat(unlockablesOfType);
     }, []);
 
-    const unlockableThingsWithTechRequirements = allUnlockableThings.filter(unlockableThing =>
+    const unlockableThingsWithTechRequirements = allUnlockableThings.filter(unlockableThingWithKind =>
     {
-      return Boolean(unlockableThing.techRequirements);
+      return Boolean(unlockableThingWithKind.unlockableThing.techRequirements);
     });
 
-    unlockableThingsWithTechRequirements.forEach(unlockableThing =>
+    unlockableThingsWithTechRequirements.forEach(unlockableThingWithKind =>
     {
-      unlockableThing.techRequirements.forEach(techRequirement =>
+      unlockableThingWithKind.unlockableThing.techRequirements.forEach(techRequirement =>
       {
         const tech = techRequirement.technology;
         if (!technologyUnlocks[tech.key])
         {
           technologyUnlocks[tech.key] = {};
         }
-
         if (!technologyUnlocks[tech.key][techRequirement.level])
         {
           technologyUnlocks[tech.key][techRequirement.level] = [];
         }
 
-        technologyUnlocks[tech.key][techRequirement.level].push(unlockableThing);
+        technologyUnlocks[tech.key][techRequirement.level].push(unlockableThingWithKind);
       });
     });
 

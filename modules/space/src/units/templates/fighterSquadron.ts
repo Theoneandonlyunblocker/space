@@ -41,7 +41,6 @@ export const fighterSquadron: UnitTemplate =
 {
   [moneyResource.type]: 100,
 },
-  kind: "unit",
   getIconSrc: getUnitIconSrc.bind(null, "fa"),
   maxHealthLevel: 0.7,
   maxMovePoints: 2,
