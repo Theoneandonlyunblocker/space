@@ -45,6 +45,7 @@ import { Name } from "../localization/Name";
 import { Resources } from "../player/PlayerResources";
 import { UnitModifiersCollection } from "../maplevelmodifiers/UnitModifiersCollection";
 import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
+import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
 
 
 type PassiveSkillsByPhase =
@@ -295,9 +296,24 @@ export class Unit
   }
   public static fromSaveData(data: UnitSaveData): Unit
   {
+    function fetchTemplate<T>(
+      templates: TemplateCollection<T>,
+      key: keyof typeof templates,
+      templatesCategoryDisplayString: string,
+    ): T
+    {
+      const template = templates[key];
+      if (!template)
+      {
+        throw new Error(`Missing ${templatesCategoryDisplayString} template '${key}'`);
+      }
+
+      return template;
+    }
+
     const unit = new Unit(
     {
-      template: activeModuleData.templates.Units[data.templateType],
+      template: fetchTemplate(activeModuleData.templates.Units, data.templateType, "unit"),
 
       id: data.id,
       name: Name.fromData(data.name),
@@ -313,11 +329,11 @@ export class Unit
 
       abilities: data.abilityTypes.map(templateType =>
       {
-        return activeModuleData.templates.Abilities[templateType];
+        return fetchTemplate(activeModuleData.templates.Abilities, templateType, "ability");
       }),
       passiveSkills: data.passiveSkillTypes.map(templateType =>
       {
-        return activeModuleData.templates.PassiveSkills[templateType];
+        return fetchTemplate(activeModuleData.templates.PassiveSkills, templateType, "passive skill");
       }),
       abilityUpgrades: data.abilityUpgrades.reduce((allUpgradeData, currentUpgradeData) =>
       {
@@ -329,7 +345,7 @@ export class Unit
         const source = allAbilitiesAndPassiveSkills[currentUpgradeData.source];
         const upgrades = currentUpgradeData.possibleUpgrades.map(templateType =>
         {
-          return allAbilitiesAndPassiveSkills[templateType];
+          return fetchTemplate(allAbilitiesAndPassiveSkills, templateType, "ability / passive skill");
         });
 
         allUpgradeData[source.type] =
