@@ -4581,6 +4581,27 @@ button.player-setup-remove-player
   }
 }
 
+.manufactory-upgrade-buttons-container
+{
+  display: flex;
+  flex-flow: row;
+  flex: 0 0 auto;
+  .horizontal-border(0px, 3px);
+  >*
+  {
+    flex: 1 1 auto;
+    margin-bottom: -1px;
+  }
+}
+
+.manufactory-upgrade-button
+{
+  .button-style-no-border;
+  +.manufactory-upgrade-button
+  {
+    border-left: 1px solid @ui-border-color1;
+  }
+}
 .manufacturable-things-list
 {
   :last-child
