@@ -35,9 +35,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
 
     return starsThatCanExpand.map(star =>
     {
-      const upgradeScore = star.manufactory ?
-        1 * star.manufactory.unitStatsModifier * star.manufactory.unitHealthModifier :
-        1;
+      const upgradeScore = 1;
 
       const upgradeCost = ExpandManufactoryCapacity.getCostForStar(star);
       const costScore = Manufactory.getBuildCost() / upgradeCost;

@@ -31,8 +31,9 @@ const unit: ManufacturableThingKind<UnitTemplate, Unit> =
     {
       template: unitTemplate,
       race: manufactory.star.localRace,
-      attributeMultiplier: manufactory.unitStatsModifier,
-      healthMultiplier: manufactory.unitHealthModifier,
+      // TODO 2019.11.15 | do something else with these?
+      attributeMultiplier: 1,
+      healthMultiplier: 1,
     });
   },
   afterBuilt: (builtUnits, manufactory) =>

@@ -1,13 +1,11 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {localize} from "../../../localization/localize";
 import {Manufactory} from "core/src/production/Manufactory";
 import {Star} from "core/src/map/Star";
 import {ItemTemplate} from "core/src/templateinterfaces/ItemTemplate";
 import {ManufacturableThing} from "core/src/templateinterfaces/ManufacturableThing";
 
-import {ManufactoryUpgradeButton} from "./ManufactoryUpgradeButton";
 import {ManufacturableThingsList} from "./ManufacturableThingsList";
 import { Player } from "core/src/player/Player";
 import { coreManufacturableThingKinds } from "core/src/production/coreManufacturableThingKinds";
@@ -86,21 +84,6 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
       {
         className: "manufacturable-items",
       },
-        (!this.props.selectedLocation || !this.props.selectedLocation.manufactory) ? null : ReactDOMElements.div(
-        {
-          className: "manufactory-upgrade-buttons-container",
-        },
-          ManufactoryUpgradeButton(
-          {
-            money: this.props.player.resources.money,
-            upgradeCost: 0,
-            actionString: localize("upgradeItems").toString(),
-            currentLevel: 0,
-            maxLevel: 0,
-            levelDecimalPoints: 0,
-            onClick: this.upgradeItems,
-          }),
-        ),
         ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,

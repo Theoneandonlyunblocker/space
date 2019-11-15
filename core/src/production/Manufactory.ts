@@ -33,8 +33,6 @@ export class Manufactory
   public buildQueue: ManufacturableThingWithKind<any, any>[] = [];
   public capacity: number;
   public maxCapacity: number;
-  public unitStatsModifier: number = 1;
-  public unitHealthModifier: number = 1;
   public get owner(): Player
   {
     return this.star.owner;
@@ -62,8 +60,6 @@ export class Manufactory
   {
     this.capacity = data.capacity;
     this.maxCapacity = data.maxCapacity;
-    this.unitStatsModifier = data.unitStatsModifier;
-    this.unitHealthModifier = data.unitHealthModifier;
 
     this.buildQueue = data.buildQueue.map(savedThing =>
     {
@@ -188,22 +184,6 @@ export class Manufactory
     this.owner.removeResources({money: this.getCapacityUpgradeCost()});
     this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
   }
-  public getUnitModifierUpgradeCost(): number
-  {
-    const totalUpgrades = (this.unitStatsModifier + this.unitHealthModifier - 2) / 0.1;
-
-    return Math.round((totalUpgrades + 1) * 100);
-  }
-  public upgradeUnitStatsModifier(amount: number): void
-  {
-    this.owner.removeResources({money: this.getUnitModifierUpgradeCost()});
-    this.unitStatsModifier += amount;
-  }
-  public upgradeUnitHealthModifier(amount: number): void
-  {
-    this.owner.removeResources({money: this.getUnitModifierUpgradeCost()});
-    this.unitHealthModifier += amount;
-  }
   public serialize(): ManufactorySaveData
   {
     const buildQueueData = this.buildQueue.map(manufacturableThingWithKind =>
@@ -219,8 +199,6 @@ export class Manufactory
     {
       capacity: this.capacity,
       maxCapacity: this.maxCapacity,
-      unitStatsModifier: this.unitStatsModifier,
-      unitHealthModifier: this.unitHealthModifier,
       buildQueue: buildQueueData,
     });
   }

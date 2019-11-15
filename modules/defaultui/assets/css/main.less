@@ -4507,11 +4507,6 @@ button.player-setup-remove-player
   margin-left: 2em;
   margin-top: 23px;
 
-  .manufactory-upgrade-button
-  {
-    border: none;
-  }
-
   .build-queue-header
   {
     flex: 0 0 auto;
@@ -4583,36 +4578,6 @@ button.player-setup-remove-player
   {
     flex: 1 1 auto;
     overflow-y: scroll;
-  }
-}
-
-.manufactory-upgrade-buttons-container
-{
-  display: flex;
-  flex-flow: row;
-  flex: 0 0 auto;
-  .horizontal-border(0px, 3px);
-  >*
-  {
-    flex: 1 1 auto;
-    margin-bottom: -1px;
-  }
-}
-
-.manufactory-upgrade-button
-{
-  .button-style-no-border;
-  +.manufactory-upgrade-button
-  {
-    border-left: 1px solid @ui-border-color1;
-  }
-}
-
-.manufacturable-units
-{
-  .manufactory-upgrade-button
-  {
-    flex: 1 1 50%;
   }
 }
 

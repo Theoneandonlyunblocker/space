@@ -239,7 +239,6 @@ export class Unit
     const attributeMultiplier = props.attributeMultiplier !== undefined ? props.attributeMultiplier : 1;
     const healthMultiplier = props.healthMultiplier !== undefined ? props.healthMultiplier : 1;
 
-
     const baseAttributeValue = activeModuleData.ruleSet.units.baseAttributeValue * attributeMultiplier;
     const attributeVariance = activeModuleData.ruleSet.units.attributeVariance;
     const baseHealthValue = activeModuleData.ruleSet.units.baseHealthValue * healthMultiplier;
