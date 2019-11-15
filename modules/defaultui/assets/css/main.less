@@ -144,6 +144,7 @@ ul, ol
 
 .button-style-no-border(@gradient-direction: to bottom)
 {
+  border: none;
   .double-gradient(
     @gradient-direction,
     lighten(@bg-color2, 4%),
@@ -4567,6 +4568,8 @@ button.player-setup-remove-player
   overflow-y: hidden;
   display: flex;
   flex-flow: column;
+  border: 1px solid @ui-border-color1;
+  border-top-width: 0;
 
   >*
   {
@@ -4580,8 +4583,6 @@ button.player-setup-remove-player
   {
     flex: 1 1 auto;
     overflow-y: scroll;
-    border: 1px solid @ui-border-color1;
-    border-top-width: 0;
   }
 }
 
@@ -4601,12 +4602,9 @@ button.player-setup-remove-player
 .manufactory-upgrade-button
 {
   .button-style-no-border;
-  border: none;
-  border-left: 1px solid @ui-border-color1;
-  border-right: 1px solid @ui-border-color1;
   +.manufactory-upgrade-button
   {
-    margin-left: -1px;
+    border-left: 1px solid @ui-border-color1;
   }
 }
 
