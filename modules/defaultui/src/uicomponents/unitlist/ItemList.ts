@@ -140,7 +140,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
 
 
     return(
-      ReactDOMElements.div({className: "item-list fixed-table-parent"},
+      ReactDOMElements.div({className: "item-list"},
         List(
         {
           listItems: rows,

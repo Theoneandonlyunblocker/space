@@ -145,7 +145,7 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
     }
 
     return(
-      ReactDOMElements.div({className: "save-list fixed-table-parent"},
+      ReactDOMElements.div({className: "save-list"},
         List(
         {
           listItems: rows,

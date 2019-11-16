@@ -88,7 +88,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
     ];
 
     return(
-      ReactDOMElements.div({className: "buildable-item-list buildable-building-list fixed-table-parent"},
+      ReactDOMElements.div({className: "buildable-building-list"},
         List(
         {
           listItems: rows,

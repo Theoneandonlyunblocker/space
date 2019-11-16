@@ -140,7 +140,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
     ];
 
     return(
-      ReactDOMElements.div({className: "unit-list fixed-table-parent"},
+      ReactDOMElements.div({className: "unit-list"},
         List(
         {
           listItems: rows,

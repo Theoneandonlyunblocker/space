@@ -138,7 +138,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
             }),
           );
         }),
-        ReactDOMElements.div({className: "diplomacy-status-list fixed-table-parent"},
+        ReactDOMElements.div({className: "diplomacy-status-list"},
           List(
           {
             listItems: rows,

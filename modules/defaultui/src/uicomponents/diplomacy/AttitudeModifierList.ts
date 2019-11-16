@@ -101,7 +101,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
     return(
       ReactDOMElements.div(
       {
-        className: "attitude-modifier-list auto-position fixed-table-parent",
+        className: "attitude-modifier-list auto-position",
         ref: this.ownDOMNode,
       },
         List(

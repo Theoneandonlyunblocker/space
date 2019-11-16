@@ -1,7 +1,6 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {eventManager} from "core/src/app/eventManager";
 import
 {
   shallowCopy,
@@ -38,12 +37,10 @@ interface StateType
 
 export class ListComponent extends React.Component<PropTypes<any>, StateType>
 {
-  sortedItems: ListItem<any>[];
   public state: StateType;
 
-  private readonly ownDOMNode = React.createRef<HTMLDivElement>();
-  private readonly headerElement = React.createRef<HTMLTableSectionElement>();
-  private readonly innerElement = React.createRef<HTMLDivElement>();
+  private sortedItems: ListItem<any>[];
+  private readonly ownDOMNode = React.createRef<HTMLTableElement>();
 
   constructor(props: PropTypes<any>)
   {
@@ -53,46 +50,9 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
 
     this.bindMethods();
   }
-  private bindMethods()
+
+  public componentDidMount()
   {
-    this.getNewSortingOrder = this.getNewSortingOrder.bind(this);
-    this.handleScroll = this.handleScroll.bind(this);
-    this.makeInitialSortingOrder = this.makeInitialSortingOrder.bind(this);
-    this.shiftSelection = this.shiftSelection.bind(this);
-    this.handleSelectRow = this.handleSelectRow.bind(this);
-    this.setDesiredHeight = this.setDesiredHeight.bind(this);
-    this.handleSelectColumn = this.handleSelectColumn.bind(this);
-    this.getSortedItems = this.getSortedItems.bind(this);
-  }
-
-  getInitialStateTODO(): StateType
-  {
-    const initialColumn: ListColumn<any> = this.props.initialSortOrder ?
-      this.props.initialSortOrder[0] :
-      this.props.initialColumns[0];
-
-    const sortingOrderForColumnKey: {[columnKey: string]: ListOrder} = {};
-    this.props.initialColumns.forEach(column =>
-    {
-      sortingOrderForColumnKey[column.key] = column.defaultOrder;
-    });
-
-    return(
-    {
-      columns: this.props.initialColumns,
-      selected: null, // set in componentDidMount
-      selectedColumn: initialColumn,
-      columnSortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn),
-      sortingOrderForColumnKey: sortingOrderForColumnKey,
-    });
-  }
-
-  componentDidMount()
-  {
-    window.addEventListener("resize", this.setDesiredHeight, false);
-    // TODO 2017.07.04 | do this some other way
-    eventManager.addEventListener("popupResized", this.setDesiredHeight);
-
     if (this.props.keyboardSelect)
     {
       this.ownDOMNode.current.addEventListener("keydown", (event: KeyboardEvent) =>
@@ -130,61 +90,153 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
       this.setState({selected: this.sortedItems[0]});
     }
   }
-
-  componentWillUnmount()
+  public render()
   {
-    window.removeEventListener("resize", this.setDesiredHeight);
-    eventManager.removeEventListener("popupResized", this.setDesiredHeight);
-  }
+    const columns: React.ReactHTMLElement<any>[] = [];
+    const headerLabels: React.ReactHTMLElement<any>[] = [];
 
-  componentDidUpdate()
-  {
-    this.setDesiredHeight();
-  }
-
-  // TODO 2019.08.21 | this is a bit off i think
-  setDesiredHeight()
-  {
-    const ownNode = this.ownDOMNode.current;
-    const innerNode = this.innerElement.current;
-
-    ownNode.style.height = "auto";
-    innerNode.style.height = "auto";
-
-    const parentHeight = ownNode.parentElement.getBoundingClientRect().height;
-    const ownRect = ownNode.getBoundingClientRect();
-    const ownHeight = ownRect.height;
-
-
-    const strippedOwnHeight = parseInt(getComputedStyle(ownNode).height);
-    const extraHeight = ownHeight - strippedOwnHeight;
-
-    let desiredHeight = parentHeight - extraHeight;
-
-    const maxHeight = window.innerHeight - ownRect.top - extraHeight;
-
-    desiredHeight = Math.min(desiredHeight, maxHeight);
-
-    ownNode.style.height = "" + desiredHeight + "px";
-    innerNode.style.height = "" + desiredHeight + "px";
-  }
-
-  handleScroll(e: React.UIEvent<HTMLDivElement>)
-  {
-    // scrolls header to match list contents
-    const target = e.currentTarget;
-    const header = this.headerElement.current;
-    const titles = <NodeListOf<HTMLElement>><unknown> header.getElementsByClassName("fixed-table-th-inner");
-
-    const marginString = "-" + target.scrollLeft + "px";
-
-    for (let i = 0; i < titles.length; i++)
+    this.state.columns.forEach(column =>
     {
-      titles[i].style.marginLeft = marginString;
-    }
+      let colProps: React.HTMLProps<HTMLTableColElement> =
+      {
+        key: column.key,
+      };
+
+      if (this.props.colStylingFN)
+      {
+        colProps = this.props.colStylingFN(column, colProps);
+      }
+
+      columns.push(
+        ReactDOMElements.col(colProps),
+      );
+
+      let sortStatus: string = "";
+
+      if (!column.notSortable)
+      {
+        sortStatus = " sortable";
+      }
+
+      if (this.state.selectedColumn.key === column.key)
+      {
+        sortStatus += " sorted-" + this.state.sortingOrderForColumnKey[column.key];
+      }
+      else if (!column.notSortable)
+      {
+        sortStatus += " unsorted";
+      }
+
+      headerLabels.push(
+        ReactDOMElements.th(
+        {
+          key: column.key,
+          className: "fixed-table-header",
+        },
+          ReactDOMElements.div(
+          {
+            className: `fixed-table-th-content fixed-table-th-content-${column.key} ${sortStatus}`,
+            title: column.title || colProps.title || null,
+            onMouseDown: this.handleSelectColumn.bind(null, column),
+            onTouchStart: this.handleSelectColumn.bind(null, column),
+          },
+            column.label,
+          ),
+        ),
+      );
+    });
+
+    this.sortedItems = this.getSortedItems();
+
+    const rows: React.ReactElement<any>[] = [];
+
+    this.sortedItems.forEach((item, i) =>
+    {
+      rows.push(React.cloneElement(item.content,
+      {
+        key: item.key,
+        activeColumns: this.state.columns,
+        handleClick: this.handleSelectRow.bind(null, item),
+      }));
+
+      if (this.props.addSpacer && i < this.sortedItems.length - 1)
+      {
+        rows.push(ReactDOMElements.tr(
+        {
+          className: "list-spacer",
+          key: "spacer" + i,
+        },
+          ReactDOMElements.td(
+          {
+            colSpan: 20,
+          },
+            null,
+          ),
+        ));
+      }
+    });
+
+
+
+    return(
+      ReactDOMElements.div(
+      {
+        className: "react-list-wrapper",
+      },
+        ReactDOMElements.table(
+        {
+          className: "react-list",
+          ref: this.ownDOMNode,
+          tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1,
+        },
+          ReactDOMElements.colgroup(null,
+            columns,
+          ),
+          this.props.noHeader ? null :
+            ReactDOMElements.thead(null,
+              ReactDOMElements.tr(null,
+                headerLabels,
+              ),
+            ),
+          ReactDOMElements.tbody(null,
+            rows,
+          ),
+        ),
+      )
+    );
   }
 
-  makeInitialSortingOrder(columns: ListColumn<any>[], initialColumn: ListColumn<any>)
+  private bindMethods()
+  {
+    this.getNewSortingOrder = this.getNewSortingOrder.bind(this);
+    this.makeInitialSortingOrder = this.makeInitialSortingOrder.bind(this);
+    this.shiftSelection = this.shiftSelection.bind(this);
+    this.handleSelectRow = this.handleSelectRow.bind(this);
+    this.handleSelectColumn = this.handleSelectColumn.bind(this);
+    this.getSortedItems = this.getSortedItems.bind(this);
+  }
+  private getInitialStateTODO(): StateType
+  {
+    const initialColumn: ListColumn<any> = this.props.initialSortOrder ?
+      this.props.initialSortOrder[0] :
+      this.props.initialColumns[0];
+
+    const sortingOrderForColumnKey: {[columnKey: string]: ListOrder} = {};
+    this.props.initialColumns.forEach(column =>
+    {
+      sortingOrderForColumnKey[column.key] = column.defaultOrder;
+    });
+
+    return(
+    {
+      columns: this.props.initialColumns,
+      selected: null, // set in componentDidMount
+      selectedColumn: initialColumn,
+      columnSortingOrder: this.makeInitialSortingOrder(this.props.initialColumns, initialColumn),
+      sortingOrderForColumnKey: sortingOrderForColumnKey,
+    });
+  }
+  private makeInitialSortingOrder(columns: ListColumn<any>[], initialColumn: ListColumn<any>)
   {
     let initialSortOrder = this.props.initialSortOrder;
     if (!initialSortOrder || initialSortOrder.length < 1)
@@ -206,8 +258,7 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
 
     return order;
   }
-
-  getNewSortingOrder(newColumn: ListColumn<any>)
+  private getNewSortingOrder(newColumn: ListColumn<any>)
   {
     const order = this.state.columnSortingOrder.slice(0);
     const current = order.indexOf(newColumn);
@@ -221,21 +272,6 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
 
     return order;
   }
-  private static reverseListOrder(order: ListOrder): ListOrder
-  {
-    if (order === "asc")
-    {
-      return "desc";
-    }
-    else if (order === "desc")
-    {
-      return "asc";
-    }
-    else
-    {
-      throw new Error(`Invalid list order: ${order}`);
-    }
-  }
   private getSortingOrderForColumnKeyWithColumnReversed(columnToReverse: ListColumn<any>)
   {
     const copied = shallowCopy(this.state.sortingOrderForColumnKey);
@@ -243,7 +279,7 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
 
     return copied;
   }
-  handleSelectColumn(column: ListColumn<any>)
+  private handleSelectColumn(column: ListColumn<any>)
   {
     if (column.notSortable)
     {
@@ -259,8 +295,7 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
         this.state.sortingOrderForColumnKey,
     });
   }
-
-  handleSelectRow(row: ListItem<any>)
+  private handleSelectRow(row: ListItem<any>)
   {
     if (this.props.onRowChange && row)
     {
@@ -272,7 +307,6 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
       selected: row,
     });
   }
-
   private getSortedItems(): ListItem<any>[]
   {
     const sortingFunctions:
@@ -364,8 +398,7 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
 
     return sortedItems;
   }
-
-  shiftSelection(amountToShift: number)
+  private shiftSelection(amountToShift: number)
   {
     const reverseIndexes = {};
     for (let i = 0; i < this.sortedItems.length; i++)
@@ -381,145 +414,22 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
 
     this.handleSelectRow(this.sortedItems[nextIndex]);
   }
-  render()
+
+  private static reverseListOrder(order: ListOrder): ListOrder
   {
-    const columns: React.ReactHTMLElement<any>[] = [];
-    const headerLabels: React.ReactHTMLElement<any>[] = [];
-
-    this.state.columns.forEach(column =>
+    if (order === "asc")
     {
-      let colProps: React.HTMLProps<HTMLTableColElement> =
-      {
-        key: column.key,
-      };
-
-      if (this.props.colStylingFN)
-      {
-        colProps = this.props.colStylingFN(column, colProps);
-      }
-
-      columns.push(
-        ReactDOMElements.col(colProps),
-      );
-
-      let sortStatus: string = "";
-
-      if (!column.notSortable)
-      {
-        sortStatus = " sortable";
-      }
-
-      if (this.state.selectedColumn.key === column.key)
-      {
-        sortStatus += " sorted-" + this.state.sortingOrderForColumnKey[column.key];
-      }
-      else if (!column.notSortable)
-      {
-        sortStatus += " unsorted";
-      }
-
-      headerLabels.push(
-        ReactDOMElements.th(
-          {
-            key: column.key,
-          },
-          ReactDOMElements.div(
-            {
-              className: "fixed-table-th-inner",
-            },
-            ReactDOMElements.div(
-            {
-              className: "fixed-table-th-content" + sortStatus,
-              title: column.title || colProps.title || null,
-              onMouseDown: this.handleSelectColumn.bind(null, column),
-              onTouchStart: this.handleSelectColumn.bind(null, column),
-            },
-              column.label,
-            ),
-          ),
-        ),
-      );
-    });
-
-    this.sortedItems = this.getSortedItems();
-
-    const rows: React.ReactElement<any>[] = [];
-
-    this.sortedItems.forEach((item, i) =>
+      return "desc";
+    }
+    else if (order === "desc")
     {
-      rows.push(React.cloneElement(item.content,
-      {
-        key: item.key,
-        activeColumns: this.state.columns,
-        handleClick: this.handleSelectRow.bind(null, item),
-      }));
-
-      if (this.props.addSpacer && i < this.sortedItems.length - 1)
-      {
-        rows.push(ReactDOMElements.tr(
-        {
-          className: "list-spacer",
-          key: "spacer" + i,
-        },
-          ReactDOMElements.td(
-          {
-            colSpan: 20,
-          },
-            null,
-          ),
-        ));
-      }
-    });
-
-
-
-    return(
-      ReactDOMElements.div(
-        {
-          className: "fixed-table-container" + (this.props.noHeader ? " no-header" : ""),
-          tabIndex: isFinite(this.props.tabIndex) ? this.props.tabIndex : 1,
-          ref: this.ownDOMNode,
-        },
-        ReactDOMElements.div({className: "fixed-table-header-background"}),
-        ReactDOMElements.div(
-        {
-          className: "fixed-table-container-inner",
-          ref: this.innerElement,
-          onScroll: this.handleScroll,
-        },
-          ReactDOMElements.table(
-          {
-            className: "react-list",
-          },
-            ReactDOMElements.colgroup(null,
-              columns,
-            ),
-
-            ReactDOMElements.thead(
-            {
-              className: "fixed-table-actual-header",
-              ref: this.headerElement,
-            },
-              ReactDOMElements.tr(null,
-                headerLabels,
-              ),
-            ),
-
-            ReactDOMElements.thead({className: "fixed-table-hidden-header"},
-              ReactDOMElements.tr(null,
-                headerLabels,
-              ),
-            ),
-
-            ReactDOMElements.tbody(null,
-              rows,
-            ),
-          ),
-        ),
-      )
-    );
+      return "asc";
+    }
+    else
+    {
+      throw new Error(`Invalid list order: ${order}`);
+    }
   }
-
 }
 
 const factory: any = React.createFactory(ListComponent);

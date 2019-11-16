@@ -216,7 +216,7 @@ ul, ol
 .base-fancy-table-style(@padding, @min-width)
 {
   position: relative;
-  .fixed-table-header-background
+  .fixed-table-header
   {
     .horizontal-border(0px, 3px);
   }
@@ -1730,19 +1730,7 @@ ul, ol
   .sort-icon
   {
     font-weight: 100;
-    position: absolute;
-    right: 5px;
-  }
-
-  .sortable
-  {
-    //position: relative;
-    padding-right: 20px;
-
-    @media(max-width: @maxWidth)
-    {
-      padding-right: 2px;
-    }
+    margin-left: 5px;
   }
 
   @media(min-width: @maxWidth)
@@ -1765,6 +1753,13 @@ ul, ol
   }
 }
 
+.react-list-wrapper
+{
+  position: relative;
+  overflow: auto;
+  width: 100%;
+  height: 100%;
+}
 .react-list
 {
   width: 100%;
@@ -1778,49 +1773,8 @@ ul, ol
   }
 }
 
-.fixed-table-parent
+.fixed-table-header
 {
-  overflow-y: hidden;
-}
-
-.fixed-table-container
-{
-  position: relative;
-  // height is set dynamically in react component to equal parent height
-  width: 100%;
-  padding-top: 1.5em;
-  overflow-x: hidden;
-  overflow-y: hidden;
-}
-
-.no-header.fixed-table-container
-{
-  padding-top: 0;
-
-  .fixed-table-header-background
-  {
-    display: none;
-  }
-
-  thead
-  {
-    display: none;
-  }
-}
-
-.fixed-table-container-inner
-{
-  overflow-x: auto;
-  overflow-y: auto;
-  height: 100%;
-}
-
-.fixed-table-header-background
-{
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
   height: 1.5em;
   .double-gradient(
     to bottom,
@@ -1829,27 +1783,10 @@ ul, ol
   );
 }
 
-.fixed-table-hidden-header
+.fixed-table-header
 {
-  pointer-events: none;
-
-  .fixed-table-th-inner
-  {
-    position: static;
-    visibility: hidden;
-    height: 0;
-    overflow-y: hidden;
-  }
-}
-
-.fixed-table-actual-header
-{
-  .fixed-table-th-inner
-  {
-    position: absolute;
-    top: 0;
-    line-height: 1.5em;
-  }
+  position: sticky;
+  top: 0;
 }
 
 .unit-list
@@ -1858,7 +1795,7 @@ ul, ol
   overflow-y: hidden;
   border-collapse: collapse;
 
-  .fixed-table-header-background
+  .fixed-table-header
   {
     .horizontal-border(0px, 3px);
   }
@@ -1962,7 +1899,7 @@ ul, ol
 
     .default-border(0 0 0 1px);
 
-    .fixed-table-header-background
+    .fixed-table-header
     {
       .horizontal-border(0px, 3px);
     }
@@ -2990,7 +2927,7 @@ ul, ol
   height: 32px;
 }
 
-.buildable-item-list
+.buildable-building-list
 {
   .sort-icons(500px);
   .fancy-table-style-without-splitters(8px, 70px);
@@ -3013,7 +2950,7 @@ ul, ol
 
   .item-list
   {
-    .sort-icons(1200px);
+    .sort-icons(800px);
     border-top: 1px solid @ui-border-color1;
     overflow-y: hidden;
   }
@@ -3021,10 +2958,10 @@ ul, ol
   .unit-list
   {
     flex: 1 1 auto;
-    .sort-icons(1200px);
+    .sort-icons(800px);
     border: 1px solid @ui-border-color1;
 
-    .fixed-table-header-background
+    .fixed-table-header
     {
       .horizontal-border(0px, 3px);
     }
@@ -3039,10 +2976,6 @@ ul, ol
   {
     background-color: @bg-color;
 
-  }
-  table
-  {
-    margin-right: 25px;
   }
 }
 .selected-unit
@@ -3066,7 +2999,7 @@ ul, ol
   flex: 1 1 15em;
   background-color: @bg-color;
 
-  .fixed-table-header-background
+  .fixed-table-header
   {
     .horizontal-border(0px, 3px);
   }
@@ -3342,7 +3275,7 @@ ul, ol
 
   .sort-icons(400px);
 
-  .fixed-table-header-background
+  .fixed-table-header
   {
     .horizontal-border(0px, 3px);
   }
@@ -3629,11 +3562,6 @@ ul, ol
 {
   .hover-only-fancy-table-style-without-splitters(2px, 0);
   .full-border(3px);
-
-  .fixed-table-container-inner
-  {
-    max-height: 20em;
-  }
 
   .save-list-item
   {

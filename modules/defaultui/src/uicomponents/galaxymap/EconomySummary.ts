@@ -73,7 +73,7 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
     ];
 
     return(
-      ReactDOMElements.div({className: "economy-summary-list fixed-table-parent"},
+      ReactDOMElements.div({className: "economy-summary-list"},
         List(
         {
           listItems: rows,
