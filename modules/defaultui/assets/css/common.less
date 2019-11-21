@@ -65,3 +65,28 @@
     -webkit-box-orient: vertical;
   }
 }
+
+.line-left-of-element(@width, @style, @color)
+{
+  display: flex;
+  align-items: center;
+
+  &:before
+  {
+    content: '';
+    flex: 1;
+    border-bottom: @width @style @color;
+  }
+}
+.line-right-of-element(@width, @style, @color)
+{
+  display: flex;
+  align-items: center;
+
+  &:after
+  {
+    content: '';
+    flex: 1;
+    border-bottom: @width @style @color;
+  }
+}

@@ -439,11 +439,11 @@ export function loadDom(): Promise<void>
     });
   }
 }
-function probabilityDistributionsAreWeighted<T>(distributions: ProbabilityDistributions<T>): distributions is WeightedProbabilityDistribution<T>[]
+export function probabilityDistributionsAreWeighted<T>(distributions: ProbabilityDistributions<T>): distributions is WeightedProbabilityDistribution<T>[]
 {
   return Boolean((<WeightedProbabilityDistribution<T>[]> distributions)[0].weight);
 }
-function probabilityItemsAreTerminal<T>(items: ProbabilityItems<T>): items is T[]
+export function probabilityItemsAreTerminal<T>(items: ProbabilityItems<T>): items is T[]
 {
   const firstItem = (<NonTerminalProbabilityDistribution<T>> items[0]);
 

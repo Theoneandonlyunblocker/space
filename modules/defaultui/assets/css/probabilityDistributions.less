@@ -1,0 +1,66 @@
+@import (once) "./common.less";
+
+
+.probability-distribution-content
+{
+  padding: 2px;
+}
+
+.flat-probability-distribution-items
+{
+  margin: 4px 0;
+}
+.flat-probability-distribution-item
+{
+  display: flex;
+  flex-flow: row;
+  align-items: center;
+}
+.flat-probability-distribution-content
+{
+  border: 1px solid white;
+}
+.flat-probability-distribution-item-chance
+{
+  width: 46px;
+  .line-left-of-element(1px, solid, white);
+}
+
+@weighted-probability-color: #BBB;
+
+.weighted-probability-distribution-items
+{
+  position: relative;
+  display: grid;
+  grid-template-columns: repeat(3, max-content);
+  grid-row-gap: 4px;
+  margin: 4px;
+
+  &:after
+  {
+    content: '';
+    right: 0;
+    border-left: 1px dashed @weighted-probability-color;
+    grid-row-start: 2;
+    grid-row-end: -2;
+    grid-column: 3;
+  }
+}
+
+.weighted-probability-distribution-content
+{
+  border: 1px dashed @weighted-probability-color;
+  grid-column: 1;
+  grid-row: span 2;
+}
+.weighted-probability-distribution-item-chance
+{
+  color: @weighted-probability-color;
+  font-size: 0.66em;
+  .line-left-of-element(1px, dashed, @weighted-probability-color);
+  .line-right-of-element(1px, dashed, @weighted-probability-color);
+  width: 46px;
+  grid-column: 2;
+  grid-row: span 2;
+}
+

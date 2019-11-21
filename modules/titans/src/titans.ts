@@ -38,12 +38,14 @@ export const titans: GameModule =
   {
     const customModuleData = copyNonCoreModuleData();
     moduleData.nonCoreData.titans = customModuleData;
+
     moduleData.templateCollectionsWithUnlockables.titanComponents = customModuleData.titanComponents;
     moduleData.manufacturableThingKinds.titanComponent =
     {
       kind: manufacturableThingKinds.titanComponent,
       templates: customModuleData.titanComponents,
     };
+    moduleData.templateCollectionsWithUnlockables.titanChassis = customModuleData.titanChassis;
 
     registerMapLevelModifiers(moduleData);
 

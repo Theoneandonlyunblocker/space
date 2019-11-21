@@ -4,11 +4,13 @@ import * as ReactDOMElements from "react-dom-factories";
 import { Star } from "core/src/map/Star";
 import { TitanComponentTemplate } from "../TitanComponentTemplate";
 import {ManufacturableThingsList} from "modules/defaultui/src/uicomponents/production/ManufacturableThingsList";
+import {DefaultWindow} from "modules/defaultui/src/uicomponents/windows/DefaultWindow";
 import { Player } from "core/src/player/Player";
 import { localize } from "modules/titans/localization/localize";
 import { useTitanAssemblingCapacity } from "./useTitanAssemblingCapacity";
 import { titanForge } from "../buildings/templates/titanForge";
 import { manufacturableThingKinds } from "../manufacturableThingKinds";
+import { TitanAssemblingOverview } from "./TitanAssemblingOverview";
 
 
 // tslint:disable-next-line:no-any
@@ -24,6 +26,19 @@ export interface PropTypes extends React.Props<any>
 const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const assemblingCapacity = useTitanAssemblingCapacity(props.selectedLocation);
+
+  const [assemblyWindowIsOpen, setAssemblyWindowOpenness] = React.useState<boolean>(false);
+  function toggleAssemblyWindow(): void
+  {
+    if (assemblyWindowIsOpen)
+    {
+      setAssemblyWindowOpenness(false);
+    }
+    else
+    {
+      setAssemblyWindowOpenness(true);
+    }
+  }
 
   function addComponentToBuildQueue(component: TitanComponentTemplate): void
   {
@@ -45,6 +60,10 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
       return ReactDOMElements.button(
       {
         ...baseProps,
+        onClick: () =>
+        {
+          toggleAssemblyWindow();
+        }
       },
         localize("assemble"),
       );
@@ -73,20 +92,32 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
       {
         className: "production-list-header",
       },
-        ManufacturableThingsList(
+        ReactDOMElements.div(
         {
-          manufacturableThings: props.manufacturableThings,
-          onClick: (props.canManufacture ? <any>addComponentToBuildQueue : null),
-          showCost: true,
-          player: props.player,
-        }),
+          className: "titan-manufacturing-overview-action",
+        },
+          makeActionButton(),
+          !assemblyWindowIsOpen ? null :
+            DefaultWindow(
+            {
+              title: localize("assembleTitan"),
+              handleClose: () => setAssemblyWindowOpenness(false),
+            },
+              TitanAssemblingOverview(
+              {
+                player: props.player,
+                manufactory: props.selectedLocation.manufactory,
+              }),
+            ),
+        ),
       ),
-      ReactDOMElements.div(
+      ManufacturableThingsList(
       {
-        className: "titan-manufacturing-overview-action",
-      },
-        makeActionButton(),
-      ),
+        manufacturableThings: props.manufacturableThings,
+        onClick: (props.canManufacture ? addComponentToBuildQueue : null),
+        showCost: true,
+        player: props.player,
+      }),
     )
   );
 };

@@ -108,6 +108,16 @@ export const debugShip: UnitTemplate =
         {weight: 0.25, probabilityItems: [snipeSpeed]},
       ],
     },
+    {
+      flatProbability: 0.6,
+      probabilityItems:
+      [
+        {weight: 0.25, probabilityItems: [snipeAttack]},
+        {weight: 0.25, probabilityItems: [snipeDefence]},
+        {weight: 0.25, probabilityItems: [snipeIntelligence]},
+        {weight: 0.25, probabilityItems: [snipeSpeed]},
+      ],
+    },
   ],
   possiblePassiveSkills:
   [
