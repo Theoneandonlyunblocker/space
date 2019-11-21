@@ -3,19 +3,17 @@ import {Extendables as DefaultUiExtendables} from "modules/defaultui/src/extenda
 import {GameModule} from "core/src/modules/GameModule";
 import
 {
-  getUniqueArrayKeys, loadCss,
+  loadCss,
 } from "core/src/generic/utility";
 
 import * as moduleInfo from "../moduleInfo.json";
 import { localize } from "../localization/localize";
 import { TitanManufacturingOverview } from "./uicomponents/TitanManufacturingOverview";
-import { copyNonCoreModuleData, NonCoreModuleData } from "./nonCoreModuleData";
+import { copyNonCoreModuleData } from "./nonCoreModuleData";
 import { registerMapLevelModifiers } from "./mapLevelModifiers";
 import { GameModuleInitializationPhase } from "core/src/modules/GameModuleInitializationPhase";
 import { cssSources } from "../assets/assets";
-import { getBuildableComponentsForRace } from "./getBuildableComponentsForRace";
-import { getAlwaysAvailableBuildableThings } from "core/src/production/getAlwaysAvailableBuildableThings";
-import { activeModuleData } from "core/src/app/activeModuleData";
+import {  getBuildableComponents } from "./getBuildableComponents";
 import { buildingTemplates } from "./buildings/buildingTemplates";
 import { manufacturableThingKinds } from "./manufacturableThingKinds.js";
 
@@ -58,27 +56,7 @@ export const titans: GameModule =
       {
         return localize("manufactureTitansButton");
       },
-      getManufacturableThings: manufactory =>
-      {
-        const alwaysAvailableComponents = getAlwaysAvailableBuildableThings((activeModuleData.nonCoreData.titans as NonCoreModuleData).titanComponents);
-        const ownerComponents = getBuildableComponentsForRace(manufactory.owner.race);
-        const localComponents = getBuildableComponentsForRace(manufactory.star.localRace);
-
-        const allComponents = [
-          ...alwaysAvailableComponents,
-          ...ownerComponents,
-          ...localComponents,
-        ];
-        const uniqueComponents = getUniqueArrayKeys(allComponents, component => component.type);
-
-        const manufacturableComponents = uniqueComponents.filter(component =>
-        {
-          return !component.techRequirements ||
-            manufactory.owner.meetsTechRequirements(component.techRequirements);
-        });
-
-        return manufacturableComponents;
-      },
+      getManufacturableThings: manufactory => getBuildableComponents(manufactory),
       render: props => TitanManufacturingOverview(props),
     };
   },
