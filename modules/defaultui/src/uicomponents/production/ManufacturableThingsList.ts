@@ -7,10 +7,10 @@ import {ManufacturableThingsListItem} from "./ManufacturableThingsListItem";
 import { Player } from "core/src/player/Player";
 
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes<T extends ManufacturableThing> extends React.Props<any>
 {
-  manufacturableThings: ManufacturableThing[];
-  onClick?: (toManufacture: ManufacturableThing, parentIndex?: number) => void;
+  manufacturableThings: T[];
+  onClick?: (toManufacture: T, parentIndex?: number) => void;
   showCost: boolean;
   player: Player | null;
 }
@@ -19,19 +19,19 @@ interface StateType
 {
 }
 
-export class ManufacturableThingsListComponent extends React.PureComponent<PropTypes, StateType>
+export class ManufacturableThingsListComponent<T extends ManufacturableThing> extends React.PureComponent<PropTypes<T>, StateType>
 {
   public displayName = "ManufacturableThingsList";
   public state: StateType;
 
-  constructor(props: PropTypes)
+  constructor(props: PropTypes<T>)
   {
     super(props);
   }
 
   render()
   {
-    const manufacturableThings: ManufacturableThing[] = this.props.manufacturableThings;
+    const manufacturableThings: T[] = this.props.manufacturableThings;
 
     const keyByTemplateType:
     {
@@ -54,7 +54,7 @@ export class ManufacturableThingsListComponent extends React.PureComponent<PropT
         key: template.type + keyByTemplateType[template.type]++,
         template: manufacturableThings[i],
         parentIndex: i,
-        onClick: this.props.onClick,
+        onClick: <any>this.props.onClick,
         showCost: this.props.showCost,
         player: this.props.player,
       });
@@ -71,4 +71,9 @@ export class ManufacturableThingsListComponent extends React.PureComponent<PropT
   }
 }
 
-export const ManufacturableThingsList: React.Factory<PropTypes> = React.createFactory(ManufacturableThingsListComponent);
+const factory = React.createFactory(ManufacturableThingsListComponent);
+
+export function ManufacturableThingsList<T extends ManufacturableThing>(props?: React.Attributes & PropTypes<T>, ...children: React.ReactNode[]): React.ReactElement<PropTypes<T>>
+{
+  return <any>factory(<any>props, ...children);
+}
