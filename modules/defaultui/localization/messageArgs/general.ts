@@ -19,5 +19,6 @@ export type General =
   displayName: [];
   ability: [];
   type: [];
+  cost: [];
   listItemSeparator: [];
 };

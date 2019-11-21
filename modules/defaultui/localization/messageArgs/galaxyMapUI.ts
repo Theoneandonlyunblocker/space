@@ -14,8 +14,6 @@ export type GalaxyMapUI =
   mapMode: [];
   constructBuilding: [];
   upgradeBuilding: [];
-  buildingCost: [];
-  buildingTypeName: [];
   attackTarget_action: [];
   attackTargetTooltip: [{enemyName: Name; targetType: string}];
   coordinates: [string, string];

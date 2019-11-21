@@ -11,8 +11,6 @@ export const galaxyMapUI =
   mapMode: "Map mode",
   constructBuilding: "construct",
   upgradeBuilding: "upgrade",
-  buildingCost: "Cost",
-  buildingTypeName: "Name",
   attackTarget_action: "attack",
   attackTargetTooltip: "Attack {enemyName, possessiveName} {targetType}",
   coordinates: "x: {0}, y: {1}",

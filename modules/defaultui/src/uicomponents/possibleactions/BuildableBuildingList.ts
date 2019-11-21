@@ -75,12 +75,12 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
     const columns: ListColumn<BuildableBuildingProps>[] =
     [
       {
-        label: localize("buildingTypeName").toString(),
+        label: localize("displayName").toString(),
         key: "typeName",
         defaultOrder: "asc",
       },
       {
-        label: localize("buildingCost").toString(),
+        label: localize("cost").toString(),
         key: "buildCost",
         defaultOrder: "desc",
       },
