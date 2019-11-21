@@ -65,6 +65,12 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
       {
         className: "manufacturable-units",
       },
+        ReactDOMElements.div(
+        {
+          className: "production-list-header",
+        },
+          // TODO 2019.11.17 | show modifiers affecting unit stats here
+        ),
         ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,

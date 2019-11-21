@@ -71,7 +71,7 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
     },
       ReactDOMElements.div(
       {
-        className: "titan-manufacturing-overview-components-list",
+        className: "production-list-header",
       },
         ManufacturableThingsList(
         {

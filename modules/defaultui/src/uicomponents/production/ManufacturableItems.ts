@@ -84,6 +84,12 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
       {
         className: "manufacturable-items",
       },
+        ReactDOMElements.div(
+        {
+          className: "production-list-header",
+        },
+          // TODO 2019.11.17 | do something here
+        ),
         ManufacturableThingsList(
         {
           manufacturableThings: this.props.manufacturableThings,

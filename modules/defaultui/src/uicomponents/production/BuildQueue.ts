@@ -64,7 +64,7 @@ export class BuildQueueComponent extends React.Component<PropTypes, StateType>
       },
         ReactDOMElements.div(
         {
-          className: "manufactory-upgrade-buttons-container",
+          className: "production-list-header",
         },
           ManufactoryUpgradeButton(
           {
