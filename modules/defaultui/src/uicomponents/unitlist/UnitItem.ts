@@ -17,7 +17,7 @@ export interface PropTypes<T extends ItemTemplate | Item> extends React.Props<an
   item: T;
   slot: string;
 
-  isDraggable: boolean;
+  isDraggable?: boolean;
   onDragEnd?: (dropSuccessful?: boolean) => void;
   onDragStart?: (item: T) => void;
   dragPositionerProps?: DragPositionerProps;

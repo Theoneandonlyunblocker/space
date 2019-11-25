@@ -10,14 +10,14 @@ import { ItemTemplate } from "core/src/templateinterfaces/ItemTemplate";
 export interface PropTypes<T extends ItemTemplate | Item> extends React.Props<any>
 {
   item: T;
-  onMouseUp: (index: number) => void;
   slot: string;
   index: number;
-  currentDragItem: T;
 
-  isDraggable: boolean;
-  onDragStart: (item: T) => void;
-  onDragEnd: (dropSuccessful?: boolean) => void;
+  isDraggable?: boolean;
+  currentDragItem?: T;
+  onDragStart?: (item: T) => void;
+  onDragEnd?: (dropSuccessful?: boolean) => void;
+  onMouseUp?: () => void;
 }
 
 interface StateType
@@ -32,20 +32,9 @@ export class UnitItemWrapperComponent<T extends ItemTemplate | Item> extends Rea
   constructor(props: PropTypes<T>)
   {
     super(props);
-
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.handleMouseUp = this.handleMouseUp.bind(this);
   }
 
-  handleMouseUp()
-  {
-    this.props.onMouseUp(this.props.index);
-  }
-
-  render()
+  public render()
   {
     const wrapperProps: React.HTMLAttributes<HTMLDivElement> =
     {
@@ -56,7 +45,7 @@ export class UnitItemWrapperComponent<T extends ItemTemplate | Item> extends Rea
     // the component won't accept the first drop properly
     if (this.props.onMouseUp)
     {
-      wrapperProps.onMouseUp = this.handleMouseUp;
+      wrapperProps.onMouseUp = this.props.onMouseUp;
     }
 
     if (this.props.currentDragItem)
