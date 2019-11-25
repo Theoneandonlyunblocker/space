@@ -7,7 +7,7 @@ import {AbilityBase} from "core/src/templateinterfaces/AbilityBase";
 
 import {AbilityList} from "./AbilityList";
 import {UnitExperience} from "./UnitExperience";
-import {UnitItemGroup} from "./UnitItemGroup";
+import {UnitItems} from "./UnitItems";
 
 
 export interface PropTypes extends React.Props<any>
@@ -34,44 +34,15 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
   {
     super(props);
 
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
     this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);
   }
 
-  handleUnitUpgrade()
-  {
-    this.forceUpdate();
-  }
-  render()
+  public render()
   {
     const unit = this.props.unit;
-    if (!unit) { return(
-      ReactDOMElements.div({className: "menu-unit-info"})
-    );
-    }
-
-    const itemGroups: React.ReactElement<any>[] = [];
-    const itemsBySlot = unit.items.getItemsBySlot();
-
-    for (const slot in unit.items.itemSlots)
+    if (!unit)
     {
-      itemGroups.push(UnitItemGroup(
-      {
-        key: slot,
-
-        slotName: slot,
-        maxItems: unit.items.itemSlots[slot],
-        items: itemsBySlot[slot],
-
-        onMouseUp: this.props.onItemSlotMouseUp,
-        isDraggable: this.props.itemsAreDraggable,
-        onDragStart: this.props.onItemDragStart,
-        onDragEnd: this.props.onItemDragEnd,
-        currentDragItem: this.props.currentDragItem,
-      }));
+      return ReactDOMElements.div({className: "menu-unit-info"}, null);
     }
 
     let unitAbilities: AbilityBase[] = unit.getAllAbilities();
@@ -111,10 +82,24 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "menu-unit-info-items-wrapper",
         },
-          itemGroups,
+          UnitItems(
+          {
+            itemsBySlot: unit.items.getItemsAndEmptySlots(),
+
+            onMouseUp: this.props.onItemSlotMouseUp,
+            isDraggable: this.props.itemsAreDraggable,
+            onDragStart: this.props.onItemDragStart,
+            onDragEnd: this.props.onItemDragEnd,
+            currentDragItem: this.props.currentDragItem,
+          }),
         ),
       )
     );
+  }
+
+  private handleUnitUpgrade()
+  {
+    this.forceUpdate();
   }
 }
 
