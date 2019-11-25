@@ -14,10 +14,14 @@ export interface PropTypes<T> extends React.Props<any>
 
 const ProbabilityDistributionsListComponent = <T>(props: PropTypes<T>) =>
 {
+  // order should always be consistent across renders, so this should be enough
+  let elementKeyGenerator = 0;
+
   function renderTerminalItems(items: T[]): React.ReactNode
   {
     return ReactDOMElements.ol(
     {
+      key: elementKeyGenerator++,
       className: "probability-distribution-items terminal-probability-distribution-items",
     },
       items.sort(props.sortListItems).map(item => props.renderListItem(item)),
@@ -42,6 +46,7 @@ const ProbabilityDistributionsListComponent = <T>(props: PropTypes<T>) =>
 
     return ReactDOMElements.div(
     {
+      key: elementKeyGenerator++,
       className: "probability-distribution-items flat-probability-distribution-items",
     },
       guaranteedItems.map(item =>
@@ -52,6 +57,7 @@ const ProbabilityDistributionsListComponent = <T>(props: PropTypes<T>) =>
       {
         return ReactDOMElements.div(
         {
+          key: elementKeyGenerator++,
           className: "probability-distribution-item flat-probability-distribution-item",
         },
           ReactDOMElements.div(
@@ -82,12 +88,14 @@ const ProbabilityDistributionsListComponent = <T>(props: PropTypes<T>) =>
       return [
         ReactDOMElements.div(
         {
+          key: elementKeyGenerator++,
           className: "probability-distribution-content weighted-probability-distribution-content",
         },
           renderProbabilityItems(item.probabilityItems),
         ),
         ReactDOMElements.div(
         {
+          key: elementKeyGenerator++,
           className: "probability-distribution-item-chance weighted-probability-distribution-item-chance",
         },
           `${Math.round(relativeWeight * 100)}%`,
@@ -98,6 +106,7 @@ const ProbabilityDistributionsListComponent = <T>(props: PropTypes<T>) =>
 
     return ReactDOMElements.div(
     {
+      key: elementKeyGenerator++,
       className: "weighted-probability-distributions",
     },
       ReactDOMElements.div(
