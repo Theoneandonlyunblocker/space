@@ -14,6 +14,11 @@ const ItemIconComponent: React.FunctionComponent<PropTypes> = props =>
   const iconContainer = React.useRef<HTMLDivElement>(null);
   React.useLayoutEffect(() =>
   {
+    if (iconContainer.current.firstChild)
+    {
+      iconContainer.current.removeChild(iconContainer.current.firstChild);
+    }
+
     const renderedIcon = props.itemTemplate.getIcon();
     iconContainer.current.appendChild(renderedIcon);
   }, [props.itemTemplate]);
