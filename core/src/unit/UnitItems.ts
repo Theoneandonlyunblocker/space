@@ -39,7 +39,7 @@ export class UnitItems
   {
     return this.items;
   }
-  public getItemsBySlot(): ItemsBySlot
+  public getItemsAndEmptySlots(): ItemsBySlot
   {
     const itemsBySlot: ItemsBySlot = {};
     const allItems = this.getAllItems();
@@ -58,14 +58,21 @@ export class UnitItems
 
     for (const slot in this.itemSlots)
     {
-      itemsBySlotWithEmptySlots[slot] = itemsBySlot[slot] || [];
+      itemsBySlotWithEmptySlots[slot] = Array.from({length: this.itemSlots[slot]});
+      if (itemsBySlot[slot])
+      {
+        itemsBySlot[slot].forEach(item =>
+        {
+          itemsBySlotWithEmptySlots[slot][item.positionInUnit] = item;
+        });
+      }
     }
 
     return itemsBySlotWithEmptySlots;
   }
   public getItemsForSlot(slot: string): Item[]
   {
-    return this.getItemsBySlot()[slot];
+    return this.items.filter(item => item.template.slot === slot);
   }
   public getAmountOfAvailableItemSlots(slot: string): number
   {
@@ -108,7 +115,7 @@ export class UnitItems
   }
   public getItemAtPosition(slot: string, position: number): Item | null
   {
-    const itemsForSlot = this.getItemsBySlot()[slot];
+    const itemsForSlot = this.getItemsForSlot(slot);
     for (let i = 0; i < itemsForSlot.length; i++)
     {
       if (itemsForSlot[i].positionInUnit === position)
