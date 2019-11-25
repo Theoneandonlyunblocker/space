@@ -4,18 +4,19 @@ import * as ReactDOMElements from "react-dom-factories";
 import {Item} from "core/src/items/Item";
 
 import {UnitItem} from "./UnitItem";
+import { ItemTemplate } from "core/src/templateinterfaces/ItemTemplate";
 
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes<T extends ItemTemplate | Item> extends React.Props<any>
 {
-  item: Item;
+  item: T;
   onMouseUp: (index: number) => void;
   slot: string;
   index: number;
-  currentDragItem: Item;
+  currentDragItem: T;
 
   isDraggable: boolean;
-  onDragStart: (item: Item) => void;
+  onDragStart: (item: T) => void;
   onDragEnd: (dropSuccessful?: boolean) => void;
 }
 
@@ -23,12 +24,12 @@ interface StateType
 {
 }
 
-export class UnitItemWrapperComponent extends React.Component<PropTypes, StateType>
+export class UnitItemWrapperComponent<T extends ItemTemplate | Item> extends React.Component<PropTypes<T>, StateType>
 {
   public displayName = "UnitItemWrapper";
   public state: StateType;
 
-  constructor(props: PropTypes)
+  constructor(props: PropTypes<T>)
   {
     super(props);
 
@@ -61,7 +62,11 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
     if (this.props.currentDragItem)
     {
       const dragItem = this.props.currentDragItem;
-      if (dragItem.template.slot === this.props.slot)
+      const template = UnitItemWrapperComponent.isItemTemplate(dragItem) ?
+        dragItem :
+        (dragItem as Item).template;
+
+      if (template.slot === this.props.slot)
       {
         wrapperProps.className += " drop-target";
       }
@@ -87,6 +92,15 @@ export class UnitItemWrapperComponent extends React.Component<PropTypes, StateTy
       )
     );
   }
+
+  private static isItemTemplate(item: Item | ItemTemplate): item is ItemTemplate
+  {
+    return !Boolean((item as Item).template);
+  }
 }
 
-export const UnitItemWrapper: React.Factory<PropTypes> = React.createFactory(UnitItemWrapperComponent);
+const factory: any = React.createFactory(UnitItemWrapperComponent);
+export function UnitItemWrapper<T extends ItemTemplate | Item>(props?: React.Attributes & PropTypes<T>, ...children: React.ReactNode[]): React.ReactElement<PropTypes<T>>
+{
+  return factory(props, ...children);
+}

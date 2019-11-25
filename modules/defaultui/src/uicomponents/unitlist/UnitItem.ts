@@ -9,16 +9,17 @@ import * as debug from "core/src/app/debug";
 
 import {localize} from "../../../localization/localize";
 import { ItemIcon } from "./ItemIcon";
+import { ItemTemplate } from "core/src/templateinterfaces/ItemTemplate";
 
 
-export interface PropTypes extends React.Props<any>
+export interface PropTypes<T extends ItemTemplate | Item> extends React.Props<any>
 {
-  item: Item;
+  item: T;
   slot: string;
 
   isDraggable: boolean;
   onDragEnd?: (dropSuccessful?: boolean) => void;
-  onDragStart?: (item: Item) => void;
+  onDragStart?: (item: T) => void;
   dragPositionerProps?: DragPositionerProps;
 }
 
@@ -26,15 +27,15 @@ interface StateType
 {
 }
 
-export class UnitItemComponent extends React.Component<PropTypes, StateType>
+export class UnitItemComponent<T extends ItemTemplate | Item> extends React.Component<PropTypes<T>, StateType>
 {
   public displayName = "UnitItem";
   public state: StateType;
 
-  dragPositioner: DragPositioner<UnitItemComponent>;
+  dragPositioner: DragPositioner<UnitItemComponent<T>>;
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
-  constructor(props: PropTypes)
+  constructor(props: PropTypes<T>)
   {
     super(props);
 
@@ -59,12 +60,12 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
       });
     }
 
-    const item = this.props.item;
+    const itemTemplate = this.getItemTemplate();
 
     const divProps: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
     {
       className: "unit-item",
-      title: item.template.displayName,
+      title: itemTemplate.displayName,
       ref: this.ownDOMNode,
     };
 
@@ -84,21 +85,41 @@ export class UnitItemComponent extends React.Component<PropTypes, StateType>
 
     return(
       ReactDOMElements.div(divProps,
-        ItemIcon({itemTemplate: this.props.item.template}),
+        ItemIcon({itemTemplate: itemTemplate}),
       )
     );
   }
 
   private onDragStart(): void
   {
-    debug.log("ui", `Start item drag ´${this.props.item.template.displayName}`);
+    debug.log("ui", `Start item drag ´${this.getItemTemplate().displayName}`);
     this.props.onDragStart(this.props.item);
   }
   private onDragEnd(): void
   {
-    debug.log("ui", `End item drag ´${this.props.item.template.displayName}`);
+    debug.log("ui", `End item drag ´${this.getItemTemplate().displayName}`);
     this.props.onDragEnd();
+  }
+  private getItemTemplate(): ItemTemplate
+  {
+    if (UnitItemComponent.itemIsTemplate(this.props.item))
+    {
+      return this.props.item;
+    }
+    else
+    {
+      return (this.props.item as Item).template;
+    }
+  }
+
+  private static itemIsTemplate(item: Item | ItemTemplate): item is ItemTemplate
+  {
+    return !Boolean((item as Item).template);
   }
 }
 
-export const UnitItem: React.Factory<PropTypes> = React.createFactory(UnitItemComponent);
+const factory: any = React.createFactory(UnitItemComponent);
+export function UnitItem<T extends ItemTemplate | Item>(props?: React.Attributes & PropTypes<T>, ...children: React.ReactNode[]): React.ReactElement<PropTypes<T>>
+{
+  return factory(props, ...children);
+}
