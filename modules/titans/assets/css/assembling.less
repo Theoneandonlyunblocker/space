@@ -20,9 +20,13 @@
   border: 1px solid @ui-border-color1;
   display: flex;
   flex-flow: row;
+  padding: 2px;
 }
 .titan-chassis-info
 {
+  flex: 1 0 auto;
+  display: flex;
+
   >*
   {
     max-height: 100%;
@@ -34,4 +38,21 @@
 {
   overflow: auto;
 }
+.titan-component-selection-positioner
+{
+  position: fixed;
+  z-index: 201;
+}
+.titan-component-selection
+{
+  .full-border(2px);
+  background-color: @bg-color;
+}
+.titan-component-selection-item
+{
+  position: relative;
+  width: 32px;
+  height: 32px;
+  border: 1px solid @ui-border-color2;
+  cursor: pointer;
 }

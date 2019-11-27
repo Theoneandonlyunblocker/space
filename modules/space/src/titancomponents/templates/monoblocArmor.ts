@@ -21,7 +21,7 @@ export const monoblocArmor: TitanComponentTemplate =
   getIcon: () => getItemIcon("monoblocArmor", 1),
   techLevel: 69,
   // TODO 2019.11.10 |
-  slot: "asd",
+  slot: "low",
   buildCost:
   {
     [moneyResource.type]: 100,
