@@ -4,7 +4,7 @@ import { Manufactory } from "core/src/production/Manufactory";
 import { TitanChassisTemplate } from "../TitanChassisTemplate";
 import { Player } from "core/src/player/Player";
 import { TitanChassisList } from "./TitanChassisList";
-import { TitanChassisInfo } from "./TitanChassisInfo";
+import { TitanChassisAbilities } from "./TitanChassisAbilities";
 import { TitanAssemblyComponents } from "./TitanAssemblyComponents";
 import { getBuildableComponents } from "../getBuildableComponents";
 import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "../TitanComponentTemplate";
@@ -90,7 +90,8 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
         {
           // TODO 2019.11.19 |
           // displayedChassis: getBuildableChassis(props.manufactory),
-          displayedChassis: props.manufactory.getManufacturableUnits(),
+          allChassis: props.manufactory.getManufacturableUnits(),
+          selectedChassis: selectedChassis,
           onSelect: setSelectedChassis,
         }),
       ),
@@ -98,8 +99,15 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
       {
         className: "titan-assembling-info",
       },
+        // !selectedChassis ? null :
+        //   ReactDOMElements.div(
+        //   {
+        //     className: "menu-unit-info-name titan-chassis-info-name",
+        //   },
+        //     selectedChassis.displayName,
+        //   ),
         !selectedChassis ? null :
-          TitanChassisInfo(
+          TitanChassisAbilities(
           {
             template: selectedChassis
           }),

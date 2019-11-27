@@ -14,29 +14,34 @@
   .hover-only-fancy-table-style-without-splitters(0, 0);
   border: 1px solid @ui-border-color1;
 }
+.titan-chassis-list-item
+{
+  &.selected
+  {
+    .focused-button-style;
+  }
+}
 .titan-assembling-info
 {
   flex: 1 1 auto;
   border: 1px solid @ui-border-color1;
-  display: flex;
-  flex-flow: row;
+  border-left: 0;
+  display: grid;
+  grid-template-columns: max-content 1fr max-content;
+  grid-template-rows: max-content 1fr;
   padding: 2px;
 }
-.titan-chassis-info
-{
-  flex: 1 0 auto;
-  display: flex;
-
-  >*
-  {
-    max-height: 100%;
-    display: flex;
-    flex-flow: column;
-  }
-}
-.titan-chassis-info-abilities
+.titan-chassis-abilities
 {
   overflow: auto;
+  grid-row-start: 1;
+  grid-row-end: -1;
+  grid-column: 1;
+}
+.titan-assembly-components
+{
+  grid-column: -1;
+  grid-row: 1;
 }
 .titan-component-selection-positioner
 {

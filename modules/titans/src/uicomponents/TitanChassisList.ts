@@ -10,7 +10,8 @@ import {PropTypes as TitanChassisListItemProps, TitanChassisListItem} from "./Ti
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
-  displayedChassis: TitanChassisTemplate[];
+  allChassis: TitanChassisTemplate[];
+  selectedChassis: TitanChassisTemplate | undefined;
   onSelect?: (selectedChassis: TitanChassisTemplate) => void;
 }
 
@@ -25,13 +26,14 @@ const TitanChassisListComponent: React.FunctionComponent<PropTypes> = props =>
     }
   ];
 
-  const rows: ListItem<TitanChassisListItemProps>[] = props.displayedChassis.map(chassis =>
+  const rows: ListItem<TitanChassisListItemProps>[] = props.allChassis.map(chassis =>
   {
     return {
       key: chassis.type,
       content: TitanChassisListItem(
       {
         chassis: chassis,
+        isSelected: chassis === props.selectedChassis,
       }),
     }
   });
