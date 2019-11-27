@@ -5,7 +5,7 @@ import { TitanChassisTemplate } from "../TitanChassisTemplate";
 import { Player } from "core/src/player/Player";
 import { TitanChassisList } from "./TitanChassisList";
 import { TitanChassisAbilities } from "./TitanChassisAbilities";
-import { TitanAssemblyComponents } from "./TitanAssemblyComponents";
+import { TitanAssemblingComponents } from "./TitanAssemblingComponents";
 import { getBuildableComponents } from "../getBuildableComponents";
 import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "../TitanComponentTemplate";
 // import { getBuildableChassis } from "../getBuildableChassis";
@@ -112,7 +112,7 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
             template: selectedChassis
           }),
         !selectedChassis ? null :
-          TitanAssemblyComponents(
+          TitanAssemblingComponents(
           {
             availableComponents: getBuildableComponents(props.manufactory),
             componentsBySlot: componentsBySlot,

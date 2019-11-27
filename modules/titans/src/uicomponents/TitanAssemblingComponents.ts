@@ -26,7 +26,7 @@ export interface PropTypes extends React.Props<any>
 }
 
 
-const TitanAssemblyComponentsComponent: React.FunctionComponent<PropTypes> = props =>
+const TitanAssemblingComponentsComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const ownDomNode = React.useRef<HTMLDivElement | null>(null);
 
@@ -100,4 +100,4 @@ const TitanAssemblyComponentsComponent: React.FunctionComponent<PropTypes> = pro
   );
 };
 
-export const TitanAssemblyComponents: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanAssemblyComponentsComponent);
+export const TitanAssemblingComponents: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanAssemblingComponentsComponent);
