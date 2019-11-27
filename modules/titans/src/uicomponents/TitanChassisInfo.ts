@@ -38,8 +38,9 @@ const TitanChassisInfoComponent: React.FunctionComponent<PropTypes> = props =>
             {
               return ReactDOMElements.li(
               {
-                className: "asd",
                 key: abilityTemplate.type,
+                className: `possible-ability-list-item ${abilityTemplate.mainEffect ? "active-skill" : "passive-skill"}`,
+                title: abilityTemplate.description,
               },
                 abilityTemplate.displayName,
               );

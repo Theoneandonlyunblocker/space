@@ -8,16 +8,30 @@
   --spacegame-window-min-width: 620px;
   --spacegame-window-min-height: 250px;
 }
-
 .titan-chassis-list
 {
   flex: 0 1 auto;
   .hover-only-fancy-table-style-without-splitters(0, 0);
   border: 1px solid @ui-border-color1;
 }
-
 .titan-assembling-info
 {
   flex: 1 1 auto;
   border: 1px solid @ui-border-color1;
+  display: flex;
+  flex-flow: row;
+}
+.titan-chassis-info
+{
+  >*
+  {
+    max-height: 100%;
+    display: flex;
+    flex-flow: column;
+  }
+}
+.titan-chassis-info-abilities
+{
+  overflow: auto;
+}
 }
