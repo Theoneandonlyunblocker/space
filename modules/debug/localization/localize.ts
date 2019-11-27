@@ -8,7 +8,7 @@ const allStrings =
   ...en_strings,
 };
 
-export const localizer = new StringLocalizer<typeof allStrings>("titans");
+export const localizer = new StringLocalizer<typeof allStrings>("debug");
 localizer.setAll(allStrings, englishLanguage);
 
 export const localize = localizer.localize.bind(localizer);
