@@ -65,7 +65,7 @@ export class UnitItemComponent<T extends ItemTemplate | Item> extends React.Comp
     const divProps: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
     {
       className: "unit-item",
-      title: itemTemplate.displayName,
+      title: `${itemTemplate.displayName}\n\n${itemTemplate.description}`,
       ref: this.ownDOMNode,
     };
 
