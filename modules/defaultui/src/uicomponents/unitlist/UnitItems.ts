@@ -15,6 +15,8 @@ export interface PropTypes<T extends ItemTemplate | Item> extends React.Props<an
   onDragStart?: (item: T) => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
   onMouseUp?: (index: number) => void;
+
+  onClick?: (slot: string, index: number) => void;
 }
 
 const UnitItemsComponent = <T extends ItemTemplate | Item>(props: PropTypes<T>) =>
@@ -42,11 +44,17 @@ const UnitItemsComponent = <T extends ItemTemplate | Item>(props: PropTypes<T>) 
               item: item,
               index: i,
 
-              onMouseUp: () => props.onMouseUp(i),
+              onMouseUp: props.onMouseUp ?
+                () => props.onMouseUp(i) :
+                undefined,
               isDraggable: props.isDraggable,
               onDragStart: props.onDragStart,
               onDragEnd: props.onDragEnd,
               currentDragItem: props.currentDragItem,
+
+              onClick: props.onClick ?
+                () => props.onClick(itemSlot, i) :
+                undefined,
             });
           }),
         );

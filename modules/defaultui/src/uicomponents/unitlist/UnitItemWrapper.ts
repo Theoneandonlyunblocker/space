@@ -18,6 +18,8 @@ export interface PropTypes<T extends ItemTemplate | Item> extends React.Props<an
   onDragStart?: (item: T) => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
   onMouseUp?: () => void;
+
+  onClick?: () => void;
 }
 
 interface StateType
@@ -39,14 +41,9 @@ export class UnitItemWrapperComponent<T extends ItemTemplate | Item> extends Rea
     const wrapperProps: React.HTMLAttributes<HTMLDivElement> =
     {
       className: "unit-item-wrapper",
+      onMouseUp: this.props.onMouseUp,
+      onClick: this.props.onClick,
     };
-
-    // if this is declared inside the conditional block
-    // the component won't accept the first drop properly
-    if (this.props.onMouseUp)
-    {
-      wrapperProps.onMouseUp = this.props.onMouseUp;
-    }
 
     if (this.props.currentDragItem)
     {
