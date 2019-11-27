@@ -17,6 +17,7 @@ export interface PropTypes<T extends ItemTemplate | Item> extends React.Props<an
   onMouseUp?: (index: number) => void;
 
   onClick?: (slot: string, index: number) => void;
+  onRightClick?: (slot: string, index: number) => void;
 }
 
 const UnitItemsComponent = <T extends ItemTemplate | Item>(props: PropTypes<T>) =>
@@ -54,6 +55,9 @@ const UnitItemsComponent = <T extends ItemTemplate | Item>(props: PropTypes<T>) 
 
               onClick: props.onClick ?
                 () => props.onClick(itemSlot, i) :
+                undefined,
+              onRightClick: props.onRightClick ?
+                () => props.onRightClick(itemSlot, i) :
                 undefined,
             });
           }),

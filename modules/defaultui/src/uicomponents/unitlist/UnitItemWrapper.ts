@@ -20,6 +20,7 @@ export interface PropTypes<T extends ItemTemplate | Item> extends React.Props<an
   onMouseUp?: () => void;
 
   onClick?: () => void;
+  onRightClick?: () => void;
 }
 
 interface StateType
@@ -43,6 +44,11 @@ export class UnitItemWrapperComponent<T extends ItemTemplate | Item> extends Rea
       className: "unit-item-wrapper",
       onMouseUp: this.props.onMouseUp,
       onClick: this.props.onClick,
+      onContextMenu: !this.props.onRightClick ? null : (e) =>
+      {
+        e.preventDefault();
+        this.props.onRightClick();
+      },
     };
 
     if (this.props.currentDragItem)
