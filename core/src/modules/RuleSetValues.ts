@@ -6,6 +6,8 @@ export interface RuleSetValues
     attributeVariance: number;
     baseHealthValue: number;
     healthVariance: number;
+    minActionPoints: number;
+    maxActionPoints: number;
   };
   manufactory:
   {

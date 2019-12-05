@@ -6,6 +6,8 @@ export const ruleSet =
     attributeVariance: 1.2,
     baseHealthValue: 250,
     healthVariance: 50,
+    minActionPoints: 3,
+    maxActionPoints: 5,
   },
   manufactory:
   {
