@@ -591,12 +591,15 @@ export class Unit
   private makeUnitItems(itemSlots: {[slot: string]: number})
   {
     return new UnitItems(
-      itemSlots,
-      item =>
+    {
+      itemSlots: itemSlots,
+      onAdd: item =>
       {
         item.unit = this;
+        item.modifiers.setModifiersForUnit();
       },
-      changedItem =>
+      },
+      onUpdate: changedItem =>
       {
         if (changedItem.template.attributeAdjustments)
         {
@@ -607,7 +610,7 @@ export class Unit
           this.passiveSkillsByPhaseAreDirty = true;
         }
       },
-    );
+    });
   }
   // public addItem(item: Item, index: number)
   // {
