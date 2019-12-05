@@ -428,7 +428,10 @@ export class Unit
       defence: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.defence, baseValue, variance),
       intelligence: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.intelligence, baseValue, variance),
       speed: Unit.getRandomValueFromAttributeLevel(template.attributeLevels.speed, baseValue, variance),
-      maxActionPoints: randInt(3, 5),
+      maxActionPoints: randInt(
+        activeModuleData.ruleSet.units.minActionPoints,
+        activeModuleData.ruleSet.units.maxActionPoints,
+      ),
     });
   }
 
@@ -598,6 +601,12 @@ export class Unit
         item.unit = this;
         item.modifiers.setModifiersForUnit();
       },
+      onRemove: item =>
+      {
+        item.modifiers.clearModifiersForUnit();
+
+        item.unit = undefined;
+        item.positionInUnit = undefined;
       },
       onUpdate: changedItem =>
       {

@@ -22,17 +22,20 @@ export class UnitItems
   public itemSlots: CountBySlot;
 
   private onAdd: (item: Item) => void;
+  private onRemove: (item: Item) => void;
   private onUpdate: (changedItem: Item) => void;
 
   constructor(props:
   {
     itemSlots: CountBySlot;
     onAdd: (item: Item) => void;
+    onRemove: (item: Item) => void;
     onUpdate: (changedItem: Item) => void;
   })
   {
     this.itemSlots = props.itemSlots;
     this.onAdd = props.onAdd;
+    this.onRemove = props.onRemove;
     this.onUpdate = props.onUpdate;
   }
 
@@ -193,12 +196,9 @@ export class UnitItems
       throw new Error("");
     }
 
-    toRemove.modifiers.clearModifiersForUnit();
     this.items.splice(this.indexOf(toRemove), 1);
 
-    toRemove.unit = undefined;
-    toRemove.positionInUnit = undefined;
-
+    this.onRemove(toRemove);
     this.onUpdate(toRemove);
   }
   public destroyAllItems(): void
