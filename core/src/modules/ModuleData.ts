@@ -300,18 +300,22 @@ export class ModuleData
 
     return chosenLanguage;
   }
-  public serialize(): ModuleSaveData[]
+  public serialize(): {[moduleKey: string]: ModuleSaveData}
   {
-    return this.gameModules.map(gameModule =>
+    return Object.keys(this.gameModules).reduce((allModuleSaveData, key) =>
     {
-      return(
+      const gameModule = this.gameModules[key];
+
+      allModuleSaveData[key] =
       {
         info: gameModule.info,
         moduleSaveData: gameModule.serializeModuleSpecificData ?
           gameModule.serializeModuleSpecificData(this) :
           null,
-      });
-    });
+      };
+
+      return allModuleSaveData;
+    }, <{[moduleKey: string]: ModuleSaveData}>{});
   }
 
   private getAllTechnologyUnlocks(): TechnologyUnlocksByLevelByTech

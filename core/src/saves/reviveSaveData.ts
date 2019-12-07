@@ -127,13 +127,30 @@ const coreSaveDataRevivers: ReviversByVersion =
       saveData.moduleData = moduleDataWithoutCoreModule;
     }
   ],
+  "0.5.2":
+  [
+    function convertModuleSaveDataToObject(saveData)
+    {
+      saveData.moduleData = saveData.moduleData.reduce(
+      (
+        converted: {[moduleKey: string]: ModuleSaveData},
+        moduleData: ModuleSaveData,
+      ) =>
+      {
+        const key = moduleData.info.key;
+        converted[key] = moduleData;
+
+        return converted;
+      }, {});
+    }
+  ]
 };
 
 function reviveModuleSaveData(data: OutdatedFullSaveData): Promise<void>
 {
   return new Promise(resolve =>
   {
-    const modulesInData = data.moduleData.map(moduleData => moduleData.info);
+    const modulesInData = Object.keys(data.moduleData).map(moduleKey => data.moduleData[moduleKey].info);
 
     activeModuleStore.getModules(...modulesInData).then(gameModules =>
     {

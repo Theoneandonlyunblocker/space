@@ -12,5 +12,5 @@ export interface FullSaveData
   gameData: GameSaveData;
   idGenerators: IdGeneratorValues;
   cameraLocation: Point | undefined;
-  moduleData: ModuleSaveData[];
+  moduleData: {[moduleKey: string]: ModuleSaveData};
 }
