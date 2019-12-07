@@ -307,7 +307,9 @@ export class ModuleData
       return(
       {
         info: gameModule.info,
-        moduleSaveData: gameModule.serializeModuleSpecificData ? gameModule.serializeModuleSpecificData : null,
+        moduleSaveData: gameModule.serializeModuleSpecificData ?
+          gameModule.serializeModuleSpecificData(this) :
+          null,
       });
     });
   }
