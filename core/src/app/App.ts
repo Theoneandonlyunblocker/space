@@ -12,7 +12,7 @@ import {Player} from "../player/Player";
 import {PlayerControl} from "../interaction/PlayerControl";
 import {ReactUI} from "../ui/ReactUI";
 import {Renderer} from "../graphics/Renderer";
-import {activeModuleData} from "./activeModuleData";
+import {activeModuleData, clearActiveModuleData} from "./activeModuleData";
 import {activePlayer, setActivePlayer} from "./activePlayer";
 import {centerCameraOnPosition} from "../graphics/centerCameraOnPosition";
 import {idGenerators} from "./idGenerators";
@@ -130,39 +130,43 @@ class App
       });
     });
   }
-  public load(saveKey: string, remakeUi: boolean = true): Promise<void>
+  public async load(saveKey: string, remakeUi: boolean = true): Promise<void>
   {
-    return localForage.getItem<string>(saveKey).then(rawData =>
+    const rawSaveData = await localForage.getItem<string>(saveKey);
+    if (!rawSaveData)
     {
-      if (!rawData)
+      throw new Error(`Couldn't fetch save data with key ${saveKey}`);
+    }
+
+    const parsedSaveData: FullSaveData = JSON.parse(rawSaveData);
+    const saveData = await reviveSaveData(parsedSaveData, this.version);
+    idGenerators.setValues(saveData.idGenerators);
+
+    if (remakeUi)
+    {
+      this.destroy();
+      this.initUI();
+    }
+
+    const allSavedModuleInfo = Object.keys(saveData.moduleData).map(moduleKey => saveData.moduleData[moduleKey].info);
+    const gameModules = await activeModuleStore.getModules(...allSavedModuleInfo);
+
+    clearActiveModuleData();
+    await initializeModules(gameModules, activeModuleData);
+
       {
-        throw new Error(`Couldn't fetch save data with key ${saveKey}`);
+        return false;
       }
 
-      const parsedData: FullSaveData = JSON.parse(rawData);
 
-      return reviveSaveData(parsedData, this.version).then(data =>
-      {
-        idGenerators.setValues(data.idGenerators);
+    await this.moduleAssetLoader.loadAssetsNeededForPhase(GameModuleInitializationPhase.GameStart);
 
-        if (remakeUi)
-        {
-          this.destroy();
-          this.initUI();
-        }
+    const game = new GameLoader().deserializeGame(saveData.gameData);
+    game.gameStorageKey = saveKey;
 
-        return this.moduleAssetLoader.loadAssetsNeededForPhase(GameModuleInitializationPhase.GameStart).then(() =>
-        {
-          const game = new GameLoader().deserializeGame(data.gameData);
-          game.gameStorageKey = saveKey;
+    await this.initGame(game, saveData.cameraLocation);
 
-          return this.initGame(game, data.cameraLocation).then(() =>
-          {
-            this.reactUI.switchScene("galaxyMap");
-          });
-        });
-      });
-    });
+    this.reactUI.switchScene("galaxyMap");
   }
 
   private makeApp(): void

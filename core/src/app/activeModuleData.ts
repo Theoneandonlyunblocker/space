@@ -1,4 +1,7 @@
 import {ModuleData} from "../modules/ModuleData";
 
-
-export const activeModuleData: ModuleData = new ModuleData();
+export let activeModuleData: ModuleData = new ModuleData();
+export function clearActiveModuleData(): void
+{
+  activeModuleData = new ModuleData();
+}
