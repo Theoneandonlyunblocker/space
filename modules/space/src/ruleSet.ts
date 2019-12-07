@@ -3,7 +3,7 @@ export const ruleSet =
   units:
   {
     baseAttributeValue: 5,
-    attributeVariance: 1.2,
+    attributeVariance: 1,
     baseHealthValue: 250,
     healthVariance: 50,
     minActionPoints: 3,

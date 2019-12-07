@@ -30,4 +30,9 @@ export const targetingSupercomputer: TitanComponentTemplate =
   {
     flags: [commonAvailabilityFlags.humanLike],
   },
+  attributeAdjustments:
+  {
+    attack: {flat: 2},
+    intelligence: {flat: 1},
+  },
 };

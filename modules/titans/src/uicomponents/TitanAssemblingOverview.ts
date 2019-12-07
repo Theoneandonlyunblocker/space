@@ -8,10 +8,23 @@ import { TitanChassisAbilities } from "./TitanChassisAbilities";
 import { TitanAssemblingComponents } from "./TitanAssemblingComponents";
 import { getBuildableComponents } from "../getBuildableComponents";
 import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "../TitanComponentTemplate";
+import { DummyUnitForAssembly } from "../DummyUnitForAssembly";
+import { TitanChassisStats } from "./TitanChassisStats";
 // import { getBuildableChassis } from "../getBuildableChassis";
 
 
+type ComponentsState =
+{
+  player: Player;
+  dummyUnit: DummyUnitForAssembly;
+  slots: TitanComponentTemplatesBySlot;
+};
 export type ComponentsAction =
+{
+  type: "changeChassis";
+  chassis: TitanChassisTemplate;
+  player: Player;
+} |
 {
   type: "clearAll";
   chassis: TitanChassisTemplate;
@@ -22,33 +35,60 @@ export type ComponentsAction =
   index: number;
   component: TitanComponentTemplate;
 };
-const componentsReducer: React.Reducer<TitanComponentTemplatesBySlot,  ComponentsAction> = (prevState, action) =>
+const componentsReducer: React.Reducer<ComponentsState, ComponentsAction> = (prevState, action) =>
 {
+  const dummyUnit: DummyUnitForAssembly = prevState.dummyUnit;
+
+  function getEmptiedSlotsForChassis(chassis: TitanChassisTemplate): TitanComponentTemplatesBySlot
+  {
+    return Object.keys(chassis.itemSlots).reduce((newState, currentSlotKey) =>
+    {
+      const availableSlots = chassis.itemSlots[currentSlotKey];
+      newState[currentSlotKey] = Array.from({length: availableSlots});
+
+      return newState;
+    }, <TitanComponentTemplatesBySlot>{});
+  }
+
   switch (action.type)
   {
+    case "changeChassis":
+    {
+      return {
+        player: prevState.player,
+        dummyUnit: new DummyUnitForAssembly(action.chassis, prevState.player),
+        slots: getEmptiedSlotsForChassis(action.chassis),
+      };
+    }
     case "clearAll":
     {
-      return Object.keys(action.chassis.itemSlots).reduce((newState, currentSlotKey) =>
-      {
-        const availableSlots = action.chassis.itemSlots[currentSlotKey];
-        newState[currentSlotKey] = Array.from({length: availableSlots});
+      dummyUnit.removeAllItems();
 
-        return newState;
-      }, <TitanComponentTemplatesBySlot>{})
+      return {
+        player: prevState.player,
+        dummyUnit: prevState.dummyUnit,
+        slots: getEmptiedSlotsForChassis(action.chassis),
+      };
     }
     case "set":
     {
-      return Object.keys(prevState).reduce((newState, currentSlotKey) =>
-      {
-        newState[currentSlotKey] = [...prevState[currentSlotKey]];
+      dummyUnit.addItemAtPosition(action.component, action.index, action.slot);
 
-        if (currentSlotKey === action.slot)
+      return {
+        player: prevState.player,
+        dummyUnit: prevState.dummyUnit,
+        slots: Object.keys(prevState.slots).reduce((newSlots, currentSlotKey) =>
         {
-          newState[action.slot][action.index] = action.component;
-        }
+          newSlots[currentSlotKey] = [...prevState.slots[currentSlotKey]];
 
-        return newState;
-      }, <TitanComponentTemplatesBySlot>{});
+          if (currentSlotKey === action.slot)
+          {
+            newSlots[action.slot][action.index] = action.component;
+          }
+
+          return newSlots;
+        }, <TitanComponentTemplatesBySlot>{}),
+      }
     }
   }
 };
@@ -64,7 +104,12 @@ export interface PropTypes extends React.Props<any>
 const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const [selectedChassis, _setSelectedChassis] = React.useState<TitanChassisTemplate>(undefined);
-  const [componentsBySlot, updateComponentsBySlot] = React.useReducer(componentsReducer, {});
+  const [componentsBySlot, updateComponentsBySlot] = React.useReducer(componentsReducer,
+  {
+    player: props.player,
+    dummyUnit: undefined,
+    slots: {},
+  });
 
   function setSelectedChassis(chassis: TitanChassisTemplate): void
   {
@@ -74,6 +119,7 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
     }
 
     _setSelectedChassis(chassis);
+    updateComponentsBySlot({type: "changeChassis", chassis: chassis, player: props.player});
     updateComponentsBySlot({type: "clearAll", chassis: chassis});
   }
 
@@ -115,8 +161,14 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
           TitanAssemblingComponents(
           {
             availableComponents: getBuildableComponents(props.manufactory),
-            componentsBySlot: componentsBySlot,
+            componentsBySlot: componentsBySlot.slots,
             updateComponentsBySlot: updateComponentsBySlot,
+          }),
+        !selectedChassis ? null :
+          TitanChassisStats(
+          {
+            health: componentsBySlot.dummyUnit.getMinAndMaxPossibleHealth(),
+            attributes: componentsBySlot.dummyUnit.getMinAndMaxPossibleAttributes(),
           }),
       )
     )
