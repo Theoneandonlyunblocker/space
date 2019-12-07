@@ -1,23 +1,23 @@
 import * as React from "react";
-import { TitanAssembly } from "../TitanAssembly";
+import { TitanPrototype } from "../TitanPrototype";
 import { List } from "modules/defaultui/src/uicomponents/list/List";
 import { ListColumn } from "modules/defaultui/src/uicomponents/list/ListColumn";
 import { localize } from "modules/titans/localization/localize";
 import { localize as localizeGeneric } from "modules/defaultui/localization/localize";
-import { TitanAssemblyListItem, PropTypes as TitanAssemblyListItemProps } from "./TitanAssemblyListItem";
+import { TitanPrototypeListItem, PropTypes as TitanPrototypeListItemProps } from "./TitanPrototypeListItem";
 import { ListItem } from "modules/defaultui/src/uicomponents/list/ListItem";
 
 
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
-  assemblies: TitanAssembly[];
-  onSelect: (assembly: TitanAssembly) => void;
+  assemblies: TitanPrototype[];
+  onSelect: (assembly: TitanPrototype) => void;
 }
 
-const TitanAssemblyListComponent: React.FunctionComponent<PropTypes> = props =>
+const TitanPrototypeListComponent: React.FunctionComponent<PropTypes> = props =>
 {
-  const columns: ListColumn<TitanAssemblyListItemProps>[] =
+  const columns: ListColumn<TitanPrototypeListItemProps>[] =
   [
     {
       label: localizeGeneric("displayName").toString(),
@@ -35,13 +35,13 @@ const TitanAssemblyListComponent: React.FunctionComponent<PropTypes> = props =>
       defaultOrder: "desc"
     },
   ];
-  const rows: ListItem<TitanAssemblyListItemProps>[] = props.assemblies.map(assembly =>
+  const rows: ListItem<TitanPrototypeListItemProps>[] = props.assemblies.map(assembly =>
   {
     const key = assembly.wasAiGenerated ? "_____ai_____." : "" + assembly.key;
 
     return {
       key: key,
-      content: TitanAssemblyListItem(
+      content: TitanPrototypeListItem(
       {
         name: assembly.displayName,
         chassisName: assembly.chassis.displayName,
@@ -60,4 +60,4 @@ const TitanAssemblyListComponent: React.FunctionComponent<PropTypes> = props =>
   );
 };
 
-export const TitanAssemblyList: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanAssemblyListComponent);
+export const TitanPrototypeList: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanPrototypeListComponent);

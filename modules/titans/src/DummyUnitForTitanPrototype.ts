@@ -7,7 +7,7 @@ import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "./TitanCo
 import { Item } from "core/src/items/Item";
 
 
-export class DummyUnitForAssembly
+export class DummyUnitForTitanPrototype
 {
   private readonly lowStatsUnit: Unit;
   private readonly highStatsUnit: Unit;
@@ -16,8 +16,8 @@ export class DummyUnitForAssembly
 
   constructor(chassis: TitanChassisTemplate, player: Player)
   {
-    this.lowStatsUnit = DummyUnitForAssembly.makeUnit(chassis, player, "low");
-    this.highStatsUnit = DummyUnitForAssembly.makeUnit(chassis, player, "high");
+    this.lowStatsUnit = DummyUnitForTitanPrototype.makeUnit(chassis, player, "low");
+    this.highStatsUnit = DummyUnitForTitanPrototype.makeUnit(chassis, player, "high");
   }
 
   public getItemsAndEmptySlots(): TitanComponentTemplatesBySlot

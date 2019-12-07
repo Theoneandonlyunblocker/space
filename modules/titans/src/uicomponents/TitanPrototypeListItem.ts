@@ -14,7 +14,7 @@ export interface PropTypes extends React.Props<any>
   onClick?: () => void;
 }
 
-const TitanAssemblyListItemComponent: React.FunctionComponent<PropTypes> = props =>
+const TitanPrototypeListItemComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const rowProps: React.HTMLAttributes<HTMLTableRowElement> & React.ClassAttributes<HTMLTableRowElement> =
   {
@@ -49,4 +49,4 @@ const TitanAssemblyListItemComponent: React.FunctionComponent<PropTypes> = props
   );
 };
 
-export const TitanAssemblyListItem: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanAssemblyListItemComponent);
+export const TitanPrototypeListItem: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanPrototypeListItemComponent);

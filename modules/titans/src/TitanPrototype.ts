@@ -2,7 +2,7 @@ import { TitanChassisTemplate } from "./TitanChassisTemplate";
 import { TitanComponentTemplate } from "./TitanComponentTemplate";
 
 
-export type TitanAssembly =
+export type TitanPrototype =
 {
   wasAiGenerated: boolean;
   key: string;
