@@ -154,10 +154,28 @@ class App
     clearActiveModuleData();
     await initializeModules(gameModules, activeModuleData);
 
+    gameModules.filter(gameModule =>
+    {
+      const key = gameModule.info.key;
+
+      const canDeserializeSaveData = Boolean(gameModule.deserializeModuleSpecificData);
+      if (canDeserializeSaveData)
+      {
+        const hasSaveData = saveData.moduleData[key] && saveData.moduleData[key].moduleSaveData;
+
+        return hasSaveData;
+      }
+      else
       {
         return false;
       }
+    }).forEach(gameModule =>
+    {
+      const key = gameModule.info.key;
+      const moduleSaveData = saveData.moduleData[key].moduleSaveData;
 
+      gameModule.deserializeModuleSpecificData(activeModuleData, moduleSaveData);
+    });
 
     await this.moduleAssetLoader.loadAssetsNeededForPhase(GameModuleInitializationPhase.GameStart);
 

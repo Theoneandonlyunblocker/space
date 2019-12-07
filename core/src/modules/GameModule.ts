@@ -19,7 +19,6 @@ export interface GameModule<SaveData = any>
   assetLoaders?: Partial<ValuesByGameModuleInitializationPhase<AssetLoadingFunction[]>>;
   addToModuleData?: ((moduleData: ModuleData) => void) | ((moduleData: ModuleData) => Promise<void>);
   serializeModuleSpecificData?: (moduleData: ModuleData) => SaveData;
-  // TODO 2019.12.07 | unused?
   deserializeModuleSpecificData?: (moduleData: ModuleData, saveData: SaveData) => void;
   reviveGameData?: (saveData: any) => void;
 }
