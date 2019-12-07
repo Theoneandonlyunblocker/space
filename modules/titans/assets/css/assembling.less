@@ -31,6 +31,23 @@
   grid-template-rows: max-content 1fr;
   padding: 2px;
 }
+.titan-assembling-info-protype-details
+{
+  grid-row: 1;
+  grid-column: 2;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+}
+.titan-prototype-name
+{
+  border: 0;
+  padding: 0;
+  color: @text-color;
+  background-color: @bg-color;
+  text-align: center;
+  .prevent-text-overflow;
+}
 .titan-chassis-abilities
 {
   overflow: auto;
@@ -41,7 +58,8 @@
 .titan-assembly-components
 {
   grid-column: -1;
-  grid-row: 1;
+  grid-row-start: 1;
+  grid-row-end: -1;
 }
 .titan-component-selection-positioner
 {
@@ -64,5 +82,5 @@
 .titan-chassis-stats
 {
   grid-column: 2;
-  grid-row: 1;
+  grid-row: 2;
 }

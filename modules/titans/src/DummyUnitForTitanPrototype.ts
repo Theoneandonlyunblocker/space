@@ -5,6 +5,8 @@ import { UnitAttributesObject, UnitAttributes } from "core/src/unit/UnitAttribut
 import { Player } from "core/src/player/Player";
 import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "./TitanComponentTemplate";
 import { Item } from "core/src/items/Item";
+import { Resources } from "core/src/player/PlayerResources";
+import { sumObjectValues } from "core/src/generic/utility";
 
 
 export class DummyUnitForTitanPrototype
@@ -70,6 +72,13 @@ export class DummyUnitForTitanPrototype
       min: this.lowStatsUnit.attributes,
       max: this.highStatsUnit.attributes
     };
+  }
+  public getBuildCost(): Resources
+  {
+    return sumObjectValues(
+      this.lowStatsUnit.template.buildCost,
+      ...this.lowStatsUnit.items.getAllItems().map(item => item.template.buildCost),
+    );
   }
 
   private static makeUnit(

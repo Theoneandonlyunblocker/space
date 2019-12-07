@@ -10,6 +10,7 @@ import { getBuildableComponents } from "../getBuildableComponents";
 import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "../TitanComponentTemplate";
 import { DummyUnitForTitanPrototype } from "../DummyUnitForTitanPrototype";
 import { TitanChassisStats } from "./TitanChassisStats";
+import { ResourceCost } from "modules/defaultui/src/uicomponents/resources/ResourceCost";
 // import { getBuildableChassis } from "../getBuildableChassis";
 
 
@@ -110,6 +111,7 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
     dummyUnit: undefined,
     slots: {},
   });
+  const [prototypeName, setPrototypeName] = React.useState<string>(undefined);
 
   function setSelectedChassis(chassis: TitanChassisTemplate): void
   {
@@ -152,6 +154,30 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
         //   },
         //     selectedChassis.displayName,
         //   ),
+        !selectedChassis ? null :
+          ReactDOMElements.div(
+          {
+            className: "titan-assembling-info-protype-details",
+          },
+            ReactDOMElements.input(
+            {
+              className: "titan-prototype-name",
+              value: prototypeName,
+              onChange: (e) =>
+              {
+                setPrototypeName(e.currentTarget.value);
+              },
+            }),
+            ReactDOMElements.div(
+            {
+              className: "titan-prototype-cost",
+            },
+              ResourceCost(
+              {
+                cost: componentsBySlot.dummyUnit.getBuildCost(),
+              }),
+            ),
+          ),
         !selectedChassis ? null :
           TitanChassisAbilities(
           {
