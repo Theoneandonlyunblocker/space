@@ -7,6 +7,7 @@ import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "./TitanCo
 import { Item } from "core/src/items/Item";
 import { Resources } from "core/src/player/PlayerResources";
 import { sumObjectValues } from "core/src/generic/utility";
+import { TitanPrototype } from "./TitanPrototype";
 
 
 export class DummyUnitForTitanPrototype
@@ -79,6 +80,16 @@ export class DummyUnitForTitanPrototype
       this.lowStatsUnit.template.buildCost,
       ...this.lowStatsUnit.items.getAllItems().map(item => item.template.buildCost),
     );
+  }
+  public getPrototype(name: string): TitanPrototype
+  {
+    return {
+      wasAiGenerated: false,
+      key: name,
+      displayName: name,
+      chassis: this.lowStatsUnit.template,
+      components: this.lowStatsUnit.items.getAllItems().map(item => item.template),
+    };
   }
 
   private static makeUnit(

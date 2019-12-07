@@ -2,6 +2,7 @@ import { TitanComponentTemplate } from "./TitanComponentTemplate";
 import { TemplateCollection } from "core/src/templateinterfaces/TemplateCollection";
 import { ModuleData } from "core/src/modules/ModuleData";
 import { TitanChassisTemplate } from "./TitanChassisTemplate";
+import { TitanPrototype } from "./TitanPrototype";
 
 
 export type NonCoreModuleData =
@@ -16,23 +17,23 @@ export type NonCoreModuleData =
   {
     [raceKey: string]: () => TitanChassisTemplate[];
   };
-};
-
-const nonCoreModuleData: NonCoreModuleData =
-{
-  titanComponents: {},
-  getBuildableTitanComponentsForRace: {},
-  titanChassis: {},
-  getBuildableTitanChassisForRace: {},
+  titanPrototypesPerPlayer:
+  {
+    [playerId: number]:
+    {
+      [prototypeName: string]: TitanPrototype;
+    };
+  };
 };
 
 export function copyNonCoreModuleData(): NonCoreModuleData
 {
   return {
-    titanComponents: {...nonCoreModuleData.titanComponents},
-    getBuildableTitanComponentsForRace: {...nonCoreModuleData.getBuildableTitanComponentsForRace},
-    titanChassis: {...nonCoreModuleData.titanChassis},
-    getBuildableTitanChassisForRace: {...nonCoreModuleData.getBuildableTitanChassisForRace},
+    titanComponents: {},
+    getBuildableTitanComponentsForRace: {},
+    titanChassis: {},
+    getBuildableTitanChassisForRace: {},
+    titanPrototypesPerPlayer: {},
   };
 }
 

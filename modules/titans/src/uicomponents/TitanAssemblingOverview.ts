@@ -14,6 +14,8 @@ import { ResourceCost } from "modules/defaultui/src/uicomponents/resources/Resou
 // import { getBuildableChassis } from "../getBuildableChassis";
 import { localize as localizeGeneric } from "modules/defaultui/localization/localize";
 import { localize } from "modules/titans/localization/localize";
+import { activeModuleData } from "core/src/app/activeModuleData";
+import { NonCoreModuleData } from "../nonCoreModuleData";
 
 
 type ComponentsState =
@@ -131,7 +133,13 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
   }
   function saveCurrentPrototype(nameToSaveAs: string = prototypeName): void
   {
-    // TODO 2019.12.07 | implement
+    const prototypesPerPlayer = (activeModuleData.nonCoreData.titans as NonCoreModuleData).titanPrototypesPerPlayer;
+    if (!prototypesPerPlayer[props.player.id])
+    {
+      prototypesPerPlayer[props.player.id] = {};
+    }
+
+    prototypesPerPlayer[props.player.id][nameToSaveAs] = componentsBySlot.dummyUnit.getPrototype(nameToSaveAs);
 
     setLastSavedPrototypeName(nameToSaveAs);
   }
