@@ -28,7 +28,7 @@
   border-left: 0;
   display: grid;
   grid-template-columns: max-content 1fr max-content;
-  grid-template-rows: max-content 1fr;
+  grid-template-rows: max-content 1fr max-content;
   padding: 2px;
 }
 .titan-assembling-info-protype-details
@@ -41,6 +41,7 @@
 }
 .titan-prototype-name
 {
+  width: 100%;
   border: 0;
   padding: 0;
   color: @text-color;
@@ -83,4 +84,15 @@
 {
   grid-column: 2;
   grid-row: 2;
+}
+.titan-assembling-info-actions
+{
+  grid-column: 2;
+  grid-row: -1;
+  display: flex;
+  justify-content: space-around;
+}
+.titan-assembling-info-action
+{
+  .button-style;
 }

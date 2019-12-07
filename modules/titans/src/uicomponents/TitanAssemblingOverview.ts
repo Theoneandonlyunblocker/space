@@ -12,6 +12,8 @@ import { DummyUnitForTitanPrototype } from "../DummyUnitForTitanPrototype";
 import { TitanChassisStats } from "./TitanChassisStats";
 import { ResourceCost } from "modules/defaultui/src/uicomponents/resources/ResourceCost";
 // import { getBuildableChassis } from "../getBuildableChassis";
+import { localize as localizeGeneric } from "modules/defaultui/localization/localize";
+import { localize } from "modules/titans/localization/localize";
 
 
 type ComponentsState =
@@ -100,6 +102,7 @@ export interface PropTypes extends React.Props<any>
 {
   player: Player;
   manufactory: Manufactory;
+  editingPrototypeName: string | undefined;
 }
 
 const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = props =>
@@ -112,6 +115,7 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
     slots: {},
   });
   const [prototypeName, setPrototypeName] = React.useState<string>(undefined);
+  const [lastSavedPrototypeName, setLastSavedPrototypeName] = React.useState<string>(props.editingPrototypeName);
 
   function setSelectedChassis(chassis: TitanChassisTemplate): void
   {
@@ -121,8 +125,15 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
     }
 
     _setSelectedChassis(chassis);
+    setPrototypeName(chassis.displayName);
     updateComponentsBySlot({type: "changeChassis", chassis: chassis, player: props.player});
     updateComponentsBySlot({type: "clearAll", chassis: chassis});
+  }
+  function saveCurrentPrototype(nameToSaveAs: string = prototypeName): void
+  {
+    // TODO 2019.12.07 | implement
+
+    setLastSavedPrototypeName(nameToSaveAs);
   }
 
   return(
@@ -196,6 +207,32 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
             health: componentsBySlot.dummyUnit.getMinAndMaxPossibleHealth(),
             attributes: componentsBySlot.dummyUnit.getMinAndMaxPossibleAttributes(),
           }),
+        !selectedChassis ? null :
+          ReactDOMElements.div(
+          {
+            className: "titan-assembling-info-actions",
+          },
+            ReactDOMElements.button(
+            {
+              className: "titan-assembling-info-action",
+              onClick: () => saveCurrentPrototype(),
+            },
+              localizeGeneric("save_action").toString(),
+            ),
+            !lastSavedPrototypeName ? null :
+              ReactDOMElements.button(
+              {
+                className: "titan-assembling-info-action",
+                disabled: prototypeName !== lastSavedPrototypeName,
+                onClick: () =>
+                {
+                  setPrototypeName(prototypeName + localize("copySuffix"));
+                  saveCurrentPrototype(prototypeName + localize("copySuffix"));
+                }
+              },
+                localize("saveCopy"),
+              ),
+          ),
       )
     )
   );

@@ -4,4 +4,6 @@ export const uiStrings =
   assemble: "Assemble",
   assembleTitan: "Assemble Titan",
   chassis: "Chassis",
+  saveCopy: "Save copy",
+  copySuffix: " - Copy",
 };

@@ -107,6 +107,7 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
               {
                 player: props.player,
                 manufactory: props.selectedLocation.manufactory,
+                editingPrototypeName: undefined,
               }),
             ),
         ),
