@@ -11,8 +11,8 @@ import { ListItem } from "modules/defaultui/src/uicomponents/list/ListItem";
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
-  assemblies: TitanPrototype[];
-  onSelect: (assembly: TitanPrototype) => void;
+  prototypes: TitanPrototype[];
+  onSelect: (prototype: TitanPrototype) => void;
 }
 
 const TitanPrototypeListComponent: React.FunctionComponent<PropTypes> = props =>
@@ -35,17 +35,17 @@ const TitanPrototypeListComponent: React.FunctionComponent<PropTypes> = props =>
       defaultOrder: "desc"
     },
   ];
-  const rows: ListItem<TitanPrototypeListItemProps>[] = props.assemblies.map(assembly =>
+  const rows: ListItem<TitanPrototypeListItemProps>[] = props.prototypes.map(prototype =>
   {
-    const key = assembly.wasAiGenerated ? "_____ai_____." : "" + assembly.key;
+    const key = prototype.wasAiGenerated ? "_____ai_____." : "" + prototype.type;
 
     return {
       key: key,
       content: TitanPrototypeListItem(
       {
-        name: assembly.displayName,
-        chassisName: assembly.chassis.displayName,
-        cost: assembly.chassis.buildCost,
+        name: prototype.displayName,
+        chassisName: prototype.chassis.displayName,
+        cost: prototype.chassis.buildCost,
       }),
     };
   });

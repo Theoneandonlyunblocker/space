@@ -27,16 +27,16 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
 {
   const assemblingCapacity = useTitanAssemblingCapacity(props.selectedLocation);
 
-  const [assemblyWindowIsOpen, setAssemblyWindowOpenness] = React.useState<boolean>(false);
-  function toggleAssemblyWindow(): void
+  const [assemblingWindowIsOpen, setAssemblingWindowOpenness] = React.useState<boolean>(false);
+  function toggleAssemblingWindow(): void
   {
-    if (assemblyWindowIsOpen)
+    if (assemblingWindowIsOpen)
     {
-      setAssemblyWindowOpenness(false);
+      setAssemblingWindowOpenness(false);
     }
     else
     {
-      setAssemblyWindowOpenness(true);
+      setAssemblingWindowOpenness(true);
     }
   }
 
@@ -62,7 +62,7 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
         ...baseProps,
         onClick: () =>
         {
-          toggleAssemblyWindow();
+          toggleAssemblingWindow();
         }
       },
         localize("assemble"),
@@ -97,11 +97,11 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
           className: "titan-manufacturing-overview-action",
         },
           makeActionButton(),
-          !assemblyWindowIsOpen ? null :
+          !assemblingWindowIsOpen ? null :
             DefaultWindow(
             {
               title: localize("assembleTitan"),
-              handleClose: () => setAssemblyWindowOpenness(false),
+              handleClose: () => setAssemblingWindowOpenness(false),
             },
               TitanAssemblingOverview(
               {

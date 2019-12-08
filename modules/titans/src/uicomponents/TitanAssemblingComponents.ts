@@ -42,7 +42,7 @@ const TitanAssemblingComponentsComponent: React.FunctionComponent<PropTypes> = p
   return(
     ReactDOMElements.div(
     {
-      className: "titan-assembly-components",
+      className: "titan-assembling-components",
       ref: ownDomNode,
     },
       UnitItems(

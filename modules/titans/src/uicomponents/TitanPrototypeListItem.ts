@@ -18,7 +18,7 @@ const TitanPrototypeListItemComponent: React.FunctionComponent<PropTypes> = prop
 {
   const rowProps: React.HTMLAttributes<HTMLTableRowElement> & React.ClassAttributes<HTMLTableRowElement> =
   {
-    className: "titan-assembly-list-item",
+    className: "titan-prototype-list-item",
     onClick: props.onClick,
   };
 
@@ -26,19 +26,19 @@ const TitanPrototypeListItemComponent: React.FunctionComponent<PropTypes> = prop
     ReactDOMElements.tr(rowProps,
       ReactDOMElements.td(
       {
-        className: "titan-assembly-list-item-cell titan-assembly-list-name",
+        className: "titan-prototype-list-item-cell titan-prototype-list-name",
       },
         props.name
       ),
       ReactDOMElements.td(
       {
-        className: "titan-assembly-list-item-cell titan-assembly-list-chassis",
+        className: "titan-prototype-list-item-cell titan-prototype-list-chassis",
       },
         props.chassisName
       ),
       ReactDOMElements.td(
       {
-        className: "titan-assembly-list-item-cell titan-assembly-list-cost",
+        className: "titan-prototype-list-item-cell titan-prototype-list-cost",
       },
         ResourceCost(
         {

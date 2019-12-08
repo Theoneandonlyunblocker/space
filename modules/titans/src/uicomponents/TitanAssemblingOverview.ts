@@ -156,7 +156,7 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
         TitanChassisList(
         {
           // TODO 2019.11.19 |
-          // displayedChassis: getBuildableChassis(props.manufactory),
+          // allChassis: getBuildableChassis(props.manufactory),
           allChassis: props.manufactory.getManufacturableUnits(),
           selectedChassis: selectedChassis,
           onSelect: setSelectedChassis,
@@ -166,13 +166,6 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
       {
         className: "titan-assembling-info",
       },
-        // !selectedChassis ? null :
-        //   ReactDOMElements.div(
-        //   {
-        //     className: "menu-unit-info-name titan-chassis-info-name",
-        //   },
-        //     selectedChassis.displayName,
-        //   ),
         !selectedChassis ? null :
           ReactDOMElements.div(
           {
