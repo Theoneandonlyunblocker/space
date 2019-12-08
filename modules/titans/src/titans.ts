@@ -1,5 +1,5 @@
 import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
-import {Extendables as DefaultUiExtendables} from "modules/defaultui/src/extendables";
+import {Extendables as DefaultUiExtendables, ManufacturableThingKindUiData} from "modules/defaultui/src/extendables";
 import {GameModule} from "core/src/modules/GameModule";
 import
 {
@@ -9,14 +9,14 @@ import
 import * as moduleInfo from "../moduleInfo.json";
 import { localize } from "../localization/localize";
 import { TitanManufacturingOverview } from "./uicomponents/TitanManufacturingOverview";
-import { copyNonCoreModuleData, NonCoreModuleData } from "./nonCoreModuleData";
+import { createNonCoreModuleData, NonCoreModuleData } from "./nonCoreModuleData";
 import { registerMapLevelModifiers } from "./mapLevelModifiers";
 import { GameModuleInitializationPhase } from "core/src/modules/GameModuleInitializationPhase";
 import { cssSources } from "../assets/assets";
-import {  getBuildableComponents } from "./getBuildableComponents";
 import { buildingTemplates } from "./buildings/buildingTemplates";
 import { manufacturableThingKinds } from "./manufacturableThingKinds";
-import { TitanPrototypeSaveData, serializeTitanPrototype, deserializeTitanPrototype } from "./TitanPrototype";
+import { TitanPrototypeSaveData, TitanPrototype } from "./TitanPrototype";
+import { getBuildablePrototypes } from "./getBuildablePrototypes.js";
 
 
 type PerPlayerCollection<T> =
@@ -29,6 +29,10 @@ type PerPlayerCollection<T> =
 type TitanPrototypeSaveDataPerPlayer = PerPlayerCollection<TitanPrototypeSaveData>;
 type TitansModuleSaveData =
 {
+  idGenerators:
+  {
+    titanPrototype: number;
+  };
   titanPrototypesPerPlayer: TitanPrototypeSaveDataPerPlayer;
 };
 function mapPerPlayerCollection<I, O>(input: PerPlayerCollection<I>, mapFN: (input: I) => O): PerPlayerCollection<O>
@@ -48,7 +52,7 @@ function mapPerPlayerCollection<I, O>(input: PerPlayerCollection<I>, mapFN: (inp
   }, <PerPlayerCollection<O>>{});
 }
 
-
+// TODO 2019.12.08 | need to store chassis in moduleData.templates.Units & components as items to deserialize them properly I think
 export const titans: GameModule<TitansModuleSaveData> =
 {
   info: moduleInfo,
@@ -67,45 +71,59 @@ export const titans: GameModule<TitansModuleSaveData> =
   },
   addToModuleData: moduleData =>
   {
-    const customModuleData = copyNonCoreModuleData();
+    const customModuleData = createNonCoreModuleData();
     moduleData.nonCoreData.titans = customModuleData;
 
-    moduleData.templateCollectionsWithUnlockables.titanComponents = customModuleData.titanComponents;
-    moduleData.manufacturableThingKinds.titanComponent =
-    {
-      kind: manufacturableThingKinds.titanComponent,
-      templates: customModuleData.titanComponents,
-    };
     moduleData.templateCollectionsWithUnlockables.titanChassis = customModuleData.titanChassis;
+    moduleData.templateCollectionsWithUnlockables.titanComponents = customModuleData.titanComponents;
+
+    moduleData.manufacturableThingKinds.titanFromPrototype =
+    {
+      kind: manufacturableThingKinds.titanFromPrototype,
+      templates: customModuleData.titanPrototypes,
+    };
 
     registerMapLevelModifiers(moduleData);
 
     moduleData.copyTemplates(buildingTemplates, "Buildings");
 
-    (moduleData.nonCoreData.defaultUi.extendables as DefaultUiExtendables).manufacturableThingKinds.titans =
+    (moduleData.nonCoreData.defaultUi.extendables as DefaultUiExtendables).manufacturableThingKinds.titans = <ManufacturableThingKindUiData<TitanPrototype>>
     {
       displayOrder: 1,
       get buttonString()
       {
         return localize("manufactureTitansButton");
       },
-      getManufacturableThings: manufactory => getBuildableComponents(manufactory),
+      getManufacturableThings: manufactory => getBuildablePrototypes(manufactory),
       render: props => TitanManufacturingOverview(props),
     };
   },
   serializeModuleSpecificData: (moduleData) =>
   {
-    const titanPrototypesPerPlayer = (moduleData.nonCoreData.titans as NonCoreModuleData).titanPrototypesPerPlayer;
+    const titansModuleData = (moduleData.nonCoreData.titans as NonCoreModuleData);
 
     return {
-      titanPrototypesPerPlayer: mapPerPlayerCollection(titanPrototypesPerPlayer, serializeTitanPrototype),
+      idGenerators: {...titansModuleData.idGenerators},
+      titanPrototypesPerPlayer: mapPerPlayerCollection(
+        titansModuleData.titanPrototypesPerPlayer,
+        prototype => prototype.serialize(),
+      ),
     };
   },
   deserializeModuleSpecificData: (moduleData, saveData) =>
   {
     const titansModuleData = (moduleData.nonCoreData.titans as NonCoreModuleData);
 
-    titansModuleData.titanPrototypesPerPlayer =
-      mapPerPlayerCollection(saveData.titanPrototypesPerPlayer, deserializeTitanPrototype.bind(null, moduleData));
+    titansModuleData.idGenerators = {...saveData.idGenerators};
+    titansModuleData.titanPrototypesPerPlayer = mapPerPlayerCollection(
+      saveData.titanPrototypesPerPlayer,
+      prototypeSaveData =>
+      {
+        const prototype = TitanPrototype.fromData(moduleData, prototypeSaveData);
+        titansModuleData.titanPrototypes[prototype.type] = prototype;
+
+        return prototype;
+      },
+    );
   },
 };

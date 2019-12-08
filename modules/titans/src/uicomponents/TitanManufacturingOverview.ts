@@ -2,7 +2,6 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import { Star } from "core/src/map/Star";
-import { TitanComponentTemplate } from "../TitanComponentTemplate";
 import {ManufacturableThingsList} from "modules/defaultui/src/uicomponents/production/ManufacturableThingsList";
 import {DefaultWindow} from "modules/defaultui/src/uicomponents/windows/DefaultWindow";
 import { Player } from "core/src/player/Player";
@@ -11,13 +10,14 @@ import { useTitanAssemblingCapacity } from "./useTitanAssemblingCapacity";
 import { titanForge } from "../buildings/templates/titanForge";
 import { manufacturableThingKinds } from "../manufacturableThingKinds";
 import { TitanAssemblingOverview } from "./TitanAssemblingOverview";
+import { TitanPrototype } from "../TitanPrototype";
 
 
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
   selectedLocation: Star | undefined;
-  manufacturableThings: TitanComponentTemplate[];
+  manufacturableThings: TitanPrototype[];
   triggerParentUpdate: () => void;
   canManufacture: boolean;
   player: Player;
@@ -40,9 +40,9 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
     }
   }
 
-  function addComponentToBuildQueue(component: TitanComponentTemplate): void
+  function addComponentToBuildQueue(component: TitanPrototype): void
   {
-    props.selectedLocation.manufactory.addThingToQueue(component, manufacturableThingKinds.titanComponent);
+    props.selectedLocation.manufactory.addThingToQueue(component, manufacturableThingKinds.titanFromPrototype);
     props.triggerParentUpdate();
   }
 

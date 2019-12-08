@@ -15,7 +15,7 @@ import { Player } from "core/src/player/Player";
 import { activeModuleData } from "core/src/app/activeModuleData";
 
 
-type ManufacturableThingKindUiData<T extends ManufacturableThing> =
+export type ManufacturableThingKindUiData<T extends ManufacturableThing> =
 {
   displayOrder: number; // 0 should be considered default
   buttonString: string;

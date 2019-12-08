@@ -17,23 +17,36 @@ export type NonCoreModuleData =
   {
     [raceKey: string]: () => TitanChassisTemplate[];
   };
+  titanPrototypes:
+  {
+    [prototypeKey: string]: TitanPrototype;
+  };
   titanPrototypesPerPlayer:
   {
     [playerId: number]:
     {
-      [prototypeName: string]: TitanPrototype;
+      [prototypeKey: string]: TitanPrototype;
     };
+  };
+  idGenerators:
+  {
+    titanPrototype: number;
   };
 };
 
-export function copyNonCoreModuleData(): NonCoreModuleData
+export function createNonCoreModuleData(): NonCoreModuleData
 {
   return {
     titanComponents: {},
     getBuildableTitanComponentsForRace: {},
     titanChassis: {},
     getBuildableTitanChassisForRace: {},
+    titanPrototypes: {},
     titanPrototypesPerPlayer: {},
+    idGenerators:
+    {
+      titanPrototype: 0,
+    },
   };
 }
 

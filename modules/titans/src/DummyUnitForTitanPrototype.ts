@@ -83,13 +83,13 @@ export class DummyUnitForTitanPrototype
   }
   public getPrototype(name: string): TitanPrototype
   {
-    return {
+    return new TitanPrototype(
+    {
       wasAiGenerated: false,
-      key: name,
       displayName: name,
       chassis: this.lowStatsUnit.template,
       components: this.lowStatsUnit.items.getAllItems().map(item => item.template),
-    };
+    });
   }
 
   private static makeUnit(
