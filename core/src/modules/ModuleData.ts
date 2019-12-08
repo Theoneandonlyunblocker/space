@@ -302,9 +302,9 @@ export class ModuleData
   }
   public serialize(): {[moduleKey: string]: ModuleSaveData}
   {
-    return Object.keys(this.gameModules).reduce((allModuleSaveData, key) =>
+    return this.gameModules.reduce((allModuleSaveData, gameModule) =>
     {
-      const gameModule = this.gameModules[key];
+      const key = gameModule.info.key;
 
       allModuleSaveData[key] =
       {
