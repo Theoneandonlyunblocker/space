@@ -8,7 +8,7 @@ import { TitanChassisAbilities } from "./TitanChassisAbilities";
 import { TitanAssemblingComponents } from "./TitanAssemblingComponents";
 import { getBuildableComponents } from "../getBuildableComponents";
 import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "../TitanComponentTemplate";
-import { DummyUnitForTitanPrototype } from "../DummyUnitForTitanPrototype";
+import { DummyUnitForTitanAssembling } from "../DummyUnitForTitanAssembling";
 import { TitanChassisStats } from "./TitanChassisStats";
 import { ResourceCost } from "modules/defaultui/src/uicomponents/resources/ResourceCost";
 // import { getBuildableChassis } from "../getBuildableChassis";
@@ -21,7 +21,7 @@ import { NonCoreModuleData } from "../nonCoreModuleData";
 type ComponentsState =
 {
   player: Player;
-  dummyUnit: DummyUnitForTitanPrototype;
+  dummyUnit: DummyUnitForTitanAssembling;
   slots: TitanComponentTemplatesBySlot;
 };
 export type ComponentsAction =
@@ -42,7 +42,7 @@ export type ComponentsAction =
 };
 const componentsReducer: React.Reducer<ComponentsState, ComponentsAction> = (prevState, action) =>
 {
-  const dummyUnit: DummyUnitForTitanPrototype = prevState.dummyUnit;
+  const dummyUnit: DummyUnitForTitanAssembling = prevState.dummyUnit;
 
   function getEmptiedSlotsForChassis(chassis: TitanChassisTemplate): TitanComponentTemplatesBySlot
   {
@@ -61,7 +61,7 @@ const componentsReducer: React.Reducer<ComponentsState, ComponentsAction> = (pre
     {
       return {
         player: prevState.player,
-        dummyUnit: new DummyUnitForTitanPrototype(action.chassis, prevState.player),
+        dummyUnit: new DummyUnitForTitanAssembling(action.chassis, prevState.player),
         slots: getEmptiedSlotsForChassis(action.chassis),
       };
     }
