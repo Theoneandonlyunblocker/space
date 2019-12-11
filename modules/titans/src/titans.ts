@@ -16,7 +16,7 @@ import { cssSources } from "../assets/assets";
 import { buildingTemplates } from "./buildings/buildingTemplates";
 import { manufacturableThingKinds } from "./manufacturableThingKinds";
 import { TitanPrototypeSaveData, TitanPrototype } from "./TitanPrototype";
-import { getBuildablePrototypes } from "./getBuildablePrototypes.js";
+import { getBuildablePrototypes } from "./getBuildablePrototypes";
 
 
 type PerPlayerCollection<T> =
@@ -52,7 +52,7 @@ function mapPerPlayerCollection<I, O>(input: PerPlayerCollection<I>, mapFN: (inp
   }, <PerPlayerCollection<O>>{});
 }
 
-// TODO 2019.12.08 | need to store chassis in moduleData.templates.Units & components as items to deserialize them properly I think
+// TODO 2019.12.09 | change "assemble titan" => "design titan"
 export const titans: GameModule<TitansModuleSaveData> =
 {
   info: moduleInfo,
