@@ -62,9 +62,7 @@ export class TitanPrototype implements ManufacturableThing
       type: saveData.type,
       displayName: saveData.displayName,
       wasAiGenerated: saveData.wasAiGenerated,
-      // TODO 2019.12.08 |
-      // chassis: titansModuleData.titanChassis[saveData.chassisType],
-      chassis: moduleData.templates.Units[saveData.chassisType],
+      chassis: titansModuleData.titanChassis[saveData.chassisType],
       components: saveData.componentTypes.map(componentType => titansModuleData.titanComponents[componentType]),
     });
   }

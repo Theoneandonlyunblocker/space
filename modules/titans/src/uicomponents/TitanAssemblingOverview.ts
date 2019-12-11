@@ -11,7 +11,7 @@ import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "../TitanC
 import { DummyUnitForTitanAssembling } from "../DummyUnitForTitanAssembling";
 import { TitanChassisStats } from "./TitanChassisStats";
 import { ResourceCost } from "modules/defaultui/src/uicomponents/resources/ResourceCost";
-// import { getBuildableChassis } from "../getBuildableChassis";
+import { getBuildableChassis } from "../getBuildableChassis";
 import { localize as localizeGeneric } from "modules/defaultui/localization/localize";
 import { localize } from "modules/titans/localization/localize";
 import { activeModuleData } from "core/src/app/activeModuleData";
@@ -155,9 +155,7 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
       },
         TitanChassisList(
         {
-          // TODO 2019.11.19 |
-          // allChassis: getBuildableChassis(props.manufactory),
-          allChassis: props.manufactory.getManufacturableUnits(),
+          allChassis: getBuildableChassis(props.manufactory),
           selectedChassis: selectedChassis,
           onSelect: setSelectedChassis,
         }),

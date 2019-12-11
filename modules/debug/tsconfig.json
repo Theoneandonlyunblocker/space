@@ -10,6 +10,7 @@
     {"path": "../../modules/space"},
     {"path": "../../modules/common"},
     {"path": "../../modules/money"},
+    {"path": "../../modules/titans"},
   ],
   "include": [
     "**/*",

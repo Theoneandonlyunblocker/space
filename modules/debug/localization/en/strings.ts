@@ -10,4 +10,6 @@ export const strings =
   nationalEpic_description: "testing player limited buildings",
   debugAbility_displayName: "Debug Ability",
   debugAbility_description: "who knows what its going to do today",
+  debugChassis_displayName: "Debug Chassis",
+  debugChassis_description: "test",
 };
