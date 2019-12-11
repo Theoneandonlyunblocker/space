@@ -3,7 +3,7 @@
 import {GameModule} from "./GameModule";
 import {ModuleInfo} from "./ModuleInfo";
 import * as semver from "../generic/versions";
-import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
+import { ModuleOrderingGraph } from "./ModuleOrderingGraph";
 import * as debug from "../app/debug";
 
 
@@ -131,9 +131,9 @@ export class ModuleStore
   }
   private getModuleLoadOrder(...modules: ModuleInfo[]): ModuleInfo[]
   {
-    const dependencyGraph = new ModuleDependencyGraph(modules);
+    const orderingGraph = new ModuleOrderingGraph(modules);
 
-    return dependencyGraph.getOrderedNodes();
+    return orderingGraph.getOrderedNodes();
   }
   private resolveRequestedModules(...requestedModules: ModuleInfo[]): ModuleInfo[]
   {

@@ -2,7 +2,7 @@ import { ModuleInfo } from "./ModuleInfo";
 
 type Nodes<T> = {[key: string]: T};
 
-class DependencyGraph<T>
+class OrderedGraph<T>
 {
   private readonly _nodes: Nodes<T> = {}; // use #getNode() instead
   private readonly children: {[key: string]: Nodes<boolean>} = {};
@@ -19,7 +19,7 @@ class DependencyGraph<T>
 
     this.initKeyIfNeeded(key);
   }
-  public addDependency(parentKey: string, childKey: string): void
+  public addOrdering(parentKey: string, childKey: string): void
   {
     [childKey, parentKey].forEach(nodeKey =>
     {
@@ -47,7 +47,7 @@ class DependencyGraph<T>
         }
         else if (takenPath.indexOf(childOfCurrent) !== -1)
         {
-          throw new Error(`Cyclical dependency: ${[...takenPath, childOfCurrent].join(" -> ")}`);
+          throw new Error(`Cyclical ordering: ${[...takenPath, childOfCurrent].join(" -> ")}`);
         }
       });
 
@@ -86,14 +86,14 @@ class DependencyGraph<T>
 
     if (!node)
     {
-      throw new Error(`'${key}' was listed as a dependency in dependency graph, but no node with the key '${key}' was provided.`);
+      throw new Error(`Key '${key}' was used to order items in ordering graph, but no node with the key '${key}' was provided.`);
     }
 
     return node;
   }
 }
 
-export class ModuleDependencyGraph extends DependencyGraph<ModuleInfo>
+export class ModuleOrderingGraph extends OrderedGraph<ModuleInfo>
 {
   constructor(modules: ModuleInfo[] = [])
   {
@@ -110,7 +110,7 @@ export class ModuleDependencyGraph extends DependencyGraph<ModuleInfo>
     {
       moduleInfo.modsThatShouldLoadAfter.forEach(child =>
       {
-        this.addDependency(moduleInfo.key, child);
+        this.addOrdering(moduleInfo.key, child);
       });
     }
 
@@ -118,7 +118,7 @@ export class ModuleDependencyGraph extends DependencyGraph<ModuleInfo>
     {
       moduleInfo.modsThatShouldLoadBefore.forEach(child =>
       {
-        this.addDependency(child, moduleInfo.key);
+        this.addOrdering(child, moduleInfo.key);
       });
     }
   }

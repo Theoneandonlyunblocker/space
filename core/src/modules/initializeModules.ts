@@ -1,23 +1,23 @@
 import {ModuleData} from "./ModuleData";
-import { ModuleDependencyGraph } from "./ModuleDependencyGraph";
+import { ModuleOrderingGraph } from "./ModuleOrderingGraph";
 import {GameModule} from "./GameModule";
 
 
 export function initializeModules(gameModules: GameModule[], moduleData: ModuleData): Promise<void>
 {
   const modulesByKey: {[key: string]: GameModule} = {};
-  const dependencyGraph = new ModuleDependencyGraph();
+  const orderingGraph = new ModuleOrderingGraph();
 
   const modulesToInitialize = gameModules.filter(gameModule => Boolean(gameModule.addToModuleData));
   const allLoadingPromises: Promise<void>[] = [];
 
   modulesToInitialize.forEach(gameModule =>
   {
-    dependencyGraph.addModule(gameModule.info);
+    orderingGraph.addModule(gameModule.info);
     modulesByKey[gameModule.info.key] = gameModule;
   });
 
-  const orderedModulesToInitialize = dependencyGraph.getOrderedNodes();
+  const orderedModulesToInitialize = orderingGraph.getOrderedNodes();
   orderedModulesToInitialize.forEach(moduleInfo =>
   {
     const gameModule = modulesByKey[moduleInfo.key];
