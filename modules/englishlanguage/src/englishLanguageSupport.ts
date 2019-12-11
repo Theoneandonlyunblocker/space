@@ -7,6 +7,7 @@ import * as moduleInfo from "../moduleInfo.json";
 import { EnglishNameTagsSaveData, defaultEnglishNameTags } from "./EnglishName";
 import { NameSaveData } from "core/src/savedata/NameSaveData";
 import * as debug from "core/src/app/debug";
+import { flatten2dArray } from "core/src/generic/utility";
 
 
 export const englishLanguageSupport: GameModule =
@@ -35,6 +36,11 @@ export const englishLanguageSupport: GameModule =
     {
       debug.log("saves", `Executing stored core save data reviver function 'convertUnitNames'`);
       convertUnitNames();
+    }
+    if (semver.lt(dataVersion, "0.5.3"))
+    {
+      debug.log("saves", `Executing English name save data reviver function 'addIndefiniteArticles'`);
+      addIndefiniteArticles();
     }
 
     function convertPlayerAndFleetNames()
@@ -68,7 +74,6 @@ export const englishLanguageSupport: GameModule =
         });
       }
     }
-
     function convertUnitNames()
     {
       saveData.gameData.units.forEach((unitSaveData: any) =>
@@ -90,6 +95,26 @@ export const englishLanguageSupport: GameModule =
           },
         });
       }
+    }
+    function addIndefiniteArticles()
+    {
+      const allFleets = flatten2dArray(saveData.gameData.players.map((playerSaveData: any) =>
+      {
+        return playerSaveData.fleets;
+      }));
+
+      const allNames: NameSaveData<{indefiniteArticle: "a" | "an"}>[] =
+      [
+        ...allFleets.map((fleetSaveData: any) => fleetSaveData.name),
+        ...saveData.gameData.units.map((unitSaveData: any) => unitSaveData.name),
+        ...saveData.gameData.players.map((playerSaveData: any) => playerSaveData.name),
+      ];
+
+      const englishNames = allNames.filter(nameSaveData => nameSaveData.languageCode === englishLanguage.code);
+      englishNames.forEach(nameSaveData =>
+      {
+        nameSaveData.languageSpecificTags.indefiniteArticle = "a";
+      });
     }
   },
 };

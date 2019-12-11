@@ -4,23 +4,25 @@ import { NameSaveData } from "core/src/savedata/NameSaveData";
 
 export type EnglishNameTags =
 {
-  definiteArticle: string;
+  isPlural: boolean;
+  definiteArticle: "" | "the";
+  indefiniteArtice: "a" | "an";
   pronouns:
   {
     thirdPerson: string;
   };
-  isPlural: boolean;
 };
 export type EnglishNameTagsSaveData = EnglishNameTags;
 
 export const defaultEnglishNameTags: EnglishNameTags =
 {
+  isPlural: false,
   definiteArticle: "",
+  indefiniteArtice: "a",
   pronouns:
   {
     thirdPerson: "they",
   },
-  isPlural: false,
 };
 
 export class EnglishName extends Name<EnglishNameTags, EnglishNameTagsSaveData>
