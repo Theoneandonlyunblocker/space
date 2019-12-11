@@ -18,11 +18,9 @@ export const manufacturableThingKinds =
         race: manufactory.star.localRace,
       });
 
-      prototype.components.forEach(componentTemplate =>
-      {
-        const item = new Item(componentTemplate);
-        unit.items.addItem(item);
-      });
+      const items = prototype.components.map(componentTemplate => new Item(componentTemplate));
+      items.forEach(item => unit.items.addItem(item));
+      coreManufacturableThingKinds.item.afterBuilt(items, manufactory);
 
       return unit;
     },
