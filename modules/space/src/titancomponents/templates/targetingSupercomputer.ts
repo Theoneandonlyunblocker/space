@@ -20,6 +20,7 @@ export const targetingSupercomputer: TitanComponentTemplate =
   },
   getIcon: () => getItemIcon("targetingSupercomputer", 1),
   techLevel: 69,
+  isLockedToUnit: true,
   // TODO 2019.11.10 |
   slot: "mid",
   buildCost:

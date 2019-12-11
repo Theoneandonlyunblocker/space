@@ -19,6 +19,7 @@ export interface ItemTemplate extends ManufacturableThing
   techLevel: number;
 
   slot: string;
+  isLockedToUnit?: boolean;
 
   buildCost: Resources;
 

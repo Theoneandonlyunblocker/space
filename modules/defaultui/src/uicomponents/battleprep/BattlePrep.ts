@@ -241,7 +241,7 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
         return ItemList(
         {
           key: "itemEquip",
-          items: props.battlePrep.humanPlayer.items,
+          items: props.battlePrep.humanPlayer.items.filter(item => !item.template.isLockedToUnit),
           isDraggable: true,
           onDragStart: setCurrentlyDraggingItem,
           onDragEnd: handleItemDragEnd,

@@ -69,7 +69,7 @@ export class UnitItemComponent<T extends ItemTemplate | Item> extends React.Comp
       ref: this.ownDOMNode,
     };
 
-    if (this.props.isDraggable)
+    if (this.props.isDraggable && !itemTemplate.isLockedToUnit)
     {
       divProps.className += " draggable";
       divProps.onMouseDown = divProps.onTouchStart =

@@ -67,7 +67,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
           }),
           ItemList(
           {
-            items: player.items,
+            items: player.items.filter(item => !item.template.isLockedToUnit),
             isDraggable: true,
             onDragStart: this.handleDragStart,
             onDragEnd: this.handleDragEnd,

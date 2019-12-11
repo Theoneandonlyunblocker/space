@@ -28,7 +28,7 @@ export class DummyUnitForTitanAssembling
     const items = this.lowStatsUnit.items.getItemsAndEmptySlots();
     const components = Object.keys(items).reduce((allComponents, slot) =>
     {
-      allComponents[slot] = items[slot].map(item => item.template);
+      allComponents[slot] = items[slot].map(item => <TitanComponentTemplate>item.template);
 
       return allComponents;
     }, <TitanComponentTemplatesBySlot>{});
@@ -88,7 +88,7 @@ export class DummyUnitForTitanAssembling
       wasAiGenerated: false,
       displayName: name,
       chassis: this.lowStatsUnit.template,
-      components: this.lowStatsUnit.items.getAllItems().map(item => item.template),
+      components: this.lowStatsUnit.items.getAllItems().map(item => <TitanComponentTemplate>item.template),
     });
   }
 
