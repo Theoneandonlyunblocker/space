@@ -74,8 +74,9 @@ export const titans: GameModule<TitansModuleSaveData> =
     const customModuleData = createNonCoreModuleData();
     moduleData.nonCoreData.titans = customModuleData;
 
-    moduleData.templateCollectionsWithUnlockables.titanChassis = customModuleData.titanChassis;
-    moduleData.templateCollectionsWithUnlockables.titanComponents = customModuleData.titanComponents;
+    // unneeded, as these are added to moduleData.templates.units / items
+    // moduleData.templateCollectionsWithUnlockables.titanChassis = customModuleData.titanChassis;
+    // moduleData.templateCollectionsWithUnlockables.titanComponents = customModuleData.titanComponents;
 
     moduleData.manufacturableThingKinds.titanFromPrototype =
     {
