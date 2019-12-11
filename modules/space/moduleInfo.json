@@ -27,7 +27,7 @@
     "spaceTechnologies",
     "spaceUnits"
   ],
-  "modsToLoadBefore":
+  "modsThatShouldLoadBefore":
   [
     "titans"
   ],

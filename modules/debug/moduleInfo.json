@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "author": "giraluna",
   "description": "Adds content for testing and debugging features",
-  "modsToLoadBefore":
+  "modsThatShouldLoadBefore":
   [
     "titans"
   ],

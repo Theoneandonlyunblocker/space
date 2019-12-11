@@ -6,10 +6,9 @@ export interface ModuleInfo
   author?: string;
   description?: string;
 
-  // TODO 2019.12.09 | rename. ambiguous. maybe modsThatShouldBeLoadedBefore
   // these don't define dependencies, just for arranging load order
-  modsToLoadBefore?: string[];
-  modsToLoadAfter?: string[];
+  modsThatShouldLoadBefore?: string[];
+  modsThatShouldLoadAfter?: string[];
 
   // should be used very, very sparingly
   // if this mod replaces another's functionality, this mod has been renamed, etc.

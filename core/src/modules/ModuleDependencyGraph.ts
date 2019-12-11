@@ -106,17 +106,17 @@ export class ModuleDependencyGraph extends DependencyGraph<ModuleInfo>
   {
     this.addNode(moduleInfo.key, moduleInfo);
 
-    if (moduleInfo.modsToLoadAfter)
+    if (moduleInfo.modsThatShouldLoadAfter)
     {
-      moduleInfo.modsToLoadAfter.forEach(child =>
+      moduleInfo.modsThatShouldLoadAfter.forEach(child =>
       {
         this.addDependency(moduleInfo.key, child);
       });
     }
 
-    if (moduleInfo.modsToLoadBefore)
+    if (moduleInfo.modsThatShouldLoadBefore)
     {
-      moduleInfo.modsToLoadBefore.forEach(child =>
+      moduleInfo.modsThatShouldLoadBefore.forEach(child =>
       {
         this.addDependency(child, moduleInfo.key);
       });
