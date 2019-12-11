@@ -52,7 +52,6 @@ function mapPerPlayerCollection<I, O>(input: PerPlayerCollection<I>, mapFN: (inp
   }, <PerPlayerCollection<O>>{});
 }
 
-// TODO 2019.12.09 | change "assemble titan" => "design titan"
 export const titans: GameModule<TitansModuleSaveData> =
 {
   info: moduleInfo,

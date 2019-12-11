@@ -4,7 +4,7 @@ import { TitanComponentTemplate } from "../TitanComponentTemplate";
 import { UnitItems } from "modules/defaultui/src/uicomponents/unitlist/UnitItems";
 import { AutoPositionedTitanComponentSelection } from "./AutoPositionedTitanComponentSelection";
 import { useOnClickOutside } from "modules/defaultui/src/uicomponents/generic/useOnClickOutside";
-import {ComponentsAction} from "./TitanAssemblingOverview";
+import {ComponentsAction} from "./TitanDesignOverview";
 
 
 type ComponentsBySlot =
@@ -26,7 +26,7 @@ export interface PropTypes extends React.Props<any>
 }
 
 
-const TitanAssemblingComponentsComponent: React.FunctionComponent<PropTypes> = props =>
+const TitanDesignComponentsComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const ownDomNode = React.useRef<HTMLDivElement | null>(null);
 
@@ -42,7 +42,7 @@ const TitanAssemblingComponentsComponent: React.FunctionComponent<PropTypes> = p
   return(
     ReactDOMElements.div(
     {
-      className: "titan-assembling-components",
+      className: "titan-design-components",
       ref: ownDomNode,
     },
       UnitItems(
@@ -100,4 +100,4 @@ const TitanAssemblingComponentsComponent: React.FunctionComponent<PropTypes> = p
   );
 };
 
-export const TitanAssemblingComponents: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanAssemblingComponentsComponent);
+export const TitanDesignComponents: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanDesignComponentsComponent);

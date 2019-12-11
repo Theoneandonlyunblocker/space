@@ -9,7 +9,7 @@ import { localize } from "modules/titans/localization/localize";
 import { useTitanAssemblingCapacity } from "./useTitanAssemblingCapacity";
 import { titanForge } from "../buildings/templates/titanForge";
 import { manufacturableThingKinds } from "../manufacturableThingKinds";
-import { TitanAssemblingOverview } from "./TitanAssemblingOverview";
+import { TitanDesignOverview } from "./TitanDesignOverview";
 import { TitanPrototype } from "../TitanPrototype";
 
 
@@ -103,7 +103,7 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
               title: localize("assembleTitan"),
               handleClose: () => setAssemblingWindowOpenness(false),
             },
-              TitanAssemblingOverview(
+              TitanDesignOverview(
               {
                 player: props.player,
                 manufactory: props.selectedLocation.manufactory,

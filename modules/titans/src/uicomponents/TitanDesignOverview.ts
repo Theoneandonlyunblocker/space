@@ -5,10 +5,10 @@ import { TitanChassisTemplate } from "../TitanChassisTemplate";
 import { Player } from "core/src/player/Player";
 import { TitanChassisList } from "./TitanChassisList";
 import { TitanChassisAbilities } from "./TitanChassisAbilities";
-import { TitanAssemblingComponents } from "./TitanAssemblingComponents";
+import { TitanDesignComponents } from "./TitanDesignComponents";
 import { getBuildableComponents } from "../getBuildableComponents";
 import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "../TitanComponentTemplate";
-import { DummyUnitForTitanAssembling } from "../DummyUnitForTitanAssembling";
+import { DummyUnitForTitanDesign } from "../DummyUnitForTitanDesign";
 import { TitanChassisStats } from "./TitanChassisStats";
 import { ResourceCost } from "modules/defaultui/src/uicomponents/resources/ResourceCost";
 import { getBuildableChassis } from "../getBuildableChassis";
@@ -21,7 +21,7 @@ import { NonCoreModuleData } from "../nonCoreModuleData";
 type ComponentsState =
 {
   player: Player;
-  dummyUnit: DummyUnitForTitanAssembling;
+  dummyUnit: DummyUnitForTitanDesign;
   slots: TitanComponentTemplatesBySlot;
 };
 export type ComponentsAction =
@@ -42,7 +42,7 @@ export type ComponentsAction =
 };
 const componentsReducer: React.Reducer<ComponentsState, ComponentsAction> = (prevState, action) =>
 {
-  const dummyUnit: DummyUnitForTitanAssembling = prevState.dummyUnit;
+  const dummyUnit: DummyUnitForTitanDesign = prevState.dummyUnit;
 
   function getEmptiedSlotsForChassis(chassis: TitanChassisTemplate): TitanComponentTemplatesBySlot
   {
@@ -61,7 +61,7 @@ const componentsReducer: React.Reducer<ComponentsState, ComponentsAction> = (pre
     {
       return {
         player: prevState.player,
-        dummyUnit: new DummyUnitForTitanAssembling(action.chassis, prevState.player),
+        dummyUnit: new DummyUnitForTitanDesign(action.chassis, prevState.player),
         slots: getEmptiedSlotsForChassis(action.chassis),
       };
     }
@@ -107,7 +107,7 @@ export interface PropTypes extends React.Props<any>
   editingPrototypeName: string | undefined;
 }
 
-const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = props =>
+const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const [selectedChassis, _setSelectedChassis] = React.useState<TitanChassisTemplate>(undefined);
   const [componentsBySlot, updateComponentsBySlot] = React.useReducer(componentsReducer,
@@ -147,7 +147,7 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
   return(
     ReactDOMElements.div(
     {
-      className: "titan-assembling-overview",
+      className: "titan-design-overview",
     },
       ReactDOMElements.div(
       {
@@ -162,12 +162,12 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
       ),
       ReactDOMElements.div(
       {
-        className: "titan-assembling-info",
+        className: "titan-design-info",
       },
         !selectedChassis ? null :
           ReactDOMElements.div(
           {
-            className: "titan-assembling-info-protype-details",
+            className: "titan-design-info-protype-details",
           },
             ReactDOMElements.input(
             {
@@ -194,7 +194,7 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
             template: selectedChassis
           }),
         !selectedChassis ? null :
-          TitanAssemblingComponents(
+          TitanDesignComponents(
           {
             availableComponents: getBuildableComponents(props.manufactory),
             componentsBySlot: componentsBySlot.slots,
@@ -209,11 +209,11 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
         !selectedChassis ? null :
           ReactDOMElements.div(
           {
-            className: "titan-assembling-info-actions",
+            className: "titan-design-info-actions",
           },
             ReactDOMElements.button(
             {
-              className: "titan-assembling-info-action",
+              className: "titan-design-info-action",
               onClick: () => saveCurrentPrototype(),
             },
               localizeGeneric("save_action").toString(),
@@ -221,7 +221,7 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
             !lastSavedPrototypeName ? null :
               ReactDOMElements.button(
               {
-                className: "titan-assembling-info-action",
+                className: "titan-design-info-action",
                 disabled: prototypeName !== lastSavedPrototypeName,
                 onClick: () =>
                 {
@@ -237,4 +237,4 @@ const TitanAssemblingOverviewComponent: React.FunctionComponent<PropTypes> = pro
   );
 };
 
-export const TitanAssemblingOverview: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanAssemblingOverviewComponent);
+export const TitanDesignOverview: React.FunctionComponentFactory<PropTypes> = React.createFactory(TitanDesignOverviewComponent);
