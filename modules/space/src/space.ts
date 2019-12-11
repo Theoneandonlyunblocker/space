@@ -88,15 +88,18 @@ export const space: GameModule =
     const titansModuleIsLoaded = Boolean(moduleData.nonCoreData.titans);
     if (titansModuleIsLoaded)
     {
-      return import("./titancomponents/titanComponentTemplates").then(templatesModule =>
+      return Promise.all(
+      [
+        import("./titancomponents/titanComponentTemplates"),
+        import("modules/titans/src/nonCoreModuleData"),
+      ]).then(loadedModules =>
       {
-        import("modules/titans/src/nonCoreModuleData").then(titansModuleDataModule =>
-        {
-          titansModuleDataModule.addTitanComponentsToModuleData(
-            moduleData,
-            templatesModule.titanComponentTemplates,
-          );
-        });
+        const [templatesModule, titansModuleDataModule] = loadedModules;
+
+        titansModuleDataModule.addTitanComponentsToModuleData(
+          moduleData,
+          templatesModule.titanComponentTemplates,
+        );
       });
     }
 
