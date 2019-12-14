@@ -588,7 +588,10 @@ export function mergeReactAttributes<T>(
       return attributes[prop];
     }).join(" ");
 
-    merged[prop] = joined;
+    if (joined)
+    {
+      merged[prop] = joined;
+    }
   });
 
   return merged;
