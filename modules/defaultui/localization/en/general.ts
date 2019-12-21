@@ -21,4 +21,5 @@ export const general =
   type: "Type",
   cost: "Cost",
   listItemSeparator: ", ",
+  customizeName: "Customize name",
 };

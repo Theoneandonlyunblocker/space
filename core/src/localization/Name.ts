@@ -45,7 +45,7 @@ export abstract class Name<
       hasBeenCustomized: this.hasBeenCustomized,
     });
   }
-  public customize(newName: string, tags?: Tags): void
+  public customize(newName: string, tags?: Partial<Tags>): void
   {
     this.hasBeenCustomized = true;
     this.baseName = newName;

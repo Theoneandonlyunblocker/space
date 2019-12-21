@@ -21,4 +21,5 @@ export type General =
   type: [];
   cost: [];
   listItemSeparator: [];
+  customizeName: [];
 };
