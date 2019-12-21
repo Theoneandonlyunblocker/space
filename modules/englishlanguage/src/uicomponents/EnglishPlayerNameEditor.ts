@@ -10,6 +10,7 @@ import { LanguageSpecificTagSelect } from "./LanguageSpecificTagSelect";
 export interface PropTypes extends React.Props<any>
 {
   name: EnglishName;
+  onChange?: () => void;
 }
 
 const EnglishPlayerNameEditorComponent: React.FunctionComponent<PropTypes> = props =>
@@ -19,11 +20,27 @@ const EnglishPlayerNameEditorComponent: React.FunctionComponent<PropTypes> = pro
     {
       className: "english-player-name-editor",
     },
-      LanguageSpecificTagInput({name: props.name, data: englishNameTagsData.baseName}),
-      LanguageSpecificTagSelect({name: props.name, data: englishNameTagsData.isPlural}),
-      "attacked, but",
-      LanguageSpecificTagInput({name: props.name, data: englishNameTagsData.thirdPersonPronoun}),
-      "repelled the attack succesfully.",
+      LanguageSpecificTagInput(
+      {
+        name: props.name,
+        data: englishNameTagsData.baseName,
+        onChange: props.onChange,
+      }),
+      " ",
+      LanguageSpecificTagSelect(
+      {
+        name: props.name,
+        data: englishNameTagsData.isPlural,
+        onChange: props.onChange,
+      }),
+      " attacked, but ",
+      LanguageSpecificTagInput(
+      {
+        name: props.name,
+        data: englishNameTagsData.thirdPersonPronoun,
+        onChange: props.onChange,
+      }),
+      " defended succesfully.",
     )
   );
 };

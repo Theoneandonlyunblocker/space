@@ -7,13 +7,27 @@ import * as moduleInfo from "../moduleInfo.json";
 import { EnglishNameTagsSaveData, defaultEnglishNameTags } from "./EnglishName";
 import { NameSaveData } from "core/src/savedata/NameSaveData";
 import * as debug from "core/src/app/debug";
-import { flatten2dArray } from "core/src/generic/utility";
+import { flatten2dArray, loadCss } from "core/src/generic/utility";
+import { GameModuleInitializationPhase } from "core/src/modules/GameModuleInitializationPhase";
 
 
 export const englishLanguageSupport: GameModule =
 {
   info: moduleInfo,
   supportedLanguages: "all",
+  assetLoaders:
+  {
+    [GameModuleInitializationPhase.GameSetup]:
+    [
+      baseUrl =>
+      {
+        const cssUrl = "./assets/css/index.css";
+        loadCss(cssUrl, baseUrl);
+
+        return Promise.resolve();
+      },
+    ],
+  },
   addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates(

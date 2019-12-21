@@ -4,25 +4,33 @@ import { EnglishName } from "../EnglishName";
 import { EditableLanguageSpecificTagInputData } from "./EditableLanguageSpecificTagData";
 
 
-// TODO 2019.12.21 | this & select need to pass more stuff as props so updates are triggered reactively
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
   name: EnglishName;
   data: EditableLanguageSpecificTagInputData<EnglishName>;
+  onChange?: () => void;
 }
 
 const LanguageSpecificTagInputComponent: React.FunctionComponent<PropTypes> = props =>
 {
+  const [displayedText, setDisplayedText] = React.useState<string>(props.data.getDisplayedText(props.name));
+
   return(
     ReactDOMElements.input(
     {
       className: "language-specific-tag-input",
-      value: props.data.getDisplayedText(props.name),
+      value: displayedText,
+      size: displayedText.length || 1,
       onChange: e =>
       {
         const value = e.currentTarget.value;
+        setDisplayedText(value);
         props.data.onChange(props.name, value);
+        if (props.onChange)
+        {
+          props.onChange();
+        }
       },
     })
   );

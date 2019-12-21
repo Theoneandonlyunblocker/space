@@ -81,7 +81,10 @@ const EditableNameComponent: React.FunctionComponent<PropTypes> = props =>
           name: props.name,
           onChange: () =>
           {
-            setDisplayedBaseName(props.name.baseName);
+            if (props.name.baseName !== displayedBaseName)
+            {
+              setDisplayedBaseName(props.name.baseName);
+            }
           },
         }),
       )

@@ -9,19 +9,27 @@ export interface PropTypes extends React.Props<any>
 {
   name: EnglishName;
   data: EditableLanguageSpecificTagSelectData<EnglishName>;
+  onChange?: () => void;
 }
 
 const LanguageSpecificTagSelectComponent: React.FunctionComponent<PropTypes> = props =>
 {
+  const [displayedValue, setDisplayedValue] = React.useState<string>(props.data.getDisplayedText(props.name));
+
   return(
     ReactDOMElements.select(
     {
       className: "language-specific-tag-select",
-      value: props.data.getDisplayedText(props.name),
+      value: displayedValue,
       onChange: e =>
       {
         const newValue = e.currentTarget.value;
+        setDisplayedValue(newValue);
         props.data.onChange(props.name, newValue);
+        if (props.onChange)
+        {
+          props.onChange();
+        }
       },
     },
       props.data.choices.map(choice => ReactDOMElements.option(
