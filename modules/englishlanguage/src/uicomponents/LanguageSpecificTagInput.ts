@@ -20,6 +20,7 @@ const LanguageSpecificTagInputComponent: React.FunctionComponent<PropTypes> = pr
     ReactDOMElements.input(
     {
       className: "language-specific-tag-input",
+      title: props.data.description,
       value: displayedText,
       size: displayedText.length || 1,
       onChange: e =>

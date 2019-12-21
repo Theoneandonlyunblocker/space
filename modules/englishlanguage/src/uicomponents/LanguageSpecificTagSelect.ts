@@ -20,6 +20,7 @@ const LanguageSpecificTagSelectComponent: React.FunctionComponent<PropTypes> = p
     ReactDOMElements.select(
     {
       className: "language-specific-tag-select",
+      title: props.data.description,
       value: displayedValue,
       onChange: e =>
       {

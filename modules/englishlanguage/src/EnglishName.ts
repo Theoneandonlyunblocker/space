@@ -9,6 +9,7 @@ export type EnglishNameTags =
   indefiniteArtice: "a" | "an";
   pronouns:
   {
+    // TODO 2019.12.21 | rename. thirdPersonSubjectPronoun?
     thirdPerson: string;
   };
 };
