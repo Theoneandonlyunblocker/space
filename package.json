@@ -37,11 +37,15 @@
     "typescript": "3.7.x"
   },
   "scripts": {
-    "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-ui-module-css && npm run replace-pixi-typedefs && npm run convert-shaders && npm run copy-moduleinfo-files && npm run copy-external-css",
+    "postinstall": "npm run copy-libs && npm run copy-assets && npm run compile-all-css && npm run replace-pixi-typedefs && npm run convert-shaders && npm run copy-moduleinfo-files && npm run copy-external-css",
 
     "build": "tsc -b --verbose && node scripts/build/bundleDefaultModules",
 
-    "compile-ui-module-css": "lessc modules/defaultui/assets/css/main.less dist/modules/defaultui/assets/css/main.css",
+    "compile-all-css": "npm run compile-defaultui-css && npm run compile-titans-css && npm run compile-englishlanguage-css",
+    "compile-defaultui-css": "lessc modules/defaultui/assets/css/main.less dist/modules/defaultui/assets/css/main.css",
+    "compile-titans-css": "lessc modules/titans/assets/css/index.less dist/modules/titans/assets/css/index.css",
+    "compile-englishlanguage-css": "lessc modules/englishlanguage/assets/css/index.less dist/modules/englishlanguage/assets/css/index.css",
+
     "convert-shaders": "node scripts/convert_shaders",
 
     "copy-libs": "node scripts/copy_libs.js",
