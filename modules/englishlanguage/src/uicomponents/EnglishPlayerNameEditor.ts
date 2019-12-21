@@ -19,10 +19,9 @@ const EnglishPlayerNameEditorComponent: React.FunctionComponent<PropTypes> = pro
     {
       className: "english-player-name-editor",
     },
-      "Player",
       LanguageSpecificTagInput({name: props.name, data: englishNameTagsData.baseName}),
       LanguageSpecificTagSelect({name: props.name, data: englishNameTagsData.isPlural}),
-      "attacked in their home system, but",
+      "attacked, but",
       LanguageSpecificTagInput({name: props.name, data: englishNameTagsData.thirdPersonPronoun}),
       "repelled the attack succesfully.",
     )

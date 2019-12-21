@@ -3861,7 +3861,6 @@ ul, ol
     border-width: 2px 0 0 0;
   }
 
-
   >*
   {
     display: flex;
@@ -3869,6 +3868,15 @@ ul, ol
     justify-content: center;
     box-sizing: border-box;
     position: relative;
+  }
+
+  .editable-name
+  {
+    margin: 0.5em;
+  }
+  .editable-name-toggle-details
+  {
+    color: grey;
   }
 }
 
@@ -3880,8 +3888,6 @@ ul, ol
 .player-setup-name
 {
   width: 8em;
-  height: 1.5em;
-  margin: 0.5em;
   .prevent-text-overflow;
   @media(max-width: 650px)
   {
@@ -4858,3 +4864,23 @@ button.player-setup-remove-player
 }
 
 @import (once) "./probabilityDistributions.less";
+
+.editable-name
+{
+  display: flex;
+  flex-flow: row;
+  position: relative;
+}
+.editable-name-toggle-details
+{
+  &::after
+  {
+    .fa("\f013")
+  }
+  position: absolute;
+  right: 0;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: white;
+}

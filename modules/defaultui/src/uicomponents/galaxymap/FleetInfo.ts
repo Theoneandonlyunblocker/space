@@ -5,6 +5,7 @@ import {localize} from "../../../localization/localize";
 import {Fleet} from "core/src/fleets/Fleet";
 
 import {FleetControls} from "./FleetControls";
+import { EditableName } from "../generic/EditableName";
 
 
 export interface PropTypes extends React.Props<any>
@@ -22,24 +23,12 @@ interface StateType
 export class FleetInfoComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetInfo";
-  setFleetName(e: React.FormEvent<HTMLInputElement>)
-  {
-    const target = e.currentTarget;
-    this.props.fleet.name.customize(target.value);
-    this.forceUpdate();
-  }
 
   public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
-
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.setFleetName = this.setFleetName.bind(this);
   }
 
   render()
@@ -77,14 +66,23 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
         {
           className: "fleet-info-header",
         },
-          ReactDOMElements.input(
-          {
-            className: "fleet-info-name",
-            value: isNotDetected ? localize("unidentifiedFleet").toString() : fleet.name.baseName,
-            title: isNotDetected ? localize("unidentifiedFleet").toString() : fleet.name.baseName,
-            onChange: isNotDetected ? null : this.setFleetName,
-            readOnly: isNotDetected,
-          }),
+          isNotDetected ?
+            ReactDOMElements.input(
+            {
+              className: "fleet-info-name",
+              value: localize("unidentifiedFleet").toString(),
+              title: localize("unidentifiedFleet").toString(),
+              readOnly: true,
+            }) :
+            EditableName(
+            {
+              name: this.props.fleet.name,
+              usage: "fleet",
+              inputAttributes:
+              {
+                className: "fleet-info-name",
+              },
+            }),
           ReactDOMElements.div(
           {
             className: "fleet-info-strength",

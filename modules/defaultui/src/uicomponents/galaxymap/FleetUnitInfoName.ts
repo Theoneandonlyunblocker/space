@@ -4,6 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 import {Unit} from "core/src/unit/Unit";
 
 import {localize} from "../../../localization/localize";
+import { EditableName } from "../generic/EditableName";
 
 
 export interface PropTypes extends React.Props<any>
@@ -14,7 +15,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  inputElementValue: string;
+
 }
 
 export class FleetUnitInfoNameComponent extends React.Component<PropTypes, StateType>
@@ -25,40 +26,31 @@ export class FleetUnitInfoNameComponent extends React.Component<PropTypes, State
   constructor(props: PropTypes)
   {
     super(props);
-
-    this.state = this.getInitialStateTODO();
-
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.onChange = this.onChange.bind(this);
   }
 
-  private getInitialStateTODO(): StateType
+  public render()
   {
-    return(
+    if (this.props.isNotDetected)
     {
-      inputElementValue: this.props.unit.name.baseName,
-    });
-  }
-  onChange(e: React.FormEvent<HTMLInputElement>)
-  {
-    const target = e.currentTarget;
-    this.setState({inputElementValue: target.value});
-    this.props.unit.name.customize(target.value);
-  }
-  render()
-  {
-    return(
-      ReactDOMElements.input(
+      return ReactDOMElements.input(
       {
         className: "fleet-unit-info-name",
-        value: this.props.isNotDetected ? localize("unidentifiedShip").toString() : this.state.inputElementValue,
-        onChange: this.props.isNotDetected ? null :  this.onChange,
-        readOnly: this.props.isNotDetected,
-      })
-    );
+        value: localize("unidentifiedShip").toString(),
+        readOnly: true,
+      });
+    }
+    else
+    {
+      return EditableName(
+      {
+        name: this.props.unit.name,
+        usage: "unit",
+        inputAttributes:
+        {
+          className: "fleet-unit-info-name",
+        },
+      });
+    }
   }
 }
 

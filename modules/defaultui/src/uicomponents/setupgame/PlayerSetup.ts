@@ -23,6 +23,8 @@ import {SetterComponentBase} from "./SetterComponentBase";
 import {RacePicker} from "./RacePicker";
 import { localize } from "../../../localization/localize";
 import { options } from "core/src/app/Options";
+import { Name } from "core/src/localization/Name";
+import { EditableName } from "../generic/EditableName";
 
 
 export interface PropTypes extends React.Props<any>
@@ -37,7 +39,7 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  name: string;
+  name: Name;
   secondaryColor: Color;
   mainColor: Color;
   race: RaceTemplate;
@@ -82,7 +84,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     this.setMainColor = this.setMainColor.bind(this);
     this.generateMainColor = this.generateMainColor.bind(this);
     this.handleRemove = this.handleRemove.bind(this);
-    this.handleNameChange = this.handleNameChange.bind(this);
     this.makePlayer = this.makePlayer.bind(this);
     this.handleSetHuman = this.handleSetHuman.bind(this);
     this.setRace = this.setRace.bind(this);
@@ -92,7 +93,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   {
     return(
     {
-      name: this.props.initialName,
+      name: options.display.language.constructName(this.props.initialName),
       mainColor: null,
       secondaryColor: null,
       race: getRandomPlayerRaceTemplate(),
@@ -135,13 +136,6 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
   {
     this.props.setHuman(this.props.keyTODO/*TODO react*/);
   }
-
-  handleNameChange(e: React.FormEvent<HTMLInputElement>)
-  {
-    const target = e.currentTarget;
-    this.setState({name: target.value});
-  }
-
   setMainColor(color: Color, isNull: boolean)
   {
     this.setState({mainColor: isNull ? null : color});
@@ -196,8 +190,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
       race: this.state.race,
       resources: {money: 1000},
 
-      // TODO 2019.09.02 | should allow player to define plurality etc
-      name: options.display.language.constructName(this.state.name),
+      name: this.state.name,
 
       color:
       {
@@ -232,11 +225,14 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
           checked: this.props.isHuman,
           onChange: this.handleSetHuman,
         }),
-        ReactDOMElements.input(
+        EditableName(
         {
-          className: "player-setup-name",
-          value: this.state.name,
-          onChange: this.handleNameChange,
+          name: this.state.name,
+          usage: "player",
+          inputAttributes:
+          {
+            className: "player-setup-name",
+          },
         }),
         RacePicker(
         {
