@@ -65,7 +65,7 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
           toggleAssemblingWindow();
         }
       },
-        localize("assemble"),
+        localize("design"),
       );
     }
     else
@@ -100,7 +100,7 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
           !assemblingWindowIsOpen ? null :
             DefaultWindow(
             {
-              title: localize("assembleTitan"),
+              title: localize("designTitan"),
               handleClose: () => setAssemblingWindowOpenness(false),
             },
               TitanDesignOverview(

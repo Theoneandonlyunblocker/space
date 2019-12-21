@@ -1,8 +1,8 @@
 export const uiStrings =
 {
   buildTitanForge: "Build Titan Forge",
-  assemble: "Assemble",
-  assembleTitan: "Assemble Titan",
+  design: "Design",
+  designTitan: "Design Titan",
   chassis: "Chassis",
   saveCopy: "Save copy",
   copySuffix: " - Copy",
