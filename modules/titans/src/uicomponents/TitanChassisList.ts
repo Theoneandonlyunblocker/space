@@ -44,6 +44,7 @@ const TitanChassisListComponent: React.FunctionComponent<PropTypes> = props =>
       listItems: rows,
       initialColumns: columns,
       initialSortOrder: [columns[0]],
+      noHeader: true,
       addSpacer: true,
       onRowChange: (row) =>
       {

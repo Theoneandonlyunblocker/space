@@ -100,6 +100,7 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
       },
       {
         label: localize("unitStrength").toString(),
+        title: localize("unitStrength_description").toString(),
         key: "strength",
         defaultOrder: "desc",
         sortingFunction: (a, b) =>
@@ -108,31 +109,31 @@ export class UnitListComponent extends React.Component<PropTypes, StateType>
         },
       },
       {
-        label: localize("act").toString(),
+        label: localize("maxActionPoints_short").toString(),
         title: `${localize("maxActionPoints")}\n\n${localize("maxActionPoints_description")}`,
         key: "maxActionPoints",
         defaultOrder: "desc",
       },
       {
-        label: localize("atk").toString(),
+        label: localize("attack_short").toString(),
         title: `${localize("attack")}\n\n${localize("attack_description")}`,
         key: "attack",
         defaultOrder: "desc",
       },
       {
-        label: localize("def").toString(),
+        label: localize("defence_short").toString(),
         title: `${localize("defence")}\n\n${localize("defence_description")}`,
         key: "defence",
         defaultOrder: "desc",
       },
       {
-        label: localize("int").toString(),
+        label: localize("intelligence_short").toString(),
         title: `${localize("intelligence")}\n\n${localize("intelligence_description")}`,
         key: "intelligence",
         defaultOrder: "desc",
       },
       {
-        label: localize("spd").toString(),
+        label: localize("speed_short").toString(),
         title: `${localize("speed")}\n\n${localize("speed_description")}`,
         key: "speed",
         defaultOrder: "desc",

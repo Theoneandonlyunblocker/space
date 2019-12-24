@@ -173,6 +173,8 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
             {
               className: "titan-prototype-name",
               value: prototypeName,
+              title: localizeGeneric("displayName").toString() + ": " + prototypeName,
+              size: prototypeName.length,
               onChange: (e) =>
               {
                 setPrototypeName(e.currentTarget.value);

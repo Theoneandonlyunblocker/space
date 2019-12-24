@@ -17,6 +17,7 @@ const TitanChassisListItemComponent: React.FunctionComponent<PropTypes> = props 
     ReactDOMElements.tr(
     {
       className: `titan-chassis-list-item${props.isSelected ? " selected" : ""}`,
+      title: props.chassis.description,
       onClick: props.handleClick,
     },
       ReactDOMElements.td(

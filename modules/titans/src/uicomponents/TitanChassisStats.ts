@@ -14,7 +14,8 @@ export interface PropTypes extends React.Props<any>
 function renderProperty(props:
 {
   className: string;
-  title: string;
+  label: string;
+  description: string;
   min: number;
   max: number;
 })
@@ -23,13 +24,14 @@ function renderProperty(props:
     ReactDOMElements.div(
     {
       className: props.className,
-      key: props.title,
+      key: props.label,
+      title: props.description,
     },
       ReactDOMElements.span(
       {
         className: "titan-chassis-stats-property-title",
       },
-        props.title,
+        `${props.label}: `,
       ),
       ReactDOMElements.span(
       {
@@ -65,14 +67,16 @@ const TitanChassisStatsComponent: React.FunctionComponent<PropTypes> = props =>
       renderProperty(
       {
         className: "titan-chassis-stats-health",
-        title: localizeGeneric("unitStrength").toString(),
+        label: localizeGeneric("unitStrength_short").toString(),
+        description: localizeGeneric("unitStrength_description").toString(),
         min: props.health.min,
         max: props.health.max,
       }),
       getAttributeKeysSortedForDisplay().map(attribute => renderProperty(
       {
         className: `titan-chassis-stats-${attribute}`,
-        title: localizeGeneric(attribute).toString(),
+        label: localizeGeneric(<any>`${attribute}_short`).toString(),
+        description: localizeGeneric(<any>`${attribute}_description`).toString(),
         min: props.attributes.min[attribute],
         max: props.attributes.max[attribute],
       }))
