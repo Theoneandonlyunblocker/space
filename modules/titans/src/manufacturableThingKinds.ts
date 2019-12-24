@@ -1,5 +1,5 @@
 import { ManufacturableThingKind } from "core/src/templateinterfaces/ManufacturableThing";
-import { TitanPrototype } from "./TitanPrototype";
+import { TitanPrototype, TitanPrototypeSaveData } from "./TitanPrototype";
 import { Unit } from "core/src/unit/Unit";
 import { Item } from "core/src/items/Item";
 import { coreManufacturableThingKinds } from "core/src/production/coreManufacturableThingKinds";
@@ -7,7 +7,7 @@ import { coreManufacturableThingKinds } from "core/src/production/coreManufactur
 
 export const manufacturableThingKinds =
 {
-  titanFromPrototype: <ManufacturableThingKind<TitanPrototype, Unit>>
+  titanFromPrototype: <ManufacturableThingKind<TitanPrototype, Unit, TitanPrototypeSaveData>>
   {
     key: "titanFromPrototype",
     buildFromTemplate: (prototype, manufactory) =>
@@ -25,5 +25,7 @@ export const manufacturableThingKinds =
       return unit;
     },
     afterBuilt: coreManufacturableThingKinds.unit.afterBuilt,
+    serialize: (prototype) => prototype.serialize(),
+    deserialize: (saveData) => TitanPrototype.fromData(saveData),
   }
 };

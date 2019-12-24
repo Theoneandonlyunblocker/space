@@ -4,9 +4,10 @@ import { Item } from "../items/Item";
 import { UnitTemplate } from "../templateinterfaces/UnitTemplate";
 import { Unit } from "../unit/Unit";
 import { Fleet } from "../fleets/Fleet";
+import { activeModuleData } from "../app/activeModuleData";
 
 
-const item: ManufacturableThingKind<ItemTemplate, Item> =
+const item: ManufacturableThingKind<ItemTemplate, Item, string> =
 {
   key: "item",
   buildFromTemplate: (itemTemplate, manufactory) =>
@@ -20,9 +21,11 @@ const item: ManufacturableThingKind<ItemTemplate, Item> =
       manufactory.owner.addItem(builtItem);
       builtItem.modifiers.handleConstruct();
     });
-  }
+  },
+  serialize: (template) => template.type,
+  deserialize: (templateType) => activeModuleData.templates.Items[templateType],
 };
-const unit: ManufacturableThingKind<UnitTemplate, Unit> =
+const unit: ManufacturableThingKind<UnitTemplate, Unit, string> =
 {
   key: "unit",
   buildFromTemplate: (unitTemplate, manufactory) =>
@@ -50,7 +53,9 @@ const unit: ManufacturableThingKind<UnitTemplate, Unit> =
       manufactory.owner.addUnit(builtUnit);
       builtUnit.mapLevelModifiers.handleConstruct();
     });
-  }
+  },
+  serialize: (template) => template.type,
+  deserialize: (templateType) => activeModuleData.templates.Units[templateType],
 };
 
 export const coreManufacturableThingKinds =

@@ -77,11 +77,7 @@ export const titans: GameModule<TitansModuleSaveData> =
     // moduleData.templateCollectionsWithUnlockables.titanChassis = customModuleData.titanChassis;
     // moduleData.templateCollectionsWithUnlockables.titanComponents = customModuleData.titanComponents;
 
-    moduleData.manufacturableThingKinds.titanFromPrototype =
-    {
-      kind: manufacturableThingKinds.titanFromPrototype,
-      templates: customModuleData.titanPrototypes,
-    };
+    moduleData.manufacturableThingKinds.titanFromPrototype = manufacturableThingKinds.titanFromPrototype;
 
     registerMapLevelModifiers(moduleData);
 
@@ -119,7 +115,7 @@ export const titans: GameModule<TitansModuleSaveData> =
       saveData.titanPrototypesPerPlayer,
       prototypeSaveData =>
       {
-        const prototype = TitanPrototype.fromData(moduleData, prototypeSaveData);
+        const prototype = TitanPrototype.fromData(prototypeSaveData);
         titansModuleData.titanPrototypes[prototype.type] = prototype;
 
         return prototype;

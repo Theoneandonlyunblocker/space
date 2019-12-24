@@ -1,6 +1,5 @@
 import { TitanChassisTemplate } from "./TitanChassisTemplate";
 import { TitanComponentTemplate } from "./TitanComponentTemplate";
-import { ModuleData } from "core/src/modules/ModuleData";
 import { NonCoreModuleData } from "./nonCoreModuleData";
 import { ManufacturableThing } from "core/src/templateinterfaces/ManufacturableThing";
 import { Resources } from "core/src/player/PlayerResources";
@@ -53,9 +52,9 @@ export class TitanPrototype implements ManufacturableThing
     );
   }
 
-  public static fromData(moduleData: ModuleData, saveData: TitanPrototypeSaveData): TitanPrototype
+  public static fromData(saveData: TitanPrototypeSaveData): TitanPrototype
   {
-    const titansModuleData = (moduleData.nonCoreData.titans as NonCoreModuleData);
+    const titansModuleData = (activeModuleData.nonCoreData.titans as NonCoreModuleData);
 
     return new TitanPrototype(
     {

@@ -5,6 +5,6 @@ export interface ManufactorySaveData
   buildQueue:
   {
     kind: string;
-    templateType: string;
+    data: any;
   }[];
 }

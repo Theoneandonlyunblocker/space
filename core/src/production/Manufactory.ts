@@ -17,20 +17,20 @@ import { getBuildableUnitsForRace } from "./getBuildableUnitsForRace";
 import { getBuildableItemsForRace } from "./getBuildableItemsForRace";
 
 
-interface ManufacturableThingWithKind<Template extends ManufacturableThing, BuiltThing>
+interface ManufacturableThingWithKind<Template extends ManufacturableThing, BuiltThing, SaveData>
 {
-  kind: ManufacturableThingKind<Template, BuiltThing>;
+  kind: ManufacturableThingKind<Template, BuiltThing, SaveData>;
   template: Template;
 }
-interface BuiltThingsWithKind<Template extends ManufacturableThing, BuiltThing>
+interface BuiltThingsWithKind<Template extends ManufacturableThing, BuiltThing, SaveData>
 {
-  kind: ManufacturableThingKind<Template, BuiltThing>;
+  kind: ManufacturableThingKind<Template, BuiltThing, SaveData>;
   builtThings: BuiltThing[];
 }
 export class Manufactory
 {
   public star: Star;
-  public buildQueue: ManufacturableThingWithKind<any, any>[] = [];
+  public buildQueue: ManufacturableThingWithKind<any, any, any>[] = [];
   public capacity: number;
   public maxCapacity: number;
   public get owner(): Player
@@ -63,13 +63,12 @@ export class Manufactory
 
     this.buildQueue = data.buildQueue.map(savedThing =>
     {
-      const kind = activeModuleData.manufacturableThingKinds[savedThing.kind].kind;
-      const templates = activeModuleData.manufacturableThingKinds[savedThing.kind].templates;
+      const kind = activeModuleData.manufacturableThingKinds[savedThing.kind];
 
       return(
       {
         kind: kind,
-        template: templates[savedThing.templateType],
+        template: kind.deserialize(savedThing.data),
       });
     });
   }
@@ -77,7 +76,7 @@ export class Manufactory
   {
     return this.buildQueue.length >= this.capacity;
   }
-  public addThingToQueue<T extends ManufacturableThing, B>(template: T, kind: ManufacturableThingKind<T, B>): void
+  public addThingToQueue<T extends ManufacturableThing, B, S>(template: T, kind: ManufacturableThingKind<T, B, S>): void
   {
     this.buildQueue.push({kind: kind, template: template});
     this.owner.removeResources(template.buildCost);
@@ -99,7 +98,7 @@ export class Manufactory
   {
     const builtThingsByKind:
     {
-      [key: string]: BuiltThingsWithKind<any, any>;
+      [key: string]: BuiltThingsWithKind<any, any, any>;
     } = {};
 
     const toBuild = this.buildQueue.slice(0, this.capacity);
@@ -191,7 +190,7 @@ export class Manufactory
       return(
       {
         kind: manufacturableThingWithKind.kind.key,
-        templateType: manufacturableThingWithKind.template.type,
+        data: manufacturableThingWithKind.kind.serialize(manufacturableThingWithKind.template),
       });
     });
 

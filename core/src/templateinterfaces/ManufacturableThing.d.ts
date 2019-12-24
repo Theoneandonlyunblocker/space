@@ -13,10 +13,13 @@ export interface ManufacturableThing extends UnlockableThing
 
 export interface ManufacturableThingKind<
   Template extends ManufacturableThing,
-  BuiltThing
+  BuiltThing,
+  SaveData
 >
 {
   key: string;
   buildFromTemplate: (template: Template, manufactory: Manufactory) => BuiltThing;
   afterBuilt: (builtThings: BuiltThing[], manufactory: Manufactory) => void;
+  serialize: (template: Template) => SaveData;
+  deserialize: (saveData: SaveData) => Template;
 }
