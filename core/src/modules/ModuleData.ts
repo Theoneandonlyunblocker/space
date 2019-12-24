@@ -42,9 +42,7 @@ import { CustomModifierAdjustments } from "../maplevelmodifiers/CustomModifierAd
 import { TriggeredScriptCollection } from "../triggeredscripts/TriggeredScriptCollection";
 import { allDefaultScripts } from "../triggeredscripts/defaultScripts/allDefaultScripts";
 import { AllCoreScripts } from "../triggeredscripts/AllCoreScriptsWithData";
-import { ManufacturableThing, ManufacturableThingKind } from "../templateinterfaces/ManufacturableThing";
-import { Item } from "../items/Item";
-import { Unit } from "../unit/Unit";
+import { ManufacturableThingKind } from "../templateinterfaces/ManufacturableThing";
 import { coreManufacturableThingKinds } from "../production/coreManufacturableThingKinds";
 
 // tslint:disable:no-any
@@ -82,11 +80,6 @@ export type TechnologyUnlocksByLevel =
 type TechnologyUnlocksByLevelByTech =
 {
   [technologyKey: string]: TechnologyUnlocksByLevel;
-};
-type ManufacturableThingKindWithTemplates<Template extends ManufacturableThing, BuiltThing> =
-{
-  kind: ManufacturableThingKind<Template, BuiltThing>;
-  templates: TemplateCollection<Template>;
 };
 
 export class ModuleData
@@ -142,21 +135,10 @@ export class ModuleData
   };
   public readonly manufacturableThingKinds:
   {
-    [key: string]: ManufacturableThingKindWithTemplates<any, any>;
-    item: ManufacturableThingKindWithTemplates<ItemTemplate, Item>;
-    unit: ManufacturableThingKindWithTemplates<UnitTemplate, Unit>;
+    [key: string]: ManufacturableThingKind<any, any, any>;
   } =
   {
-    item:
-    {
-      kind: coreManufacturableThingKinds.item,
-      templates: this.templates.Items,
-    },
-    unit:
-    {
-      kind: coreManufacturableThingKinds.unit,
-      templates: this.templates.Units,
-    },
+    ...coreManufacturableThingKinds,
   };
   // for content not used by the core game, but used modularly across modules
   // f.ex. modular ui components
