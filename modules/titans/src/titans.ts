@@ -15,42 +15,16 @@ import { GameModuleInitializationPhase } from "core/src/modules/GameModuleInitia
 import { cssSources } from "../assets/assets";
 import { buildingTemplates } from "./buildings/buildingTemplates";
 import { manufacturableThingKinds } from "./manufacturableThingKinds";
-import { TitanPrototypeSaveData, TitanPrototype } from "./TitanPrototype";
-import { getBuildablePrototypes } from "./getBuildablePrototypes";
+import {  TitanPrototype } from "./TitanPrototype";
 
 
-type PerPlayerCollection<T> =
-{
-  [playerId: number]:
-  {
-    [key: string]: T;
-  };
-};
-type TitanPrototypeSaveDataPerPlayer = PerPlayerCollection<TitanPrototypeSaveData>;
 type TitansModuleSaveData =
 {
   idGenerators:
   {
     titanPrototype: number;
   };
-  titanPrototypesPerPlayer: TitanPrototypeSaveDataPerPlayer;
 };
-function mapPerPlayerCollection<I, O>(input: PerPlayerCollection<I>, mapFN: (input: I) => O): PerPlayerCollection<O>
-{
-  return Object.keys(input).reduce((allPlayers, playerKey) =>
-  {
-    const inputForPlayer = input[playerKey];
-
-    allPlayers[playerKey] = Object.keys(inputForPlayer).reduce((allInputsForPlayer, inputKey) =>
-    {
-      allInputsForPlayer[inputKey] = mapFN(inputForPlayer[inputKey]);
-
-      return allInputsForPlayer;
-    }, <{[key: string]: O}>{});
-
-    return allPlayers;
-  }, <PerPlayerCollection<O>>{});
-}
 
 export const titans: GameModule<TitansModuleSaveData> =
 {
@@ -73,10 +47,6 @@ export const titans: GameModule<TitansModuleSaveData> =
     const customModuleData = createNonCoreModuleData();
     moduleData.nonCoreData.titans = customModuleData;
 
-    // unneeded, as these are added to moduleData.templates.units / items
-    // moduleData.templateCollectionsWithUnlockables.titanChassis = customModuleData.titanChassis;
-    // moduleData.templateCollectionsWithUnlockables.titanComponents = customModuleData.titanComponents;
-
     moduleData.manufacturableThingKinds.titanFromPrototype = manufacturableThingKinds.titanFromPrototype;
 
     registerMapLevelModifiers(moduleData);
@@ -90,7 +60,7 @@ export const titans: GameModule<TitansModuleSaveData> =
       {
         return localize("manufactureTitansButton");
       },
-      getManufacturableThings: manufactory => getBuildablePrototypes(manufactory),
+      getManufacturableThings: manufactory => [],
       render: props => TitanManufacturingOverview(props),
     };
   },
@@ -100,10 +70,6 @@ export const titans: GameModule<TitansModuleSaveData> =
 
     return {
       idGenerators: {...titansModuleData.idGenerators},
-      titanPrototypesPerPlayer: mapPerPlayerCollection(
-        titansModuleData.titanPrototypesPerPlayer,
-        prototype => prototype.serialize(),
-      ),
     };
   },
   deserializeModuleSpecificData: (moduleData, saveData) =>
@@ -111,15 +77,5 @@ export const titans: GameModule<TitansModuleSaveData> =
     const titansModuleData = (moduleData.nonCoreData.titans as NonCoreModuleData);
 
     titansModuleData.idGenerators = {...saveData.idGenerators};
-    titansModuleData.titanPrototypesPerPlayer = mapPerPlayerCollection(
-      saveData.titanPrototypesPerPlayer,
-      prototypeSaveData =>
-      {
-        const prototype = TitanPrototype.fromData(prototypeSaveData);
-        titansModuleData.titanPrototypes[prototype.type] = prototype;
-
-        return prototype;
-      },
-    );
   },
 };

@@ -2,13 +2,11 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import { Star } from "core/src/map/Star";
-import {ManufacturableThingsList} from "modules/defaultui/src/uicomponents/production/ManufacturableThingsList";
 import {DefaultWindow} from "modules/defaultui/src/uicomponents/windows/DefaultWindow";
 import { Player } from "core/src/player/Player";
 import { localize } from "modules/titans/localization/localize";
 import { useTitanAssemblingCapacity } from "./useTitanAssemblingCapacity";
 import { titanForge } from "../buildings/templates/titanForge";
-import { manufacturableThingKinds } from "../manufacturableThingKinds";
 import { TitanDesignOverview } from "./TitanDesignOverview";
 import { TitanPrototype } from "../TitanPrototype";
 
@@ -26,60 +24,18 @@ export interface PropTypes extends React.Props<any>
 const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const assemblingCapacity = useTitanAssemblingCapacity(props.selectedLocation);
+  const canAssemble = props.canManufacture && assemblingCapacity > 0;
 
-  const [assemblingWindowIsOpen, setAssemblingWindowOpenness] = React.useState<boolean>(false);
-  function toggleAssemblingWindow(): void
+  const [designingWindowIsOpen, setDesigningWindowOpenness] = React.useState<boolean>(false);
+  function toggledesigningWindow(): void
   {
-    if (assemblingWindowIsOpen)
+    if (designingWindowIsOpen)
     {
-      setAssemblingWindowOpenness(false);
+      setDesigningWindowOpenness(false);
     }
     else
     {
-      setAssemblingWindowOpenness(true);
-    }
-  }
-
-  function addComponentToBuildQueue(component: TitanPrototype): void
-  {
-    props.selectedLocation.manufactory.addThingToQueue(component, manufacturableThingKinds.titanFromPrototype);
-    props.triggerParentUpdate();
-  }
-
-  function makeActionButton(): React.ReactElement<any>
-  {
-    const canAssemble = props.canManufacture && assemblingCapacity > 0;
-
-    const baseProps: React.HTMLAttributes<HTMLButtonElement> =
-    {
-      className: "titan-manufacturing-overview-action-button",
-    };
-
-    if (canAssemble)
-    {
-      return ReactDOMElements.button(
-      {
-        ...baseProps,
-        onClick: () =>
-        {
-          toggleAssemblingWindow();
-        }
-      },
-        localize("design"),
-      );
-    }
-    else
-    {
-      return ReactDOMElements.button(
-      {
-        ...baseProps,
-        onClick: () =>
-        {
-          props.player.buildBuilding(titanForge, props.selectedLocation);
-        },
-      },
-        localize("buildTitanForge"),
-      );
+      setDesigningWindowOpenness(true);
     }
   }
 
@@ -90,35 +46,44 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
     },
       ReactDOMElements.div(
       {
-        className: "production-list-header",
+        className: "titan-manufacturing-overview-action",
       },
-        ReactDOMElements.div(
-        {
-          className: "titan-manufacturing-overview-action",
-        },
-          makeActionButton(),
-          !assemblingWindowIsOpen ? null :
-            DefaultWindow(
+        !canAssemble ?
+          ReactDOMElements.button(
+          {
+            className: "titan-manufacturing-overview-action-button",
+            onClick: () =>
             {
-              title: localize("designTitan"),
-              handleClose: () => setAssemblingWindowOpenness(false),
+              props.player.buildBuilding(titanForge, props.selectedLocation);
             },
-              TitanDesignOverview(
-              {
-                player: props.player,
-                manufactory: props.selectedLocation.manufactory,
-                editingPrototypeName: undefined,
-              }),
-            ),
-        ),
+          },
+            localize("buildTitanForge"),
+          ) :
+          ReactDOMElements.button(
+          {
+            className: "titan-manufacturing-overview-action-button",
+            onClick: () =>
+            {
+              toggledesigningWindow();
+            }
+          },
+            localize("designTitan"),
+          ),
+        !designingWindowIsOpen ? null :
+          DefaultWindow(
+          {
+            title: localize("designTitan"),
+            handleClose: () => setDesigningWindowOpenness(false),
+          },
+            TitanDesignOverview(
+            {
+              player: props.player,
+              manufactory: props.selectedLocation.manufactory,
+              editingPrototypeName: undefined,
+              triggerParentUpdate: props.triggerParentUpdate,
+            }),
+          ),
       ),
-      ManufacturableThingsList(
-      {
-        manufacturableThings: props.manufacturableThings,
-        onClick: (props.canManufacture ? addComponentToBuildQueue : null),
-        showCost: true,
-        player: props.player,
-      }),
     )
   );
 };

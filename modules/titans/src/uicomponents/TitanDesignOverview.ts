@@ -14,8 +14,7 @@ import { ResourceCost } from "modules/defaultui/src/uicomponents/resources/Resou
 import { getBuildableChassis } from "../getBuildableChassis";
 import { localize as localizeGeneric } from "modules/defaultui/localization/localize";
 import { localize } from "modules/titans/localization/localize";
-import { activeModuleData } from "core/src/app/activeModuleData";
-import { NonCoreModuleData } from "../nonCoreModuleData";
+import { manufacturableThingKinds } from "../manufacturableThingKinds";
 
 
 type ComponentsState =
@@ -105,6 +104,7 @@ export interface PropTypes extends React.Props<any>
   player: Player;
   manufactory: Manufactory;
   editingPrototypeName: string | undefined;
+  triggerParentUpdate: () => void;
 }
 
 const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =>
@@ -117,7 +117,6 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
     slots: {},
   });
   const [prototypeName, setPrototypeName] = React.useState<string>(undefined);
-  const [lastSavedPrototypeName, setLastSavedPrototypeName] = React.useState<string>(props.editingPrototypeName);
 
   function setSelectedChassis(chassis: TitanChassisTemplate): void
   {
@@ -130,18 +129,6 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
     setPrototypeName(chassis.displayName);
     updateComponentsBySlot({type: "changeChassis", chassis: chassis, player: props.player});
     updateComponentsBySlot({type: "clearAll", chassis: chassis});
-  }
-  function saveCurrentPrototype(nameToSaveAs: string = prototypeName): void
-  {
-    const prototypesPerPlayer = (activeModuleData.nonCoreData.titans as NonCoreModuleData).titanPrototypesPerPlayer;
-    if (!prototypesPerPlayer[props.player.id])
-    {
-      prototypesPerPlayer[props.player.id] = {};
-    }
-
-    prototypesPerPlayer[props.player.id][nameToSaveAs] = componentsBySlot.dummyUnit.getPrototype(nameToSaveAs);
-
-    setLastSavedPrototypeName(nameToSaveAs);
   }
 
   return(
@@ -216,23 +203,15 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
             ReactDOMElements.button(
             {
               className: "titan-design-info-action",
-              onClick: () => saveCurrentPrototype(),
-            },
-              localizeGeneric("save_action").toString(),
-            ),
-            !lastSavedPrototypeName ? null :
-              ReactDOMElements.button(
+              onClick: () =>
               {
-                className: "titan-design-info-action",
-                disabled: prototypeName !== lastSavedPrototypeName,
-                onClick: () =>
-                {
-                  setPrototypeName(prototypeName + localize("copySuffix"));
-                  saveCurrentPrototype(prototypeName + localize("copySuffix"));
-                }
+                const prototype = componentsBySlot.dummyUnit.getPrototype(prototypeName);
+                props.manufactory.addThingToQueue(prototype, manufacturableThingKinds.titanFromPrototype);
+                props.triggerParentUpdate();
               },
-                localize("saveCopy"),
-              ),
+            },
+              localize("addToBuildQueue"),
+            ),
           ),
       )
     )
