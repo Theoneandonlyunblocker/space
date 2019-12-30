@@ -11,6 +11,7 @@ import { TitanComponentTemplate, TitanComponentTemplatesBySlot } from "../TitanC
 import { DummyUnitForTitanDesign } from "../DummyUnitForTitanDesign";
 import { TitanChassisStats } from "./TitanChassisStats";
 import { ResourceCost } from "modules/defaultui/src/uicomponents/resources/ResourceCost";
+import { UnitSprite } from "modules/defaultui/src/uicomponents/unit/UnitSprite";
 import { getBuildableChassis } from "../getBuildableChassis";
 import { localize as localizeGeneric } from "modules/defaultui/localization/localize";
 import { localize } from "modules/titans/localization/localize";
@@ -195,6 +196,16 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
             health: componentsBySlot.dummyUnit.getMinAndMaxPossibleHealth(),
             attributes: componentsBySlot.dummyUnit.getMinAndMaxPossibleAttributes(),
           }),
+        !selectedChassis ? null :
+          ReactDOMElements.div(
+          {
+            className: "titan-chassis-sprite",
+          },
+            UnitSprite(
+            {
+              unit: componentsBySlot.dummyUnit.getUnit(),
+            }),
+          ),
         !selectedChassis ? null :
           ReactDOMElements.div(
           {

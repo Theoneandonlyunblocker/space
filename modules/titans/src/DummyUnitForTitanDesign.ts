@@ -23,6 +23,10 @@ export class DummyUnitForTitanDesign
     this.highStatsUnit = DummyUnitForTitanDesign.makeUnit(chassis, player, "high");
   }
 
+  public getUnit(): Unit
+  {
+    return this.lowStatsUnit;
+  }
   public getItemsAndEmptySlots(): TitanComponentTemplatesBySlot
   {
     const items = this.lowStatsUnit.items.getItemsAndEmptySlots();
