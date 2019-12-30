@@ -8,6 +8,8 @@ import {AbilityBase} from "core/src/templateinterfaces/AbilityBase";
 import {AbilityList} from "./AbilityList";
 import {UnitExperience} from "./UnitExperience";
 import {UnitItems} from "./UnitItems";
+import { UnitSprite } from "../unit/UnitSprite";
+import { UnitPortrait } from "../unit/UnitPortrait";
 
 
 export interface PropTypes extends React.Props<any>
@@ -53,46 +55,44 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
       {
         className: "menu-unit-info",
       },
+        UnitSprite(
+        {
+          unit: this.props.unit,
+        }),
+        UnitPortrait(
+        {
+          imageSrc: this.props.unit.portrait.getImageSrc(),
+        }),
         ReactDOMElements.div(
         {
-          className: "menu-unit-info-left",
+          className: "menu-unit-info-name",
+        }, unit.name.toString()),
+        ReactDOMElements.div(
+        {
+          className: "menu-unit-info-abilities",
         },
-          ReactDOMElements.div(
+          AbilityList(
           {
-            className: "menu-unit-info-name",
-          }, unit.name.toString()),
-          ReactDOMElements.div(
-          {
-            className: "menu-unit-info-abilities",
-          },
-            AbilityList(
-            {
-              abilities: unitAbilities,
-            }),
-          ),
-          UnitExperience(
-          {
-            experienceForCurrentLevel: unit.experienceForCurrentLevel,
-            experienceToNextLevel: unit.getExperienceToNextLevel(),
-            unit: unit,
-            onUnitUpgrade: this.handleUnitUpgrade,
+            abilities: unitAbilities,
           }),
         ),
-        ReactDOMElements.div(
+        UnitExperience(
         {
-          className: "menu-unit-info-items-wrapper",
-        },
-          UnitItems(
-          {
-            itemsBySlot: unit.items.getItemsAndEmptySlots(),
+          experienceForCurrentLevel: unit.experienceForCurrentLevel,
+          experienceToNextLevel: unit.getExperienceToNextLevel(),
+          unit: unit,
+          onUnitUpgrade: this.handleUnitUpgrade,
+        }),
+        UnitItems(
+        {
+          itemsBySlot: unit.items.getItemsAndEmptySlots(),
 
-            onMouseUp: this.props.onItemSlotMouseUp,
-            isDraggable: this.props.itemsAreDraggable,
-            onDragStart: this.props.onItemDragStart,
-            onDragEnd: this.props.onItemDragEnd,
-            currentDragItem: this.props.currentDragItem,
-          }),
-        ),
+          onMouseUp: this.props.onItemSlotMouseUp,
+          isDraggable: this.props.itemsAreDraggable,
+          onDragStart: this.props.onItemDragStart,
+          onDragEnd: this.props.onItemDragEnd,
+          currentDragItem: this.props.currentDragItem,
+        }),
       )
     );
   }
