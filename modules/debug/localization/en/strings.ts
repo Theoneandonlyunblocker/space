@@ -12,4 +12,6 @@ export const strings =
   debugAbility_description: "who knows what its going to do today",
   debugChassis_displayName: "Debug Chassis",
   debugChassis_description: "test",
+  debugChassis2_displayName: "Debug Chassis2",
+  debugChassis2_description: "test2",
 };

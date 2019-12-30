@@ -8,7 +8,7 @@ import { debugItem } from "./items";
 import { uiScenes } from "./uiScenes";
 import { debugAbility } from "./abilities";
 import { addTitanChassisToModuleData } from "modules/titans/src/nonCoreModuleData";
-import { debugChassis } from "./titanChassis";
+import { debugChassis, debugChassis2 } from "./titanChassis";
 
 
 export const debug: GameModule =
@@ -43,6 +43,7 @@ export const debug: GameModule =
     addTitanChassisToModuleData(moduleData,
     {
       [debugChassis.type]: debugChassis,
+      [debugChassis2.type]: debugChassis2,
     });
   },
 };

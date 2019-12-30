@@ -1,6 +1,6 @@
 import { TitanChassisTemplate } from "modules/titans/src/TitanChassisTemplate";
 import * as unitArchetypes from "modules/common/unitArchetypes";
-import {makeDefaultUnitDrawingFunctionForPlaceholder} from "modules/space/src/units/defaultUnitDrawingFunction";
+import {makeDefaultUnitDrawingFunction} from "modules/space/src/units/defaultUnitDrawingFunction";
 
 import
 {
@@ -27,12 +27,12 @@ export const debugChassis: TitanChassisTemplate =
     return localize("debugChassis_description");
   },
   archetype: unitArchetypes.combat,
-  unitDrawingFN: makeDefaultUnitDrawingFunctionForPlaceholder(
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
   {
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
   },
-    "debugChassis",
+    () => "debugShip.png",
   ),
   isSquadron: false,
   buildCost:
@@ -51,6 +51,70 @@ export const debugChassis: TitanChassisTemplate =
     defence: 9,
     intelligence: 9,
     speed: 9,
+  },
+  possibleAbilities:
+  [
+    {
+      flatProbability: 1,
+      probabilityItems:
+      [
+        rangedAttack,
+        standBy,
+      ],
+    },
+  ],
+  itemSlots:
+  {
+    [itemSlot.low]: 1,
+    [itemSlot.mid]: 1,
+    [itemSlot.high]: 1,
+  },
+  distributionData:
+  {
+    weight: 0,
+    distributionGroups: [],
+  },
+  availabilityData:
+  {
+    flags: [coreAvailabilityFlags.alwaysInDebugMode],
+  },
+};
+export const debugChassis2: TitanChassisTemplate =
+{
+  type: "debugChassis2",
+  get displayName()
+  {
+    return localize("debugChassis2_displayName");
+  },
+  get description()
+  {
+    return localize("debugChassis2_description");
+  },
+  archetype: unitArchetypes.combat,
+  unitDrawingFN: makeDefaultUnitDrawingFunction(
+  {
+    anchor: {x: 0.5, y: 0.5},
+    attackOriginPoint: {x: 0.75, y: 0.5},
+  },
+    () => "shieldBoat.png",
+  ),
+  isSquadron: false,
+  buildCost:
+{
+  [moneyResource.type]: 0,
+},
+  getIconSrc: getAssetSrc.bind(null, "placeHolder"),
+  maxHealthLevel: 1,
+  maxMovePoints: 1,
+  maxOffensiveBattlesPerTurn: 1,
+  visionRange: 1,
+  detectionRange: 0,
+  attributeLevels:
+  {
+    attack: 1,
+    defence: 1,
+    intelligence: 1,
+    speed: 1,
   },
   possibleAbilities:
   [
