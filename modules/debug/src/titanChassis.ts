@@ -1,6 +1,6 @@
 import { TitanChassisTemplate } from "modules/titans/src/TitanChassisTemplate";
 import * as unitArchetypes from "modules/common/unitArchetypes";
-import {makeDefaultUnitDrawingFunction} from "modules/space/src/units/defaultUnitDrawingFunction";
+import {makeSingleUnitDrawingFunction} from "modules/space/src/units/singleUnitDrawingFunction";
 
 import
 {
@@ -27,7 +27,7 @@ export const debugChassis: TitanChassisTemplate =
     return localize("debugChassis_description");
   },
   archetype: unitArchetypes.combat,
-  unitDrawingFN: makeDefaultUnitDrawingFunction(
+  unitDrawingFN: makeSingleUnitDrawingFunction(
   {
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
@@ -91,7 +91,7 @@ export const debugChassis2: TitanChassisTemplate =
     return localize("debugChassis2_description");
   },
   archetype: unitArchetypes.combat,
-  unitDrawingFN: makeDefaultUnitDrawingFunction(
+  unitDrawingFN: makeSingleUnitDrawingFunction(
   {
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},

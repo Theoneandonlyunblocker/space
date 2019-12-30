@@ -2,7 +2,6 @@ import * as PIXI from "pixi.js";
 
 import {UnitDrawingFunction} from "core/src/templateinterfaces/UnitDrawingFunction";
 
-
 import {UnitDrawingFunctionData} from "core/src/unit/UnitDrawingFunctionData";
 import {Point} from "core/src/math/Point";
 import
@@ -12,12 +11,9 @@ import
 } from "core/src/generic/utility";
 import {Unit} from "core/src/unit/Unit";
 import {VfxParams} from "core/src/templateinterfaces/VfxParams";
+import { generatePlaceholderTextureForVfx } from "./generatePlaceholderTextureForVfx";
+import { UnitSpriteData } from "./UnitSpriteData";
 
-export interface UnitSpriteData
-{
-  anchor: Point;
-  attackOriginPoint: Point;
-}
 
 export function makeDefaultUnitDrawingFunction(spriteData: UnitSpriteData, getImageSrc: () => string): UnitDrawingFunction
 {
@@ -32,33 +28,18 @@ export function makeDefaultUnitDrawingFunctionForPlaceholder(spriteData: UnitSpr
 {
   return (unit: Unit, vfxParams: VfxParams) =>
   {
-    const text = new PIXI.Text(placeholderText,
-    {
-      fontSize: 20,
-      fill: "#FFFFFF",
-      stroke: "#000000",
-      strokeThickness: 3,
-    });
-
-    const wrappingContainer = new PIXI.Container();
-    wrappingContainer.addChild(text);
-
-    if (!vfxParams.facingRight)
-    {
-      text.scale.x *= -1;
-    }
-
-    const texture = vfxParams.renderer.generateTexture(
-      wrappingContainer,
-      PIXI.settings.SCALE_MODE,
-      1,
-    );
+    const texture = generatePlaceholderTextureForVfx(vfxParams, placeholderText);
 
     return defaultUnitDrawingFunction(spriteData, texture, unit, vfxParams);
   };
 }
 
-function defaultUnitDrawingFunction(spriteData: UnitSpriteData, texture: PIXI.Texture, unit: Unit, vfxParams: VfxParams)
+function defaultUnitDrawingFunction(
+  spriteData: UnitSpriteData,
+  texture: PIXI.Texture,
+  unit: Unit,
+  vfxParams: VfxParams,
+): UnitDrawingFunctionData
 {
   const container = new PIXI.Container();
 
@@ -185,7 +166,6 @@ function defaultUnitDrawingFunction(spriteData: UnitSpriteData, texture: PIXI.Te
 
     x = Math.round(translated.x);
     y = Math.round(translated.y);
-
 
     const attackOriginPoint =
     {
