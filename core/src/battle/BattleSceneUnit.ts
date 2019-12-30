@@ -294,7 +294,7 @@ export class BattleSceneUnit
 
   private makeUnitSprite(unit: Unit, vfxParams: VfxParams): void
   {
-    return unit.drawBattleScene(vfxParams);
+    unit.drawBattleScene(vfxParams);
   }
   private addUnitSprite(sprite: PIXI.DisplayObject): void
   {
