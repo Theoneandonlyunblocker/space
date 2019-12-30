@@ -9,6 +9,8 @@ import { useTitanAssemblingCapacity } from "./useTitanAssemblingCapacity";
 import { titanForge } from "../buildings/templates/titanForge";
 import { TitanDesignOverview } from "./TitanDesignOverview";
 import { TitanPrototype } from "../TitanPrototype";
+import { ResourceCost } from "modules/defaultui/src/uicomponents/resources/ResourceCost";
+import { useResources } from "modules/defaultui/src/uicomponents/resources/useResources";
 
 
 // tslint:disable-next-line:no-any
@@ -23,8 +25,13 @@ export interface PropTypes extends React.Props<any>
 
 const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = props =>
 {
+  // TODO 2019.12.30 | maybe pass availableResources instead of missingResources to resourceCost to avoid shit like this
+  // @ts-ignore
+  const playerResources = useResources(props.player);
+
   const assemblingCapacity = useTitanAssemblingCapacity(props.selectedLocation);
   const canAssemble = props.canManufacture && assemblingCapacity > 0;
+  const canBuildTitanForge = props.canManufacture && props.player.canAfford(titanForge.buildCost);
 
   const [designingWindowIsOpen, setDesigningWindowOpenness] = React.useState<boolean>(false);
   function toggledesigningWindow(): void
@@ -52,12 +59,22 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
           ReactDOMElements.button(
           {
             className: "titan-manufacturing-overview-action-button",
+            disabled: !canBuildTitanForge,
+            title: `${titanForge.description}${!props.canManufacture ?
+              "\n\n" + localize("mustHaveManufactoryBeforeTitanForge") :
+              ""
+            }`,
             onClick: () =>
             {
               props.player.buildBuilding(titanForge, props.selectedLocation);
             },
           },
             localize("buildTitanForge"),
+            ResourceCost(
+            {
+              cost: titanForge.buildCost,
+              missingResources: canBuildTitanForge ? null : props.player.getMissingResourcesFor(titanForge.buildCost),
+            }),
           ) :
           ReactDOMElements.button(
           {
