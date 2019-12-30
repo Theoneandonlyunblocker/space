@@ -15,26 +15,26 @@ import { generatePlaceholderTextureForVfx } from "./generatePlaceholderTextureFo
 import { UnitSpriteData } from "./UnitSpriteData";
 
 
-export function makeDefaultUnitDrawingFunction(spriteData: UnitSpriteData, getImageSrc: () => string): UnitDrawingFunction
+export function makeSquadronDrawingFunction(spriteData: UnitSpriteData, getImageSrc: () => string): UnitDrawingFunction
 {
   return (unit: Unit, vfxParams: VfxParams) =>
   {
     const texture = PIXI.Texture.from(getImageSrc());
 
-    return defaultUnitDrawingFunction(spriteData, texture, unit, vfxParams);
+    return squadronDrawingFunction(spriteData, texture, unit, vfxParams);
   };
 }
-export function makeDefaultUnitDrawingFunctionForPlaceholder(spriteData: UnitSpriteData, placeholderText: string): UnitDrawingFunction
+export function makeSquadronDrawingFunctionForPlaceholder(spriteData: UnitSpriteData, placeholderText: string): UnitDrawingFunction
 {
   return (unit: Unit, vfxParams: VfxParams) =>
   {
     const texture = generatePlaceholderTextureForVfx(vfxParams, placeholderText);
 
-    return defaultUnitDrawingFunction(spriteData, texture, unit, vfxParams);
+    return squadronDrawingFunction(spriteData, texture, unit, vfxParams);
   };
 }
 
-function defaultUnitDrawingFunction(
+function squadronDrawingFunction(
   spriteData: UnitSpriteData,
   texture: PIXI.Texture,
   unit: Unit,

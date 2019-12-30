@@ -2,7 +2,7 @@ import { UnitTemplate } from "core/src/templateinterfaces/UnitTemplate";
 import { localize } from "modules/space/localization/localize";
 import * as unitArchetypes from "modules/common/unitArchetypes";
 import {getAssetSrc} from "modules/common/assets";
-import { makeDefaultUnitDrawingFunctionForPlaceholder } from "../defaultUnitDrawingFunction";
+import { makeSquadronDrawingFunctionForPlaceholder } from "../squadronDrawingFunction";
 import { moneyResource } from "modules/money/src/moneyResource";
 import
 {
@@ -26,7 +26,7 @@ export const miningBarge: UnitTemplate =
   },
   archetype: unitArchetypes.economic,
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),
-  unitDrawingFN: makeDefaultUnitDrawingFunctionForPlaceholder(
+  unitDrawingFN: makeSquadronDrawingFunctionForPlaceholder(
   {
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},

@@ -1,7 +1,7 @@
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "modules/common/unitArchetypes";
-import {makeDefaultUnitDrawingFunction} from "../defaultUnitDrawingFunction";
+import {makeSquadronDrawingFunction} from "../squadronDrawingFunction";
 
 import
 {
@@ -28,7 +28,7 @@ export const scout: UnitTemplate =
     return localize("scout_description").toString();
   },
   archetype: unitArchetypes.scouting,
-  unitDrawingFN: makeDefaultUnitDrawingFunction(
+  unitDrawingFN: makeSquadronDrawingFunction(
   {
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
