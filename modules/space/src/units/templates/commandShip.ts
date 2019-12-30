@@ -1,7 +1,7 @@
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "modules/common/unitArchetypes";
-import {makeSquadronDrawingFunction} from "../squadronDrawingFunction";
+import {makeSingleUnitDrawingFunction} from "../singleUnitDrawingFunction";
 
 import
 {
@@ -33,7 +33,7 @@ export const commandShip: UnitTemplate =
     return localize("commandShip_description").toString();
   },
   archetype: unitArchetypes.utility,
-  unitDrawingFN: makeSquadronDrawingFunction(
+  unitDrawingFN: makeSingleUnitDrawingFunction(
   {
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},

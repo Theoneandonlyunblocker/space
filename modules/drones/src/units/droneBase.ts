@@ -1,7 +1,7 @@
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
 import * as unitArchetypes from "modules/common/unitArchetypes";
-import {makeSquadronDrawingFunctionForPlaceholder} from "modules/space/src/units/squadronDrawingFunction";
+import {makeSingleUnitDrawingFunctionForPlaceholder} from "modules/space/src/units/singleUnitDrawingFunction";
 
 import * as CommonAbility from "modules/space/src/abilities/abilities";
 import {distributionGroups} from "modules/common/distributionGroups";
@@ -28,7 +28,7 @@ export const droneBase: UnitTemplate =
   },
   archetype: unitArchetypes.utility,
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),
-  unitDrawingFN: makeSquadronDrawingFunctionForPlaceholder(
+  unitDrawingFN: makeSingleUnitDrawingFunctionForPlaceholder(
   {
     anchor: {x: 0.5, y: 0.5},
     attackOriginPoint: {x: 0.75, y: 0.5},
