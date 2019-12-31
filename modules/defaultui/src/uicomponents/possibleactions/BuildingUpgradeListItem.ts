@@ -20,7 +20,7 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   canAfford: boolean;
-  missingResources: Resources;
+  availableResources: Resources;
 }
 
 export class BuildingUpgradeListItemComponent extends React.Component<PropTypes, StateType>
@@ -35,7 +35,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
     this.state =
     {
       canAfford: this.props.player.canAfford(this.props.upgradeData.cost),
-      missingResources: this.props.player.getMissingResourcesFor(this.props.upgradeData.cost),
+      availableResources: {...this.props.player.resources},
     };
 
     this.bindMethods();
@@ -52,7 +52,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
     this.setState(
     {
       canAfford: this.props.player.canAfford(this.props.upgradeData.cost),
-      missingResources: this.props.player.getMissingResourcesFor(this.props.upgradeData.cost),
+      availableResources: {...this.props.player.resources},
     });
   }
 
@@ -101,7 +101,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
           ResourceCost(
           {
             cost: upgradeData.cost,
-            missingResources: this.state.missingResources,
+            availableResources: this.state.availableResources,
           }),
         ),
       )

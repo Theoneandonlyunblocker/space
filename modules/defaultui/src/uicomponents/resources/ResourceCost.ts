@@ -1,6 +1,6 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
-import { Resources } from "core/src/player/PlayerResources";
+import { Resources, getMissingResources } from "core/src/player/PlayerResources";
 import { ResourceList } from "./ResourceList";
 import { ResourceAmount } from "./ResourceAmount";
 import { ResourceIcon } from "./ResourceIcon";
@@ -10,11 +10,15 @@ import { ResourceIcon } from "./ResourceIcon";
 export interface PropTypes extends React.Props<any>
 {
   cost: Resources;
-  missingResources?: Resources;
+  availableResources?: Resources;
 }
 
 const ResourceCostComponent: React.FunctionComponent<PropTypes> = props =>
 {
+  const missingResources = !props.availableResources ?
+    null :
+    getMissingResources(props.availableResources, props.cost);
+
   return(
     ReactDOMElements.div(
     {
@@ -34,7 +38,7 @@ const ResourceCostComponent: React.FunctionComponent<PropTypes> = props =>
             {
               resource: resource,
               amount: props.cost[resource.type],
-              isInsufficient: Boolean(props.missingResources && props.missingResources[resource.type]),
+              isInsufficient: Boolean(missingResources && missingResources[resource.type]),
             }),
             ResourceIcon({resource: resource}),
           );

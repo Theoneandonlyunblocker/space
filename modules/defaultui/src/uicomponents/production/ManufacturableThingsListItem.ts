@@ -21,7 +21,7 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   canClick: boolean;
-  missingResources: Resources | undefined;
+  availableResources: Resources | undefined;
 }
 
 export class ManufacturableThingsListItemComponent extends React.Component<PropTypes, StateType>
@@ -66,7 +66,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
         !this.props.showCost ? null : ResourceCost(
         {
           cost: this.props.template.buildCost,
-          missingResources: this.state.missingResources,
+          availableResources: this.state.availableResources,
         }),
       )
     );
@@ -87,7 +87,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
     return(
     {
       canClick: this.props.onClick && (!this.props.showCost || canAfford),
-      missingResources: this.props.player ? this.props.player.getMissingResourcesFor(cost) : undefined,
+      availableResources: this.props.player ? {...this.props.player.resources} : undefined,
     });
   }
 }

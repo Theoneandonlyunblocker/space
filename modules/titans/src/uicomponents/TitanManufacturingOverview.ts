@@ -25,8 +25,6 @@ export interface PropTypes extends React.Props<any>
 
 const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = props =>
 {
-  // TODO 2019.12.30 | maybe pass availableResources instead of missingResources to resourceCost to avoid shit like this
-  // @ts-ignore
   const playerResources = useResources(props.player);
 
   const assemblingCapacity = useTitanAssemblingCapacity(props.selectedLocation);
@@ -73,7 +71,7 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
             ResourceCost(
             {
               cost: titanForge.buildCost,
-              missingResources: canBuildTitanForge ? null : props.player.getMissingResourcesFor(titanForge.buildCost),
+              availableResources: canBuildTitanForge ? null : playerResources,
             }),
           ) :
           ReactDOMElements.button(

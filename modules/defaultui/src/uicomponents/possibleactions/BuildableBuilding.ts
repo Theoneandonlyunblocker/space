@@ -76,7 +76,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
         cellContent = ResourceCost(
         {
           cost: this.props.buildCost,
-          missingResources: this.props.player.getMissingResourcesFor(this.props.buildCost),
+          availableResources: this.props.player.resources,
         });
 
         break;

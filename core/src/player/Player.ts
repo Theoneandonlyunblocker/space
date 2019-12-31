@@ -367,20 +367,6 @@ export class Player
 
     this.onResourcesChange();
   }
-  public getMissingResourcesFor(resources: Resources): Resources
-  {
-    return Object.keys(resources).reduce((missingResources, resource) =>
-    {
-      const amountOwned = this.resources[resource];
-      const amountNeeded = resources[resource];
-      if (amountOwned < amountNeeded)
-      {
-        missingResources[resource] = amountNeeded - amountOwned;
-      }
-
-      return missingResources;
-    }, {});
-  }
   public canAfford(resources: Resources): boolean
   {
     for (const key in resources)

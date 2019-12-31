@@ -18,3 +18,18 @@ export function getBaseValuablenessOfResources(resources: Resources): number
     return totalValuableness + valuableness;
   }, 0);
 }
+
+export function getMissingResources(availableResources: Resources, cost: Resources): Resources
+{
+  return Object.keys(cost).reduce((missingResources, resource) =>
+  {
+    const amountAvailable = availableResources[resource];
+    const amountNeeded = cost[resource];
+    if (amountAvailable < amountNeeded)
+    {
+      missingResources[resource] = amountNeeded - amountAvailable;
+    }
+
+    return missingResources;
+  }, {});
+}
