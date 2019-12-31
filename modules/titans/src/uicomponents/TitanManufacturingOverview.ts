@@ -44,6 +44,13 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
     }
   }
 
+  const [previousLocation, setPreviousLocation] = React.useState<Star | undefined>(props.selectedLocation);
+  if (props.selectedLocation !== previousLocation)
+  {
+    setDesigningWindowOpenness(false);
+    setPreviousLocation(props.selectedLocation);
+  }
+
   return(
     ReactDOMElements.div(
     {
