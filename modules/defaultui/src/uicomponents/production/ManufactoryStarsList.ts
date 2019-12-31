@@ -3,35 +3,16 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {Star} from "core/src/map/Star";
 
-import {ManufactoryStarsListItem} from "./ManufactoryStarsListItem";
+import {ManufactoryStarsListItem, PropTypes as ManufactoryStarsListItemProps} from "./ManufactoryStarsListItem";
+import { List } from "../list/List";
+import { ListItem } from "../list/ListItem";
+import { ListColumn } from "../list/ListColumn";
+import { localize } from "modules/defaultui/localization/localize";
 
-
-export function sortByManufactoryCapacityFN(a: Star, b: Star)
-{
-  const aCapacity = (a.manufactory ? a.manufactory.capacity : -1);
-  const bCapacity = (b.manufactory ? b.manufactory.capacity : -1);
-
-  const capacitySort = bCapacity - aCapacity;
-  if (capacitySort)
-  {
-    return capacitySort;
-  }
-
-  const nameSort = a.name.localeCompare(b.name);
-  if (nameSort)
-  {
-    return nameSort;
-  }
-
-  const idSort = a.id - b.id;
-
-  return idSort;
-}
 
 export interface PropTypes extends React.Props<any>
 {
-  starsWithManufactories: Star[];
-  starsWithoutManufactories: Star[];
+  stars: Star[];
   highlightedStars: Star[];
   setSelectedStar: (star: Star) => void;
 }
@@ -53,51 +34,66 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
 
   render()
   {
-    const rows: React.ReactElement<any>[] = [];
+    const highlightedStarIds = new Set(this.props.highlightedStars.map(star => star.id));
 
-    this.props.starsWithManufactories.sort(sortByManufactoryCapacityFN);
-    this.props.starsWithoutManufactories.sort(sortByManufactoryCapacityFN);
-
-    for (let i = 0; i < this.props.starsWithManufactories.length; i++)
+    const rows: ListItem<ManufactoryStarsListItemProps>[] = this.props.stars.map(star =>
     {
-      const star = this.props.starsWithManufactories[i];
-      const manufactory = star.manufactory;
-      const isHighlighted = this.props.highlightedStars.indexOf(star) !== -1;
+      return {
+        key: "" + star.id,
+        content: ManufactoryStarsListItem(
+        {
+          star: star,
+          isHighlighted: highlightedStarIds.has(star.id),
+          usedCapacity: star.manufactory ? star.manufactory.buildQueue.length : 0,
+          totalCapacity: star.manufactory ? star.manufactory.capacity : 0,
+          onClick: this.props.setSelectedStar,
+        }),
+      };
+    });
 
-      rows.push(ManufactoryStarsListItem(
+    const columns: ListColumn<ManufactoryStarsListItemProps>[] =
+    [
       {
-        key: star.id,
-        star: star,
-        isHighlighted: isHighlighted,
-        usedCapacity: manufactory.buildQueue.length,
-        totalCapacity: manufactory.capacity,
-
-        onClick: this.props.setSelectedStar,
-      }));
-    }
-    for (let i = 0; i < this.props.starsWithoutManufactories.length; i++)
-    {
-      const star = this.props.starsWithoutManufactories[i];
-      const isHighlighted = this.props.highlightedStars.indexOf(star) !== -1;
-
-      rows.push(ManufactoryStarsListItem(
+        label: localize("displayName").toString(),
+        key: "name",
+        defaultOrder: "asc",
+      },
       {
-        key: star.id,
-        star: star,
-        isHighlighted: isHighlighted,
-        usedCapacity: 0,
-        totalCapacity: 0,
+        label: "",
+        key: "capacity",
+        defaultOrder: "desc",
+        sortingFunction: (a, b) =>
+        {
+          const maxCapacitySort = a.content.props.totalCapacity - b.content.props.totalCapacity;
+          if (maxCapacitySort)
+          {
+            return maxCapacitySort;
+          }
 
-        onClick: this.props.setSelectedStar,
-      }));
-    }
+          const usedCaoacitySort = a.content.props.usedCapacity - b.content.props.usedCapacity;
+
+          return usedCaoacitySort;
+        },
+      }
+    ];
 
     return(
       ReactDOMElements.div(
       {
         className: "manufactory-stars-list",
       },
-        rows,
+        List(
+        {
+          listItems: rows,
+          initialColumns: columns,
+          initialSortOrder: [columns[1], columns[0]],
+          noHeader: true,
+          addSpacer: true,
+          onRowChange: row =>
+          {
+            this.props.setSelectedStar(row.content.props.star);
+          },
+        }),
       )
     );
   }

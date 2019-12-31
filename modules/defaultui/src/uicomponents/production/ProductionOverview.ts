@@ -39,7 +39,6 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
       money: this.props.player.resources.money,
     };
 
-    this.getStarsWithAndWithoutManufactories = this.getStarsWithAndWithoutManufactories.bind(this);
     this.triggerUpdate = this.triggerUpdate.bind(this);
   }
 
@@ -69,8 +68,6 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   {
     const player = this.props.player;
     const selectedStar = this.state.selectedStar;
-
-    const starsByManufactoryPresence = this.getStarsWithAndWithoutManufactories();
 
     let queueElement: React.ReactElement<any> = null;
     if (selectedStar && this.props.player.canAccessManufactoringAtLocation(selectedStar))
@@ -103,9 +100,8 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
       },
         ManufactoryStarsList(
         {
-          starsWithManufactories: starsByManufactoryPresence.withManufactories,
-          starsWithoutManufactories: starsByManufactoryPresence.withoutManufactories,
-          highlightedStars: [selectedStar],
+          stars: this.props.player.controlledLocations,
+          highlightedStars: selectedStar ? [selectedStar] : [],
           setSelectedStar: this.props.setSelectedStar,
         }),
         ReactDOMElements.div(
@@ -142,32 +138,6 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   private triggerUpdate()
   {
     this.forceUpdate();
-  }
-  private getStarsWithAndWithoutManufactories()
-  {
-    const player = this.props.player;
-
-    const starsWithManufactories: Star[] = [];
-    const starsWithoutManufactories: Star[] = [];
-
-    for (let i = 0; i < player.controlledLocations.length; i++)
-    {
-      const star = player.controlledLocations[i];
-      if (star.manufactory)
-      {
-        starsWithManufactories.push(star);
-      }
-      else
-      {
-        starsWithoutManufactories.push(star);
-      }
-    }
-
-    return(
-    {
-      withManufactories: starsWithManufactories,
-      withoutManufactories: starsWithoutManufactories,
-    });
   }
 }
 

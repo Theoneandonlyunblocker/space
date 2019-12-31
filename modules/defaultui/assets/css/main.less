@@ -4419,6 +4419,7 @@ button.player-setup-remove-player
   flex: 0 0 auto;
   border: 1px solid @ui-border-color1;
   box-sizing: border-box;
+  .hover-only-fancy-table-style-without-splitters(0, 0);
 }
 
 .manufactory-stars-list-item
@@ -4430,23 +4431,19 @@ button.player-setup-remove-player
 
   &.no-manufactory
   {
-    color: grey;
+    .disabled-button-style;
+    color: darken(@text-color, 20%) !important;
   }
 
   &.highlighted
   {
-    background-color: rgba(255, 255, 255, 0.2);
+    .button-style-no-border;
   }
 }
 
 .manufactory-stars-list-item-capacity
 {
   margin-left: 1em;
-
-  &.no-capacity
-  {
-    color: red;
-  }
 }
 
 .production-overview-contents

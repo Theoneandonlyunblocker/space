@@ -2,6 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {Star} from "core/src/map/Star";
+import { localize } from "modules/defaultui/localization/localize";
 
 
 export interface PropTypes extends React.Props<any>
@@ -20,49 +21,36 @@ interface StateType
 export class ManufactoryStarsListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "ManufactoryStarsListItem";
-
-
   public state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
-
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.handleClick = this.handleClick.bind(this);
   }
 
-  handleClick()
-  {
-    const star = this.props.star;
-    this.props.onClick(star);
-  }
-
-  render()
+  public render()
   {
     const hasManufactory = Boolean(this.props.totalCapacity);
     const hasCapacity = hasManufactory && this.props.usedCapacity < this.props.totalCapacity;
 
     return(
-      ReactDOMElements.div(
+      ReactDOMElements.tr(
       {
         className: "manufactory-stars-list-item" +
           (!hasManufactory ? " no-manufactory" : "") +
           (this.props.isHighlighted ? " highlighted" : ""),
-        onClick: this.handleClick,
+        onClick: () => this.props.onClick(this.props.star),
       },
-        ReactDOMElements.div(
+        ReactDOMElements.td(
         {
           className: "manufactory-stars-list-item-star-name",
         },
           this.props.star.name,
         ),
-        !hasManufactory ? null : ReactDOMElements.div(
+        ReactDOMElements.td(
         {
           className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : ""),
+          title: `${localize("reservedCapacity").format(this.props.usedCapacity)}\n${localize("manufacturingCapacity").format(this.props.totalCapacity)}`
         },
           `${this.props.usedCapacity}/${this.props.totalCapacity}`,
         ),

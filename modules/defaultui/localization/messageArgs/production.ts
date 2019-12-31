@@ -5,4 +5,6 @@ export type Production =
   upgradeManufactoryCapacityTooltip: [];
   manufactureUnitsButton: [];
   manufactureItemsButton: [];
+  reservedCapacity: [number];
+  manufacturingCapacity: [number];
 };

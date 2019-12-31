@@ -19,7 +19,7 @@ export const unit =
   speed_short: "Spd",
 
   unitStrength_description: "Fighting strength of unit. When strength reaches 0, unit is disabled",
-  maxActionPoints_description: "Action points are used to perform actions in battle\nA unit with no remaining action points can't act",
+  maxActionPoints_description: "Action points are used to perform actions in battle. A unit with no remaining action points can't act",
   attack_description: "Increases damage dealt by physical attacks",
   defence_description: "Reduces damage taken by physical attacks",
   // TODO 2019.08.21 | we dont really have magic do we...
