@@ -17,6 +17,8 @@ import { localize as localizeGeneric } from "modules/defaultui/localization/loca
 import { localize } from "modules/titans/localization/localize";
 import { manufacturableThingKinds } from "../manufacturableThingKinds";
 import { useResources } from "modules/defaultui/src/uicomponents/resources/useResources";
+import { Name } from "core/src/localization/Name";
+import { EditableName } from "modules/defaultui/src/uicomponents/generic/EditableName";
 
 
 type ComponentsState =
@@ -118,7 +120,7 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
     dummyUnit: undefined,
     slots: {},
   });
-  const [prototypeName, setPrototypeName] = React.useState<string>(undefined);
+  const prototypeName = React.useRef<Name>(undefined);
 
   function setSelectedChassis(chassis: TitanChassisTemplate): void
   {
@@ -128,7 +130,7 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
     }
 
     _setSelectedChassis(chassis);
-    setPrototypeName(chassis.displayName);
+    prototypeName.current = props.player.race.getUnitName(chassis);
     updateComponentsBySlot({type: "changeChassis", chassis: chassis, player: props.player});
     updateComponentsBySlot({type: "clearAll", chassis: chassis});
   }
@@ -161,16 +163,16 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
           {
             className: "titan-design-info-protype-details",
           },
-            ReactDOMElements.input(
+            EditableName(
             {
-              className: "titan-prototype-name",
-              value: prototypeName,
-              title: localizeGeneric("displayName").toString() + ": " + prototypeName,
-              size: prototypeName.length,
-              onChange: (e) =>
+              name: prototypeName.current,
+              usage: "unit",
+              inputAttributes:
               {
-                setPrototypeName(e.currentTarget.value);
-              },
+                className: "titan-prototype-name",
+                title: localizeGeneric("displayName").toString() + ": " + prototypeName.current.toString(),
+                size: prototypeName.current.baseName.length,
+              }
             }),
             ReactDOMElements.div(
             {
@@ -223,7 +225,7 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
               title: canAffordToBuild ? "" : localizeGeneric("cantAfford").toString(),
               onClick: () =>
               {
-                const prototype = componentsBySlot.dummyUnit.getPrototype(prototypeName);
+                const prototype = componentsBySlot.dummyUnit.getPrototype(prototypeName.current);
                 props.manufactory.addThingToQueue(prototype, manufacturableThingKinds.titanFromPrototype);
                 props.triggerParentUpdate();
               },

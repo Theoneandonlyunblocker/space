@@ -16,6 +16,7 @@ export const manufacturableThingKinds =
       {
         template: prototype.chassis,
         race: manufactory.star.localRace,
+        name: prototype.name,
       });
 
       const items = prototype.components.map(componentTemplate => new Item(componentTemplate));

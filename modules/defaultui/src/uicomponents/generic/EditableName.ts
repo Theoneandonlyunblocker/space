@@ -13,7 +13,7 @@ export interface PropTypes extends React.Props<any>
 {
   name: Name;
   usage: keyof Language["renderNameEditor"];
-  inputAttributes?: React.HTMLAttributes<HTMLInputElement>;
+  inputAttributes?: React.InputHTMLAttributes<HTMLInputElement>;
 }
 
 const EditableNameComponent: React.FunctionComponent<PropTypes> = props =>

@@ -8,6 +8,7 @@ import { Item } from "core/src/items/Item";
 import { Resources } from "core/src/player/PlayerResources";
 import { sumObjectValues } from "core/src/generic/utility";
 import { TitanPrototype } from "./TitanPrototype";
+import { Name } from "core/src/localization/Name";
 
 
 export class DummyUnitForTitanDesign
@@ -85,12 +86,12 @@ export class DummyUnitForTitanDesign
       ...this.lowStatsUnit.items.getAllItems().map(item => item.template.buildCost),
     );
   }
-  public getPrototype(name: string): TitanPrototype
+  public getPrototype(name: Name): TitanPrototype
   {
     return new TitanPrototype(
     {
       wasAiGenerated: false,
-      displayName: name,
+      name: name,
       chassis: this.lowStatsUnit.template,
       components: this.lowStatsUnit.items.getAllItems().map(item => <TitanComponentTemplate>item.template),
     });

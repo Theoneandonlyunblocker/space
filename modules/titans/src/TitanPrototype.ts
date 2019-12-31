@@ -5,12 +5,14 @@ import { ManufacturableThing } from "core/src/templateinterfaces/ManufacturableT
 import { Resources } from "core/src/player/PlayerResources";
 import { sumObjectValues } from "core/src/generic/utility";
 import { activeModuleData } from "core/src/app/activeModuleData";
+import { Name } from "core/src/localization/Name";
+import { NameSaveData } from "core/src/savedata/NameSaveData";
 
 
 export type TitanPrototypeSaveData =
 {
   type: string;
-  displayName: string;
+  name: NameSaveData;
   wasAiGenerated: boolean;
   chassisType: string;
   componentTypes: string[];
@@ -19,7 +21,11 @@ export type TitanPrototypeSaveData =
 export class TitanPrototype implements ManufacturableThing
 {
   public readonly type: string;
-  public readonly displayName: string;
+  public readonly name: Name;
+  public get displayName()
+  {
+    return this.name.toString();
+  }
   public readonly wasAiGenerated: boolean;
   public readonly chassis: TitanChassisTemplate;
   public readonly components: TitanComponentTemplate[];
@@ -32,7 +38,7 @@ export class TitanPrototype implements ManufacturableThing
   {
     type?: string;
     wasAiGenerated: boolean;
-    displayName: string;
+    name: Name;
     chassis: TitanChassisTemplate;
     components: TitanComponentTemplate[];
   })
@@ -42,7 +48,7 @@ export class TitanPrototype implements ManufacturableThing
     this.type = props.type || "" + idGenerators.titanPrototype++;
 
     this.wasAiGenerated = props.wasAiGenerated;
-    this.displayName = props.displayName;
+    this.name = props.name;
     this.chassis = props.chassis;
     this.components = props.components;
 
@@ -59,7 +65,7 @@ export class TitanPrototype implements ManufacturableThing
     return new TitanPrototype(
     {
       type: saveData.type,
-      displayName: saveData.displayName,
+      name: Name.fromData(saveData.name),
       wasAiGenerated: saveData.wasAiGenerated,
       chassis: titansModuleData.titanChassis[saveData.chassisType],
       components: saveData.componentTypes.map(componentType => titansModuleData.titanComponents[componentType]),
@@ -70,7 +76,7 @@ export class TitanPrototype implements ManufacturableThing
   {
     return {
       type: this.type,
-      displayName: this.displayName,
+      name: this.name.serialize(),
       wasAiGenerated: this.wasAiGenerated,
       chassisType: this.chassis.type,
       componentTypes: this.components.map(component => component.type),
