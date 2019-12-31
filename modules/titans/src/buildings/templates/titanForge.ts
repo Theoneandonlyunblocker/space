@@ -34,6 +34,7 @@ export const titanForge: BuildingTemplate =
     [moneyResource.type]: 1000,
   },
   maxBuiltAtLocation: 1,
+  canBeBuiltInLocation: location => Boolean(location.manufactory),
   availabilityData:
   {
     flags: [coreAvailabilityFlags.crucial],
