@@ -16,6 +16,7 @@ import { getBuildableChassis } from "../getBuildableChassis";
 import { localize as localizeGeneric } from "modules/defaultui/localization/localize";
 import { localize } from "modules/titans/localization/localize";
 import { manufacturableThingKinds } from "../manufacturableThingKinds";
+import { useResources } from "modules/defaultui/src/uicomponents/resources/useResources";
 
 
 type ComponentsState =
@@ -132,6 +133,9 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
     updateComponentsBySlot({type: "clearAll", chassis: chassis});
   }
 
+  const playerResources = useResources(props.player);
+  const canAffordToBuild = selectedChassis && props.player.canAfford(componentsBySlot.dummyUnit.getBuildCost());
+
   return(
     ReactDOMElements.div(
     {
@@ -175,6 +179,7 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
               ResourceCost(
               {
                 cost: componentsBySlot.dummyUnit.getBuildCost(),
+                availableResources: playerResources,
               }),
             ),
           ),
@@ -214,6 +219,8 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
             ReactDOMElements.button(
             {
               className: "titan-design-info-action",
+              disabled: !canAffordToBuild,
+              title: canAffordToBuild ? "" : localizeGeneric("cantAfford").toString(),
               onClick: () =>
               {
                 const prototype = componentsBySlot.dummyUnit.getPrototype(prototypeName);

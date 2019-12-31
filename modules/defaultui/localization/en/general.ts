@@ -22,4 +22,5 @@ export const general =
   cost: "Cost",
   listItemSeparator: ", ",
   customizeName: "Customize name",
+  cantAfford: "Can't afford",
 };

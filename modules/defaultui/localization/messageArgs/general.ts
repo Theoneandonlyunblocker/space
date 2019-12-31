@@ -22,4 +22,5 @@ export type General =
   cost: [];
   listItemSeparator: [];
   customizeName: [];
+  cantAfford: [];
 };
