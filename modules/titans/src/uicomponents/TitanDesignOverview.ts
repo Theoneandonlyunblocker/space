@@ -165,6 +165,7 @@ const TitanDesignOverviewComponent: React.FunctionComponent<PropTypes> = props =
           },
             EditableName(
             {
+              key: selectedChassis.type,
               name: prototypeName.current,
               usage: "unit",
               inputAttributes:
