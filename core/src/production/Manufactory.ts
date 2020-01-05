@@ -15,6 +15,7 @@ import
 } from "../generic/utility";
 import { getBuildableUnitsForRace } from "./getBuildableUnitsForRace";
 import { getBuildableItemsForRace } from "./getBuildableItemsForRace";
+import { Resources } from "../player/PlayerResources";
 
 
 interface ManufacturableThingWithKind<Template extends ManufacturableThing, BuiltThing, SaveData>
@@ -52,9 +53,11 @@ export class Manufactory
       this.maxCapacity = activeModuleData.ruleSet.manufactory.maxCapacity;
     }
   }
-  public static getBuildCost(): number
+  public static getBuildCost(): Resources
   {
-    return activeModuleData.ruleSet.manufactory.buildCost;
+    return {
+      money: activeModuleData.ruleSet.manufactory.buildCost,
+    };
   }
   public makeFromData(data: ManufactorySaveData): void
   {
@@ -173,14 +176,16 @@ export class Manufactory
   {
     this.clearBuildingQueue();
   }
-  public getCapacityUpgradeCost(): number
+  public getCapacityUpgradeCost(): Resources
   {
-    return activeModuleData.ruleSet.manufactory.buildCost * this.capacity;
+    return {
+      money: activeModuleData.ruleSet.manufactory.buildCost * this.capacity,
+    };
   }
   public upgradeCapacity(amount: number): void
   {
     // TODO 2017.02.24 | don't think money should get substracted here
-    this.owner.removeResources({money: this.getCapacityUpgradeCost()});
+    this.owner.removeResources(this.getCapacityUpgradeCost());
     this.capacity = Math.min(this.capacity + amount, this.maxCapacity);
   }
   public serialize(): ManufactorySaveData

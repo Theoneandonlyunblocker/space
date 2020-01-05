@@ -6,6 +6,7 @@ import {MapEvaluator} from "../mapai/MapEvaluator";
 
 import {EconomicObjective} from "./common/EconomicObjective";
 import {Objective} from "./common/Objective";
+import { Resources, getBaseValuablenessOfResources } from "core/src/player/PlayerResources";
 
 
 // @ts-ignore 2417
@@ -38,7 +39,8 @@ export class ExpandManufactoryCapacity extends EconomicObjective
       const upgradeScore = 1;
 
       const upgradeCost = ExpandManufactoryCapacity.getCostForStar(star);
-      const costScore = Manufactory.getBuildCost() / upgradeCost;
+      const baseManufactoryBuildCost = Manufactory.getBuildCost();
+      const costScore = getBaseValuablenessOfResources(baseManufactoryBuildCost) / getBaseValuablenessOfResources(upgradeCost);
 
       const score = costScore + Math.pow(upgradeScore, 2);
 
@@ -58,7 +60,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
     return this.updateTargetedObjectives(allOngoingObjectives, createdObjectives);
   }
 
-  private static getCostForStar(star: Star): number
+  private static getCostForStar(star: Star): Resources
   {
     return star.manufactory ?
       star.manufactory.getCapacityUpgradeCost() :
@@ -68,7 +70,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
   public execute(afterDoneCallback: () => void): void
   {
     const upgradeCost = ExpandManufactoryCapacity.getCostForStar(this.target);
-    const canAffordUpgrade = this.player.canAfford({money: upgradeCost});
+    const canAffordUpgrade = this.player.canAfford(upgradeCost);
 
     if (canAffordUpgrade)
     {
@@ -79,7 +81,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
       else
       {
         this.target.buildManufactory();
-        this.player.removeResources({money: Manufactory.getBuildCost()});
+        this.player.removeResources(Manufactory.getBuildCost());
       }
     }
 
