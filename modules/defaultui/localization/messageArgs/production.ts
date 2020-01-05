@@ -6,5 +6,5 @@ export type Production =
   manufactureUnitsButton: [];
   manufactureItemsButton: [];
   reservedCapacity: [number];
-  manufacturingCapacity: [number];
+  totalCapacity: [number];
 };

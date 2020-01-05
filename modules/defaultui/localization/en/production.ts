@@ -6,5 +6,5 @@ export const production =
   manufactureUnitsButton: "Units",
   manufactureItemsButton: "Items",
   reservedCapacity: "Reserved capacity: {0}",
-  manufacturingCapacity: "Manufacturing capacity: {0}",
+  totalCapacity: "Total capacity: {0}",
 };

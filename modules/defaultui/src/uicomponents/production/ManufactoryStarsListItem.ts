@@ -50,7 +50,7 @@ export class ManufactoryStarsListItemComponent extends React.Component<PropTypes
         ReactDOMElements.td(
         {
           className: "manufactory-stars-list-item-capacity" + (!hasCapacity ? " no-capacity" : ""),
-          title: `${localize("reservedCapacity").format(this.props.usedCapacity)}\n${localize("manufacturingCapacity").format(this.props.totalCapacity)}`
+          title: `${localize("reservedCapacity").format(this.props.usedCapacity)}\n${localize("totalCapacity").format(this.props.totalCapacity)}`
         },
           `${this.props.usedCapacity}/${this.props.totalCapacity}`,
         ),
