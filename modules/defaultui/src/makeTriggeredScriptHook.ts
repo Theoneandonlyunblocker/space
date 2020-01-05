@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 
 type TriggeredScriptHook<Args, T> =
 {
-  hook: (args: Args) => T;
+  hook: (args: Args, inputs?: React.InputIdentityList) => T;
   updateHooks: (args: Args) => void;
   // vvv legacy to maintain compat with mixin stuff vvv
   updaters:
@@ -31,29 +31,27 @@ export function makeTriggeredScriptHook<Args, T>(
     };
   } = {};
 
-  const hook = (args: Args, shouldUpdate?: (args: Args) => boolean) =>
+  const hook = (args: Args, inputs: React.InputIdentityList = []) =>
   {
-    const [value, setValue] = useState<T>(() =>
-    {
-      return getValue(args);
-    });
+    const [value, setValue] = useState<T>(undefined);
     const updaterId = useRef<number>(undefined);
 
     useEffect(function addTriggeredScriptHookListener()
     {
       updaterId.current = updaterIdGenerator++;
-
       updaters[updaterId.current] = {
         update: () => setValue(getValue(args)),
-        shouldUpdate: shouldUpdate,
       };
+
+      // state is initialized here, so that changes in inputs will trigger state update
+      setValue(getValue(args));
 
       return function removeTriggeredScriptHooklistener()
       {
         updaters[updaterId.current] = null;
         delete updaters[updaterId.current];
       };
-    }, []);
+    }, inputs);
 
     return value;
   };
