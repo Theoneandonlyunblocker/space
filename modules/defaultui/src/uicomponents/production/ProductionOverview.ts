@@ -21,7 +21,6 @@ export interface PropTypes extends React.Props<any>
 interface StateType
 {
   selectedStar: Star | null;
-  money: number;
 }
 
 export class ProductionOverviewComponent extends React.Component<PropTypes, StateType>
@@ -36,7 +35,6 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 
     this.state = {
       selectedStar: this.getInitialSelectedStar(),
-      money: this.props.player.resources.money,
     };
 
     this.triggerUpdate = this.triggerUpdate.bind(this);
@@ -46,9 +44,9 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
   {
     if (props.globalSelectedStar && props.player.canAccessManufactoringAtLocation(props.globalSelectedStar))
     {
-      return({
+      return {
         selectedStar: props.globalSelectedStar,
-      });
+      };
     }
     else
     {
@@ -87,7 +85,6 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
         {
           star: selectedStar,
           player: player,
-          money: this.state.money,
           triggerUpdate: this.triggerUpdate,
         });
       }

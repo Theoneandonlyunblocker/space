@@ -16,7 +16,6 @@ export interface PropTypes extends React.Props<any>
   star: Star;
   player: Player;
   triggerUpdate: () => void;
-  money: number;
 }
 
 const ConstructManufactoryComponent: React.FunctionComponent<PropTypes> = props =>
