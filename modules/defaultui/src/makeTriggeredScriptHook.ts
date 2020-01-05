@@ -33,7 +33,7 @@ export function makeTriggeredScriptHook<Args, T>(
 
   const hook = (args: Args, inputs: React.InputIdentityList = []) =>
   {
-    const [value, setValue] = useState<T>(undefined);
+    const [value, setValue] = useState<T>(() => getValue(args));
     const updaterId = useRef<number>(undefined);
 
     useEffect(function addTriggeredScriptHookListener()
