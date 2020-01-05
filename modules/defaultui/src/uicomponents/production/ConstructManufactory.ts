@@ -3,11 +3,14 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {Player} from "core/src/player/Player";
 import {Star} from "core/src/map/Star";
-import {activeModuleData} from "core/src/app/activeModuleData";
 
 import {localize} from "../../../localization/localize";
+import { useResources } from "../resources/useResources";
+import { Manufactory } from "core/src/production/Manufactory";
+import { ResourceCost } from "../resources/ResourceCost";
 
 
+// tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
   star: Star;
@@ -16,69 +19,47 @@ export interface PropTypes extends React.Props<any>
   money: number;
 }
 
-interface StateType
+const ConstructManufactoryComponent: React.FunctionComponent<PropTypes> = props =>
 {
-}
+  const resources = useResources(props.player);
+  const manufactoryBuildCost = Manufactory.getBuildCost();
+  const canAffordToConstructManufactory = props.player.canAfford(manufactoryBuildCost);
 
-export class ConstructManufactoryComponent extends React.PureComponent<PropTypes, StateType>
-{
-  public displayName = "ConstructManufactory";
-  public state: StateType;
-
-  constructor(props: PropTypes)
-  {
-    super(props);
-
-    this.state = {};
-
-    this.bindMethods();
-  }
-  private bindMethods()
-  {
-    this.handleConstruct = this.handleConstruct.bind(this);
-  }
-
-  handleConstruct()
-  {
-    const star = this.props.star;
-    const player = this.props.player;
-    star.buildManufactory();
-    player.removeResources({money: activeModuleData.ruleSet.manufactory.buildCost});
-    this.props.triggerUpdate();
-  }
-
-  render()
-  {
-    const canAfford = this.props.money >= activeModuleData.ruleSet.manufactory.buildCost;
-
-    return(
+  return(
+    ReactDOMElements.div(
+    {
+      className: "build-queue",
+    },
       ReactDOMElements.div(
       {
-        className: "construct-manufactory-container",
+        className: "production-list-header",
       },
         ReactDOMElements.button(
         {
-          className: "construct-manufactory-button" + (canAfford ? "" : " disabled"),
-          onClick: canAfford ? this.handleConstruct : null,
-          disabled: !canAfford,
+          className: "manufactory-upgrade-button",
+          disabled: !canAffordToConstructManufactory,
+          onClick: () =>
+          {
+            props.star.buildManufactory();
+            props.player.removeResources(manufactoryBuildCost);
+            props.triggerUpdate();
+          }
         },
           ReactDOMElements.span(
           {
-            className: "construct-manufactory-action",
+            className: "manufactory-upgrade-button-prompt",
           },
             localize("constructManufactory").toString(),
           ),
-          ReactDOMElements.span(
+          ResourceCost(
           {
-            className: "construct-manufactory-cost money-style" +
-              (canAfford ? "" : " negative"),
-          },
-            activeModuleData.ruleSet.manufactory.buildCost,
-          ),
+            cost: manufactoryBuildCost,
+            availableResources: resources,
+          }),
         ),
-      )
-    );
-  }
-}
+      ),
+    )
+  );
+};
 
 export const ConstructManufactory: React.Factory<PropTypes> = React.createFactory(ConstructManufactoryComponent);
