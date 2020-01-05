@@ -27,7 +27,7 @@ const TitanManufacturingOverviewComponent: React.FunctionComponent<PropTypes> = 
 {
   const playerResources = useResources(props.player);
 
-  const assemblingCapacity = useTitanAssemblingCapacity(props.selectedLocation);
+  const assemblingCapacity = useTitanAssemblingCapacity(props.selectedLocation, [props.selectedLocation]);
   const canAssemble = props.canManufacture && assemblingCapacity > 0;
   const canBuildTitanForge = props.canManufacture && props.player.canAfford(titanForge.buildCost);
 
