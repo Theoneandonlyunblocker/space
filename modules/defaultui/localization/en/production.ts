@@ -7,4 +7,6 @@ export const production =
   manufactureItemsButton: "Items",
   reservedCapacity: "Reserved capacity: {0}",
   totalCapacity: "Total capacity: {0}",
+  currentCapacity: "Current capacity: {0}",
+  maxCapacity: "Max capacity: {0}",
 };
