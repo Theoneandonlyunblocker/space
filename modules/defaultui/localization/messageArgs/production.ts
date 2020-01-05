@@ -1,6 +1,6 @@
 export type Production =
 {
-  constructManufactory: [];
+  buildManufactory: [];
   upgradeManufactoryCapacity: [];
   upgradeManufactoryCapacityTooltip: [];
   manufactureUnitsButton: [];

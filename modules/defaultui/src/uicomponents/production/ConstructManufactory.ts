@@ -48,7 +48,7 @@ const ConstructManufactoryComponent: React.FunctionComponent<PropTypes> = props 
           {
             className: "manufactory-upgrade-button-prompt",
           },
-            localize("constructManufactory").toString(),
+            localize("buildManufactory").toString(),
           ),
           ResourceCost(
           {
