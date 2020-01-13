@@ -84,7 +84,7 @@ export class NotificationFilter
         filterState: NotificationFilterState[];
       }[];
     } = {};
-    const notifications = activeModuleData.templates.Notifications;
+    const notifications = activeModuleData.templates.notifications;
 
     for (const key in this.filters)
     {
@@ -144,7 +144,7 @@ export class NotificationFilter
 
   private setDefaultFilterStates(): void
   {
-    const notifications = activeModuleData.templates.Notifications;
+    const notifications = activeModuleData.templates.notifications;
 
     for (const key in notifications)
     {

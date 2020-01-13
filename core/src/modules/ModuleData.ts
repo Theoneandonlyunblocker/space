@@ -48,28 +48,28 @@ import { coreManufacturableThingKinds } from "../production/coreManufacturableTh
 // tslint:disable:no-any
 interface Templates
 {
-  Abilities: TemplateCollection<AbilityTemplate>;
-  AiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
-  AttitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
-  BattleVfx: TemplateCollection<BattleVfxTemplate<any, any>>;
-  Buildings: TemplateCollection<BuildingTemplate>;
-  Items: TemplateCollection<ItemTemplate>;
-  Languages: TemplateCollection<Language>;
-  MapGen: TemplateCollection<MapGenTemplate>;
-  MapRendererLayers: TemplateCollection<MapRendererLayerTemplate>;
-  MapRendererMapModes: TemplateCollection<MapRendererMapModeTemplate>;
-  Notifications: TemplateCollection<NotificationTemplate<any, any>>;
-  PassiveSkills: TemplateCollection<PassiveSkillTemplate>;
-  Personalities: TemplateCollection<Personality>;
-  Portraits: TemplateCollection<PortraitTemplate>;
-  Races: TemplateCollection<RaceTemplate>;
-  Resources: TemplateCollection<ResourceTemplate>;
-  SubEmblems: TemplateCollection<SubEmblemTemplate>;
-  Technologies: TemplateCollection<TechnologyTemplate>;
-  Terrains: TemplateCollection<TerrainTemplate>;
-  UnitArchetypes: TemplateCollection<UnitArchetype>;
-  UnitEffects: TemplateCollection<UnitEffectTemplate>;
-  Units: TemplateCollection<UnitTemplate>;
+  abilities: TemplateCollection<AbilityTemplate>;
+  aiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
+  attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
+  battleVfx: TemplateCollection<BattleVfxTemplate<any, any>>;
+  buildings: TemplateCollection<BuildingTemplate>;
+  items: TemplateCollection<ItemTemplate>;
+  languages: TemplateCollection<Language>;
+  mapGen: TemplateCollection<MapGenTemplate>;
+  mapRendererLayers: TemplateCollection<MapRendererLayerTemplate>;
+  mapRendererMapModes: TemplateCollection<MapRendererMapModeTemplate>;
+  notifications: TemplateCollection<NotificationTemplate<any, any>>;
+  passiveSkills: TemplateCollection<PassiveSkillTemplate>;
+  personalities: TemplateCollection<Personality>;
+  portraits: TemplateCollection<PortraitTemplate>;
+  races: TemplateCollection<RaceTemplate>;
+  resources: TemplateCollection<ResourceTemplate>;
+  subEmblems: TemplateCollection<SubEmblemTemplate>;
+  technologies: TemplateCollection<TechnologyTemplate>;
+  terrains: TemplateCollection<TerrainTemplate>;
+  unitArchetypes: TemplateCollection<UnitArchetype>;
+  unitEffects: TemplateCollection<UnitEffectTemplate>;
+  units: TemplateCollection<UnitTemplate>;
 }
 // tslint:enable:no-any
 
@@ -92,28 +92,28 @@ export class ModuleData
   // TODO 2020.01.08 | rename keys to lowercase
   public templates: Templates =
   {
-    Abilities: {},
-    AiTemplateConstructors: {},
-    AttitudeModifiers: {},
-    BattleVfx: {},
-    Buildings: {},
-    Items: {},
-    Languages: {},
-    MapGen: {},
-    MapRendererLayers: {},
-    MapRendererMapModes: {},
-    Notifications: {},
-    PassiveSkills: {},
-    Personalities: {},
-    Portraits: {},
-    Races: {},
-    Resources: {},
-    SubEmblems: {},
-    Technologies: {},
-    Terrains: {},
-    UnitArchetypes: {},
-    UnitEffects: {},
-    Units: {},
+    abilities: {},
+    aiTemplateConstructors: {},
+    attitudeModifiers: {},
+    battleVfx: {},
+    buildings: {},
+    items: {},
+    languages: {},
+    mapGen: {},
+    mapRendererLayers: {},
+    mapRendererMapModes: {},
+    notifications: {},
+    passiveSkills: {},
+    personalities: {},
+    portraits: {},
+    races: {},
+    resources: {},
+    subEmblems: {},
+    technologies: {},
+    terrains: {},
+    unitArchetypes: {},
+    unitEffects: {},
+    units: {},
   };
 
   public ruleSet: RuleSetValues;
@@ -130,9 +130,9 @@ export class ModuleData
     units: TemplateCollection<UnitTemplate>;
   } =
   {
-    buildings: this.templates.Buildings,
-    items: this.templates.Items,
-    units: this.templates.Units,
+    buildings: this.templates.buildings,
+    items: this.templates.items,
+    units: this.templates.units,
   };
   // separated from templates to keep this.templates as a source of truth, but still allowing implementations to be reused
   // f.ex. titans from the titans module are implemented as units, but just adding them to this.templates.units means they become buildable as regular units, which they shouldn't be
@@ -143,9 +143,9 @@ export class ModuleData
     unitLike: {[key: string]: TemplateCollection<UnitTemplate>};
   } =
   {
-    buildingLike: {buildings: this.templates.Buildings},
-    itemLike: {items: this.templates.Items},
-    unitLike: {units: this.templates.Units},
+    buildingLike: {buildings: this.templates.buildings},
+    itemLike: {items: this.templates.items},
+    unitLike: {units: this.templates.units},
   };
   public get templatesByImplementation()
   {
@@ -244,9 +244,9 @@ export class ModuleData
     {
       let hasDuplicate = Boolean(this.templates[category][templateType]);
 
-      if (category === "Abilities" || category === "PassiveSkills")
+      if (category === "abilities" || category === "passiveSkills")
       {
-        if (this.templates.Abilities[templateType] || this.templates.PassiveSkills[templateType])
+        if (this.templates.abilities[templateType] || this.templates.passiveSkills[templateType])
         {
           hasDuplicate = true;
         }
@@ -293,9 +293,9 @@ export class ModuleData
     {
       return this.defaultMap;
     }
-    else if (Object.keys(this.templates.MapGen).length > 0)
+    else if (Object.keys(this.templates.mapGen).length > 0)
     {
-      return getRandomProperty(this.templates.MapGen);
+      return getRandomProperty(this.templates.mapGen);
     }
     else
     {
@@ -314,7 +314,7 @@ export class ModuleData
   }
   public fetchLanguageForCode(languageCode: string): Language
   {
-    const language = this.templates.Languages[languageCode];
+    const language = this.templates.languages[languageCode];
 
     if (language)
     {
@@ -337,9 +337,9 @@ export class ModuleData
     {
       chosenLanguage = this.defaultLanguage;
     }
-    else if (this.templates.Languages["en"])
+    else if (this.templates.languages["en"])
     {
-      chosenLanguage = this.templates.Languages["en"];
+      chosenLanguage = this.templates.languages["en"];
     }
     else
     {

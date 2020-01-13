@@ -30,9 +30,9 @@ export const federationAlliance: RaceTemplate =
     weight: 0,
     distributionGroups: [],
   },
-  getBuildableBuildings: () => getHumanLikeBuildableThings(activeModuleData.templates.Buildings),
-  getBuildableItems: () => getHumanLikeBuildableThings(activeModuleData.templates.Items),
-  getBuildableUnits: () => getHumanLikeBuildableThings(activeModuleData.templates.Units),
+  getBuildableBuildings: () => getHumanLikeBuildableThings(activeModuleData.templates.buildings),
+  getBuildableItems: () => getHumanLikeBuildableThings(activeModuleData.templates.items),
+  getBuildableUnits: () => getHumanLikeBuildableThings(activeModuleData.templates.units),
   associatedAvailabilityFlags: [commonAvailabilityFlags.humanLike],
   getPlayerName: player => player.isIndependent ?
     localizeName("federationAllianceIndependents")() :

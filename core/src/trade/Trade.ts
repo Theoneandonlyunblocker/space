@@ -54,7 +54,7 @@ export class Trade
             key: key,
             type: this.allItems[category][key].type,
             amount: amount,
-            resource: activeModuleData.templates.Resources[key],
+            resource: activeModuleData.templates.resources[key],
           };
         }
       }
@@ -98,7 +98,7 @@ export class Trade
           key: resourceType,
           type: TradeableItemType.Resource,
           amount: this.allItems.resources[resourceType].amount - stagedAmount,
-          resource: activeModuleData.templates.Resources[resourceType],
+          resource: activeModuleData.templates.resources[resourceType],
         };
 
         return availableResources;
@@ -150,7 +150,7 @@ export class Trade
           key: resourceType,
           type: TradeableItemType.Resource,
           amount: this.player.resources[resourceType],
-          resource: activeModuleData.templates.Resources[resourceType],
+          resource: activeModuleData.templates.resources[resourceType],
         };
 
         return allResourceTradeables;

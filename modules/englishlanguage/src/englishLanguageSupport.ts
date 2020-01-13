@@ -33,7 +33,7 @@ export const englishLanguageSupport: GameModule =
     moduleData.copyTemplates(
     {
       en: englishLanguage,
-    }, "Languages");
+    }, "languages");
 
     return moduleData;
   },

@@ -169,12 +169,12 @@ export class GameLoader
 
     data.notifications.forEach(notificationData =>
     {
-      const template = activeModuleData.templates.Notifications[notificationData.templateKey];
+      const template = activeModuleData.templates.notifications[notificationData.templateKey];
 
       const notification = new Notification(
       {
         id: notificationData.id,
-        template: activeModuleData.templates.Notifications[notificationData.templateKey],
+        template: activeModuleData.templates.notifications[notificationData.templateKey],
         props: template.deserializeProps(notificationData.props, this),
         turn: notificationData.turn,
         involvedPlayers: notificationData.involvedPlayerIds.map(id => this.playersById[id]),
@@ -263,14 +263,14 @@ export class GameLoader
       id: data.id,
       seed: data.seed,
       name: data.name,
-      race: activeModuleData.templates.Races[data.raceType],
-      terrain: activeModuleData.templates.Terrains[data.terrainType],
+      race: activeModuleData.templates.races[data.raceType],
+      terrain: activeModuleData.templates.terrains[data.terrainType],
     });
     star.baseIncome = data.baseIncome;
 
     if (data.resourceType)
     {
-      star.resource = activeModuleData.templates.Resources[data.resourceType];
+      star.resource = activeModuleData.templates.resources[data.resourceType];
     }
 
     return star;
@@ -319,7 +319,7 @@ export class GameLoader
       isIndependent: data.isIndependent,
       isDead: data.isDead,
 
-      race: activeModuleData.templates.Races[data.raceKey],
+      race: activeModuleData.templates.races[data.raceKey],
 
       id: data.id,
       name: Name.fromData(data.name),
@@ -392,7 +392,7 @@ export class GameLoader
 
       modifiers.forEach(modifierData =>
       {
-        const template = activeModuleData.templates.AttitudeModifiers[modifierData.templateType];
+        const template = activeModuleData.templates.attitudeModifiers[modifierData.templateType];
         const modifier = new AttitudeModifier(
         {
           template: template,
@@ -412,7 +412,7 @@ export class GameLoader
   {
     return new Emblem(
       emblemData.colors.map(colorData => Color.deserialize(colorData)),
-      activeModuleData.templates.SubEmblems[emblemData.templateKey],
+      activeModuleData.templates.subEmblems[emblemData.templateKey],
     );
   }
   private deserializeFlag(data: FlagSaveData): Flag
@@ -471,7 +471,7 @@ export class GameLoader
     game: Game,
   ): AiController<S>
   {
-    const templateConstructor = activeModuleData.templates.AiTemplateConstructors[data.templateType];
+    const templateConstructor = activeModuleData.templates.aiTemplateConstructors[data.templateType];
 
     const template = templateConstructor.construct(
     {
@@ -490,7 +490,7 @@ export class GameLoader
     return new StatusEffect(
     {
       id: data.id,
-      template: activeModuleData.templates.UnitEffects[data.templateType],
+      template: activeModuleData.templates.unitEffects[data.templateType],
       turnsToStayActiveFor: data.turnsToStayActiveFor,
       turnsHasBeenActiveFor: data.turnsHasBeenActiveFor,
       sourceUnit: this.unitsById[data.sourceUnitId],

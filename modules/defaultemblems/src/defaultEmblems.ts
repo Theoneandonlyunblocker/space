@@ -21,7 +21,7 @@ export const defaultEmblems: GameModule =
   },
   addToModuleData: (moduleData: ModuleData) =>
   {
-    moduleData.copyTemplates(subEmblemTemplates, "SubEmblems");
+    moduleData.copyTemplates(subEmblemTemplates, "subEmblems");
 
     return moduleData;
   },

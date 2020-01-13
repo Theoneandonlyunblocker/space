@@ -6,7 +6,7 @@ import { getAlwaysAvailableBuildableThings } from "./getAlwaysAvailableBuildable
 
 export function getBuildableUnitsForRace(race: RaceTemplate): UnitTemplate[]
 {
-  const alwaysBuildableUnits = getAlwaysAvailableBuildableThings(activeModuleData.templates.Units);
+  const alwaysBuildableUnits = getAlwaysAvailableBuildableThings(activeModuleData.templates.units);
   const racialBuildableUnits = race.getBuildableUnits();
 
   return [...alwaysBuildableUnits, ...racialBuildableUnits];

@@ -403,9 +403,9 @@ class App
   private makePlayers()
   {
     const players: Player[] = [];
-    const candidateRaces = <RaceTemplate[]> Object.keys(activeModuleData.templates.Races).map(raceKey =>
+    const candidateRaces = <RaceTemplate[]> Object.keys(activeModuleData.templates.races).map(raceKey =>
     {
-      return activeModuleData.templates.Races[raceKey];
+      return activeModuleData.templates.races[raceKey];
     }).filter(raceTemplate =>
     {
       return !raceTemplate.isNotPlayable;

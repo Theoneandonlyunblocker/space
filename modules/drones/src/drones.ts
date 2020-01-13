@@ -17,11 +17,11 @@ export const drones: GameModule =
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>
   {
-    moduleData.copyTemplates(abilityTemplates, "Abilities");
-    moduleData.copyTemplates(raceTemplates, "Races");
-    moduleData.copyTemplates(unitEffectTemplates, "UnitEffects");
-    moduleData.copyTemplates(unitTemplates, "Units");
-    moduleData.copyTemplates(battleVfxTemplates, "BattleVfx");
+    moduleData.copyTemplates(abilityTemplates, "abilities");
+    moduleData.copyTemplates(raceTemplates, "races");
+    moduleData.copyTemplates(unitEffectTemplates, "unitEffects");
+    moduleData.copyTemplates(unitTemplates, "units");
+    moduleData.copyTemplates(battleVfxTemplates, "battleVfx");
 
     return moduleData;
   },

@@ -88,7 +88,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     battle.init();
 
     const initialVfxTemplateKey = "mergeRelease";
-    const initialVfxTemplate = activeModuleData.templates.BattleVfx[initialVfxTemplateKey];
+    const initialVfxTemplate = activeModuleData.templates.battleVfx[initialVfxTemplateKey];
 
     return(
     {
@@ -111,12 +111,12 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   makeUnit()
   {
-    const template = getRandomProperty(activeModuleData.templates.Units);
+    const template = getRandomProperty(activeModuleData.templates.units);
 
     return Unit.fromTemplate(
     {
       template: template,
-      race: getRandomProperty(activeModuleData.templates.Races),
+      race: getRandomProperty(activeModuleData.templates.races),
     });
   }
 
@@ -211,7 +211,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   handleSelectVfxTemplate(e: React.FormEvent<HTMLSelectElement>)
   {
     const target = e.currentTarget;
-    const vfxTemplate = activeModuleData.templates.BattleVfx[target.value];
+    const vfxTemplate = activeModuleData.templates.battleVfx[target.value];
 
     this.setState(
     {
@@ -235,7 +235,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     const target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
     const bs: BattleScene = this.battleScene;
-    const vfxTemplate = extendObject(activeModuleData.templates.BattleVfx[this.state.selectedVfxTemplateKey]);
+    const vfxTemplate = extendObject(activeModuleData.templates.battleVfx[this.state.selectedVfxTemplateKey]);
 
     if (this.state.duration)
     {
@@ -305,7 +305,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
     const vfxTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
 
-    for (const key in activeModuleData.templates.BattleVfx)
+    for (const key in activeModuleData.templates.battleVfx)
     {
       vfxTemplateSelectOptions.push(ReactDOMElements.option(
       {

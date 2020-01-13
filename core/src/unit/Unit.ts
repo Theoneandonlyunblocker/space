@@ -287,7 +287,7 @@ export class Unit
       maxItemSlots: template.itemSlots,
       items: [],
 
-      portrait: race.getUnitPortrait(template, activeModuleData.templates.Portraits),
+      portrait: race.getUnitPortrait(template, activeModuleData.templates.portraits),
       race: race,
     });
 
@@ -328,18 +328,18 @@ export class Unit
 
       abilities: data.abilityTypes.map(templateType =>
       {
-        return fetchTemplate(activeModuleData.templates.Abilities, templateType, "ability");
+        return fetchTemplate(activeModuleData.templates.abilities, templateType, "ability");
       }),
       passiveSkills: data.passiveSkillTypes.map(templateType =>
       {
-        return fetchTemplate(activeModuleData.templates.PassiveSkills, templateType, "passive skill");
+        return fetchTemplate(activeModuleData.templates.passiveSkills, templateType, "passive skill");
       }),
       abilityUpgrades: data.abilityUpgrades.reduce((allUpgradeData, currentUpgradeData) =>
       {
         const allAbilitiesAndPassiveSkills =
         {
-          ...activeModuleData.templates.Abilities,
-          ...activeModuleData.templates.PassiveSkills,
+          ...activeModuleData.templates.abilities,
+          ...activeModuleData.templates.passiveSkills,
         };
         const source = allAbilitiesAndPassiveSkills[currentUpgradeData.source];
         const upgrades = currentUpgradeData.possibleUpgrades.map(templateType =>
@@ -359,8 +359,8 @@ export class Unit
       {
         const allAbilitiesAndPassiveSkills =
         {
-          ...activeModuleData.templates.Abilities,
-          ...activeModuleData.templates.PassiveSkills,
+          ...activeModuleData.templates.abilities,
+          ...activeModuleData.templates.passiveSkills,
         };
 
         return allAbilitiesAndPassiveSkills[templateType];
@@ -385,7 +385,7 @@ export class Unit
          statusEffects: [],
          queuedAction:  data.battleStats.queuedAction ?
           {
-            ability: activeModuleData.templates.Abilities[data.battleStats.queuedAction.abilityTemplateKey],
+            ability: activeModuleData.templates.abilities[data.battleStats.queuedAction.abilityTemplateKey],
             targetId: data.battleStats.queuedAction.targetId,
             turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
             timesInterrupted: data.battleStats.queuedAction.timesInterrupted,
@@ -397,10 +397,10 @@ export class Unit
       items: [],
 
       portrait: data.portraitKey ?
-        activeModuleData.templates.Portraits[data.portraitKey] :
+        activeModuleData.templates.portraits[data.portraitKey] :
         undefined,
       race: data.raceKey ?
-        activeModuleData.templates.Races[data.raceKey] :
+        activeModuleData.templates.races[data.raceKey] :
         undefined,
     });
 

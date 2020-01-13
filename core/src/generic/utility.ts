@@ -535,7 +535,7 @@ export function makeRandomPersonality(): Personality
 {
   const unitCompositionPreference: ArchetypeValues = {};
 
-  for (const archetype in activeModuleData.templates.UnitArchetypes)
+  for (const archetype in activeModuleData.templates.unitArchetypes)
   {
     unitCompositionPreference[archetype] = Math.random();
   }

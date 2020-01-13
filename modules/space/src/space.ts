@@ -53,21 +53,21 @@ export const space: GameModule =
   ),
   addToModuleData: moduleData =>
   {
-    moduleData.copyTemplates(abilityTemplates, "Abilities");
-    moduleData.copyTemplates(battleVfxTemplates, "BattleVfx");
-    moduleData.copyTemplates(buildingTemplates, "Buildings");
-    moduleData.copyTemplates(itemTemplates, "Items");
-    moduleData.copyTemplates(mapGenTemplates, "MapGen");
-    moduleData.copyTemplates(mapLayerTemplates, "MapRendererLayers");
-    moduleData.copyTemplates(mapModeTemplates, "MapRendererMapModes");
-    moduleData.copyTemplates(passiveSkillTemplates, "PassiveSkills");
-    moduleData.copyTemplates(raceTemplates, "Races");
-    moduleData.copyTemplates(resourceTemplates, "Resources");
-    moduleData.copyTemplates(technologyTemplates, "Technologies");
-    moduleData.copyTemplates(terrainTemplates, "Terrains");
-    moduleData.copyTemplates(unitArchetypes, "UnitArchetypes");
-    moduleData.copyTemplates(unitEffectTemplates, "UnitEffects");
-    moduleData.copyTemplates(unitTemplates, "Units");
+    moduleData.copyTemplates(abilityTemplates, "abilities");
+    moduleData.copyTemplates(battleVfxTemplates, "battleVfx");
+    moduleData.copyTemplates(buildingTemplates, "buildings");
+    moduleData.copyTemplates(itemTemplates, "items");
+    moduleData.copyTemplates(mapGenTemplates, "mapGen");
+    moduleData.copyTemplates(mapLayerTemplates, "mapRendererLayers");
+    moduleData.copyTemplates(mapModeTemplates, "mapRendererMapModes");
+    moduleData.copyTemplates(passiveSkillTemplates, "passiveSkills");
+    moduleData.copyTemplates(raceTemplates, "races");
+    moduleData.copyTemplates(resourceTemplates, "resources");
+    moduleData.copyTemplates(technologyTemplates, "technologies");
+    moduleData.copyTemplates(terrainTemplates, "terrains");
+    moduleData.copyTemplates(unitArchetypes, "unitArchetypes");
+    moduleData.copyTemplates(unitEffectTemplates, "unitEffects");
+    moduleData.copyTemplates(unitTemplates, "units");
 
     if (!moduleData.mapBackgroundDrawingFunction)
     {

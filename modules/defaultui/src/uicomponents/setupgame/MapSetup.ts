@@ -47,11 +47,11 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   {
     const mapGenTemplates: MapGenTemplate[] = [];
 
-    for (const template in activeModuleData.templates.MapGen)
+    for (const template in activeModuleData.templates.mapGen)
     {
-      if (activeModuleData.templates.MapGen[template].key)
+      if (activeModuleData.templates.mapGen[template].key)
       {
-        mapGenTemplates.push(activeModuleData.templates.MapGen[template]);
+        mapGenTemplates.push(activeModuleData.templates.mapGen[template]);
       }
     }
 
@@ -79,7 +79,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   public async randomize(): Promise<void>
   {
-    const template = getRandomProperty(activeModuleData.templates.MapGen);
+    const template = getRandomProperty(activeModuleData.templates.mapGen);
 
     await this.setTemplate(template);
 
@@ -105,7 +105,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   private handleSelectTemplate(e: React.FormEvent<HTMLSelectElement>): void
   {
     const target = e.currentTarget;
-    const selectedTemplate = activeModuleData.templates.MapGen[target.value];
+    const selectedTemplate = activeModuleData.templates.mapGen[target.value];
 
     this.setTemplate(selectedTemplate);
   }

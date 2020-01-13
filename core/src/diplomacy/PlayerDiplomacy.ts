@@ -182,7 +182,7 @@ export class PlayerDiplomacy
     add modifiers that should be added. throw if type was already removed
     set new strength for modifier
      */
-    const allModifiers = activeModuleData.templates.AttitudeModifiers;
+    const allModifiers = activeModuleData.templates.attitudeModifiers;
 
     const modifiersForPlayer = this.getAttitudeModifiersForPlayer(player);
 

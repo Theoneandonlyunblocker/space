@@ -18,7 +18,7 @@ export const money: GameModule =
     {
       [moneyResource.type]: moneyResource,
     },
-      "Resources",
+      "resources",
     );
   },
   // TODO 2019.10.04 | these never get triggered since this module isn't part of saves

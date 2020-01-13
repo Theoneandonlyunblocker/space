@@ -16,7 +16,7 @@ const ResourceListComponent: React.FunctionComponent<PropTypes> = props =>
     React.createElement(React.Fragment, null,
       props.resourceTypes.map(resourceType =>
       {
-        const resourceTemplate = activeModuleData.templates.Resources[resourceType];
+        const resourceTemplate = activeModuleData.templates.resources[resourceType];
         if (!resourceTemplate)
         {
           throw new Error(`Tried to display resource with key '${resourceType}', but resource was not included in active game modules.`);

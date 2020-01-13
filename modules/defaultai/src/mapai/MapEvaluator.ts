@@ -95,7 +95,7 @@ export class MapEvaluator
 
     const totalValueOfResourcesForBuildings = Object.keys(totalCostOfAllBuildings).reduce((total, resourceType) =>
     {
-      const resource = activeModuleData.templates.Resources[resourceType];
+      const resource = activeModuleData.templates.resources[resourceType];
       const value = totalCostOfAllBuildings[resourceType] * resource.baseValuableness;
 
       return total + value;

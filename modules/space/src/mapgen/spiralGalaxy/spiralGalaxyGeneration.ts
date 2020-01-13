@@ -343,7 +343,7 @@ export const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOpti
   {
     const sectorRace = sector.stars[0].localRace;
 
-    const sectorIndependents = sectorRace.generateIndependentPlayer(activeModuleData.templates.SubEmblems);
+    const sectorIndependents = sectorRace.generateIndependentPlayer(activeModuleData.templates.subEmblems);
     independents.push(sectorIndependents);
 
     setupIndependents(

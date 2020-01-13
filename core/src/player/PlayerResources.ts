@@ -12,7 +12,7 @@ export function getBaseValuablenessOfResources(resources: Resources): number
   return Object.keys(resources).reduce((totalValuableness, resourceType) =>
   {
     const amount = resources[resourceType];
-    const resource = activeModuleData.templates.Resources[resourceType];
+    const resource = activeModuleData.templates.resources[resourceType];
     const valuableness = resource.baseValuableness * amount;
 
     return totalValuableness + valuableness;

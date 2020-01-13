@@ -22,7 +22,7 @@ export abstract class Name<
 
   public static fromData(data: NameSaveData)
   {
-    const language = activeModuleData.templates.Languages[data.languageCode];
+    const language = activeModuleData.templates.languages[data.languageCode];
     if (!language)
     {
       throw new Error(`Saved name '${data.baseName}' was defined with language code '${data.languageCode}', but said language was not available when trying to load name.`);

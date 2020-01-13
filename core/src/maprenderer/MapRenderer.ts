@@ -113,9 +113,9 @@ export class MapRenderer
   }
   initLayers()
   {
-    for (const layerKey in activeModuleData.templates.MapRendererLayers)
+    for (const layerKey in activeModuleData.templates.mapRendererLayers)
     {
-      const template = activeModuleData.templates.MapRendererLayers[layerKey];
+      const template = activeModuleData.templates.mapRendererLayers[layerKey];
       const layer = new MapRendererLayer(template);
       this.layers[layerKey] = layer;
     }
@@ -147,9 +147,9 @@ export class MapRenderer
       this.mapModes[mapModeKey] = mapMode;
     };
 
-    for (const mapModeKey in activeModuleData.templates.MapRendererMapModes)
+    for (const mapModeKey in activeModuleData.templates.mapRendererMapModes)
     {
-      const template = activeModuleData.templates.MapRendererMapModes[mapModeKey];
+      const template = activeModuleData.templates.mapRendererMapModes[mapModeKey];
       buildMapMode(mapModeKey, template);
     }
 

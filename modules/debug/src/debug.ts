@@ -21,19 +21,19 @@ export const debug: GameModule =
     {
       [nationalEpic.type]: nationalEpic,
       [thePyramids.type]: thePyramids,
-    }, "Buildings");
+    }, "buildings");
     moduleData.copyTemplates(
     {
       [debugShip.type]: debugShip,
-    }, "Units");
+    }, "units");
     moduleData.copyTemplates(
     {
       [debugItem.type]: debugItem,
-    }, "Items");
+    }, "items");
     moduleData.copyTemplates(
     {
       [debugAbility.type]: debugAbility,
-    }, "Abilities");
+    }, "abilities");
 
     for (const key in uiScenes)
     {
