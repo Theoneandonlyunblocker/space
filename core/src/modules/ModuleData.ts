@@ -89,7 +89,6 @@ export class ModuleData
   public mapBackgroundDrawingFunction: BackgroundDrawingFunction;
   public starBackgroundDrawingFunction: BackgroundDrawingFunction;
 
-  // TODO 2020.01.08 | rename keys to lowercase
   public templates: Templates =
   {
     abilities: {},
@@ -218,14 +217,14 @@ export class ModuleData
   private templatesByImplementationAreDirty: boolean = true;
   private readonly cachedTemplatesByImplementation:
   {
-    buildings: TemplateCollection<BuildingTemplate>;
-    items: TemplateCollection<ItemTemplate>;
-    units: TemplateCollection<UnitTemplate>;
+    buildingLike: TemplateCollection<BuildingTemplate>;
+    itemLike: TemplateCollection<ItemTemplate>;
+    unitLike: TemplateCollection<UnitTemplate>;
   } =
   {
-    buildings: {},
-    items: {},
-    units: {},
+    buildingLike: {},
+    itemLike: {},
+    unitLike: {},
   };
 
   constructor()
