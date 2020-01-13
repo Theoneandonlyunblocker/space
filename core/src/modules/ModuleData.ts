@@ -89,6 +89,7 @@ export class ModuleData
   public mapBackgroundDrawingFunction: BackgroundDrawingFunction;
   public starBackgroundDrawingFunction: BackgroundDrawingFunction;
 
+  // TODO 2020.01.08 | rename keys to lowercase
   public templates: Templates =
   {
     Abilities: {},
@@ -121,6 +122,7 @@ export class ModuleData
   public defaultLanguage: Language;
   public uiScenes: Partial<CoreUIScenes> & NonCoreUIScenes = {};
   public readonly mapLevelModifierAdjustments: CustomModifierAdjustments = new CustomModifierAdjustments();
+  // TODO 2020.01.08 | rename keys to be plural
   public readonly templateCollectionsWithUnlockables:
   {
     [key: string]: TemplateCollection<UnlockableThing>;

@@ -24,7 +24,6 @@ export const coreAvailabilityFlags =
 
   /**
    * should be made available unless implementing module has a very good reason not to
-   * when a module doesn't implement available things for non-core buildables, the module providing those buildables should include things flagged crucial
    */
   crucial: "crucial",
 };
