@@ -52,8 +52,6 @@ export function addTitanComponentsToModuleData(
 
     existingComponents[key] = componentsToAdd[key];
   }
-
-  moduleData.copyTemplates(componentsToAdd, "Items");
 }
 export function addTitanChassisToModuleData(
   moduleData: ModuleData,
@@ -71,6 +69,4 @@ export function addTitanChassisToModuleData(
 
     existingComponents[key] = chassisToAdd[key];
   }
-
-  moduleData.copyTemplates(chassisToAdd, "Units");
 }

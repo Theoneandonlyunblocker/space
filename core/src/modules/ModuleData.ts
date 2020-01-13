@@ -135,6 +135,58 @@ export class ModuleData
     item: this.templates.Items,
     unit: this.templates.Units,
   };
+  // separated from templates to keep this.templates as a source of truth, but still allowing implementations to be reused
+  // f.ex. titans from the titans module are implemented as units, but just adding them to this.templates.units means they become buildable as regular units, which they shouldn't be
+  public readonly templateCollectionsByImplementation:
+  {
+    buildingLike: {[key: string]: TemplateCollection<BuildingTemplate>};
+    itemLike: {[key: string]: TemplateCollection<ItemTemplate>};
+    unitLike: {[key: string]: TemplateCollection<UnitTemplate>};
+  } =
+  {
+    buildingLike: {buildings: this.templates.Buildings},
+    itemLike: {items: this.templates.Items},
+    unitLike: {units: this.templates.Units},
+  };
+  public get templatesByImplementation()
+  {
+    if (this.templatesByImplementationAreDirty)
+    {
+      for (const buildableType in this.templateCollectionsByImplementation)
+      {
+        this.cachedTemplatesByImplementation[buildableType] = {};
+
+        // just for error messages
+        const categoryTemplateWasAlreadyFoundIn:
+        {
+          [key: string]: string;
+        } = {};
+
+        for (const buildableCollectionKey in this.templateCollectionsByImplementation[buildableType])
+        {
+          const buildableTemplates = this.templateCollectionsByImplementation[buildableType][buildableCollectionKey];
+
+          for (const key in buildableTemplates)
+          {
+            if (categoryTemplateWasAlreadyFoundIn[key])
+            {
+              const a = categoryTemplateWasAlreadyFoundIn[key];
+              const b = buildableCollectionKey;
+
+              throw new Error(`Template with key '${key}' was found in both '${a}' and '${b}'.` +
+                `Both '${a}' and '${b}' implement templates buildable as '${buildableType}' and as such cannot have duplicate keys.`);
+            }
+
+            this.cachedTemplatesByImplementation[buildableType][key] = buildableTemplates[key];
+          }
+        }
+      }
+
+      this.templatesByImplementationAreDirty = false;
+    }
+
+    return this.cachedTemplatesByImplementation;
+  }
   public readonly manufacturableThingKinds:
   {
     [key: string]: ManufacturableThingKind<any, any, any>;
@@ -156,13 +208,26 @@ export class ModuleData
     if (this.technologyUnlocksAreDirty)
     {
       this.cachedTechnologyUnlocks = this.getAllTechnologyUnlocks();
+      this.technologyUnlocksAreDirty = false;
     }
 
     return this.cachedTechnologyUnlocks;
   }
-  public technologyUnlocksAreDirty: boolean = true;
 
+  private technologyUnlocksAreDirty: boolean = true;
   private cachedTechnologyUnlocks: TechnologyUnlocksByLevelByTech = {};
+  private templatesByImplementationAreDirty: boolean = true;
+  private readonly cachedTemplatesByImplementation:
+  {
+    buildings: TemplateCollection<BuildingTemplate>;
+    items: TemplateCollection<ItemTemplate>;
+    units: TemplateCollection<UnitTemplate>;
+  } =
+  {
+    buildings: {},
+    items: {},
+    units: {},
+  };
 
   constructor()
   {
@@ -197,6 +262,7 @@ export class ModuleData
     }
 
     this.technologyUnlocksAreDirty = true;
+    this.templatesByImplementationAreDirty = true;
   }
   public copyAllTemplates(source: Templates): void
   {

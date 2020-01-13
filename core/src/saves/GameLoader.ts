@@ -298,7 +298,7 @@ export class GameLoader
   }
   private deserializeBuilding<T extends Building>(data: BuildingSaveData): T
   {
-    const template = activeModuleData.templates.Buildings[data.templateType];
+    const template = activeModuleData.templatesByImplementation.buildings[data.templateType];
     const building = new Building(
     {
       template: template,
@@ -458,7 +458,7 @@ export class GameLoader
   }
   private deserializeItem(data: ItemSaveData): Item
   {
-    const template = activeModuleData.templates.Items[data.templateType];
+    const template = activeModuleData.templatesByImplementation.items[data.templateType];
 
     const item = new Item(template, data.id);
     item.positionInUnit = data.positionInUnit;

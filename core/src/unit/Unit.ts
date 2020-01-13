@@ -312,7 +312,7 @@ export class Unit
 
     const unit = new Unit(
     {
-      template: fetchTemplate(activeModuleData.templates.Units, data.templateType, "unit"),
+      template: fetchTemplate(activeModuleData.templatesByImplementation.units, data.templateType, "unit"),
 
       id: data.id,
       name: Name.fromData(data.name),
