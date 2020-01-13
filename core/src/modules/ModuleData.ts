@@ -122,18 +122,17 @@ export class ModuleData
   public defaultLanguage: Language;
   public uiScenes: Partial<CoreUIScenes> & NonCoreUIScenes = {};
   public readonly mapLevelModifierAdjustments: CustomModifierAdjustments = new CustomModifierAdjustments();
-  // TODO 2020.01.08 | rename keys to be plural
   public readonly templateCollectionsWithUnlockables:
   {
     [key: string]: TemplateCollection<UnlockableThing>;
-    building: TemplateCollection<BuildingTemplate>;
-    item: TemplateCollection<ItemTemplate>;
-    unit: TemplateCollection<UnitTemplate>;
+    buildings: TemplateCollection<BuildingTemplate>;
+    items: TemplateCollection<ItemTemplate>;
+    units: TemplateCollection<UnitTemplate>;
   } =
   {
-    building: this.templates.Buildings,
-    item: this.templates.Items,
-    unit: this.templates.Units,
+    buildings: this.templates.Buildings,
+    items: this.templates.Items,
+    units: this.templates.Units,
   };
   // separated from templates to keep this.templates as a source of truth, but still allowing implementations to be reused
   // f.ex. titans from the titans module are implemented as units, but just adding them to this.templates.units means they become buildable as regular units, which they shouldn't be
