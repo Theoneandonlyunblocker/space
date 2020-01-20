@@ -37,7 +37,6 @@ export function applyFlatAndMultiplierAdjustments(
 }
 
 export function squashFlatAndMultiplierAdjustments(
-  baseAdjustment: FlatAndMultiplierAdjustment,
   ...allAdjustments: Partial<FlatAndMultiplierAdjustment>[]
 ): FlatAndMultiplierAdjustment
 {
@@ -57,7 +56,7 @@ export function squashFlatAndMultiplierAdjustments(
     }
 
     return squashed;
-  }, baseAdjustment);
+  }, getBaseAdjustment());
 }
 
 export function squashAdjustmentsObjects<T extends AdjustmentsObject<T>>(
@@ -84,7 +83,7 @@ export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
       }
       else
       {
-        (squashed[key] as FlatAndMultiplierAdjustment) = squashFlatAndMultiplierAdjustments(getBaseAdjustment(), toSquash[key]);
+        (squashed[key] as FlatAndMultiplierAdjustment) = squashFlatAndMultiplierAdjustments(toSquash[key]);
       }
     }
 
@@ -92,22 +91,22 @@ export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
   });
 }
 export function applyAdjustmentsObjects<T extends {[key: string]: number}>(
-  baseValues: T,
-  baseAdjustmentsObject: AdjustmentsObject<T>,
+  baseValues: Partial<T>,
   ...adjustmentsObjects: PartialAdjustmentsObject<T>[]
-)
+): Partial<T>
 {
-  const squashedAdjustments = squashAdjustmentsObjects(baseAdjustmentsObject, ...adjustmentsObjects);
+  const squashedAdjustments = squashAdjustmentsObjects(...adjustmentsObjects);
 
-  const allKeys = Object.keys({...baseValues, ...squashedAdjustments});
+  const allKeys = <(keyof T)[]>Object.keys({...baseValues, ...squashedAdjustments});
 
   return allKeys.reduce((finalValuesByKey, key) =>
   {
     const baseValue = baseValues[key] || 0;
     const adjustment = squashedAdjustments[key] || getBaseAdjustment();
 
-    finalValuesByKey[key] = applyFlatAndMultiplierAdjustments(baseValue, adjustment);
+    // why is the type assertion necessary?
+    finalValuesByKey[key] = <T[keyof T]>applyFlatAndMultiplierAdjustments(baseValue, adjustment);
 
     return finalValuesByKey;
-  }, {});
+  }, <Partial<T>>{});
 }
