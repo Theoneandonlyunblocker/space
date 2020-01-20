@@ -1,6 +1,7 @@
 *js.map
 node_modules/
-/dist/
 yarn.lock
+package-lock.json
 *.tsbuildinfo
 /build/
+/dist/
