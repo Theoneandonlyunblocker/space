@@ -20,20 +20,9 @@ export function getBaseAdjustment(): FlatAndMultiplierAdjustment
   return(
   {
     flat: 0,
-    additiveMultiplier: 1,
+    additiveMultiplier: 0,
     multiplicativeMultiplier: 1,
   });
-}
-
-export function applyFlatAndMultiplierAdjustments(
-  baseValue: number,
-  baseAdjustment: FlatAndMultiplierAdjustment,
-  ...adjustments: Partial<FlatAndMultiplierAdjustment>[]
-): number
-{
-  const adjustment = squashFlatAndMultiplierAdjustments(baseAdjustment, ...adjustments);
-
-  return (baseValue + adjustment.flat) * adjustment.additiveMultiplier * adjustment.multiplicativeMultiplier;
 }
 
 export function squashFlatAndMultiplierAdjustments(
@@ -57,6 +46,16 @@ export function squashFlatAndMultiplierAdjustments(
 
     return squashed;
   }, getBaseAdjustment());
+}
+
+export function applyFlatAndMultiplierAdjustments(
+  baseValue: number,
+  ...adjustments: Partial<FlatAndMultiplierAdjustment>[]
+): number
+{
+  const adjustment = squashFlatAndMultiplierAdjustments(...adjustments);
+
+  return (baseValue + adjustment.flat) * (1 + adjustment.additiveMultiplier) * adjustment.multiplicativeMultiplier;
 }
 
 export function squashAdjustmentsObjects<T extends AdjustmentsObject<T>>(
