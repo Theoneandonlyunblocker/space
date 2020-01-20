@@ -32,7 +32,6 @@
     "http-server": "0.11.x",
     "less": "2.7.x",
     "mkdirp": "0.5.x",
-    "ts-loader": "5.3.x",
     "tslint": "5.11.x",
     "typescript": "3.7.x"
   },
