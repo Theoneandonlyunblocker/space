@@ -64,7 +64,7 @@ export function squashAdjustmentsObjects<T extends AdjustmentsObject<T>>(
 ): T;
 export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
   ...adjustmentObjectsToSquash: T[]
-): T;
+): {[K in keyof T]: FlatAndMultiplierAdjustment};
 export function squashAdjustmentsObjects<T extends PartialAdjustmentsObject<T>>(
   ...adjustmentObjectsToSquash: T[]
 ): T
@@ -94,6 +94,11 @@ export function applyAdjustmentsObjects<T extends {[key: string]: number}>(
   ...adjustmentsObjects: PartialAdjustmentsObject<T>[]
 ): Partial<T>
 {
+  if (adjustmentsObjects.length === 0)
+  {
+    return baseValues;
+  }
+
   const squashedAdjustments = squashAdjustmentsObjects(...adjustmentsObjects);
 
   const allKeys = <(keyof T)[]>Object.keys({...baseValues, ...squashedAdjustments});
