@@ -4,7 +4,6 @@ import { CombatActionPrimitivesWithValues } from "./CombatActionPrimitive";
 
 export interface CombatActionModifier
 {
-  key: string;
-  flags?: Set<string>;
   primitives: CombatActionPrimitivesWithValues<Partial<FlatAndMultiplierAdjustment>>;
+  flags?: Set<string>;
 }
