@@ -12,8 +12,18 @@ export class CombatAction
   public readonly target: Unit;
   public readonly actionAttachedTo: CombatAction | undefined;
 
-  public readonly modifiers: CombatActionModifier[] = [];
-  public readonly resultModifiers: CombatActionResultModifierWithValue<any>[] = [];
+  public get modifiers(): CombatActionModifier[]
+  {
+    this.isDirty = true;
+
+    return this._modifiers;
+  }
+  public get resultModifiers(): CombatActionResultModifierWithValue<any>[]
+  {
+    this.isDirty = true;
+
+    return this._resultModifiers;
+  }
 
   public get result(): CombatActionResults
   {
@@ -27,6 +37,8 @@ export class CombatAction
   }
 
   private isDirty: boolean = true;
+  private readonly _modifiers: CombatActionModifier[] = [];
+  private readonly _resultModifiers: CombatActionResultModifierWithValue<any>[] = [];
   private cachedResult: CombatActionResults;
 
   constructor(props:
