@@ -21,17 +21,17 @@ export class CombatManager<Phase extends string>
     this.allCombatPhases = allCombatPhases;
   }
 
-  public setPhase(phaseInfo: CombatPhaseInfo): void
+  public setPhase(phase: Phase): void
   {
-    this.currentPhase = new CombatPhase(phaseInfo, this);
-    if (this.queuedActions[phaseInfo.key])
+    this.currentPhase = new CombatPhase(this.allCombatPhases[phase], this);
+    if (this.queuedActions[phase])
     {
-      this.queuedActions[phaseInfo.key].forEach(queuedAction =>
+      this.queuedActions[phase].forEach(queuedAction =>
       {
         this.currentPhase.addActionToBack(queuedAction);
       });
 
-      this.queuedActions[phaseInfo.key] = [];
+      this.queuedActions[phase] = [];
     }
   }
   public addQueuedAction(action: CombatAction, phaseInfo: CombatPhaseInfo<Phase>): void
