@@ -44,6 +44,8 @@ import { allDefaultScripts } from "../triggeredscripts/defaultScripts/allDefault
 import { AllCoreScripts } from "../triggeredscripts/AllCoreScriptsWithData";
 import { ManufacturableThingKind } from "../templateinterfaces/ManufacturableThing";
 import { coreManufacturableThingKinds } from "../production/coreManufacturableThingKinds";
+import { CombatPhaseInfo } from "../combat/CombatPhaseInfo";
+import { getAllCorePhaseInfo } from "../combat/phases/allCorePhases";
 
 // tslint:disable:no-any
 interface Templates
@@ -191,6 +193,13 @@ export class ModuleData
   } =
   {
     ...coreManufacturableThingKinds,
+  };
+  public readonly combatPhases:
+  {
+    [key: string]: CombatPhaseInfo<any>;
+  } =
+  {
+    ...getAllCorePhaseInfo,
   };
   // for content not used by the core game, but used modularly across modules
   // f.ex. modular ui components
