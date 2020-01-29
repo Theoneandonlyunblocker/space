@@ -1,5 +1,6 @@
 import { CombatPhase } from "./CombatPhase";
 import { CombatPhaseInfo } from "./CombatPhaseInfo";
+import { Battle } from "../battle/Battle";
 import { CombatAction } from "./CombatAction";
 
 
@@ -7,6 +8,7 @@ import { CombatAction } from "./CombatAction";
 export class CombatManager
 {
   public currentPhase: CombatPhase;
+  public battle: Battle;
 
   private readonly queuedActions:
   {

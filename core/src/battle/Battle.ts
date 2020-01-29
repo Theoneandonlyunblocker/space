@@ -488,7 +488,7 @@ export class Battle
 
     return (enemySideValue / ownSideValue) * 10;
   }
-  private shouldEnd(): boolean
+  public shouldEnd(): boolean
   {
     if (!this.activeUnit)
     {
@@ -511,7 +511,7 @@ export class Battle
 
     return false;
   }
-  private endBattle(): void
+  public endBattle(): void
   {
     this._ended = true;
 
