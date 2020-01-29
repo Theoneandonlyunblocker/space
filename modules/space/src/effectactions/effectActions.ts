@@ -4,7 +4,7 @@ import {FlatAndMultiplierAdjustment, applyFlatAndMultiplierAdjustments, getBaseA
 import {GuardCoverage} from "core/src/unit/GuardCoverage";
 import {StatusEffect} from "core/src/unit/StatusEffect";
 import {Unit} from "core/src/unit/Unit";
-import {UnitAttributeAdjustments} from "core/src/unit/UnitAttributes";
+import {AdjustmentsPerAttribute} from "core/src/unit/UnitAttributes";
 import
 {
   ExecutedEffectsResult,
@@ -40,7 +40,7 @@ interface DamageWithType
 interface FlatAndPerAttributeAdjustment
 {
   flat: number;
-  perAttribute: UnitAttributeAdjustments;
+  perAttribute: AdjustmentsPerAttribute;
 }
 
 interface GuardCoverageObj

@@ -20,14 +20,6 @@ export enum UnitAttribute
   Speed,
 }
 
-export interface UnitAttributeAdjustments
-{
-  maxActionPoints?: Partial<FlatAndMultiplierAdjustment>;
-  attack?: Partial<FlatAndMultiplierAdjustment>;
-  defence?: Partial<FlatAndMultiplierAdjustment>;
-  intelligence?: Partial<FlatAndMultiplierAdjustment>;
-  speed?: Partial<FlatAndMultiplierAdjustment>;
-}
 export interface UnitAttributesObject
 {
   maxActionPoints: number;
@@ -36,6 +28,20 @@ export interface UnitAttributesObject
   intelligence: number;
   speed: number;
 }
+export type UnitAttributeAdjustments =
+{
+  [K in keyof UnitAttributesObject]?: Partial<FlatAndMultiplierAdjustment>;
+};
+export type AdjustmentsPerAttribute =
+{
+  [K in keyof UnitAttributesObject]?:
+  {
+    flatPerPoint?: number;
+    additiveMultiplierPerPoint?: number;
+    multiplicativeMultiplierPerPoint?: number;
+  };
+};
+
 
 export function getKeyForAttribute(attribute: UnitAttribute): Exclude<keyof UnitAttributesObject, "maxActionPoints">
 {
@@ -122,31 +128,42 @@ export class UnitAttributes implements UnitAttributesObject
 
     return cloned;
   }
-  public modifyValueByAttributes(
-    baseValue: number,
-    attributeAdjustments: UnitAttributeAdjustments,
-  ): number
+  public resolveAdjustmentsPerAttribute(
+    perAttribute: AdjustmentsPerAttribute,
+  ): FlatAndMultiplierAdjustment
   {
     const totalAdjustment = getBaseAdjustment();
 
-    for (const attributeName in attributeAdjustments)
+    for (const attributeName in perAttribute)
     {
-      const adjustment = attributeAdjustments[<keyof UnitAttributeAdjustments>attributeName];
-      const attributeValue = this[<keyof UnitAttributeAdjustments>attributeName];
+      const adjustment = perAttribute[<keyof AdjustmentsPerAttribute>attributeName];
+      const attributeValue = this[<keyof AdjustmentsPerAttribute>attributeName];
 
-      if (adjustment.flat)
+      if (adjustment.flatPerPoint)
       {
-        totalAdjustment.flat += adjustment.flat * attributeValue;
+        totalAdjustment.flat +=
+          adjustment.flatPerPoint * attributeValue;
       }
-      if (adjustment.additiveMultiplier)
+      if (adjustment.additiveMultiplierPerPoint)
       {
-        totalAdjustment.additiveMultiplier += adjustment.additiveMultiplier * attributeValue;
+        totalAdjustment.additiveMultiplier +=
+          adjustment.additiveMultiplierPerPoint * attributeValue;
       }
-      if (isFinite(adjustment.multiplicativeMultiplier))
+      if (isFinite(adjustment.multiplicativeMultiplierPerPoint))
       {
-        totalAdjustment.multiplicativeMultiplier *= adjustment.multiplicativeMultiplier * attributeValue;
+        totalAdjustment.multiplicativeMultiplier *=
+         1 + adjustment.multiplicativeMultiplierPerPoint * attributeValue;
       }
     }
+
+    return totalAdjustment;
+  }
+  public modifyValueByAttributes(
+    baseValue: number,
+    perAttribute: AdjustmentsPerAttribute,
+  ): number
+  {
+    const totalAdjustment = this.resolveAdjustmentsPerAttribute(perAttribute);
 
     return applyFlatAndMultiplierAdjustments(baseValue, totalAdjustment);
   }

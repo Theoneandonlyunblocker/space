@@ -180,7 +180,7 @@ export const guardRow: AbilityTemplate =
     {
       perAttribute:
       {
-        intelligence: {flat: 20},
+        intelligence: {flatPerPoint: 20},
       },
       coverage: GuardCoverage.Row,
     }),
