@@ -20,7 +20,7 @@ export class CombatManager
 
   public setPhase(phaseInfo: CombatPhaseInfo): void
   {
-    this.currentPhase = new CombatPhase(phaseInfo);
+    this.currentPhase = new CombatPhase(phaseInfo, this);
     if (this.queuedActions[phaseInfo.key])
     {
       this.queuedActions[phaseInfo.key].forEach(queuedAction =>

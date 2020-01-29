@@ -1,5 +1,6 @@
 import { CombatAction } from "./CombatAction";
 import { PhaseFinishCallback, CombatActionListener, CombatPhaseInfo } from "./CombatPhaseInfo";
+import { CombatManager } from "./CombatManager";
 
 
 export class CombatPhase
@@ -11,6 +12,7 @@ export class CombatPhase
   public readonly actions: CombatAction[] = [];
   public afterPhaseIsFinished: PhaseFinishCallback;
 
+  private readonly combatManager: CombatManager;
   private readonly actionListenersByFlag:
   {
     [flag: string]:
@@ -20,9 +22,14 @@ export class CombatPhase
     };
   } = {};
 
-  constructor(info: CombatPhaseInfo)
+  constructor(
+    info: CombatPhaseInfo,
+    manager: CombatManager,
+  )
   {
+    this.combatManager = manager;
     // TODO 2020.01.28 | implement
+
   }
 
   public addActionToFront(action: CombatAction): void
@@ -80,7 +87,7 @@ export class CombatPhase
         {
           this.actionListenersByFlag[flag][type].forEach(listener =>
           {
-            listener(action, this);
+            listener(action, this.combatManager);
           });
         }
       });

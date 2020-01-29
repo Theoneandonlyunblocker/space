@@ -2,25 +2,24 @@ import { CombatAction } from "./CombatAction";
 import { Unit } from "../unit/Unit";
 import { Battle } from "../battle/Battle";
 import { CombatManager } from "./CombatManager";
-import { CombatPhase } from "./CombatPhase";
 
 
 export interface CombatActionListener
 {
   flagsToListenTo: string[];
-  onAdd?: (action: CombatAction, combatPhase: CombatPhase) => void;
-  onRemove?: (action: CombatAction, combatPhase: CombatPhase) => void;
+  onAdd?: (action: CombatAction, combatManager: CombatManager) => void;
+  onRemove?: (action: CombatAction, combatManager: CombatManager) => void;
 }
 
 // probably needs other params too
 export type PhaseFinishCallback = (combatManager: CombatManager) => void;
 
-export type CombatListenerFetcher = (activeUnit: Unit, battle: Battle) => CombatActionListener[];
+export type CombatActionListenerFetcher = (activeUnit: Unit, battle: Battle) => CombatActionListener[];
 export type CombatActionFetcher = (activeUnit: Unit, battle: Battle) => CombatAction[];
 
 export interface CombatPhaseInfo
 {
-  name: string;
+  key: string;
 
   /**
    * used for controlling control flow of combat
@@ -41,6 +40,6 @@ export interface CombatPhaseInfo
    */
   combatListenerFetchers:
   {
-    [key: string]: CombatListenerFetcher;
+    [key: string]: CombatActionListenerFetcher;
   };
 }
