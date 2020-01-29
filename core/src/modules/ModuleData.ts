@@ -45,7 +45,7 @@ import { AllCoreScripts } from "../triggeredscripts/AllCoreScriptsWithData";
 import { ManufacturableThingKind } from "../templateinterfaces/ManufacturableThing";
 import { coreManufacturableThingKinds } from "../production/coreManufacturableThingKinds";
 import { CombatPhaseInfo } from "../combat/CombatPhaseInfo";
-import { getAllCorePhaseInfo } from "../combat/phases/allCorePhases";
+import { getAllCorePhaseInfo } from "../combat/core/coreCombatPhases";
 
 // tslint:disable:no-any
 interface Templates
