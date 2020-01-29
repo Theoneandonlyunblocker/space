@@ -4,7 +4,7 @@ import { modifyPrimitiveByAttributes } from "../modifiers/modifyPrimitiveByAttri
 import { magicalDamage } from "../primitives/magicalDamage";
 
 
-export const applyIntelligenceToAttacks: CombatActionListener =
+export const applyIntelligenceToAttacks: CombatActionListener<never> =
 {
   flagsToListenTo: [coreCombatActionFlags.attack],
   onAdd: (action, combatManager) =>

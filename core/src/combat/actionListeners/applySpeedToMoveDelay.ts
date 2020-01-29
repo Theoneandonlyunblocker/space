@@ -4,7 +4,7 @@ import { modifyPrimitiveByAttributes } from "../modifiers/modifyPrimitiveByAttri
 import { moveDelay } from "../primitives/moveDelay";
 
 
-export const applySpeedToMoveDelay: CombatActionListener =
+export const applySpeedToMoveDelay: CombatActionListener<never> =
 {
   flagsToListenTo: [coreCombatActionFlags.moveDelay],
   onAdd: (action, combatManager) =>

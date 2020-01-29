@@ -3,7 +3,7 @@ import { coreCombatActionFlags } from "../coreCombatActionFlags";
 import { guardPhysicalDamageReduction } from "../modifiers/guardPhysicalDamageReduction";
 
 
-export const applyGuardDamageReductionToAttacks: CombatActionListener =
+export const applyGuardDamageReductionToAttacks: CombatActionListener<never> =
 {
   flagsToListenTo: [coreCombatActionFlags.attack],
   onAdd: (action, combatManager) =>

@@ -3,33 +3,32 @@ import { PhaseFinishCallback, CombatActionListener, CombatPhaseInfo } from "./Co
 import { CombatManager } from "./CombatManager";
 
 
-export class CombatPhase
+export class CombatPhase<AllPhases extends string>
 {
   public readonly name: string;
   /**
    * do not manipulate directly. use methods on CombatActionListener instead.
    */
   public readonly actions: CombatAction[] = [];
-  public afterPhaseIsFinished: PhaseFinishCallback;
+  public afterPhaseIsFinished: PhaseFinishCallback<AllPhases>;
 
-  private readonly combatManager: CombatManager;
+  private readonly combatManager: CombatManager<AllPhases>;
   private readonly actionListenersByFlag:
   {
     [flag: string]:
     {
-      onAdd: CombatActionListener["onAdd"][];
-      onRemove: CombatActionListener["onRemove"][];
+      onAdd: CombatActionListener<AllPhases>["onAdd"][];
+      onRemove: CombatActionListener<AllPhases>["onRemove"][];
     };
   } = {};
 
   constructor(
-    info: CombatPhaseInfo,
-    manager: CombatManager,
+    info: CombatPhaseInfo<AllPhases>,
+    manager: CombatManager<AllPhases>,
   )
   {
     this.combatManager = manager;
-    // TODO 2020.01.28 | implement
-
+    // TODO 2020.01.29 | implement
   }
 
   public addActionToFront(action: CombatAction): void
@@ -53,7 +52,7 @@ export class CombatPhase
     this.actions.splice(index, 1);
     this.triggerActionListeners(action, "onRemove");
   }
-  public addActionListener(listener: CombatActionListener): void
+  public addActionListener(listener: CombatActionListener<AllPhases>): void
   {
     listener.flagsToListenTo.forEach(flag =>
     {

@@ -5,19 +5,20 @@ import { CombatAction } from "./CombatAction";
 
 
 
-export class CombatManager
+export class CombatManager<Phase extends string>
 {
-  public currentPhase: CombatPhase;
-  public battle: Battle;
+  public currentPhase: CombatPhase<Phase>;
+  public readonly battle: Battle;
 
+  private readonly allCombatPhases: {[P in Phase]: CombatPhaseInfo<Phase>};
   private readonly queuedActions:
   {
-    [phaseKey: string]: CombatAction[];
+    [P in Phase]?: CombatAction[];
   } = {};
 
-  constructor()
+  constructor(allCombatPhases: {[P in Phase]: CombatPhaseInfo<Phase>})
   {
-
+    this.allCombatPhases = allCombatPhases;
   }
 
   public setPhase(phaseInfo: CombatPhaseInfo): void
@@ -33,7 +34,7 @@ export class CombatManager
       this.queuedActions[phaseInfo.key] = [];
     }
   }
-  public addQueuedAction(action: CombatAction, phaseInfo: CombatPhaseInfo): void
+  public addQueuedAction(action: CombatAction, phaseInfo: CombatPhaseInfo<Phase>): void
   {
     if (!this.queuedActions[phaseInfo.key])
     {
