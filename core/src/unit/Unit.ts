@@ -888,6 +888,9 @@ export class Unit
 
     this.mapLevelModifiers.setModifiersForOwner();
   }
+  /**
+   * @deprecated
+   */
   public removeGuard(amount: number)
   {
     this.battleStats.guardAmount -= amount;
@@ -895,6 +898,9 @@ export class Unit
 
     this.uiDisplayIsDirty = true;
   }
+  /**
+   * @deprecated
+   */
   public addGuard(amount: number, coverage: GuardCoverage)
   {
     this.battleStats.guardAmount += amount;
@@ -902,6 +908,9 @@ export class Unit
 
     this.uiDisplayIsDirty = true;
   }
+  /**
+   * @deprecated
+   */
   public removeAllGuard()
   {
     this.battleStats.guardAmount = 0;
