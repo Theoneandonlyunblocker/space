@@ -2,9 +2,10 @@ import { CombatActionListener } from "../../CombatPhaseInfo";
 import { coreCombatActionFlags } from "../coreCombatActionFlags";
 import { modifyPrimitiveByAttributes } from "../modifiers/modifyPrimitiveByAttributes";
 import { physicalDamage } from "../primitives/physicalDamage";
+import { CorePhase } from "../coreCombatPhases";
 
 
-export const applyAttackAndDefenceToAttacks: CombatActionListener<never> =
+export const applyAttackAndDefenceToAttacks: CombatActionListener<CorePhase> =
 {
   key: "applyAttackAndDefenceToAttacks",
   flagsToListenTo: [coreCombatActionFlags.attack],

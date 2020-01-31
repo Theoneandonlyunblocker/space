@@ -1,5 +1,6 @@
 import { CombatPhaseInfo } from "../../CombatPhaseInfo";
 import { CorePhase } from "../coreCombatPhases";
+import { universalCoreListenerFetchers } from "../universalCoreListenerFetchers";
 
 
 export function turnStartPhase(): CombatPhaseInfo<CorePhase>
@@ -23,7 +24,7 @@ export function turnStartPhase(): CombatPhaseInfo<CorePhase>
     },
     combatListenerFetchers:
     {
-
+      ...universalCoreListenerFetchers,
     },
   };
 }

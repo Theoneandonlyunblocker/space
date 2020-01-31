@@ -2,9 +2,10 @@ import { CombatActionListener } from "../../CombatPhaseInfo";
 import { coreCombatActionFlags } from "../coreCombatActionFlags";
 import { modifyPrimitiveByAttributes } from "../modifiers/modifyPrimitiveByAttributes";
 import { moveDelay } from "../primitives/moveDelay";
+import { CorePhase } from "../coreCombatPhases";
 
 
-export const applySpeedToMoveDelay: CombatActionListener<never> =
+export const applySpeedToMoveDelay: CombatActionListener<CorePhase> =
 {
   key: "applySpeedToMoveDelay",
   flagsToListenTo: [coreCombatActionFlags.moveDelay],

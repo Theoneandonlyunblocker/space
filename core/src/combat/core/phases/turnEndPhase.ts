@@ -1,5 +1,6 @@
 import { CombatPhaseInfo } from "../../CombatPhaseInfo";
 import { CorePhase } from "../coreCombatPhases";
+import { universalCoreListenerFetchers } from "../universalCoreListenerFetchers";
 
 
 export function turnEndPhase(): CombatPhaseInfo<CorePhase>
@@ -19,21 +20,11 @@ export function turnEndPhase(): CombatPhaseInfo<CorePhase>
     },
     combatActionFetchers:
     {
-      // global effects
-      // battle effects
-      // unit effects
-      //  items
-      //  statuses
-      //  passives
-      // updateStatusEffects: (activeUnit, battle) =>
-      // {
-      //   // const statusEffectsWithTurnEndAction = ;
-      //   // statusEffectsWithTurnEndAction.forEach(statusEffect => {});
-      // }
+
     },
     combatListenerFetchers:
     {
-
+      ...universalCoreListenerFetchers,
     },
   };
 }

@@ -1,5 +1,6 @@
 import { CombatPhaseInfo } from "../../CombatPhaseInfo";
 import { CorePhase } from "../coreCombatPhases";
+import { universalCoreListenerFetchers } from "../universalCoreListenerFetchers";
 
 
 export function afterMainPhase(): CombatPhaseInfo<CorePhase>
@@ -19,18 +20,11 @@ export function afterMainPhase(): CombatPhaseInfo<CorePhase>
     },
     combatActionFetchers:
     {
-      // global effects
-      // battle effects
-      // unit effects
-      //  items
-      //  statuses
-      //  passives
-
 
     },
     combatListenerFetchers:
     {
-
+      ...universalCoreListenerFetchers,
     },
   };
 }
