@@ -38,7 +38,6 @@ import
   sumObjectValues,
 } from "../generic/utility";
 
-import {UnitBattleStatsSaveData} from "../savedata/UnitBattleStatsSaveData";
 import {UnitSaveData} from "../savedata/UnitSaveData";
 import { ProbabilityDistributions } from "../templateinterfaces/ProbabilityDistribution";
 import { Name } from "../localization/Name";
@@ -176,34 +175,11 @@ export class Unit
 
     if (props.battleStats)
     {
-      this.battleStats =
-      {
-        moveDelay: props.battleStats.moveDelay,
-        side: props.battleStats.side,
-        position: props.battleStats.position,
-        currentActionPoints: props.battleStats.currentActionPoints,
-        guardAmount: props.battleStats.guardAmount,
-        guardCoverage: props.battleStats.guardCoverage,
-        captureChance: props.battleStats.captureChance,
-        statusEffects: props.battleStats.statusEffects.map(statusEffect =>
-        {
-          return statusEffect.clone();
-        }),
-        lastHealthBeforeReceivingDamage: this.currentHealth,
-        queuedAction: props.battleStats.queuedAction ?
-          {
-            ability: props.battleStats.queuedAction.ability,
-            targetId: props.battleStats.queuedAction.targetId,
-            turnsPrepared: props.battleStats.queuedAction.turnsPrepared,
-            timesInterrupted: props.battleStats.queuedAction.timesInterrupted,
-          } :
-          null,
-        isAnnihilated: props.battleStats.isAnnihilated,
-      };
+      this.battleStats = props.battleStats;
     }
     else
     {
-      this.resetBattleStats();
+      this.battleStats = UnitBattleStats.createInitialBattleStatsForUnit(this);
     }
 
     this.items = this.makeUnitItems(props.maxItemSlots);
@@ -369,29 +345,7 @@ export class Unit
       level: data.level,
       experienceForCurrentLevel: data.experienceForCurrentLevel,
 
-      battleStats:
-      {
-         moveDelay: data.battleStats.moveDelay,
-         side: data.battleStats.side,
-         position: data.battleStats.position,
-         currentActionPoints: data.battleStats.currentActionPoints,
-         guardAmount: data.battleStats.guardAmount,
-         guardCoverage: data.battleStats.guardCoverage,
-         captureChance: data.battleStats.captureChance,
-         isAnnihilated: data.battleStats.isAnnihilated,
-
-         lastHealthBeforeReceivingDamage: data.currentHealth,
-
-         statusEffects: [],
-         queuedAction:  data.battleStats.queuedAction ?
-          {
-            ability: activeModuleData.templates.abilities[data.battleStats.queuedAction.abilityTemplateKey],
-            targetId: data.battleStats.queuedAction.targetId,
-            turnsPrepared: data.battleStats.queuedAction.turnsPrepared,
-            timesInterrupted: data.battleStats.queuedAction.timesInterrupted,
-          } :
-          null,
-      },
+      battleStats: UnitBattleStats.fromData(data.battleStats),
 
       maxItemSlots: data.items.maxItemSlots,
       items: [],
@@ -435,32 +389,13 @@ export class Unit
     });
   }
 
-  private getBaseMoveDelay()
-  {
-    // TODO 2019.08.21 | randomize this a little?
-
-    return 30 - this.attributes.speed;
-  }
   public resetMovePoints()
   {
     this.currentMovePoints = this.maxMovePoints;
   }
   public resetBattleStats(): void
   {
-    this.battleStats =
-    {
-      moveDelay: this.getBaseMoveDelay(),
-      currentActionPoints: this.attributes.maxActionPoints,
-      side: null,
-      position: null,
-      guardAmount: 0,
-      guardCoverage: null,
-      captureChance: activeModuleData.ruleSet.battle.baseUnitCaptureChance,
-      statusEffects: [],
-      lastHealthBeforeReceivingDamage: this.currentHealth,
-      queuedAction: null,
-      isAnnihilated: false,
-    };
+    this.battleStats = UnitBattleStats.createInitialBattleStatsForUnit(this);
 
     this.attributesAreDirty = true;
     this.uiDisplayIsDirty = true;
@@ -1154,26 +1089,6 @@ export class Unit
   }
   public serialize(): UnitSaveData
   {
-    const battleStatsSavedData: UnitBattleStatsSaveData =
-    {
-      moveDelay: this.battleStats.moveDelay,
-      side: this.battleStats.side,
-      position: this.battleStats.position,
-      currentActionPoints: this.battleStats.currentActionPoints,
-      guardAmount: this.battleStats.guardAmount,
-      guardCoverage: this.battleStats.guardCoverage,
-      captureChance: this.battleStats.captureChance,
-      statusEffects: this.battleStats.statusEffects.map(statusEffect => statusEffect.serialize()),
-      queuedAction: !this.battleStats.queuedAction ? null :
-      {
-        abilityTemplateKey: this.battleStats.queuedAction.ability.type,
-        targetId: this.battleStats.queuedAction.targetId,
-        turnsPrepared: this.battleStats.queuedAction.turnsPrepared,
-        timesInterrupted: this.battleStats.queuedAction.timesInterrupted,
-      },
-      isAnnihilated: this.battleStats.isAnnihilated,
-    };
-
     const data: UnitSaveData =
     {
       templateType: this.template.type,
@@ -1209,7 +1124,7 @@ export class Unit
       level: this.level,
 
       items: this.items.serialize(),
-      battleStats: battleStatsSavedData,
+      battleStats: this.battleStats.serialize(),
 
       portraitKey: this.portrait.key,
       raceKey: this.race.type,
@@ -1242,7 +1157,7 @@ export class Unit
       level: this.level,
       experienceForCurrentLevel: this.experienceForCurrentLevel,
 
-      battleStats: this.battleStats,
+      battleStats: this.battleStats.clone(),
 
       maxItemSlots: this.items.itemSlots,
       items: this.items.items,

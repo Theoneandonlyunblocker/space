@@ -16,4 +16,5 @@ export interface UnitBattleStatsSaveData
   statusEffects: StatusEffectSaveData[];
   queuedAction: QueuedActionSaveData | null;
   isAnnihilated: boolean;
+  lastHealthBeforeReceivingDamage: number;
 }
