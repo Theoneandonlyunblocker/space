@@ -30,7 +30,6 @@ import {idGenerators} from "../app/idGenerators";
 import
 {
   extendObject,
-  makeRandomPersonality,
   sumObjectValues,
 } from "../generic/utility";
 
@@ -47,6 +46,7 @@ import {BuildingUpgradeData} from "../building/BuildingUpgradeData";
 import { Resources } from "./PlayerResources";
 import { PlayerModifiersCollection } from "../maplevelmodifiers/PlayerModifiersCollection";
 import { applyAdjustmentsObjects, applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
+import { makeRandomPersonality } from "../ai/makeRandomPersonality";
 
 
 const resourcesProxyHandler: ProxyHandler<Resources> =

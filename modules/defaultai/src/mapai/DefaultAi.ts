@@ -8,10 +8,6 @@ import {Unit} from "core/src/unit/Unit";
 import {activeModuleData} from "core/src/app/activeModuleData";
 import {getNullFormation} from "core/src/battleprep/getNullFormation";
 import {AiTemplate} from "core/src/templateinterfaces/AiTemplate";
-import
-{
-  makeRandomPersonality,
-} from "core/src/generic/utility";
 
 import {DefaultAiSaveData} from "./DefaultAiSaveData";
 import {DiplomacyAi} from "./DiplomacyAi";
@@ -21,6 +17,7 @@ import {GrandStrategyAi} from "./GrandStrategyAi";
 import {MapEvaluator} from "./MapEvaluator";
 import {ObjectivesAi} from "./ObjectivesAi";
 import {UnitEvaluator} from "./UnitEvaluator";
+import { makeRandomPersonality } from "core/src/ai/makeRandomPersonality";
 
 
 export class DefaultAi implements AiTemplate<DefaultAiSaveData>

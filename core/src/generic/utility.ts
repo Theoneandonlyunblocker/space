@@ -2,8 +2,6 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import * as ReactMotion from "react-motion";
 
-import {activeModuleData} from "../app/activeModuleData";
-
 import
 {
   NonTerminalProbabilityDistribution,
@@ -12,8 +10,6 @@ import
   WeightedProbabilityDistribution,
 } from "../templateinterfaces/ProbabilityDistribution";
 
-import {ArchetypeValues} from "../ai/ArchetypeValues";
-import {Personality} from "../ai/Personality";
 import {Point} from "../math/Point";
 import {UnitBattleSide} from "../unit/UnitBattleSide";
 
@@ -531,24 +527,6 @@ export function pointsEqual(p1: Point, p2: Point)
   return (p1.x === p2.x && p1.y === p2.y);
 }
 
-export function makeRandomPersonality(): Personality
-{
-  const unitCompositionPreference: ArchetypeValues = {};
-
-  for (const archetype in activeModuleData.templates.unitArchetypes)
-  {
-    unitCompositionPreference[archetype] = Math.random();
-  }
-
-  return(
-  {
-    expansiveness: Math.random(),
-    aggressiveness: Math.random(),
-    friendliness: Math.random(),
-
-    unitCompositionPreference: unitCompositionPreference,
-  });
-}
 export function splitMultilineText(text: string | React.ReactFragment): string | React.ReactNode[]
 {
   if (Array.isArray(text))
