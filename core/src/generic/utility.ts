@@ -339,7 +339,7 @@ export function recursiveRemoveAttribute(parent: HTMLElement, attribute: string)
   }
 }
 
-export function clamp(value: number, min: number, max: number)
+export function clamp(value: number, min: number = -Infinity, max: number = Infinity)
 {
   if (value < min) { return min; }
   else if (value > max) { return max; }
