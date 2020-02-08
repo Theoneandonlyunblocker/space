@@ -2,6 +2,8 @@ import {idGenerators} from "../app/idGenerators";
 import { CorePhase } from "./core/coreCombatPhases";
 import { clamp } from "../generic/utility";
 import { CombatEffectTemplate } from "./CombatEffectTemplate";
+import { CombatEffectSaveData } from "./CombatEffectSaveData";
+import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
 
 
 export class CombatEffect<Phase extends string = CorePhase>
@@ -41,6 +43,17 @@ export class CombatEffect<Phase extends string = CorePhase>
     this.template = props.template;
     this.strength = props.initialStrength;
   }
+  public static fromData(
+    data: CombatEffectSaveData,
+    templates: TemplateCollection<CombatEffectTemplate>,
+  ): CombatEffect
+  {
+    return new CombatEffect({
+      id: data.id,
+      template: templates[data.templateKey],
+      initialStrength: data.strength,
+    });
+  }
 
   public clone(): CombatEffect<Phase>
   {
@@ -52,5 +65,13 @@ export class CombatEffect<Phase extends string = CorePhase>
     });
 
     return cloned;
+  }
+  public serialize(): CombatEffectSaveData
+  {
+    return {
+      id: this.id,
+      templateKey: this.template.key,
+      strength: this.strength,
+    };
   }
 }

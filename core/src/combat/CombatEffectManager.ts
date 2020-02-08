@@ -1,6 +1,8 @@
 import { CombatEffect } from "./CombatEffect";
 import { CorePhase } from "./core/coreCombatPhases";
 import { CombatEffectTemplate } from "./CombatEffectTemplate";
+import { CombatEffectManagerSaveData } from "./CombatEffectManagerSaveData";
+import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
 
 
 export class CombatEffectManager<Phase extends string = CorePhase>
@@ -13,6 +15,21 @@ export class CombatEffectManager<Phase extends string = CorePhase>
   constructor()
   {
 
+  }
+  public static fromData<Phase extends string = CorePhase>(
+    data: CombatEffectManagerSaveData,
+    effectTemplates: TemplateCollection<CombatEffectTemplate>,
+  ): CombatEffectManager<Phase>
+  {
+    const manager = new CombatEffectManager<Phase>();
+
+    data.effects.forEach(effectSaveData =>
+    {
+      const effect = CombatEffect.fromData(effectSaveData, effectTemplates);
+      manager[effectSaveData.templateKey] = effect;
+    });
+
+    return manager;
   }
 
   public get(template: CombatEffectTemplate<Phase>): CombatEffect<Phase>
@@ -38,5 +55,14 @@ export class CombatEffectManager<Phase extends string = CorePhase>
     }
 
     return cloned;
+  }
+  public serialize(): CombatEffectManagerSaveData
+  {
+    return {
+      effects: Object.keys(this.effects).map(key =>
+      {
+        return this.effects[key].serialize();
+      }),
+    };
   }
 }
