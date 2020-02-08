@@ -556,55 +556,6 @@ export class Unit
       },
     });
   }
-  // public addItem(item: Item, index: number)
-  // {
-  //   const itemSlot = item.template.slot;
-
-  //   if (!this.items.hasSlotForItem(item))
-  //   {
-  //     return false;
-  //   }
-
-  //   if (item.unit)
-  //   {
-  //     item.unit.removeItem(item);
-  //   }
-
-  //   this.items.addItem(item, index);
-  //   item.unit = this;
-
-    // if (item.template.attributeAdjustments)
-    // {
-    //   this.attributesAreDirty = true;
-    // }
-    // if (item.template.passiveSkill)
-    // {
-    //   this.passiveSkillsByPhaseAreDirty = true;
-    // }
-  // }
-  // public removeItem(item: Item)
-  // {
-  //   const itemSlot = item.template.slot;
-
-  //   if (!this.items.hasItem(item))
-  //   {
-  //     return false;
-  //   }
-
-  //   this.items.removeItem(item);
-  //   item.unit = null;
-
-  //   if (item.template.attributeAdjustments)
-  //   {
-  //     this.attributesAreDirty = true;
-  //   }
-  //   if (item.template.passiveSkill)
-  //   {
-  //     this.passiveSkillsByPhaseAreDirty = true;
-  //   }
-
-  //   return true;
-  // }
   public addStatusEffect(statusEffect: StatusEffect)
   {
     if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1)
