@@ -15,7 +15,6 @@ import {MapGenResult} from "../map/MapGenResult";
 import {Name} from "../localization/Name";
 import {Player} from "../player/Player";
 import {Star} from "../map/Star";
-import {StatusEffect} from "../unit/StatusEffect";
 import {Unit} from "../unit/Unit";
 import {activeModuleData} from "../app/activeModuleData";
 import {setActiveNotificationStore} from "../app/activeNotificationStore";
@@ -38,7 +37,6 @@ import { NotificationSubscriberSaveData } from "../savedata/NotificationSubscrib
 import {PlayerDiplomacySaveData} from "../savedata/PlayerDiplomacySaveData";
 import {PlayerSaveData} from "../savedata/PlayerSaveData";
 import {StarSaveData} from "../savedata/StarSaveData";
-import {StatusEffectSaveData} from "../savedata/StatusEffectSaveData";
 import {UnitSaveData} from "../savedata/UnitSaveData";
 
 
@@ -87,16 +85,6 @@ export class GameLoader
     data.units.forEach(unitSaveData =>
     {
       this.unitsById[unitSaveData.id] = this.deserializeUnit(unitSaveData);
-    });
-    // unit status effects. dependant on other units so have to do these after
-    data.units.forEach(unitSaveData =>
-    {
-      const unit = this.unitsById[unitSaveData.id];
-
-      unitSaveData.battleStats.statusEffects.forEach(statusEffectSaveData =>
-      {
-        unit.addStatusEffect(this.deserializeStatusEffect(statusEffectSaveData));
-      });
     });
 
     // players
@@ -484,17 +472,6 @@ export class GameLoader
     const controller = new AiController(template);
 
     return controller;
-  }
-  private deserializeStatusEffect(data: StatusEffectSaveData): StatusEffect
-  {
-    return new StatusEffect(
-    {
-      id: data.id,
-      template: activeModuleData.templates.unitEffects[data.templateType],
-      turnsToStayActiveFor: data.turnsToStayActiveFor,
-      turnsHasBeenActiveFor: data.turnsHasBeenActiveFor,
-      sourceUnit: this.unitsById[data.sourceUnitId],
-    });
   }
 }
 

@@ -9,7 +9,6 @@ import {PassiveSkillTemplate} from "../templateinterfaces/PassiveSkillTemplate";
 import {PortraitTemplate} from "../templateinterfaces/PortraitTemplate";
 import {RaceTemplate} from "../templateinterfaces/RaceTemplate";
 import {VfxParams} from "../templateinterfaces/VfxParams";
-import {UnitEffectTemplate} from "../templateinterfaces/UnitEffectTemplate";
 import {UnitTemplate} from "../templateinterfaces/UnitTemplate";
 
 import {Fleet} from "../fleets/Fleet";
@@ -17,7 +16,6 @@ import {GuardCoverage} from "./GuardCoverage";
 import {Item} from "../items/Item";
 import {Player} from "../player/Player";
 import {Star} from "../map/Star";
-import {StatusEffect} from "./StatusEffect";
 import
 {
   UnitAttributeAdjustments,
@@ -446,22 +444,6 @@ export class Unit
   {
     this.battleStats.moveDelay += amount;
   }
-  public updateStatusEffects(): void
-  {
-    for (let i = this.battleStats.statusEffects.length - 1; i >= 0; i--)
-    {
-      const statusEffect = this.battleStats.statusEffects[i];
-
-      statusEffect.processTurnEnd();
-      if (statusEffect.turnsHasBeenActiveFor >= statusEffect.turnsToStayActiveFor)
-      {
-        this.removeStatusEffect(statusEffect);
-      }
-    }
-
-    this.uiDisplayIsDirty = true;
-  }
-
   public setQueuedAction(ability: AbilityTemplate, target: Unit)
   {
     this.battleStats.queuedAction =
@@ -556,43 +538,6 @@ export class Unit
       },
     });
   }
-  public addStatusEffect(statusEffect: StatusEffect)
-  {
-    if (this.battleStats.statusEffects.indexOf(statusEffect) !== -1)
-    {
-      throw new Error("Tried to add duplicate status effect to unit " + this.name);
-    }
-    else if (statusEffect.turnsToStayActiveFor === 0)
-    {
-      console.warn("Tried to add status effect", statusEffect, "with 0 duration");
-
-      return;
-    }
-
-    this.battleStats.statusEffects.push(statusEffect);
-    if (statusEffect.template.attributes)
-    {
-      this.attributesAreDirty = true;
-    }
-
-    this.uiDisplayIsDirty = true;
-  }
-  private removeStatusEffect(statusEffect: StatusEffect)
-  {
-    const index = this.battleStats.statusEffects.indexOf(statusEffect);
-    if (index === -1)
-    {
-      throw new Error(`Tried to remove status effect not active on unit ${this.name}`);
-    }
-
-    this.battleStats.statusEffects.splice(index, 1);
-    if (statusEffect.template.attributes)
-    {
-      this.attributesAreDirty = true;
-    }
-
-    this.uiDisplayIsDirty = true;
-  }
   private getStatusEffectAttributeAdjustments(): UnitAttributeAdjustments[]
   {
     if (!this.battleStats || !this.battleStats.statusEffects)
@@ -684,47 +629,6 @@ export class Unit
     }
 
     return this.passiveSkillsByPhase;
-  }
-  private getPassiveEffectsForScene(scene: "galaxyMap" | "battle" | "battlePrep"): UnitEffectTemplate[]
-  {
-    const relevantTemplateKeys: string[] = [];
-    switch (scene)
-    {
-      case "galaxyMap":
-        break;
-      case "battlePrep":
-        relevantTemplateKeys.push("atBattleStart", "inBattlePrep");
-        break;
-      case "battle":
-        relevantTemplateKeys.push("beforeAbilityUse", "afterAbilityUse");
-        break;
-    }
-
-    const effectFilterFN = (passiveEffect: UnitEffectTemplate) =>
-    {
-      if (passiveEffect.isHidden)
-      {
-        return false;
-      }
-      for (const key of relevantTemplateKeys)
-      {
-        if (passiveEffect[key])
-        {
-          return true;
-        }
-      }
-
-      return false;
-    };
-
-    const relevantStatusEffectTemplates = this.battleStats.statusEffects.map(statusEffect =>
-    {
-      return statusEffect.template;
-    }).filter(effectFilterFN);
-
-    const relevantPassiveEffectTemplates = this.getAllPassiveSkills().filter(effectFilterFN);
-
-    return relevantStatusEffectTemplates.concat(relevantPassiveEffectTemplates);
   }
   public receiveDamage(amount: number)
   {
@@ -1035,7 +939,8 @@ export class Unit
       iconSrc: this.template.getIconSrc(),
 
       attributeChanges: this.getAttributesWithEffectsDifference().serialize(),
-      passiveEffects: this.getPassiveEffectsForScene(scene),
+      // TODO 2020.02.08 | old combat stuff
+      // passiveEffects: this.getPassiveEffectsForScene(scene),
     });
   }
   public serialize(): UnitSaveData

@@ -2,7 +2,7 @@ import {GuardCoverage} from "../unit/GuardCoverage";
 import {UnitBattleSide} from "../unit/UnitBattleSide";
 
 import {QueuedActionSaveData} from "./QueuedActionSaveData";
-import {StatusEffectSaveData} from "./StatusEffectSaveData";
+import { CombatEffectManagerSaveData } from "../combat/CombatEffectManagerSaveData";
 
 export interface UnitBattleStatsSaveData
 {
@@ -13,7 +13,7 @@ export interface UnitBattleStatsSaveData
   guardAmount: number;
   guardCoverage: GuardCoverage | null;
   captureChance: number;
-  statusEffects: StatusEffectSaveData[];
+  combatEffects: CombatEffectManagerSaveData;
   queuedAction: QueuedActionSaveData | null;
   isAnnihilated: boolean;
   lastHealthBeforeReceivingDamage: number;

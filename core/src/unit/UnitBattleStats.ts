@@ -1,16 +1,16 @@
 import {GuardCoverage} from "./GuardCoverage";
 import {QueuedActionData} from "../battle/QueuedActionData";
-import {StatusEffect} from "./StatusEffect";
 import {UnitBattleSide} from "./UnitBattleSide";
 import { Unit } from "./Unit";
 import { activeModuleData } from "../app/activeModuleData";
 import { UnitBattleStatsSaveData } from "../savedata/UnitBattleStatsSaveData";
+import { CombatEffectManager } from "../combat/CombatEffectManager";
 
 
 export class UnitBattleStats
 {
   /**
-   * 0 - Infinity
+   * 0 to Infinity
    * 100 is the baseline for ability usage
    */
   public moveDelay: number;
@@ -18,19 +18,19 @@ export class UnitBattleStats
   public position: number[] | null;
   public currentActionPoints: number;
   /**
-   * 0 - Infinity
+   * 0 to Infinity
    * 1 = 1% chance to guard
    * 0-100 = 0-50% less physical damage taken
    */
   public guardAmount: number;
   public guardCoverage: GuardCoverage | null;
   /**
-   * 0.0 - Infinity
+   * 0.0 to Infinity
    * 0.01 = 1% chance to capture
    * units with the highest capture chance are prioritized if # of captures are limited
    */
   public captureChance: number;
-  public statusEffects: StatusEffect[];
+  public combatEffects: CombatEffectManager;
   public lastHealthBeforeReceivingDamage: number;
   public queuedAction: QueuedActionData | null;
   public isAnnihilated: boolean;
@@ -44,7 +44,8 @@ export class UnitBattleStats
     guardAmount: number;
     guardCoverage: GuardCoverage | null;
     captureChance: number;
-    statusEffects: StatusEffect[];
+    // TODO 2020.02.08 | how should this be done?
+    combatEffects: CombatEffectManager;
     lastHealthBeforeReceivingDamage: number;
     queuedAction: QueuedActionData | null;
     isAnnihilated: boolean;
@@ -72,7 +73,7 @@ export class UnitBattleStats
       guardAmount: 0,
       guardCoverage: null,
       captureChance: activeModuleData.ruleSet.battle.baseUnitCaptureChance,
-      statusEffects: [],
+      combatEffects: new CombatEffectManager(),
       lastHealthBeforeReceivingDamage: unit.currentHealth,
       queuedAction: null,
       isAnnihilated: false,
@@ -82,19 +83,19 @@ export class UnitBattleStats
   {
     return new UnitBattleStats(
     {
-        moveDelay: data.moveDelay,
-        side: data.side,
-        position: data.position,
-        currentActionPoints: data.currentActionPoints,
-        guardAmount: data.guardAmount,
-        guardCoverage: data.guardCoverage,
-        captureChance: data.captureChance,
-        isAnnihilated: data.isAnnihilated,
+      moveDelay: data.moveDelay,
+      side: data.side,
+      position: data.position,
+      currentActionPoints: data.currentActionPoints,
+      guardAmount: data.guardAmount,
+      guardCoverage: data.guardCoverage,
+      captureChance: data.captureChance,
+      isAnnihilated: data.isAnnihilated,
 
-        lastHealthBeforeReceivingDamage: data.lastHealthBeforeReceivingDamage,
+      lastHealthBeforeReceivingDamage: data.lastHealthBeforeReceivingDamage,
 
-        statusEffects: [],
-        queuedAction:  data.queuedAction ?
+      combatEffects: CombatEffectManager.fromData(data.combatEffects, activeModuleData.templates.combatEffects),
+      queuedAction:  data.queuedAction ?
         {
           ability: activeModuleData.templates.abilities[data.queuedAction.abilityTemplateKey],
           targetId: data.queuedAction.targetId,
@@ -116,10 +117,7 @@ export class UnitBattleStats
       guardAmount: this.guardAmount,
       guardCoverage: this.guardCoverage,
       captureChance: this.captureChance,
-      statusEffects: this.statusEffects.map(statusEffect =>
-      {
-        return statusEffect.clone();
-      }),
+      combatEffects: this.combatEffects.clone(),
       lastHealthBeforeReceivingDamage: this.lastHealthBeforeReceivingDamage,
       queuedAction: this.queuedAction ?
         {
@@ -142,7 +140,7 @@ export class UnitBattleStats
       guardAmount: this.guardAmount,
       guardCoverage: this.guardCoverage,
       captureChance: this.captureChance,
-      statusEffects: this.statusEffects.map(statusEffect => statusEffect.serialize()),
+      combatEffects: this.combatEffects.serialize(),
       queuedAction: !this.queuedAction ? null :
       {
         abilityTemplateKey: this.queuedAction.ability.type,

@@ -39,7 +39,7 @@ export class CombatEffect<Phase extends string = CorePhase>
     initialStrength: number;
   })
   {
-    this.id = isFinite(props.id) ? props.id : idGenerators.statusEffect++;
+    this.id = isFinite(props.id) ? props.id : idGenerators.combatEffect++;
     this.template = props.template;
     this.strength = props.initialStrength;
   }

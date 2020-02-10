@@ -1,4 +1,3 @@
-import {UnitEffectTemplate} from "./UnitEffectTemplate";
 import {Star} from "../map/Star";
 import {Player} from "../player/Player";
 import { UnlockableThing } from "./UnlockableThing";
@@ -29,6 +28,5 @@ export interface BuildingTemplate extends UnlockableThing
   // player race can define their own special upgrades as well
   getStandardUpgradeTargets?: (location: Star) => BuildingTemplate[];
 
-  battleEffects?: UnitEffectTemplate[];
   availabilityData: AvailabilityData;
 }

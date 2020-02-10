@@ -3,7 +3,6 @@ import
   AbilityTargetDisplayDataById,
 } from "../abilities/AbilityTargetDisplayData";
 import {Battle} from "../battle/Battle";
-import {StatusEffect} from "../unit/StatusEffect";
 import {Unit} from "../unit/Unit";
 import
 {
@@ -22,7 +21,6 @@ export type AbilityEffectTrigger = (
   target: Unit,
   battle: Battle,
   executedEffectsResult: ExecutedEffectsResult,
-  sourceStatusEffect: StatusEffect | null,
 ) => boolean;
 
 

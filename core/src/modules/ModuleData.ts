@@ -27,7 +27,6 @@ import {SubEmblemTemplate} from "../templateinterfaces/SubEmblemTemplate";
 import {TechnologyTemplate} from "../templateinterfaces/TechnologyTemplate";
 import {TerrainTemplate} from "../templateinterfaces/TerrainTemplate";
 import {UnitArchetype} from "../templateinterfaces/UnitArchetype";
-import {UnitEffectTemplate} from "../templateinterfaces/UnitEffectTemplate";
 import {UnitTemplate} from "../templateinterfaces/UnitTemplate";
 import
 {
@@ -70,7 +69,6 @@ interface Templates
   technologies: TemplateCollection<TechnologyTemplate>;
   terrains: TemplateCollection<TerrainTemplate>;
   unitArchetypes: TemplateCollection<UnitArchetype>;
-  unitEffects: TemplateCollection<UnitEffectTemplate>;
   units: TemplateCollection<UnitTemplate>;
 }
 // tslint:enable:no-any
@@ -113,7 +111,6 @@ export class ModuleData
     technologies: {},
     terrains: {},
     unitArchetypes: {},
-    unitEffects: {},
     units: {},
   };
 
