@@ -538,20 +538,15 @@ export class Unit
       },
     });
   }
+  // TODO 2020.02.08 | rename (or rework?)
   private getStatusEffectAttributeAdjustments(): UnitAttributeAdjustments[]
   {
-    if (!this.battleStats || !this.battleStats.statusEffects)
+    if (!this.battleStats || !this.battleStats.combatEffects)
     {
       return [];
     }
 
-    return this.battleStats.statusEffects.filter(statusEffect =>
-    {
-      return Boolean(statusEffect.template.attributes);
-    }).map(statusEffect =>
-    {
-      return statusEffect.template.attributes!;
-    });
+    return this.battleStats.combatEffects.getAttributeAdjustments();
   }
   private getAttributesWithItems()
   {

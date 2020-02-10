@@ -1,5 +1,6 @@
 import { CorePhase } from "./core/coreCombatPhases";
 import { CombatActionFetcher, CombatActionListenerFetcher } from "./CombatPhaseInfo";
+import { UnitAttributeAdjustments } from "../unit/UnitAttributes";
 
 
 export interface CombatEffectTemplate<Phase extends string = CorePhase>
@@ -12,6 +13,8 @@ export interface CombatEffectTemplate<Phase extends string = CorePhase>
   };
   roundingFN?: (toRound: number) => number;
 
+  // TODO 2020.02.10 | temporary? added because old system used them like this, but attributes themselves should probably be combat effects.
+  getAttributeAdjustments?: (effectStrength: number) => UnitAttributeAdjustments;
   actionsPerPhase?:
   {
     [key in Phase]: CombatActionFetcher;

@@ -3,6 +3,7 @@ import { CorePhase } from "./core/coreCombatPhases";
 import { CombatEffectTemplate } from "./CombatEffectTemplate";
 import { CombatEffectManagerSaveData } from "./CombatEffectManagerSaveData";
 import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
+import { UnitAttributeAdjustments } from "../unit/UnitAttributes";
 
 
 export class CombatEffectManager<Phase extends string = CorePhase>
@@ -11,6 +12,10 @@ export class CombatEffectManager<Phase extends string = CorePhase>
   {
     [key: string]: CombatEffect<Phase>;
   } = {};
+  private get allEffects(): CombatEffect<Phase>[]
+  {
+    return Object.keys(this.effects).map(key => this.effects[key]);
+  }
 
   constructor()
   {
@@ -44,6 +49,16 @@ export class CombatEffectManager<Phase extends string = CorePhase>
     }
 
     return this.effects[template.key];
+  }
+  public getAttributeAdjustments(): UnitAttributeAdjustments[]
+  {
+    return this.allEffects.filter(effect =>
+    {
+      return Boolean(effect.template.getAttributeAdjustments);
+    }).map(effect =>
+    {
+      return effect.template.getAttributeAdjustments(effect.strength);
+    });
   }
   public clone(): CombatEffectManager<Phase>
   {
