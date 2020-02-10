@@ -45,6 +45,7 @@ import { ManufacturableThingKind } from "../templateinterfaces/ManufacturableThi
 import { coreManufacturableThingKinds } from "../production/coreManufacturableThingKinds";
 import { CombatPhaseInfo } from "../combat/CombatPhaseInfo";
 import { getAllCorePhaseInfo } from "../combat/core/coreCombatPhases";
+import { CombatEffectTemplate } from "../combat/CombatEffectTemplate";
 
 // tslint:disable:no-any
 interface Templates
@@ -54,6 +55,7 @@ interface Templates
   attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
   battleVfx: TemplateCollection<BattleVfxTemplate<any, any>>;
   buildings: TemplateCollection<BuildingTemplate>;
+  combatEffects: TemplateCollection<CombatEffectTemplate>;
   items: TemplateCollection<ItemTemplate>;
   languages: TemplateCollection<Language>;
   mapGen: TemplateCollection<MapGenTemplate>;
@@ -94,8 +96,10 @@ export class ModuleData
     abilities: {},
     aiTemplateConstructors: {},
     attitudeModifiers: {},
+    // TODO 2020.02.08 | necessary to store these here?
     battleVfx: {},
     buildings: {},
+    combatEffects: {},
     items: {},
     languages: {},
     mapGen: {},
