@@ -7,6 +7,6 @@ export const moveDelayAdded: CombatActionResultTemplate<number> =
   defaultValue: 0,
   applyResult: (value, user, target, battle) =>
   {
-    target.addMoveDelay(value);
+    target.battleStats.moveDelay += value;
   },
 };

@@ -430,20 +430,6 @@ export class Unit
   {
     this.addHealth(-amountToRemove);
   }
-  public removeActionPoints(amount: number)
-  {
-    this.battleStats.currentActionPoints -= amount;
-    if (this.battleStats.currentActionPoints < 0)
-    {
-      this.battleStats.currentActionPoints = 0;
-    }
-
-    this.uiDisplayIsDirty = true;
-  }
-  public addMoveDelay(amount: number)
-  {
-    this.battleStats.moveDelay += amount;
-  }
   public setQueuedAction(ability: AbilityTemplate, target: Unit)
   {
     this.battleStats.queuedAction =
@@ -672,36 +658,6 @@ export class Unit
     location.addFleet(fleet);
 
     this.mapLevelModifiers.setModifiersForOwner();
-  }
-  /**
-   * @deprecated
-   */
-  public removeGuard(amount: number)
-  {
-    this.battleStats.guardAmount -= amount;
-    if (this.battleStats.guardAmount < 0) { this.removeAllGuard(); }
-
-    this.uiDisplayIsDirty = true;
-  }
-  /**
-   * @deprecated
-   */
-  public addGuard(amount: number, coverage: GuardCoverage)
-  {
-    this.battleStats.guardAmount += amount;
-    this.battleStats.guardCoverage = coverage;
-
-    this.uiDisplayIsDirty = true;
-  }
-  /**
-   * @deprecated
-   */
-  public removeAllGuard()
-  {
-    this.battleStats.guardAmount = 0;
-    this.battleStats.guardCoverage = null;
-
-    this.uiDisplayIsDirty = true;
   }
   public getCounterAttackStrength()
   {
