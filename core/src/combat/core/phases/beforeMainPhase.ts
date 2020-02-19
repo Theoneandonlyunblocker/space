@@ -3,28 +3,26 @@ import { CorePhase } from "../coreCombatPhases";
 import { universalCoreListenerFetchers } from "../universalCoreListenerFetchers";
 
 
-export function beforeMainPhase(): CombatPhaseInfo<CorePhase>
+export const beforeMainPhase: CombatPhaseInfo<CorePhase> =
 {
-  return {
-    key: "beforeMainPhase",
-    defaultPhaseFinishCallback: (combatManager) =>
+  key: "beforeMainPhase",
+  defaultPhaseFinishCallback: (combatManager) =>
+  {
+    if (combatManager.battle.shouldEnd())
     {
-      if (combatManager.battle.shouldEnd())
-      {
-        combatManager.setPhase("battleEndPhase");
-      }
-      else
-      {
-        combatManager.setPhase("mainPhase");
-      }
-    },
-    combatActionFetchers:
+      combatManager.setPhase("battleEndPhase");
+    }
+    else
     {
+      combatManager.setPhase("mainPhase");
+    }
+  },
+  combatActionFetchers:
+  {
 
-    },
-    combatListenerFetchers:
-    {
-      ...universalCoreListenerFetchers,
-    },
-  };
-}
+  },
+  combatListenerFetchers:
+  {
+    ...universalCoreListenerFetchers,
+  },
+};

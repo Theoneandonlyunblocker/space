@@ -19,16 +19,14 @@ export type CorePhase =
   "turnStartPhase" |
   "waitForAbilityUsePhase";
 
-export function getAllCorePhaseInfo(): {[P in CorePhase]: CombatPhaseInfo<CorePhase>}
+export const coreCombatPhases: {[P in CorePhase]: CombatPhaseInfo<CorePhase>} =
 {
-  return {
-    afterMainPhase: afterMainPhase(),
-    battleEndPhase: battleEndPhase(),
-    battleStartPhase: battleStartPhase(),
-    beforeMainPhase: beforeMainPhase(),
-    mainPhase: mainPhase(),
-    turnEndPhase: turnEndPhase(),
-    turnStartPhase: turnStartPhase(),
-    waitForAbilityUsePhase: waitForAbilityUsePhase(),
-  };
-}
+  afterMainPhase: afterMainPhase,
+  battleEndPhase: battleEndPhase,
+  battleStartPhase: battleStartPhase,
+  beforeMainPhase: beforeMainPhase,
+  mainPhase: mainPhase,
+  turnEndPhase: turnEndPhase,
+  turnStartPhase: turnStartPhase,
+  waitForAbilityUsePhase: waitForAbilityUsePhase,
+};

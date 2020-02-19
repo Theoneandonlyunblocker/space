@@ -2,15 +2,13 @@ import { CombatPhaseInfo } from "../../CombatPhaseInfo";
 import { CorePhase } from "../coreCombatPhases";
 
 
-export function waitForAbilityUsePhase(): CombatPhaseInfo<CorePhase>
+export const waitForAbilityUsePhase: CombatPhaseInfo<CorePhase> =
 {
-  return {
-    key: "waitForAbilityUsePhase",
-    defaultPhaseFinishCallback: (combatManager) =>
-    {
-      combatManager.setPhase("beforeMainPhase");
-    },
-    combatActionFetchers: {},
-    combatListenerFetchers: {},
-  };
-}
+  key: "waitForAbilityUsePhase",
+  defaultPhaseFinishCallback: (combatManager) =>
+  {
+    combatManager.setPhase("beforeMainPhase");
+  },
+  combatActionFetchers: {},
+  combatListenerFetchers: {},
+};
