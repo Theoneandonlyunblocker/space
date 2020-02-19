@@ -6,6 +6,7 @@ import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
 import { UnitAttributeAdjustments } from "../unit/UnitAttributes";
 
 
+// TODO 2020.02.18 | rename (CombatEffectMap?)
 export class CombatEffectManager<Phase extends string = CorePhase>
 {
   private readonly effects:

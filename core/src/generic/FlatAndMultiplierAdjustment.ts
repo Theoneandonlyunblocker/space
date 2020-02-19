@@ -5,6 +5,7 @@ export interface FlatAndMultiplierAdjustment
   multiplicativeMultiplier: number;
 }
 
+// TODO 2020.02.12 | move adjustments objects into separate module?
 export type AdjustmentsObject<T> =
 {
   [K in keyof T]: FlatAndMultiplierAdjustment;

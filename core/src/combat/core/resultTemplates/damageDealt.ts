@@ -1,6 +1,7 @@
 import { CombatActionResultTemplate } from "../../CombatActionResultTemplate";
 
 
+// TODO 2020.02.17 | rename (damageTaken?)
 export const damageDealt: CombatActionResultTemplate<number> =
 {
   key: "damageDealt",

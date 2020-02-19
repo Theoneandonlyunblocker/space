@@ -1,3 +1,4 @@
+// TODO 2020.02.17 | rename
 export const unitEffects =
 {
   infest_effect_displayName: "Infest",

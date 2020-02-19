@@ -23,11 +23,6 @@ export class MCTree
     this.remakeRootNode();
   }
 
-  private static sortByCombinedScoreFN(a: MCTreeNode, b: MCTreeNode): number
-  {
-    return b.getCombinedScore() - a.getCombinedScore();
-  }
-
   public advanceMove(move: Move, confidencePersistence: number)
   {
     this._rootNode = this._rootNode.children.get(move);
@@ -46,7 +41,6 @@ export class MCTree
 
     return best.move;
   }
-
   private getBestMove(iterations: number): MCTreeNode
   {
     for (let i = 0; i < iterations; i++)
@@ -71,6 +65,7 @@ export class MCTree
 
     return best;
   }
+
   private remakeRootNode()
   {
     this._rootNode = new MCTreeNode(
@@ -81,5 +76,10 @@ export class MCTree
       parent: null,
       isBetweenAi: this.isBetweenAi,
     });
+  }
+
+  private static sortByCombinedScoreFN(a: MCTreeNode, b: MCTreeNode): number
+  {
+    return b.getCombinedScore() - a.getCombinedScore();
   }
 }

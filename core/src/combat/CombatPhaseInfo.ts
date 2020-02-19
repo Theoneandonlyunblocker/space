@@ -32,7 +32,6 @@ export interface CombatPhaseInfo<AllPhases extends string>
 
   /**
    * f.ex would fetch poisonDamage action if unit has poisoned status effect
-   * also do getDefaultBeforeUseEffects and stuff here
    */
   combatActionFetchers:
   {

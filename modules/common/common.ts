@@ -12,7 +12,7 @@ import
 import * as moduleInfo from "./moduleInfo.json";
 
 
-// TODO 2019.09.09 | this needs to be renamed / split up
+// TODO 2020.02.15 | rename (baselib?) & reorganize
 export const common: GameModule =
 {
   info: moduleInfo,

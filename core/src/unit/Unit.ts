@@ -111,7 +111,7 @@ export class Unit
   public uiDisplayIsDirty: boolean = true;
   public lastHealthDrawnAt: number;
 
-  public mapLevelModifiers: UnitModifiersCollection = new UnitModifiersCollection(this);
+  public readonly mapLevelModifiers: UnitModifiersCollection = new UnitModifiersCollection(this);
 
   private constructor(props:
   {
@@ -678,16 +678,16 @@ export class Unit
   public getVisionRange(): number
   {
     const baseRange = this.template.visionRange;
-    const modifiers = this.mapLevelModifiers.getSelfModifiers().adjustments.vision;
+    const adjustment = this.mapLevelModifiers.getSelfModifiers().adjustments.vision;
 
-    return applyFlatAndMultiplierAdjustments(baseRange, modifiers);
+    return applyFlatAndMultiplierAdjustments(baseRange, adjustment);
   }
   public getDetectionRange(): number
   {
     const baseRange = this.template.detectionRange;
-    const modifiers = this.mapLevelModifiers.getSelfModifiers().adjustments.detection;
+    const adjustment = this.mapLevelModifiers.getSelfModifiers().adjustments.detection;
 
-    return applyFlatAndMultiplierAdjustments(baseRange, modifiers);
+    return applyFlatAndMultiplierAdjustments(baseRange, adjustment);
   }
   public getHealingForGameTurnStart(): number
   {

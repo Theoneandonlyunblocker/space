@@ -4,6 +4,8 @@ import { CombatActionPrimitivesWithValues } from "./CombatActionPrimitiveTemplat
 
 export interface CombatActionModifier
 {
+  // TODO 2020.02.15 | can't this be something pther than flatandmultiplieradjustment?
+  // or i guess allow attaching other data here. necessary for things like useAbilityAction
   primitives: CombatActionPrimitivesWithValues<Partial<FlatAndMultiplierAdjustment>>;
   flags?: Set<string>;
 }
