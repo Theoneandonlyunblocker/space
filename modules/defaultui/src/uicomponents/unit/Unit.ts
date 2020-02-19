@@ -10,7 +10,6 @@ import {applyMixins} from "../mixins/applyMixins";
 import {UnitAttributeChanges} from "./UnitAttributeChanges";
 import {UnitIconContainer} from "./UnitIconContainer";
 import {UnitInfo} from "./UnitInfo";
-import {UnitPassiveEffects} from "./UnitPassiveEffects";
 import {UnitPortrait} from "./UnitPortrait";
 
 
@@ -183,10 +182,6 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
         UnitPortrait(
         {
           imageSrc: (this.props.portraitSrc || ""),
-        }),
-        UnitPassiveEffects(
-        {
-          passiveEffects: this.props.passiveEffects,
         }),
         UnitAttributeChanges(
         {

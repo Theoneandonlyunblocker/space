@@ -5,13 +5,19 @@ import {AbilityUseEffect} from "./AbilityUseEffect";
 import {Battle} from "../battle/Battle";
 import {Unit} from "../unit/Unit";
 import {UnitDisplayData} from "../unit/UnitDisplayData";
-import
-{
-  AbilityEffectData,
-  AbilityEffectDataByPhase,
-  getAbilityEffectDataByPhase,
-} from "./battleAbilityProcessing";
 
+
+type AbilityEffectData = any;
+type AbilityEffectDataByPhase =
+{
+  beforeUse: AbilityEffectData[];
+  abilityEffects: AbilityEffectData[];
+  afterUse: AbilityEffectData[];
+};
+function getAbilityEffectDataByPhase(...args: any): any
+{
+
+}
 
 export function useAbility(
   battle: Battle,
