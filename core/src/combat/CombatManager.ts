@@ -34,7 +34,7 @@ export class CombatManager<Phase extends string>
       this.queuedActions[phase] = [];
     }
   }
-  public addQueuedAction(action: CombatAction, phaseInfo: CombatPhaseInfo<Phase>): void
+  public addQueuedAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
   {
     if (!this.queuedActions[phaseInfo.key])
     {
