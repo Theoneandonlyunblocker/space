@@ -48,9 +48,9 @@ export class BattlePrep
       hasScouted: attackerHasScouted,
       isAttacker: true,
       validityModifiers: this.getAttackerFormationValidityModifiers(),
-      triggerBattlePrepEffect: (effect, unit) =>
+      triggerUnitEffect: (strength, effect, unit) =>
       {
-        effect(unit, this, this.attackerFormation, this.defenderFormation);
+        effect(strength, unit, this, this.attackerFormation, this.defenderFormation);
       },
     });
 
@@ -63,9 +63,9 @@ export class BattlePrep
       hasScouted: defenderHasScouted,
       isAttacker: false,
       validityModifiers: this.getDefenderFormationValidityModifiers(),
-      triggerBattlePrepEffect: (effect, unit) =>
+      triggerUnitEffect: (strength, effect, unit) =>
       {
-        effect(unit, this, this.defenderFormation, this.attackerFormation);
+        effect(strength, unit, this, this.defenderFormation, this.attackerFormation);
       },
     });
 
@@ -82,6 +82,8 @@ export class BattlePrep
       this.attackerFormation.setAutoFormation(this.defenderUnits);
       this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
     }
+
+    // TODO 2020.02.12 | apply battle prep effects
   }
 
   public forEachUnit(f: (u: Unit) => void): void

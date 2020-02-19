@@ -1,5 +1,4 @@
 import {activeModuleData} from "../app/activeModuleData";
-import {ExecutedEffectsResult} from "../templateinterfaces/ExecutedEffectsResult";
 
 import {BattleData} from "./BattleData";
 import {BattleTurnOrder} from "./BattleTurnOrder";
@@ -140,8 +139,6 @@ export class Battle
     {
       this.shiftRowsIfNeeded();
     }
-
-    this.triggerBattleStartAbilities();
   }
   public forEachUnit(callBack: (unit: Unit) => void): void
   {
@@ -189,53 +186,6 @@ export class Battle
     {
       unit.offensiveBattlesFoughtThisTurn += 1;
     }
-  }
-  private triggerBattleStartAbilities(): void
-  {
-    this.battleData.location.buildings.forEach(building =>
-    {
-      if (building.template.battleEffects)
-      {
-        building.template.battleEffects.filter(unitEffect =>
-        {
-          return unitEffect.atBattleStart;
-        }).forEach(unitEffect =>
-        {
-          const executedEffectsResult: ExecutedEffectsResult = {};
-
-          unitEffect.atBattleStart.forEach(abilityEffect =>
-          {
-            abilityEffect.executeAction(
-              null,
-              null,
-              this,
-              executedEffectsResult,
-              null,
-            );
-          });
-        });
-      }
-    });
-
-    this.forEachUnit(unit =>
-    {
-      const passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-      passiveSkillsByPhase.atBattleStart.forEach(passiveSkill =>
-      {
-        const executedEffectsResult: ExecutedEffectsResult = {};
-
-        passiveSkill.atBattleStart.forEach(effect =>
-        {
-          effect.executeAction(
-            unit,
-            unit,
-            this,
-            executedEffectsResult,
-            null,
-          );
-        });
-      });
-    });
   }
   private getPlayerForSide(side: UnitBattleSide): Player
   {

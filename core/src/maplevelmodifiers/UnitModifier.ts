@@ -6,6 +6,8 @@ import { StarModifier } from "./StarModifier";
 import { ModifierTemplate } from "./ModifierTemplate";
 import { FlatAndMultiplierAdjustment, getBaseAdjustment } from "../generic/FlatAndMultiplierAdjustment";
 import { activeModuleData } from "../app/activeModuleData";
+import { BattlePrepUnitEffectWithAdjustment } from "../battleprep/BattlePrepUnitEffect";
+import { BattlePrepEffectWithAdjustment } from "../battleprep/BattlePrepEffect";
 
 
 type UnitModifierPropagations =
@@ -27,6 +29,8 @@ export interface UnitModifier extends ModifierTemplate<UnitModifierPropagations>
 {
   filter?: (unit: Unit) => boolean;
   self?: PartialMapLevelModifier<UnitModifierAdjustments>;
+  selfBattlePrepEffects?: BattlePrepUnitEffectWithAdjustment[];
+  battlePrepEffects?: BattlePrepEffectWithAdjustment[];
 }
 export function getBaseUnitSelfModifier(): MapLevelModifier<UnitModifierAdjustments>
 {
