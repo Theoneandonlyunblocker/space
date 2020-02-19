@@ -14,7 +14,6 @@ import * as battleVfxTemplates from  "./battlevfx/templates/battleVfx";
 import {buildingTemplates} from "./buildings/buildingTemplates";
 import * as passiveSkillTemplates from  "./passiveskills/passiveSkills";
 import * as terrainTemplates from  "./terrains/terrains";
-import {unitEffectTemplates} from  "./uniteffects/unitEffectTemplates";
 import {itemTemplates} from "./items/itemTemplates";
 import {mapGenTemplates} from "./mapgen/mapGenTemplates";
 import {mapLayerTemplates} from "./mapmodes/mapLayerTemplates";
@@ -31,6 +30,7 @@ import {spaceUnitsInitializers} from "./units/spaceUnitsInitializers";
 
 import { setBaseUrl as setAssetBaseUrl } from "../assets/baseUrl";
 import * as moduleInfo from "../moduleInfo.json";
+import { combatEffectTemplates } from "./combat/combatEffectTemplates";
 
 
 export const space: GameModule =
@@ -56,6 +56,7 @@ export const space: GameModule =
     moduleData.copyTemplates(abilityTemplates, "abilities");
     moduleData.copyTemplates(battleVfxTemplates, "battleVfx");
     moduleData.copyTemplates(buildingTemplates, "buildings");
+    moduleData.copyTemplates(combatEffectTemplates, "combatEffects");
     moduleData.copyTemplates(itemTemplates, "items");
     moduleData.copyTemplates(mapGenTemplates, "mapGen");
     moduleData.copyTemplates(mapLayerTemplates, "mapRendererLayers");
@@ -66,7 +67,6 @@ export const space: GameModule =
     moduleData.copyTemplates(technologyTemplates, "technologies");
     moduleData.copyTemplates(terrainTemplates, "terrains");
     moduleData.copyTemplates(unitArchetypes, "unitArchetypes");
-    moduleData.copyTemplates(unitEffectTemplates, "unitEffects");
     moduleData.copyTemplates(unitTemplates, "units");
 
     if (!moduleData.mapBackgroundDrawingFunction)

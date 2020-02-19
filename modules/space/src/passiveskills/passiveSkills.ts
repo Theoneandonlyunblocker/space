@@ -4,14 +4,12 @@ import {BattlePrep} from "core/src/battleprep/BattlePrep";
 import {GuardCoverage} from "core/src/unit/GuardCoverage";
 import {Unit} from "core/src/unit/Unit";
 
-import {autoHeal as autoHealStatusEffect} from "../uniteffects/autoHeal";
-import {poisoned as poisonedStatusEffect} from "../uniteffects/poisoned";
-
 import { FormationValidityModifierSourceType } from "core/src/battleprep/BattlePrepFormationValidity";
 import * as EffectActions from "../effectactions/effectActions";
 import { localize } from "modules/space/localization/localize";
 
 
+// TODO 2020.02.15 | unitModifier.selfBattlePrepEffects
 export const autoHeal: PassiveSkillTemplate =
 {
   type: "autoHeal",
@@ -24,19 +22,20 @@ export const autoHeal: PassiveSkillTemplate =
     return localize("autoHeal_description").toString();
   },
 
-  atBattleStart:
-  [
-    {
-      id: "addStatusEffect",
-      getUnitsInArea: user => [user],
-      executeAction: EffectActions.addStatusEffect.bind(null,
-      {
-        duration: Infinity,
-        template: autoHealStatusEffect,
-      }),
-    },
-  ],
+  // atBattleStart:
+  // [
+  //   {
+  //     id: "addStatusEffect",
+  //     getUnitsInArea: user => [user],
+  //     executeAction: EffectActions.addStatusEffect.bind(null,
+  //     {
+  //       duration: Infinity,
+  //       template: autoHealStatusEffect,
+  //     }),
+  //   },
+  // ],
 };
+// TODO 2020.02.15 | unitModifier.selfBattlePrepEffects
 export const overdrive: PassiveSkillTemplate =
 {
   type: "overdrive",
@@ -49,18 +48,18 @@ export const overdrive: PassiveSkillTemplate =
     return localize("overdrive_description").toString();
   },
 
-  atBattleStart:
-  [
-    {
-      id: "addStatusEffect",
-      getUnitsInArea: user => [user],
-      executeAction: EffectActions.addStatusEffect.bind(null,
-      {
-        duration: 2,
-        template: poisonedStatusEffect,
-      }),
-    },
-  ],
+  // atBattleStart:
+  // [
+  //   {
+  //     id: "addStatusEffect",
+  //     getUnitsInArea: user => [user],
+  //     executeAction: EffectActions.addStatusEffect.bind(null,
+  //     {
+  //       duration: 2,
+  //       template: poisonedStatusEffect,
+  //     }),
+  //   },
+  // ],
 };
 
 const initialGuardStrength = 50;
