@@ -17,6 +17,7 @@ export interface CombatEffectTemplate<Phase extends string = CorePhase>
    * @default Math.round
    */
   roundingFN?: (toRound: number) => number;
+  flags?: Set<string>;
 
   // TODO 2020.02.10 | temporary? added because old system used them like this, but attributes themselves should probably be combat effects.
   getAttributeAdjustments?: (effectStrength: number) => UnitAttributeAdjustments;
