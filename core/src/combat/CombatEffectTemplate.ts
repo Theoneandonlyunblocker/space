@@ -6,6 +6,8 @@ import { UnitAttributeAdjustments } from "../unit/UnitAttributes";
 export interface CombatEffectTemplate<Phase extends string = CorePhase>
 {
   key: string;
+  getDisplayName: (strength: number) => string;
+  getDescription: (strength: number) => string;
   limit?:
   {
     min?: number;

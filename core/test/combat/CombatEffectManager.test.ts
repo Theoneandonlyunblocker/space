@@ -6,6 +6,8 @@ describe("CombatEffectManager", () =>
   const dummyTemplate: CombatEffectTemplate =
   {
     key: "dummy",
+    getDisplayName: () => "",
+    getDescription: () => "",
   };
 
   describe("get", () =>
