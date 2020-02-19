@@ -177,19 +177,6 @@ export class Game
     {
       unit.addHealth(unit.getHealingForGameTurnStart());
 
-      const passiveSkillsByPhase = unit.getPassiveSkillsByPhase();
-      if (passiveSkillsByPhase.atTurnStart)
-      {
-        for (let i = 0; i < passiveSkillsByPhase.atTurnStart.length; i++)
-        {
-          const skill = passiveSkillsByPhase.atTurnStart[i];
-          for (let j = 0; j < skill.atTurnStart.length; j++)
-          {
-            skill.atTurnStart[j](unit);
-          }
-        }
-      }
-
       unit.resetMovePoints();
       unit.offensiveBattlesFoughtThisTurn = 0;
     });

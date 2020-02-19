@@ -12,7 +12,6 @@ import {VfxParams} from "../templateinterfaces/VfxParams";
 import {UnitTemplate} from "../templateinterfaces/UnitTemplate";
 
 import {Fleet} from "../fleets/Fleet";
-import {GuardCoverage} from "./GuardCoverage";
 import {Item} from "../items/Item";
 import {Player} from "../player/Player";
 import {Star} from "../map/Star";
@@ -43,14 +42,6 @@ import { Resources } from "../player/PlayerResources";
 import { UnitModifiersCollection } from "../maplevelmodifiers/UnitModifiersCollection";
 import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
 import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
-
-
-type PassiveSkillsByPhase =
-{
-  atBattleStart: PassiveSkillTemplate[];
-  atTurnStart: PassiveSkillTemplate[];
-  inBattlePrep: PassiveSkillTemplate[];
-};
 
 
 export class Unit
@@ -99,14 +90,6 @@ export class Unit
   public fleet: Fleet;
 
   public items: UnitItems;
-
-  private passiveSkillsByPhase: PassiveSkillsByPhase =
-  {
-    atBattleStart: [],
-    atTurnStart: [],
-    inBattlePrep: [],
-  };
-  private passiveSkillsByPhaseAreDirty: boolean = true;
 
   public uiDisplayIsDirty: boolean = true;
   public lastHealthDrawnAt: number;
@@ -517,10 +500,6 @@ export class Unit
         {
           this.attributesAreDirty = true;
         }
-        if (changedItem.template.passiveSkill)
-        {
-          this.passiveSkillsByPhaseAreDirty = true;
-        }
       },
     });
   }
@@ -572,44 +551,6 @@ export class Unit
     const allUniquePassiveSkills = getUniqueArrayKeys(allPassiveSkills, template => template.type);
 
     return allUniquePassiveSkills;
-  }
-  private updatePassiveSkillsByPhase(): void
-  {
-    const updatedSkills: PassiveSkillsByPhase =
-    {
-      atBattleStart: [],
-      atTurnStart: [],
-      inBattlePrep: [],
-    };
-
-    const allSkills = this.getAllPassiveSkills();
-
-    for (let i = 0; i < allSkills.length; i++)
-    {
-      const skill = allSkills[i];
-      ["atBattleStart", "atTurnStart", "inBattlePrep"].forEach(phase =>
-      {
-        if (skill[phase])
-        {
-          if (updatedSkills[phase].indexOf(skill) === -1)
-          {
-            updatedSkills[phase].push(skill);
-          }
-        }
-      });
-    }
-
-    this.passiveSkillsByPhase = updatedSkills;
-    this.passiveSkillsByPhaseAreDirty = false;
-  }
-  public getPassiveSkillsByPhase()
-  {
-    if (this.passiveSkillsByPhaseAreDirty)
-    {
-      this.updatePassiveSkillsByPhase();
-    }
-
-    return this.passiveSkillsByPhase;
   }
   public receiveDamage(amount: number)
   {
