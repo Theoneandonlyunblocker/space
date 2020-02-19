@@ -1,5 +1,5 @@
 import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
-import { CombatActionPrimitivesWithValues } from "./CombatActionPrimitive";
+import { CombatActionPrimitivesWithValues } from "./CombatActionPrimitiveTemplate";
 
 
 export interface CombatActionModifier

@@ -1,6 +1,6 @@
 import { Unit } from "../unit/Unit";
 import { CombatActionResults } from "./CombatActionResults";
-import { applyCombatActionPrimitivesToResult, CombatActionPrimitivesWithValues, resolveCombatActionPrimitiveAdjustments } from "./CombatActionPrimitive";
+import { applyCombatActionPrimitivesToResult, CombatActionPrimitivesWithValues, resolveCombatActionPrimitiveAdjustments } from "./CombatActionPrimitiveTemplate";
 import { CombatActionModifier } from "./CombatActionModifier";
 import { getOrderedResultModifiers, CombatActionResultModifierWithValue } from "./CombatActionResultModifier";
 

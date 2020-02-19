@@ -1,8 +1,8 @@
-import { CombatActionPrimitive } from "../../CombatActionPrimitive";
+import { CombatActionPrimitiveTemplate } from "../../CombatActionPrimitiveTemplate";
 import { damageDealt } from "../resultTemplates/damageDealt";
 
 
-export const magicalDamage: CombatActionPrimitive<number> =
+export const magicalDamage: CombatActionPrimitiveTemplate<number> =
 {
   key: "magicalDamage",
   applyToResult: (value, result) =>

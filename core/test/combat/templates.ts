@@ -1,5 +1,5 @@
 import {CombatActionResultTemplate} from "../../src/combat/CombatActionResultTemplate";
-import {CombatActionPrimitive} from "../../src/combat/CombatActionPrimitive";
+import {CombatActionPrimitiveTemplate} from "../../src/combat/CombatActionPrimitiveTemplate";
 import {CombatActionResultModifier} from "../../src/combat/CombatActionResultModifier";
 
 
@@ -36,8 +36,8 @@ export const resultTemplates:
 };
 export const primitives:
 {
-  physicalDamage: CombatActionPrimitive<number>;
-  fireDamage: CombatActionPrimitive<number>;
+  physicalDamage: CombatActionPrimitiveTemplate<number>;
+  fireDamage: CombatActionPrimitiveTemplate<number>;
 } =
 {
   physicalDamage:

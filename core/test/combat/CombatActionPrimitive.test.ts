@@ -3,7 +3,7 @@ import
   primitives,
   resultTemplates,
 } from "./templates";
-import { resolveCombatActionPrimitiveAdjustments, applyCombatActionPrimitivesToResult } from "../../src/combat/CombatActionPrimitive";
+import { resolveCombatActionPrimitiveAdjustments, applyCombatActionPrimitivesToResult } from "../../src/combat/CombatActionPrimitiveTemplate";
 import {CombatActionResults} from "../../src/combat/CombatActionResults";
 
 

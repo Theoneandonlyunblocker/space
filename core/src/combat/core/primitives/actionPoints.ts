@@ -1,8 +1,8 @@
-import { CombatActionPrimitive } from "../../CombatActionPrimitive";
+import { CombatActionPrimitiveTemplate } from "../../CombatActionPrimitiveTemplate";
 import { actionPointsAdded } from "../resultTemplates/actionPointsAdded";
 
 
-export const actionPoints: CombatActionPrimitive<number> =
+export const actionPoints: CombatActionPrimitiveTemplate<number> =
 {
   key: "actionPoints",
   applyToResult: (value, result) =>
@@ -11,5 +11,5 @@ export const actionPoints: CombatActionPrimitive<number> =
       actionPointsAdded,
       result.get(actionPointsAdded) + value,
     );
-  }
+  },
 };

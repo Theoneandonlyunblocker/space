@@ -1,8 +1,8 @@
-import { CombatActionPrimitive } from "../../CombatActionPrimitive";
+import { CombatActionPrimitiveTemplate } from "../../CombatActionPrimitiveTemplate";
 import { guardAmountAdded } from "../resultTemplates/guardAmountAdded";
 
 
-export const guardAmount: CombatActionPrimitive<number> =
+export const guardAmount: CombatActionPrimitiveTemplate<number> =
 {
   key: "guardAmount",
   applyToResult: (value, result) =>

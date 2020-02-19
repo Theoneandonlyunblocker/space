@@ -1,8 +1,8 @@
-import { CombatActionPrimitive } from "../../CombatActionPrimitive";
+import { CombatActionPrimitiveTemplate } from "../../CombatActionPrimitiveTemplate";
 import { moveDelayAdded } from "../resultTemplates/moveDelayAdded";
 
 
-export const moveDelay: CombatActionPrimitive<number> =
+export const moveDelay: CombatActionPrimitiveTemplate<number> =
 {
   key: "moveDelay",
   applyToResult: (value, result) =>

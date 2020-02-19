@@ -2,7 +2,7 @@ import { CombatActionResults } from "./CombatActionResults";
 import { FlatAndMultiplierAdjustment, PartialAdjustmentsObject, applyAdjustmentsObjects } from "../generic/FlatAndMultiplierAdjustment";
 
 
-export interface CombatActionPrimitive<T>
+export interface CombatActionPrimitiveTemplate<T>
 {
   key: string;
   applyToResult: (value: T, result: CombatActionResults) => void;
@@ -12,7 +12,7 @@ export type CombatActionPrimitivesWithValues<T> =
 {
   [key: string]:
   {
-    primitive: CombatActionPrimitive<any>;
+    primitive: CombatActionPrimitiveTemplate<any>;
     value: T;
   };
 };
@@ -21,7 +21,7 @@ export function resolveCombatActionPrimitiveAdjustments(
   ...allPrimitivesWithAdjustments: CombatActionPrimitivesWithValues<Partial<FlatAndMultiplierAdjustment>>[]
 ): CombatActionPrimitivesWithValues<number>
 {
-  const allPresentPrimitives: {[key: string]: CombatActionPrimitive<any>} = {};
+  const allPresentPrimitives: {[key: string]: CombatActionPrimitiveTemplate<any>} = {};
   const allAdjustmentsObjects: PartialAdjustmentsObject<any>[] = [];
 
   allPrimitivesWithAdjustments.forEach(primitivesWithAdjustments =>
