@@ -15,7 +15,6 @@ import
 import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
 import * as EffectActions from "modules/space/src/effectactions/effectActions";
 
-import * as DroneStatusEffects from "../unitEffects";
 import { localize } from "../../localization/localize";
 
 
@@ -43,11 +42,13 @@ export const infest: AbilityTemplate =
       targetType: AbilityTargetType.Primary,
       targetEffect: AbilityTargetEffect.Negative,
     }),
-    executeAction: EffectActions.addStatusEffect.bind(null,
-    {
-      duration: 3,
-      template: DroneStatusEffects.infest,
-    }),
+    // TODO 2020.02.19 |
+    executeAction: () => {},
+    // executeAction: EffectActions.addStatusEffect.bind(null,
+    // {
+    //   duration: 3,
+    //   template: DroneStatusEffects.infest,
+    // }),
     vfx: makePlaceholderVfx("infest"),
     attachedEffects:
     [
