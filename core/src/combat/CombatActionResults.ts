@@ -1,9 +1,10 @@
 import { CombatActionResultTemplate } from "./CombatActionResultTemplate";
 import { Unit } from "../unit/Unit";
-import { Battle } from "../battle/Battle";
+import { CombatManager } from "./CombatManager";
+import { CorePhase } from "./core/coreCombatPhases";
 
 
-export class CombatActionResults
+export class CombatActionResults<Phase extends string = CorePhase>
 {
   private readonly valuesByKey:
   {
@@ -11,7 +12,7 @@ export class CombatActionResults
   } = {};
   private readonly templatesByKey:
   {
-    [key: string]: CombatActionResultTemplate<any>;
+    [key: string]: CombatActionResultTemplate<any, Phase>;
   } = {};
 
   constructor()
@@ -19,7 +20,7 @@ export class CombatActionResults
 
   }
 
-  public get<T>(template: CombatActionResultTemplate<T>): T
+  public get<T>(template: CombatActionResultTemplate<T, Phase>): T
   {
     if (this.valuesByKey[template.key] === undefined)
     {
@@ -30,12 +31,12 @@ export class CombatActionResults
       return this.valuesByKey[template.key];
     }
   }
-  public set<T>(template: CombatActionResultTemplate<T>, value: T): void
+  public set<T>(template: CombatActionResultTemplate<T, Phase>, value: T): void
   {
     this.templatesByKey[template.key] = template;
     this.valuesByKey[template.key] = value;
   }
-  public apply(source: Unit, target: Unit, battle: Battle): void
+  public apply(source: Unit, target: Unit, combatManager: CombatManager<Phase>): void
   {
     Object.keys(this.templatesByKey).forEach(key =>
     {
@@ -43,7 +44,7 @@ export class CombatActionResults
         this.valuesByKey[key],
         source,
         target,
-        battle,
+        combatManager,
       );
     });
   }

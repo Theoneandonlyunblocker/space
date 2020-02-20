@@ -6,7 +6,7 @@ export const combatEffectChanges: CombatActionResultTemplate<Map<CombatEffectTem
 {
   key: "combatEffectChanges",
   defaultValue: new Map(),
-  applyResult: (changes, source, target, battle) =>
+  applyResult: (changes, source, target, combatManager) =>
   {
     changes.forEach((changeAmount, effectTemplate) =>
     {

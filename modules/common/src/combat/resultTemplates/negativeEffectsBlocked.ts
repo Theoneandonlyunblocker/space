@@ -5,7 +5,7 @@ export const negativeEffectsBlocked: CombatActionResultTemplate<number> =
 {
   key: "negativeEffectsBlocked",
   defaultValue: 0,
-  applyResult: (changes, source, target, battle) =>
+  applyResult: (changes, source, target, combatManager) =>
   {
 
   },

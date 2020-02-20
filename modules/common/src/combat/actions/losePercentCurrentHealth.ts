@@ -5,6 +5,7 @@ import { rawHealthLoss } from "../primitives/rawHealthLoss";
 
 
 export function losePercentCurrentHealth(
+  source: Unit,
   target: Unit,
   /**
    * 0.5 = 50%
@@ -15,7 +16,7 @@ export function losePercentCurrentHealth(
   return new CombatAction(
   {
     mainAction: makeSimpleModifier(rawHealthLoss, {flat: target.currentHealth * percentage}),
-    source: target,
+    source: source,
     target: target,
   });
 }

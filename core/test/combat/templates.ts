@@ -19,7 +19,7 @@ export const resultTemplates:
   {
     key: "damageDealt",
     defaultValue: 0,
-    applyResult: (value, source, target, battle) =>
+    applyResult: (value, source, target, combatManager) =>
     {
       target.removeHealth(value);
     },
@@ -28,7 +28,7 @@ export const resultTemplates:
   {
     key: "damageBlocked",
     defaultValue: 0,
-    applyResult: (value, source, target, battle) =>
+    applyResult: (value, source, target, combatManager) =>
     {
       // pass
     },
