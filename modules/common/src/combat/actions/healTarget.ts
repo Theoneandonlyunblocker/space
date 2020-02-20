@@ -1,21 +1,19 @@
 import { Unit } from "core/src/unit/Unit";
 import { CombatAction } from "core/src/combat/CombatAction";
 import { makeSimpleModifier } from "../modifiers/makeSimpleModifier";
-import { rawHealthLoss } from "../primitives/rawHealthLoss";
+import { healing } from "../primitives/healing";
 
 
-export function losePercentCurrentHealth(
+export function healTarget(
+  source: Unit,
   target: Unit,
-  /**
-   * 0.5 = 50%
-   */
-  percentage: number,
+  amount: number,
 ): CombatAction
 {
   return new CombatAction(
   {
-    mainAction: makeSimpleModifier(rawHealthLoss, {flat: target.currentHealth * percentage}),
-    source: target,
+    mainAction: makeSimpleModifier(healing, {flat: amount}),
+    source: source,
     target: target,
   });
 }

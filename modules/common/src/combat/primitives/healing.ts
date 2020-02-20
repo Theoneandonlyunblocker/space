@@ -2,9 +2,9 @@ import { CombatActionPrimitiveTemplate } from "core/src/combat/CombatActionPrimi
 import { healthRestored } from "../resultTemplates/healthRestored";
 
 
-export const healthRestoration: CombatActionPrimitiveTemplate<number> =
+export const healing: CombatActionPrimitiveTemplate<number> =
 {
-  key: "healthRestoration",
+  key: "healing",
   applyToResult: (value, result) =>
   {
     result.set(

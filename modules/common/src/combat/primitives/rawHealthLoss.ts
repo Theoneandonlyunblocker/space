@@ -3,9 +3,9 @@ import { damageDealt } from "core/src/combat/core/resultTemplates/damageDealt";
 
 
 // should be used when you want damage to ignore all modifiers, resistances, effects like block, etc.
-export const healthLoss: CombatActionPrimitiveTemplate<number> =
+export const rawHealthLoss: CombatActionPrimitiveTemplate<number> =
 {
-  key: "healthLoss",
+  key: "rawHealthLoss",
   applyToResult: (value, result) =>
   {
     result.set(
