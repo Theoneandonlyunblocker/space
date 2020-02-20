@@ -1,7 +1,8 @@
 import {CombatEffectTemplate} from "core/src/combat/CombatEffectTemplate";
 import { localize } from "modules/space/localization/localize";
 import { CombatAction } from "core/src/combat/CombatAction";
-import { addHealthRestoration } from "modules/common/src/combat/modifiers/addHealthRestoration";
+import { makeSimpleModifier } from "modules/common/src/combat/modifiers/makeSimpleModifier";
+import { rawHealthRestoration } from "modules/common/src/combat/primitives/rawHealthRestoration";
 
 
 export const autoHeal: CombatEffectTemplate =
@@ -23,7 +24,7 @@ export const autoHeal: CombatEffectTemplate =
 
       const action = new CombatAction(
       {
-        mainAction: addHealthRestoration({flat: autoHealStrength}),
+        mainAction: makeSimpleModifier(rawHealthRestoration, {flat: autoHealStrength}),
         source: unit,
         target: unit,
       });
