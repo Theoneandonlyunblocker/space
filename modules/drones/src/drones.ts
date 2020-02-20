@@ -9,6 +9,7 @@ import * as battleVfxTemplates from "./battlevfx/templates";
 
 import * as moduleInfo from "../moduleInfo.json";
 import { combatEffectTemplates } from "./combat/combatEffectTemplates";
+import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
 
 
 export const drones: GameModule =
@@ -22,6 +23,7 @@ export const drones: GameModule =
     moduleData.copyTemplates(unitTemplates, "units");
     moduleData.copyTemplates(battleVfxTemplates, "battleVfx");
     moduleData.copyTemplates(combatEffectTemplates, "combatEffects");
+    moduleData.copyTemplates(combatAbilityTemplates, "combatAbilities");
 
     return moduleData;
   },

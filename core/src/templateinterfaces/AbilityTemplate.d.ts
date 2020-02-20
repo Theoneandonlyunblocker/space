@@ -12,6 +12,7 @@ import
 import {ExecutedEffectsResult} from "./ExecutedEffectsResult";
 
 
+// TODO 2020.02.20 | remove
 export interface AbilityTemplate<EffectId extends string = any, R extends ExecutedEffectsResult = any> extends AbilityBase<EffectId, R>
 {
   type: string;

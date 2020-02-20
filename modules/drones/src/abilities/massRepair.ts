@@ -1,4 +1,4 @@
-import {AbilityTemplate} from "core/src/templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
 
 import
 {
@@ -13,13 +13,14 @@ import
 } from "core/src/abilities/targeting";
 
 import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
-import * as EffectActions from "modules/space/src/effectactions/effectActions";
 import { localize } from "../../localization/localize";
+import { mainPhase } from "core/src/combat/core/phases/mainPhase";
+import { repair as repairAction } from "../combat/actions/repair";
 
 
-export const massRepair: AbilityTemplate =
+export const massRepair: CombatAbilityTemplate =
 {
-  type: "massRepair",
+  key: "massRepair",
   get displayName()
   {
     return localize("massRepair_displayName").toString();
@@ -31,32 +32,35 @@ export const massRepair: AbilityTemplate =
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetAllAllies,
-  mainEffect:
+  getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
   {
-    id: "heal",
-    getUnitsInArea: (user, target, battle) =>
+    areaFN: (user, target, battle) =>
     {
       return areaAll(user, target, battle).filter(unit =>
       {
         return unit && unit.isActiveInBattle && unit.battleStats.side === user.battleStats.side;
       });
     },
-    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
+    targetType: AbilityTargetType.Primary,
+    targetEffect: AbilityTargetEffect.Positive,
+  }),
+  use: (user, target, combatManager) =>
+  {
+    // TODO 2020.02.20 | need to make shit that scales with troop size
+    const healAmount = 100;
+
+    const unitsToHeal = areaAll(user, target, combatManager.battle).filter(unit =>
     {
-      areaFN: (user, target, battle) =>
-      {
-        return areaAll(user, target, battle).filter(unit =>
-        {
-          return unit && unit.isActiveInBattle && unit.battleStats.side === user.battleStats.side;
-        });
-      },
-      targetType: AbilityTargetType.Primary,
-      targetEffect: AbilityTargetEffect.Positive,
-    }),
-    executeAction: EffectActions.adjustHealth.bind(null,
+      return unit && unit.isActiveInBattle && unit.battleStats.side === user.battleStats.side;
+    });
+
+    unitsToHeal.forEach(unitToHeal =>
     {
-      perUserUnit: 0.33,
-    }),
-    vfx: makePlaceholderVfx("massRepair"),
+      combatManager.addQueuedAction(
+        mainPhase,
+        repairAction(user, target, healAmount),
+      );
+    });
   },
+  vfx: makePlaceholderVfx("massRepair"),
 };

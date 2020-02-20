@@ -46,15 +46,19 @@ import { coreManufacturableThingKinds } from "../production/coreManufacturableTh
 import { CombatPhaseInfo } from "../combat/CombatPhaseInfo";
 import { coreCombatPhases } from "../combat/core/coreCombatPhases";
 import { CombatEffectTemplate } from "../combat/CombatEffectTemplate";
+import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
+
 
 // tslint:disable:no-any
 interface Templates
 {
+  // TODO 2020.02.20 | remove
   abilities: TemplateCollection<AbilityTemplate>;
   aiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
   attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
   battleVfx: TemplateCollection<BattleVfxTemplate<any, any>>;
   buildings: TemplateCollection<BuildingTemplate>;
+  combatAbilities: TemplateCollection<CombatAbilityTemplate>;
   combatEffects: TemplateCollection<CombatEffectTemplate>;
   items: TemplateCollection<ItemTemplate>;
   languages: TemplateCollection<Language>;
@@ -99,6 +103,7 @@ export class ModuleData
     // TODO 2020.02.08 | necessary to store these here?
     battleVfx: {},
     buildings: {},
+    combatAbilities: {},
     combatEffects: {},
     items: {},
     languages: {},
@@ -251,15 +256,7 @@ export class ModuleData
 
     for (const templateType in source)
     {
-      let hasDuplicate = Boolean(this.templates[category][templateType]);
-
-      if (category === "abilities" || category === "passiveSkills")
-      {
-        if (this.templates.abilities[templateType] || this.templates.passiveSkills[templateType])
-        {
-          hasDuplicate = true;
-        }
-      }
+      const hasDuplicate = Boolean(this.templates[category][templateType]);
 
       if (hasDuplicate)
       {

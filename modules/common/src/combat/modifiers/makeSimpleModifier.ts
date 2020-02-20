@@ -6,6 +6,7 @@ import { CombatActionModifier } from "core/src/combat/CombatActionModifier";
 export function makeSimpleModifier(
   primitive: CombatActionPrimitiveTemplate<number>,
   amount: Partial<FlatAndMultiplierAdjustment>,
+  flags?: string[],
 ): CombatActionModifier
 {
   return {
@@ -17,5 +18,6 @@ export function makeSimpleModifier(
         value: amount,
       },
     },
+    flags: flags ? new Set(flags) : undefined,
   };
 }

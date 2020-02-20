@@ -1,4 +1,4 @@
-import {AbilityTemplate} from "core/src/templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
 
 import
 {
@@ -13,13 +13,14 @@ import
 } from "core/src/abilities/targeting";
 
 import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
-import * as EffectActions from "modules/space/src/effectactions/effectActions";
 import { localize } from "../../localization/localize";
+import { mainPhase } from "core/src/combat/core/phases/mainPhase";
+import { repair as repairAction } from "../combat/actions/repair";
 
 
-export const repair: AbilityTemplate =
+export const repair: CombatAbilityTemplate =
 {
-  type: "repair",
+  key: "repair",
   get displayName()
   {
     return localize("repair_displayName").toString();
@@ -31,20 +32,21 @@ export const repair: AbilityTemplate =
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetAllAllies,
-  mainEffect:
+  getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
   {
-    id: "heal",
-    getUnitsInArea: areaSingle,
-    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
-    {
-      areaFN: areaSingle,
-      targetType: AbilityTargetType.Primary,
-      targetEffect: AbilityTargetEffect.Positive,
-    }),
-    executeAction: EffectActions.adjustHealth.bind(null,
-    {
-      perUserUnit: 0.5,
-    }),
-    vfx: makePlaceholderVfx("repair"),
+    areaFN: areaSingle,
+    targetType: AbilityTargetType.Primary,
+    targetEffect: AbilityTargetEffect.Positive,
+  }),
+  use: (user, target, combatManager) =>
+  {
+    // TODO 2020.02.20 | need to make shit that scales with troop size
+    const healAmount = 200;
+
+    combatManager.addQueuedAction(
+      mainPhase,
+      repairAction(user, target, healAmount),
+    );
   },
+  vfx: makePlaceholderVfx("repair"),
 };
