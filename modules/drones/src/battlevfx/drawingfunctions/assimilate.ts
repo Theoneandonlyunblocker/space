@@ -2,14 +2,18 @@ import { VfxDrawingFunction } from "core/src/templateinterfaces/VfxDrawingFuncti
 import { VfxParams } from "core/src/templateinterfaces/VfxParams";
 
 import { AbsorbParticlesFromTarget } from "modules/common/src/combat/vfx/fragments/AbsorbParticlesFromTarget";
-import { ResultType } from "modules/space/src/effectactions/ResultType";
 
 
+// TODO 2020.02.24 | hook up particle count to new combat system somehow
+enum ResultType
+{
+  HealthChanged,
+}
 export type EffectIds = "damage" | "increaseUserHealth";
 export type EffectResults =
 {
   [ResultType.HealthChanged]: number;
-}
+};
 
 function getParticleCount(props: VfxParams<EffectIds, EffectResults>): number
 {
