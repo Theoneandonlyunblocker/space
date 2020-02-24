@@ -11,8 +11,8 @@ import
   targetEnemies,
 } from "core/src/abilities/targeting";
 
-import * as DroneBattleVfx from "../battlevfx/templates";
-import { localize } from "../../localization/localize";
+import * as DroneBattleVfx from "../../battlevfx/templates";
+import { localize } from "../../../localization/localize";
 import { dealAttackDamage } from "modules/common/src/combat/actions/dealAttackDamage";
 import { leechLife } from "modules/common/src/combat/actions/leechLife";
 import { lifeLeechIncreasesMaxHealth } from "modules/common/src/combat/resultModifiers/lifeLeechIncreasesMaxHealth";

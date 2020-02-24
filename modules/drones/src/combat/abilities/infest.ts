@@ -12,9 +12,9 @@ import
 
 import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
 
-import { localize } from "../../localization/localize";
+import { localize } from "../../../localization/localize";
 import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbilityTemplate";
-import { increaseInfestationAmount } from "../combat/actions/increaseInfestationAmount";
+import { increaseInfestationAmount } from "../actions/increaseInfestationAmount";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 
 

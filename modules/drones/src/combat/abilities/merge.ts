@@ -11,11 +11,11 @@ import
   targetOtherAllies,
 } from "core/src/abilities/targeting";
 
-import { localize } from "../../localization/localize";
+import { localize } from "../../../localization/localize";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 import { makePlaceholderVfx } from "modules/common/makePlaceholderVfx";
 import { losePercentMaxHealth } from "modules/common/src/combat/actions/losePercentMaxHealth";
-import { increaseMergeBuffAmount } from "../combat/actions/increaseMergeBuffAmount";
+import { increaseMergeBuffAmount } from "../actions/increaseMergeBuffAmount";
 import { leechLife } from "modules/common/src/combat/actions/leechLife";
 
 
