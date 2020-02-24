@@ -1,19 +1,21 @@
 import { Unit } from "core/src/unit/Unit";
 import { CombatAction } from "core/src/combat/CombatAction";
 import { makeSimpleModifier } from "../modifiers/makeSimpleModifier";
-import { healing } from "../primitives/healing";
-import { combatActionFlags } from "../combatActionFlags";
+import { rawHealthLoss } from "../primitives/rawHealthLoss";
 
 
-export function healTarget(
+export function losePercentMaxHealth(
   source: Unit,
   target: Unit,
-  amount: number,
+  /**
+   * 0.5 = 50%
+   */
+  percentage: number,
 ): CombatAction
 {
   return new CombatAction(
   {
-    mainAction: makeSimpleModifier(healing, {flat: amount}, [combatActionFlags.heal]),
+    mainAction: makeSimpleModifier(rawHealthLoss, {flat: target.maxHealth * percentage}),
     source: source,
     target: target,
   });
