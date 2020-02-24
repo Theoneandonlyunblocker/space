@@ -10,15 +10,15 @@ import
 } from "core/src/graphics/pixiWrapperFunctions";
 import {VfxDrawingFunction} from "core/src/templateinterfaces/VfxDrawingFunction";
 
-import {Beam} from "./vfxfragments/Beam";
-import {LightBurst} from "./vfxfragments/LightBurst";
-import {RampingValue} from "./vfxfragments/RampingValue";
-import {ShockWave} from "./vfxfragments/ShockWave";
-import {ShinyParticleFilter} from "./shaders/ShinyParticleFilter";
-import { FunctionInitialize } from "./proton/FunctionInitialize";
-import { ShinyParticleShader } from "./shaders/ShinyParticleShader";
-import { PixiRenderer } from "./proton/PixiRenderer";
-import { ProtonEmitter } from "./proton/ProtonEmitter";
+import {Beam} from "modules/common/src/combat/vfx/fragments/Beam";
+import {LightBurst} from "modules/common/src/combat/vfx/fragments/LightBurst";
+import {RampingValue} from "modules/common/src/combat/vfx/fragments/RampingValue";
+import {ShockWave} from "modules/common/src/combat/vfx/fragments/ShockWave";
+import {ShinyParticleFilter} from "modules/common/src/combat/vfx/shaders/ShinyParticleFilter";
+import { FunctionInitialize } from "modules/common/src/combat/vfx/proton/FunctionInitialize";
+import { ShinyParticleShader } from "modules/common/src/combat/vfx/shaders/ShinyParticleShader";
+import { PixiRenderer } from "modules/common/src/combat/vfx/proton/PixiRenderer";
+import { ProtonEmitter } from "modules/common/src/combat/vfx/proton/ProtonEmitter";
 
 
 const relativeImpactTime = 0.18;

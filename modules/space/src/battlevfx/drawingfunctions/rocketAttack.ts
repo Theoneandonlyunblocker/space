@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 
 import {VfxDrawingFunction} from "core/src/templateinterfaces/VfxDrawingFunction";
 
-import {ProjectileAttack} from "./vfxfragments/ProjectileAttack";
+import {ProjectileAttack} from "modules/common/src/combat/vfx/fragments/ProjectileAttack";
 import { battleVfxAssets } from "modules/space/assets/battleVfx/battleVfxAssets";
 
 

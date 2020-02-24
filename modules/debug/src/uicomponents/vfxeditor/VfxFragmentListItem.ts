@@ -1,7 +1,7 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {VfxFragment} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
+import {VfxFragment} from "modules/common/src/combat/vfx/fragments/VfxFragment";
 import {DragPositioner} from "modules/defaultui/src/uicomponents/mixins/DragPositioner";
 import {applyMixins} from "modules/defaultui/src/uicomponents/mixins/applyMixins";
 

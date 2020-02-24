@@ -1,6 +1,6 @@
 import * as React from "react";
 
-import {VfxFragment} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
+import {VfxFragment} from "modules/common/src/combat/vfx/fragments/VfxFragment";
 
 import {Color} from "core/src/color/Color";
 

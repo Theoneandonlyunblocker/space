@@ -3,6 +3,19 @@ import * as PIXI from "pixi.js";
 import {VfxParams} from "core/src/templateinterfaces/VfxParams";
 
 
+// usage example
+
+// export const videoTest: BattleVfxTemplate =
+// {
+//   duration: 1000,
+//   battleOverlay: makeVfxFromVideo.bind(null, "img/bushiAttack.webm",
+//   (sprite: PIXI.Sprite) =>
+//   {
+//     sprite.blendMode = PIXI.BLEND_MODES.SCREEN;
+//     sprite.filters = [new BlackToAlphaFilter()];
+//   }),
+//   vfxWillTriggerEffect: false,
+// };
 export function makeVfxFromVideo(
   videoSrc: string,
   onStartFN: (sprite: PIXI.Sprite) => void,

@@ -1,9 +1,9 @@
 import * as PIXI from "pixi.js";
 
 import {VfxDrawingFunction} from "core/src/templateinterfaces/VfxDrawingFunction";
-import { WavyLine } from "./vfxfragments/WavyLine";
-import { ProjectileWithImpact } from "./vfxfragments/ProjectileWithImpact";
-import { Projectile } from "./vfxfragments/Projectile";
+import { WavyLine } from "modules/common/src/combat/vfx/fragments/WavyLine";
+import { ProjectileWithImpact } from "modules/common/src/combat/vfx/fragments/ProjectileWithImpact";
+import { Projectile } from "modules/common/src/combat/vfx/fragments/Projectile";
 import { solveInitialVelocity, solveAcceleration } from "core/src/math/kinematics";
 import { linearStep } from "core/src/generic/utility";
 import { battleVfxAssets } from "modules/space/assets/battleVfx/battleVfxAssets";

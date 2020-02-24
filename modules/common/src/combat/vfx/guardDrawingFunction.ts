@@ -8,7 +8,7 @@ import
 import {GuardShader} from "./shaders/GuardShader";
 
 
-export const guard: VfxDrawingFunction = props =>
+export const guardDrawingFunction: VfxDrawingFunction = props =>
 {
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleVfx(
     props.userOffset, props.width, "user");
@@ -106,4 +106,4 @@ export const guard: VfxDrawingFunction = props =>
 
   const startTime = Date.now();
   animate();
-}
+};

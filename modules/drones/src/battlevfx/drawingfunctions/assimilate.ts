@@ -1,7 +1,7 @@
 import { VfxDrawingFunction } from "core/src/templateinterfaces/VfxDrawingFunction";
 import { VfxParams } from "core/src/templateinterfaces/VfxParams";
 
-import { AbsorbParticlesFromTarget } from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/AbsorbParticlesFromTarget";
+import { AbsorbParticlesFromTarget } from "modules/common/src/combat/vfx/fragments/AbsorbParticlesFromTarget";
 import { ResultType } from "modules/space/src/effectactions/ResultType";
 
 

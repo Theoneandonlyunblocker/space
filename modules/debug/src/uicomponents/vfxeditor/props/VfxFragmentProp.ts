@@ -1,12 +1,12 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {RampingValue} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/RampingValue";
-import {VfxFragment} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/VfxFragment";
+import {RampingValue} from "modules/common/src/combat/vfx/fragments/RampingValue";
+import {VfxFragment} from "modules/common/src/combat/vfx/fragments/VfxFragment";
 import
 {
   PropInfoType,
-} from "modules/space/src/battlevfx/drawingfunctions/vfxfragments/props/PropInfoType";
+} from "modules/common/src/combat/vfx/fragments/props/PropInfoType";
 
 import {Color} from "core/src/color/Color";
 import {Point} from "core/src/math/Point";
