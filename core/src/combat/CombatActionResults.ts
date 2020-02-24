@@ -2,6 +2,7 @@ import { CombatActionResultTemplate } from "./CombatActionResultTemplate";
 import { Unit } from "../unit/Unit";
 import { CombatManager } from "./CombatManager";
 import { CorePhase } from "./core/coreCombatPhases";
+import { CombatAction } from "./CombatAction";
 
 
 export class CombatActionResults<Phase extends string = CorePhase>
@@ -36,7 +37,12 @@ export class CombatActionResults<Phase extends string = CorePhase>
     this.templatesByKey[template.key] = template;
     this.valuesByKey[template.key] = value;
   }
-  public apply(source: Unit, target: Unit, combatManager: CombatManager<Phase>): void
+  public apply(
+    source: Unit,
+    target: Unit,
+    combatManager: CombatManager<Phase>,
+    parentAction: CombatAction,
+  ): void
   {
     Object.keys(this.templatesByKey).forEach(key =>
     {
@@ -45,6 +51,7 @@ export class CombatActionResults<Phase extends string = CorePhase>
         source,
         target,
         combatManager,
+        parentAction,
       );
     });
   }
