@@ -47,8 +47,8 @@ export const merge: CombatAbilityTemplate =
     combatManager.addQueuedAction(mainPhase, damageSelfAction);
 
     // vfx: DroneBattleVfx.mergeAbsorb,
-    const addStatusEffectAction = increaseMergeBuffAmount(user, target, {flat: 1});
-    combatManager.addQueuedAction(mainPhase, addStatusEffectAction);
+    const addCombatEffectAction = increaseMergeBuffAmount(user, target, {flat: 1});
+    combatManager.addQueuedAction(mainPhase, addCombatEffectAction);
 
     const healTargetAction = leechLife(target, user, 1);
     combatManager.attachAction(healTargetAction, damageSelfAction);

@@ -43,12 +43,9 @@ export const assimilate: CombatAbilityTemplate =
   }),
   use: (user, target, combatManager) =>
   {
-    // deal physical damage @ 0.8 normal
-    // TODO 2020.02.24 |
     const dealDamageAction = dealAttackDamage(user, target, 0.8, physicalDamage);
     combatManager.addQueuedAction(mainPhase, dealDamageAction);
 
-    // increase current & max health
     const lifeLeechAction = leechLife(user, target, 0.1);
     lifeLeechAction.resultModifiers.push({modifier: lifeLeechIncreasesMaxHealth, value: 1});
     combatManager.attachAction(lifeLeechAction, dealDamageAction);

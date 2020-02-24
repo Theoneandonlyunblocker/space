@@ -8,8 +8,8 @@ import {distributionGroups} from "modules/common/distributionGroups";
 import {getAssetSrc} from "modules/common/assets";
 import {moneyResource} from "modules/money/src/moneyResource";
 
-import {assimilate} from "../abilities/assimilate";
-import {merge} from "../abilities/merge";
+import {assimilate} from "../combat/abilities/assimilate";
+import {merge} from "../combat/abilities/merge";
 import { localize } from "../../localization/localize";
 import { availabilityFlags } from "../availabilityFlags";
 

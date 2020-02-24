@@ -8,9 +8,9 @@ import {distributionGroups} from "modules/common/distributionGroups";
 import {getAssetSrc} from "modules/common/assets";
 import {moneyResource} from "modules/money/src/moneyResource";
 
-import {assimilate} from "../abilities/assimilate";
-import {repair} from "../abilities/repair";
-import {infest} from "../abilities/infest";
+import {assimilate} from "../combat/abilities/assimilate";
+import {repair} from "../combat/abilities/repair";
+import {infest} from "../combat/abilities/infest";
 import { localize } from "../../localization/localize";
 import { availabilityFlags } from "../availabilityFlags";
 
