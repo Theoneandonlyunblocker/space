@@ -10,7 +10,7 @@ export class CombatAction
   public readonly mainAction: CombatActionModifier;
   public readonly source: Unit;
   public readonly target: Unit;
-  public readonly actionAttachedTo: CombatAction | undefined;
+  public actionAttachedTo: CombatAction | undefined;
 
   public get modifiers(): CombatActionModifier[]
   {
@@ -46,13 +46,27 @@ export class CombatAction
     mainAction: CombatActionModifier;
     source: Unit;
     target: Unit;
-    actionAttachedTo?: CombatAction;
   })
   {
     this.mainAction = props.mainAction;
     this.source = props.source;
     this.target = props.target;
-    this.actionAttachedTo = props.actionAttachedTo;
+  }
+
+  public isConnectedToAction(action: CombatAction): boolean
+  {
+    if (!this.actionAttachedTo)
+    {
+      return false;
+    }
+    else if (this.actionAttachedTo === action)
+    {
+      return true;
+    }
+    else
+    {
+      return this.actionAttachedTo.isConnectedToAction(action);
+    }
   }
 
   private getPrimitiveValues(): CombatActionPrimitivesWithValues<number>

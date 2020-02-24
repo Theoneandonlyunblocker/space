@@ -43,4 +43,45 @@ export class CombatManager<Phase extends string>
 
     this.queuedActions[phaseInfo.key].push(action);
   }
+  public attachAction(child: CombatAction, parent: CombatAction): void
+  {
+    const phase = this.getQueuedActionPhase(parent);
+    if (!phase)
+    {
+      throw new Error("Tried to attach child action to parent that was not part of combat manager queue.");
+    }
+
+    const parentIndex = this.queuedActions[phase].indexOf(parent);
+    const firstUnConnectedActionIndex = (() =>
+    {
+      for (let i = parentIndex + 1; i < this.queuedActions[phase].length; i++)
+      {
+        const action = this.queuedActions[phase][i];
+        if (!action.isConnectedToAction(parent))
+        {
+          return i;
+        }
+      }
+
+      return this.queuedActions[phase].length;
+    })();
+
+    this.queuedActions[phase].splice(firstUnConnectedActionIndex, 0, child);
+
+    child.actionAttachedTo = parent;
+  }
+
+  private getQueuedActionPhase(action: CombatAction): Phase | null
+  {
+    for (const phase in this.queuedActions)
+    {
+      const index = this.queuedActions[phase].indexOf(action);
+      if (index !== -1)
+      {
+        return phase;
+      }
+    }
+
+    return null;
+  }
 }
