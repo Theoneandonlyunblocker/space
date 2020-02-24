@@ -4,8 +4,11 @@ import { CombatActionPrimitivesWithValues } from "./CombatActionPrimitiveTemplat
 
 export interface CombatActionModifier
 {
-  // TODO 2020.02.15 | can't this be something pther than flatandmultiplieradjustment?
+  // can't this be something pther than FlatAndMultiplierAdjustment?
   // or i guess allow attaching other data here. necessary for things like useAbilityAction
+  //
+  // is it? why would anything need to know something that can't be expressed through primitives & flags?
+  // flags should be able to carry data for things like "when using ability X, do Y"
   primitives: CombatActionPrimitivesWithValues<Partial<FlatAndMultiplierAdjustment>>;
   flags?: Set<string>;
 }

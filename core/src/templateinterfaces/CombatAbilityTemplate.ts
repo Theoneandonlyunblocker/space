@@ -15,11 +15,7 @@ export interface CombatAbilityTemplate<Phase extends string = CorePhase>
   actionsUse: number;
 
   getPossibleTargets: GetBattleTargetsFN;
-  /**
-   * display purposes only
-   */
   getDisplayDataForTarget: GetUnitsInAreaFN<AbilityTargetDisplayDataById>;
-
   use: (user: Unit, target: Unit, combatManager: CombatManager<Phase>) => void;
 
   // should eventually rework vfx system to defer vfx to actions & action results
@@ -40,10 +36,9 @@ export interface CombatAbilityTemplate<Phase extends string = CorePhase>
   };
 
   /**
-   * how likely the AI will consider using this ability relative to other available ones
-   * doesn't affect AI's final decision on which ability to use, but can guide it
-   * in the right direction
-   * default = 1
+   * how likely the AI will consider using this ability relative to other available abilities
+   * doesn't affect AI's final decision on which ability to use, but can guide it in the right direction
+   * @default 1
    */
   AiEvaluationPriority?: number;
   /**
@@ -52,8 +47,9 @@ export interface CombatAbilityTemplate<Phase extends string = CorePhase>
    */
   disableInAiBattles?: boolean;
   /**
-   * adjusts the final score of this ability. AI picks move with highest score.
-   * to penalize moves that might be optimal but boring (e.g. skip turn) or otherwise unpleasant for the player
+   * adjusts the final score of this ability. AI picks move with highest score
+   * used to penalize moves that might be optimal but boring (e.g. skip turn) or otherwise unpleasant for the player
+   * @default 1
    */
   AiScoreMultiplier?: number;
 }
