@@ -12,6 +12,7 @@ export const guardAmountAdded: CombatActionResultTemplate<number> =
     if (target.battleStats.guardAmount < 0)
     {
       target.battleStats.guardAmount = 0;
+      target.battleStats.guardCoverage = null;
     }
 
     target.uiDisplayIsDirty = true;
