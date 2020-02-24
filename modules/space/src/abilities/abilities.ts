@@ -6,21 +6,18 @@ import
   AbilityTargetType,
 } from "core/src/abilities/AbilityTargetDisplayData";
 import {DamageType} from "../effectactions/DamageType";
-import {GuardCoverage} from "core/src/unit/GuardCoverage";
 import {Unit} from "core/src/unit/Unit";
 import {UnitAttribute} from "core/src/unit/UnitAttributes";
 import
 {
   areaColumn,
   areaOrthogonalNeighbors,
-  areaRow,
   areaRowNeighbors,
   areaSingle,
   GetUnitsInAreaFN,
   makeGetAbilityTargetDisplayDataFN,
   targetEnemies,
   targetNextRow,
-  targetSelf,
 } from "core/src/abilities/targeting";
 
 import * as BattleVfx from "../battlevfx/templates/battleVfx";
@@ -158,43 +155,6 @@ export const bombAttack: AbilityTemplate =
     }),
     vfx: BattleVfx.rocketAttack,
   },
-};
-export const guardRow: AbilityTemplate =
-{
-  type: "guardRow",
-  get displayName()
-  {
-    return localize("guardRow_displayName");
-  },
-  get description()
-  {
-    return localize("guardRow_description");
-  },
-  moveDelay: 100,
-  actionsUse: 1,
-  getPossibleTargets: targetSelf,
-  mainEffect:
-  {
-    id: "addGuard",
-    executeAction: EffectActions.addGuard.bind(null,
-    {
-      perAttribute:
-      {
-        intelligence: {flatPerPoint: 20},
-      },
-      coverage: GuardCoverage.Row,
-    }),
-    getUnitsInArea: areaSingle,
-    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
-      {
-        areaFN: makeFilteringUnitSelectFN(areaRow, activeUnitsFilter),
-        targetType: AbilityTargetType.Primary,
-        targetEffect: AbilityTargetEffect.Positive,
-      }),
-    vfx: BattleVfx.guard,
-  },
-
-  doesNotRemoveUserGuard: true,
 };
 export const boardingHook: AbilityTemplate =
 {
@@ -404,35 +364,3 @@ export const snipeDefence = makeSnipeTemplate(UnitAttribute.Defence);
 export const snipeIntelligence = makeSnipeTemplate(UnitAttribute.Intelligence);
 export const snipeSpeed = makeSnipeTemplate(UnitAttribute.Speed);
 
-export const standBy: AbilityTemplate =
-{
-  type: "standBy",
-  get displayName()
-  {
-    return localize("standBy_displayName");
-  },
-  get description()
-  {
-    return localize("standBy_description");
-  },
-  moveDelay: 50,
-  actionsUse: 1,
-  getPossibleTargets: targetSelf,
-  mainEffect:
-  {
-    id: "standBy",
-    getUnitsInArea: areaSingle,
-    // tslint:disable-next-line
-    getDisplayDataForTarget: () => {return {}},
-    executeAction: () => {},
-    vfx:
-    {
-      duration: 750,
-    },
-  },
-
-  doesNotRemoveUserGuard: true,
-  AiEvaluationPriority: 0.6,
-  AiScoreMultiplier: 0.6,
-  disableInAiBattles: true,
-};
