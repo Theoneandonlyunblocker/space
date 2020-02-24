@@ -32,8 +32,8 @@ export const debug: GameModule =
     }, "items");
     moduleData.copyTemplates(
     {
-      [debugAbility.type]: debugAbility,
-    }, "abilities");
+      [debugAbility.key]: debugAbility,
+    }, "combatAbilities");
 
     for (const key in uiScenes)
     {

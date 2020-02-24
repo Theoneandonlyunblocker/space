@@ -1,14 +1,15 @@
-import { AbilityTemplate } from "core/src/templateinterfaces/AbilityTemplate";
 import { localize } from "../localization/localize";
 import { targetAll, areaSingle, makeGetAbilityTargetDisplayDataFN } from "core/src/abilities/targeting";
+import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbilityTemplate";
 import { AbilityTargetType, AbilityTargetEffect } from "core/src/abilities/AbilityTargetDisplayData";
-import * as BattleVfx from "modules/space/src/battlevfx/templates/battleVfx";
-import * as EffectActions from "modules/space/src/effectactions/effectActions";
+import { increaseCaptureChance } from "modules/common/src/combat/actions/increaseCaptureChance";
+import { mainPhase } from "core/src/combat/core/phases/mainPhase";
+import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
 
 
-export const debugAbility: AbilityTemplate =
+export const debugAbility: CombatAbilityTemplate =
 {
-  type: "debugAbility",
+  key: "debugAbility",
   get displayName()
   {
     return localize("debugAbility_displayName");
@@ -20,20 +21,16 @@ export const debugAbility: AbilityTemplate =
   moveDelay: 0,
   actionsUse: 1,
   getPossibleTargets: targetAll,
-  mainEffect:
+  getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
   {
-    id: "debugAbility",
-    getUnitsInArea: areaSingle,
-    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
-    {
-      areaFN: areaSingle,
-      targetType: AbilityTargetType.Primary,
-      targetEffect: AbilityTargetEffect.Positive,
-    }),
-    executeAction: EffectActions.increaseCaptureChance.bind(null,
-    {
-      flat: 1,
-    }),
-    vfx: BattleVfx.guard,
+    areaFN: areaSingle,
+    targetType: AbilityTargetType.Primary,
+    targetEffect: AbilityTargetEffect.Negative,
+  }),
+  use: (user, target, combatManager) =>
+  {
+    const increaseCaptureChanceAction = increaseCaptureChance(user, target, 1);
+    combatManager.addQueuedAction(mainPhase, increaseCaptureChanceAction);
   },
+  vfx: makePlaceholderVfx("debugAbility"),
 };
