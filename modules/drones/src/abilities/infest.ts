@@ -1,5 +1,3 @@
-import {AbilityTemplate} from "core/src/templateinterfaces/AbilityTemplate";
-
 import
 {
   AbilityTargetEffect,
@@ -13,14 +11,16 @@ import
 } from "core/src/abilities/targeting";
 
 import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
-import * as EffectActions from "modules/space/src/effectactions/effectActions";
 
 import { localize } from "../../localization/localize";
+import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbilityTemplate";
+import { increaseInfestationAmount } from "../combat/actions/increaseInfestationAmount";
+import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 
 
-export const infest: AbilityTemplate =
+export const infest: CombatAbilityTemplate =
 {
-  type: "infest",
+  key: "infest",
   get displayName()
   {
     return localize("infest_displayName").toString();
@@ -32,34 +32,16 @@ export const infest: AbilityTemplate =
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,
-  mainEffect:
+  getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
   {
-    id: "addStatusEffect",
-    getUnitsInArea: areaSingle,
-    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
-    {
-      areaFN: areaSingle,
-      targetType: AbilityTargetType.Primary,
-      targetEffect: AbilityTargetEffect.Negative,
-    }),
-    // TODO 2020.02.19 |
-    executeAction: () => {},
-    // executeAction: EffectActions.addStatusEffect.bind(null,
-    // {
-    //   duration: 3,
-    //   template: DroneStatusEffects.infest,
-    // }),
-    vfx: makePlaceholderVfx("infest"),
-    attachedEffects:
-    [
-      {
-        id: "increaseCaptureChance",
-        getUnitsInArea: areaSingle,
-        executeAction: EffectActions.increaseCaptureChance.bind(null,
-        {
-          flat: 0.4,
-        }),
-      },
-    ],
+    areaFN: areaSingle,
+    targetType: AbilityTargetType.Primary,
+    targetEffect: AbilityTargetEffect.Negative,
+  }),
+  use: (user, target, combatManager) =>
+  {
+    const addCombatEffectAction = increaseInfestationAmount(user, target, {flat: 1});
+    combatManager.addQueuedAction(mainPhase, addCombatEffectAction);
   },
+  vfx: makePlaceholderVfx("infest"),
 };

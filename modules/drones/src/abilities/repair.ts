@@ -15,7 +15,7 @@ import
 import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
 import { localize } from "../../localization/localize";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
-import { repair as repairAction } from "../combat/actions/repair";
+import { healTarget } from "modules/common/src/combat/actions/healTarget";
 
 
 export const repair: CombatAbilityTemplate =
@@ -45,7 +45,7 @@ export const repair: CombatAbilityTemplate =
 
     combatManager.addQueuedAction(
       mainPhase,
-      repairAction(user, target, healAmount),
+      healTarget(user, target, healAmount),
     );
   },
   vfx: makePlaceholderVfx("repair"),

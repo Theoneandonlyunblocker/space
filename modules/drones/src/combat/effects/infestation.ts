@@ -30,7 +30,7 @@ export const infestation: CombatEffectTemplate =
       const percentCurrentHealthRemoved = 0.1 * Math.pow(2, severity - 1);
 
       return [
-        losePercentCurrentHealth(unit, percentCurrentHealthRemoved),
+        losePercentCurrentHealth(unit, unit, percentCurrentHealthRemoved),
         increaseInfestationAmount(unit, unit, {flat: 1}),
       ];
     },

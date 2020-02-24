@@ -2,9 +2,9 @@ import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { localize } from "modules/drones/localization/localize";
 
 
-export const merge: CombatEffectTemplate =
+export const mergeBuff: CombatEffectTemplate =
 {
-  key: "merge",
+  key: "mergeBuff",
   getDisplayName: strength =>
   {
     return localize("merge_effect_displayName").toString();

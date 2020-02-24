@@ -2,7 +2,6 @@ import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 import {ModuleData} from "core/src/modules/ModuleData";
 import {GameModule} from "core/src/modules/GameModule";
 
-import {abilityTemplates} from "./abilityTemplates";
 import {raceTemplates} from "./raceTemplate";
 import {unitTemplates} from "./unitTemplates";
 import * as battleVfxTemplates from "./battlevfx/templates";
@@ -18,7 +17,6 @@ export const drones: GameModule =
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData: ModuleData) =>
   {
-    moduleData.copyTemplates(abilityTemplates, "abilities");
     moduleData.copyTemplates(raceTemplates, "races");
     moduleData.copyTemplates(unitTemplates, "units");
     moduleData.copyTemplates(battleVfxTemplates, "battleVfx");

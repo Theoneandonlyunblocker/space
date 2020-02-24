@@ -2,10 +2,10 @@ import { FlatAndMultiplierAdjustment } from "core/src/generic/FlatAndMultiplierA
 import { CombatAction } from "core/src/combat/CombatAction";
 import { Unit } from "core/src/unit/Unit";
 import { makeSimpleModifier } from "modules/common/src/combat/modifiers/makeSimpleModifier";
-import { infestationAmount } from "../primitives/infestationAmount";
+import { mergeBuffAmount } from "../primitives/mergeBuffAmount";
 
 
-export function increaseInfestationAmount(
+export function increaseMergeBuffAmount(
   source: Unit,
   target: Unit,
   amount: Partial<FlatAndMultiplierAdjustment>,
@@ -13,7 +13,7 @@ export function increaseInfestationAmount(
 {
   return new CombatAction(
   {
-    mainAction: makeSimpleModifier(infestationAmount, amount),
+    mainAction: makeSimpleModifier(mergeBuffAmount, amount),
     source: source,
     target: target,
   });

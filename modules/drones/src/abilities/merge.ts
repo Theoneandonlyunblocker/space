@@ -1,5 +1,4 @@
-import {ExecutedEffectsResult} from "core/src/templateinterfaces/ExecutedEffectsResult";
-import {AbilityTemplate} from "core/src/templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
 
 import
 {
@@ -9,20 +8,20 @@ import
 import
 {
   makeGetAbilityTargetDisplayDataFN,
-  areaSingle,
   targetOtherAllies,
 } from "core/src/abilities/targeting";
 
-import {ResultType} from "modules/space/src/effectactions/ResultType";
-import * as EffectActions from "modules/space/src/effectactions/effectActions";
-
-import * as DroneBattleVfx from "../battlevfx/templates";
 import { localize } from "../../localization/localize";
+import { mainPhase } from "core/src/combat/core/phases/mainPhase";
+import { makePlaceholderVfx } from "modules/common/makePlaceholderVfx";
+import { losePercentMaxHealth } from "modules/common/src/combat/actions/losePercentMaxHealth";
+import { increaseMergeBuffAmount } from "../combat/actions/increaseMergeBuffAmount";
+import { leechLife } from "modules/common/src/combat/actions/leechLife";
 
 
-export const merge: AbilityTemplate =
+export const merge: CombatAbilityTemplate =
 {
-  type: "merge",
+  key: "merge",
   get displayName()
   {
     return localize("merge_displayName").toString();
@@ -34,59 +33,25 @@ export const merge: AbilityTemplate =
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetOtherAllies,
-  mainEffect:
+  // TODO 2020.02.20 | currently only shows user being damaged, needs to show target being buffed as well
+  getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
   {
-    id: "removeOwnHealth",
-    executeAction: EffectActions.adjustHealth.bind(null,
-    {
-      maxHealthPercentage: -0.25,
-    }),
-    getUnitsInArea: user => [user],
-    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
-    {
-      areaFN: user => [user],
-      targetType: AbilityTargetType.Primary,
-      targetEffect: AbilityTargetEffect.Negative,
-    }),
-    vfx: DroneBattleVfx.mergeRelease,
+    areaFN: user => [user],
+    targetType: AbilityTargetType.Primary,
+    targetEffect: AbilityTargetEffect.Negative,
+  }),
+  use: (user, target, combatManager) =>
+  {
+    // vfx: DroneBattleVfx.mergeRelease,
+    const damageSelfAction = losePercentMaxHealth(user, user, 0.25);
+    combatManager.addQueuedAction(mainPhase, damageSelfAction);
+
+    // vfx: DroneBattleVfx.mergeAbsorb,
+    const addStatusEffectAction = increaseMergeBuffAmount(user, target, {flat: 1});
+    combatManager.addQueuedAction(mainPhase, addStatusEffectAction);
+
+    const healTargetAction = leechLife(target, user, 1);
+    combatManager.attachAction(healTargetAction, damageSelfAction);
   },
-  secondaryEffects:
-  [
-    // TODO 2020.02.19 |
-    // {
-    //   id: "addStatusEffect",
-    //   getUnitsInArea: areaSingle,
-    //   getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
-    //   {
-    //     areaFN: areaSingle,
-    //     targetType: AbilityTargetType.Primary,
-    //     targetEffect: AbilityTargetEffect.Positive,
-    //   }),
-    //   vfx: DroneBattleVfx.mergeAbsorb,
-    //   trigger: (user, target, battle, executedEffectsResult) =>
-    //   {
-    //     return Boolean(executedEffectsResult[ResultType.HealthChanged]);
-    //   },
-    //   // executeAction: EffectActions.addStatusEffect.bind(null,
-    //   // {
-    //   //   duration: Infinity,
-    //   //   template: DroneStatusEffects.merge,
-    //   // }),
-    // },
-    {
-      id: "addTargetHealth",
-      getUnitsInArea: areaSingle,
-      trigger: (user, target, battle, executedEffectsResult) =>
-      {
-        return Boolean(executedEffectsResult[ResultType.HealthChanged]);
-      },
-      executeAction: EffectActions.adjustHealth.bind(null,
-      {
-        executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
-        {
-          return -executedEffectsResult[ResultType.HealthChanged];
-        },
-      }),
-    },
-  ],
+  vfx: makePlaceholderVfx("merge"),
 };

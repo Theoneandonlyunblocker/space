@@ -1,11 +1,9 @@
-import {ExecutedEffectsResult} from "core/src/templateinterfaces/ExecutedEffectsResult";
-import {AbilityTemplate} from "core/src/templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
 import
 {
   AbilityTargetEffect,
   AbilityTargetType,
 } from "core/src/abilities/AbilityTargetDisplayData";
-import {DamageType} from "modules/space/src/effectactions/DamageType";
 import
 {
   makeGetAbilityTargetDisplayDataFN,
@@ -13,16 +11,18 @@ import
   targetEnemies,
 } from "core/src/abilities/targeting";
 
-import {ResultType} from "modules/space/src/effectactions/ResultType";
-import * as EffectActions from "modules/space/src/effectactions/effectActions";
-
 import * as DroneBattleVfx from "../battlevfx/templates";
 import { localize } from "../../localization/localize";
+import { dealAttackDamage } from "modules/common/src/combat/actions/dealAttackDamage";
+import { leechLife } from "modules/common/src/combat/actions/leechLife";
+import { lifeLeechIncreasesMaxHealth } from "modules/common/src/combat/resultModifiers/lifeLeechIncreasesMaxHealth";
+import { physicalDamage } from "core/src/combat/core/primitives/physicalDamage";
+import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 
 
-export const assimilate: AbilityTemplate =
+export const assimilate: CombatAbilityTemplate =
 {
-  type: "assimilate",
+  key: "assimilate",
   get displayName()
   {
     return localize("assimilate_displayName").toString();
@@ -34,43 +34,24 @@ export const assimilate: AbilityTemplate =
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,
-  mainEffect:
+  // TODO 2020.02.20 | currently only shows target being damaged, needs to show user being buffed as well
+  getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
   {
-    id: "damage",
-    executeAction: EffectActions.inflictDamage.bind(null,
-    {
-      baseDamage: 0.8,
-      damageType: DamageType.Physical,
-    }),
-    getUnitsInArea: areaSingle,
-    getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
-    {
-      areaFN: areaSingle,
-      targetType: AbilityTargetType.Primary,
-      targetEffect: AbilityTargetEffect.Negative,
-    }),
-    vfx: DroneBattleVfx.assimilate,
-    attachedEffects:
-    [
-      {
-        id: "increaseUserHealth",
-        getUnitsInArea: user => [user],
-        getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
-        {
-          areaFN: user => [user],
-          targetType: AbilityTargetType.Primary,
-          targetEffect: AbilityTargetEffect.Positive,
-        }),
-        executeAction: EffectActions.adjustCurrentAndMaxHealth.bind(null,
-        {
-          executedEffectsResultAdjustment: (executedEffectsResult: ExecutedEffectsResult) =>
-          {
-            const damageDealt = executedEffectsResult[ResultType.HealthChanged] || 0;
+    areaFN: areaSingle,
+    targetType: AbilityTargetType.Primary,
+    targetEffect: AbilityTargetEffect.Negative,
+  }),
+  use: (user, target, combatManager) =>
+  {
+    // deal physical damage @ 0.8 normal
+    // TODO 2020.02.24 |
+    const dealDamageAction = dealAttackDamage(user, target, 0.8, physicalDamage);
+    combatManager.addQueuedAction(mainPhase, dealDamageAction);
 
-            return damageDealt * -0.1;
-          },
-        }),
-      },
-    ],
+    // increase current & max health
+    const lifeLeechAction = leechLife(user, target, 0.1);
+    lifeLeechAction.resultModifiers.push({modifier: lifeLeechIncreasesMaxHealth, value: 1});
+    combatManager.attachAction(lifeLeechAction, dealDamageAction);
   },
+  vfx: DroneBattleVfx.assimilate,
 };
