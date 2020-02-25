@@ -1,8 +1,9 @@
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
+import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
+
 
 export interface QueuedActionData
 {
-  ability: AbilityTemplate;
+  ability: CombatAbilityTemplate;
   targetId: number;
   turnsPrepared: number;
   timesInterrupted: number;

@@ -22,10 +22,12 @@ const TitanChassisAbilitiesComponent: React.FunctionComponent<PropTypes> = props
         distributions: props.template.possibleAbilities,
         renderListItem: (abilityTemplate) =>
         {
+          const isPassiveSkill = !Boolean(abilityTemplate.use);
+
           return ReactDOMElements.li(
           {
-            key: abilityTemplate.type,
-            className: `possible-ability-list-item ${abilityTemplate.mainEffect ? "active-skill" : "passive-skill"}`,
+            key: abilityTemplate.key,
+            className: `possible-ability-list-item ${isPassiveSkill ? "passive-skill" : "active-skill"}`,
             title: abilityTemplate.description,
           },
             abilityTemplate.displayName,

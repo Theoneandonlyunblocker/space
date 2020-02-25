@@ -1,4 +1,4 @@
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "../templateinterfaces/CombatAbilityTemplate";
 
 import {Battle} from "../battle/Battle";
 import {GuardCoverage} from "../unit/GuardCoverage";
@@ -7,7 +7,7 @@ import {Unit} from "../unit/Unit";
 // TODO 2020.02.08 | rename / move
 export interface AbilityUseData
 {
-  ability: AbilityTemplate;
+  ability: CombatAbilityTemplate;
   user: Unit;
   intendedTarget: Unit;
   actualTarget?: Unit;

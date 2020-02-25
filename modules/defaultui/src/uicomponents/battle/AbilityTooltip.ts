@@ -2,18 +2,18 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {Unit} from "core/src/unit/Unit";
-import {AbilityTemplate} from "core/src/templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
 
 
 export interface PropTypes extends React.Props<any>
 {
   parentElement: HTMLElement;
   facesLeft: boolean;
-  activeTargets: {[unitId: number]: AbilityTemplate[]};
+  activeTargets: {[unitId: number]: CombatAbilityTemplate[]};
   handleMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void;
-  handleAbilityUse: (ability: AbilityTemplate, target: Unit) => void;
+  handleAbilityUse: (ability: CombatAbilityTemplate, target: Unit) => void;
   targetUnit: Unit;
-  handleMouseEnterAbility: (ability: AbilityTemplate) => void;
+  handleMouseEnterAbility: (ability: CombatAbilityTemplate) => void;
   handleMouseLeaveAbility: () => void;
 }
 
@@ -87,7 +87,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
       const data: React.HTMLAttributes<HTMLDivElement> & React.Attributes = {};
 
       data.className = "ability-tooltip-ability";
-      data.key = ability.type;
+      data.key = ability.key;
       data.onClick = this.props.handleAbilityUse.bind(null, ability, this.props.targetUnit);
 
       data.onMouseEnter = this.props.handleMouseEnterAbility.bind(null, ability);

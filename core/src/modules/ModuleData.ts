@@ -9,7 +9,6 @@ import
   RuleSetValues,
 } from "./RuleSetValues";
 import {AiTemplateConstructor} from "../templateinterfaces/AiTemplateConstructor";
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
 import {AttitudeModifierTemplate} from "../templateinterfaces/AttitudeModifierTemplate";
 import {BattleVfxTemplate} from "../templateinterfaces/BattleVfxTemplate";
 import {BuildingTemplate} from "../templateinterfaces/BuildingTemplate";
@@ -52,8 +51,6 @@ import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTempla
 // tslint:disable:no-any
 interface Templates
 {
-  // TODO 2020.02.20 | remove
-  abilities: TemplateCollection<AbilityTemplate>;
   aiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
   attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
   battleVfx: TemplateCollection<BattleVfxTemplate<any, any>>;
@@ -97,7 +94,6 @@ export class ModuleData
 
   public templates: Templates =
   {
-    abilities: {},
     aiTemplateConstructors: {},
     attitudeModifiers: {},
     // TODO 2020.02.08 | necessary to store these here?

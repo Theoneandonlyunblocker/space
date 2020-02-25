@@ -1,8 +1,6 @@
-
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
-
 import {Battle} from "../battle/Battle";
 import {Unit} from "../unit/Unit";
+import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
 
 
 export function getTargetsForAllAbilities(battle: Battle, user: Unit)
@@ -15,7 +13,7 @@ export function getTargetsForAllAbilities(battle: Battle, user: Unit)
 
   const allTargets:
   {
-    [id: number]: AbilityTemplate[];
+    [id: number]: CombatAbilityTemplate[];
   } = {};
 
   const abilities = user.getAllAbilities();
@@ -45,7 +43,7 @@ function isTargetableFilterFN(unit: Unit)
 {
   return unit && unit.isTargetable();
 }
-function getPotentialTargets(battle: Battle, user: Unit, ability: AbilityTemplate): Unit[]
+function getPotentialTargets(battle: Battle, user: Unit, ability: CombatAbilityTemplate): Unit[]
 {
   const targetsInRange = ability.getPossibleTargets(user, battle);
 

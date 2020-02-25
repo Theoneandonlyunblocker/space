@@ -97,7 +97,7 @@ export class UnitBattleStats
       combatEffects: CombatEffectManager.fromData(data.combatEffects, activeModuleData.templates.combatEffects),
       queuedAction:  data.queuedAction ?
         {
-          ability: activeModuleData.templates.abilities[data.queuedAction.abilityTemplateKey],
+          ability: activeModuleData.templates.combatAbilities[data.queuedAction.abilityTemplateKey],
           targetId: data.queuedAction.targetId,
           turnsPrepared: data.queuedAction.turnsPrepared,
           timesInterrupted: data.queuedAction.timesInterrupted,
@@ -143,7 +143,7 @@ export class UnitBattleStats
       combatEffects: this.combatEffects.serialize(),
       queuedAction: !this.queuedAction ? null :
       {
-        abilityTemplateKey: this.queuedAction.ability.type,
+        abilityTemplateKey: this.queuedAction.ability.key,
         targetId: this.queuedAction.targetId,
         turnsPrepared: this.queuedAction.turnsPrepared,
         timesInterrupted: this.queuedAction.timesInterrupted,

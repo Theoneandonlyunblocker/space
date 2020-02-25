@@ -21,7 +21,7 @@ import
   useAbilityAndGetUseEffects,
 } from "core/src/abilities/battleAbilityUsage";
 import {AbilityUseEffect} from "core/src/abilities/AbilityUseEffect";
-import {AbilityTemplate} from "core/src/templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
 import
 {
   shallowCopy,
@@ -56,7 +56,7 @@ interface StateType
 
   highlightedUnit: Unit | null;
   hoveredUnit: Unit | null;
-  hoveredAbility: AbilityTemplate | null;
+  hoveredAbility: CombatAbilityTemplate | null;
   abilityTargetDisplayDataById: AbilityTargetDisplayDataById;
   potentialDelayId: number;
   potentialDelayAmount: number;
@@ -321,7 +321,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.battleScene.hoveredUnit = unit;
     this.battleScene.updateUnits();
   }
-  private handleMouseEnterAbility(ability: AbilityTemplate)
+  private handleMouseEnterAbility(ability: CombatAbilityTemplate)
   {
     const targetDisplayDataForAbility = getAbilityTargetDisplayData(
       this.props.battle,
@@ -356,7 +356,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     return document.getElementById("unit-id_" + unit.id);
   }
-  private handleAbilityUse(ability: AbilityTemplate, target: Unit, wasByPlayer: boolean)
+  private handleAbilityUse(ability: CombatAbilityTemplate, target: Unit, wasByPlayer: boolean)
   {
     const user = this.props.battle.activeUnit;
 
@@ -509,7 +509,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.handleAbilityUse(action.ability, target, userIsHuman);
   }
-  private usePlayerAbility(ability: AbilityTemplate, target: Unit)
+  private usePlayerAbility(ability: CombatAbilityTemplate, target: Unit)
   {
     this.handleAbilityUse(ability, target, true);
   }

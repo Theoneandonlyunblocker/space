@@ -1,5 +1,4 @@
 import {AbilityBase} from "./AbilityBase";
-import {AbilityTemplate} from "./AbilityTemplate";
 import {DistributionData} from "./DistributionData";
 import {ManufacturableThing} from "./ManufacturableThing";
 import {PassiveSkillTemplate} from "./PassiveSkillTemplate";
@@ -9,6 +8,7 @@ import {UnitDrawingFunction} from "./UnitDrawingFunction";
 import { Resources } from "../player/PlayerResources";
 import { UnitModifier } from "../maplevelmodifiers/UnitModifier";
 import { AvailabilityData } from "./AvailabilityData";
+import { CombatAbilityTemplate } from "./CombatAbilityTemplate";
 
 
 export interface UnitTemplate extends ManufacturableThing
@@ -55,7 +55,7 @@ export interface UnitTemplate extends ManufacturableThing
     speed: number;
   };
 
-  possibleAbilities: ProbabilityDistributions<AbilityTemplate>;
+  possibleAbilities: ProbabilityDistributions<CombatAbilityTemplate>;
   possiblePassiveSkills?: ProbabilityDistributions<PassiveSkillTemplate>;
   // will fall back on AbilityBase.defaultUpgrades if not specified for an ability
   possibleAbilityUpgrades?:

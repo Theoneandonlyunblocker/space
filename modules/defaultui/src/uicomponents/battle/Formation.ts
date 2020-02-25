@@ -5,7 +5,7 @@ import {AbilityTargetDisplayDataById} from "core/src/abilities/AbilityTargetDisp
 import {Unit as UnitObj} from "core/src/unit/Unit";
 import {UnitDisplayData} from "core/src/unit/UnitDisplayData";
 import {activeModuleData} from "core/src/app/activeModuleData";
-import {AbilityTemplate} from "core/src/templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
 import {shallowExtend} from "core/src/generic/utility";
 import {EmptyUnit} from "../unit/EmptyUnit";
 import
@@ -58,7 +58,7 @@ export interface PropTypes extends React.Props<any>
   activeUnit: UnitObj | null;
   abilityTargetDisplayDataById: AbilityTargetDisplayDataById;
   activeEffectUnits?: UnitObj[];
-  hoveredAbility?: AbilityTemplate;
+  hoveredAbility?: CombatAbilityTemplate;
   capturedUnits?: UnitObj[];
   destroyedUnits?: UnitObj[];
 }

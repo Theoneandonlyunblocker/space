@@ -38,11 +38,11 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
 
     abilities.sort((_a, _b) =>
     {
-      if (_a.mainEffect && !_b.mainEffect) { return -1; }
-      else if (_b.mainEffect && !_a.mainEffect) { return 1; }
+      if (_a.use && !_b.use) { return -1; }
+      else if (_b.use && !_a.use) { return 1; }
 
-      if (_a.type === "learnable") { return 1; }
-      else if (_b.type === "learnable") { return -1; }
+      if (_a.key === "learnable") { return 1; }
+      else if (_b.key === "learnable") { return -1; }
 
       const a = _a.displayName.toLowerCase();
       const b = _b.displayName.toLowerCase();
@@ -59,17 +59,17 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
       {
         continue;
       }
-      if (!addedAbilityTypes[ability.type])
+      if (!addedAbilityTypes[ability.key])
       {
-        addedAbilityTypes[ability.type] = 0;
+        addedAbilityTypes[ability.key] = 0;
       }
 
 
       abilityElements.push(
         AbilityListItem(
         {
-          key: ability.type + addedAbilityTypes[ability.type],
-          type: this.getAbilityListItemType(ability, addedAbilityTypes[ability.type]),
+          key: ability.key + addedAbilityTypes[ability.key],
+          type: this.getAbilityListItemType(ability, addedAbilityTypes[ability.key]),
           displayName: ability.displayName,
           title: ability.description,
 
@@ -77,7 +77,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
         }),
       );
 
-      addedAbilityTypes[ability.type]++;
+      addedAbilityTypes[ability.key]++;
     }
 
     return(
@@ -97,7 +97,7 @@ export class AbilityListComponent extends React.Component<PropTypes, StateType>
     {
       return "redundant";
     }
-    else if (!ability.mainEffect)
+    else if (!ability.use)
     {
       return "passive";
     }

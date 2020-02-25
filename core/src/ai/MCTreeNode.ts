@@ -1,4 +1,4 @@
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "../templateinterfaces/CombatAbilityTemplate";
 
 import {Battle} from "../battle/Battle";
 import {Move, MoveCollection} from "./Move";
@@ -245,7 +245,7 @@ export class MCTreeNode
     }
   }
   private pickRandomMoveFromPossibleActions(
-    actions: {[targetId: number]: AbilityTemplate[]},
+    actions: {[targetId: number]: CombatAbilityTemplate[]},
     userId: number,
   ): Move
   {

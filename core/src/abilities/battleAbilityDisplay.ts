@@ -1,39 +1,40 @@
 import
 {
   AbilityTargetDisplayDataById,
-  mergeAbilityTargetDisplayDataById,
 } from "./AbilityTargetDisplayData";
 import {Battle} from "../battle/Battle";
 import {Unit} from "../unit/Unit";
 
-import {AbilityEffectTemplate} from "../templateinterfaces/AbilityEffectTemplate";
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "../templateinterfaces/CombatAbilityTemplate";
 
 
 export function getAbilityTargetDisplayData(
   battle: Battle,
-  ability: AbilityTemplate,
+  ability: CombatAbilityTemplate,
   user: Unit,
   target: Unit,
 ): AbilityTargetDisplayDataById
 {
-  const abilityEffects: AbilityEffectTemplate[] = [ability.mainEffect];
-  if (ability.secondaryEffects)
-  {
-    abilityEffects.push(...ability.secondaryEffects.filter(secondaryEffect =>
-    {
-      return Boolean(secondaryEffect.getDisplayDataForTarget);
-    }));
-  }
+  return ability.getDisplayDataForTarget(user, target, battle);
 
-  const allDisplayDataById = abilityEffects.map(abilityEffect =>
-  {
-    return abilityEffect.getDisplayDataForTarget(user, target, battle);
-  });
+  // TODO 2020.02.25 |
+  // const abilityEffects: AbilityEffectTemplate[] = [ability.mainEffect];
+  // if (ability.secondaryEffects)
+  // {
+  //   abilityEffects.push(...ability.secondaryEffects.filter(secondaryEffect =>
+  //   {
+  //     return Boolean(secondaryEffect.getDisplayDataForTarget);
+  //   }));
+  // }
 
-  const mergedDisplayDataById = mergeAbilityTargetDisplayDataById(...allDisplayDataById);
+  // const allDisplayDataById = abilityEffects.map(abilityEffect =>
+  // {
+  //   return abilityEffect.getDisplayDataForTarget(user, target, battle);
+  // });
 
-  return mergedDisplayDataById;
+  // const mergedDisplayDataById = mergeAbilityTargetDisplayDataById(...allDisplayDataById);
+
+  // return mergedDisplayDataById;
 }
 
 export

@@ -1,8 +1,9 @@
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "../templateinterfaces/CombatAbilityTemplate";
+
 
 export interface Move
 {
-  ability: AbilityTemplate;
+  ability: CombatAbilityTemplate;
   userId: number;
   targetId: number;
 }
@@ -49,12 +50,12 @@ export class MoveCollection<T>
       this.moves[move.userId][move.targetId] = {};
     }
 
-    if (!this.moves[move.userId][move.targetId][move.ability.type])
+    if (!this.moves[move.userId][move.targetId][move.ability.key])
     {
       this._length += 1;
     }
 
-    this.moves[move.userId][move.targetId][move.ability.type] =
+    this.moves[move.userId][move.targetId][move.ability.key] =
     {
       value: value,
       move: move,
@@ -69,10 +70,10 @@ export class MoveCollection<T>
     if (
       this.moves[move.userId] &&
       this.moves[move.userId][move.targetId] &&
-      this.moves[move.userId][move.targetId][move.ability.type]
+      this.moves[move.userId][move.targetId][move.ability.key]
     )
     {
-      return this.moves[move.userId][move.targetId][move.ability.type].value;
+      return this.moves[move.userId][move.targetId][move.ability.key].value;
     }
 
     return null;

@@ -53,7 +53,7 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
     const canLearnNewAbility = this.props.learnableAbilities.length > 0;
 
     const currentlyUpgradingAbility = this.state.currentlyUpgradingAbility ?
-      this.props.upgradableAbilitiesData[this.state.currentlyUpgradingAbility.type] :
+      this.props.upgradableAbilitiesData[this.state.currentlyUpgradingAbility.key] :
       null;
 
     return(

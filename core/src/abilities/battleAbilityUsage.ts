@@ -1,5 +1,5 @@
 import {ExecutedEffectsResult} from "../templateinterfaces/ExecutedEffectsResult";
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "../templateinterfaces/CombatAbilityTemplate";
 
 import {AbilityUseEffect} from "./AbilityUseEffect";
 import {Battle} from "../battle/Battle";
@@ -21,7 +21,7 @@ function getAbilityEffectDataByPhase(...args: any): any
 
 export function useAbility(
   battle: Battle,
-  ability: AbilityTemplate,
+  ability: CombatAbilityTemplate,
   user: Unit,
   target: Unit,
 ): void
@@ -37,7 +37,7 @@ export function useAbility(
 }
 export function useAbilityAndGetUseEffects(
   battle: Battle,
-  ability: AbilityTemplate,
+  ability: CombatAbilityTemplate,
   user: Unit,
   target: Unit,
 ): AbilityUseEffect[]

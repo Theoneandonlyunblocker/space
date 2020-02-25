@@ -8,7 +8,6 @@ import {unitArchetypes} from "modules/common/unitArchetypes";
 
 import {ruleSet} from "./ruleSet";
 
-import * as abilityTemplates from  "./abilities/abilities";
 import {drawNebula} from "./backgrounds/drawNebula";
 import * as battleVfxTemplates from  "./battlevfx/templates/battleVfx";
 import {buildingTemplates} from "./buildings/buildingTemplates";
@@ -31,6 +30,7 @@ import {spaceUnitsInitializers} from "./units/spaceUnitsInitializers";
 import { setBaseUrl as setAssetBaseUrl } from "../assets/baseUrl";
 import * as moduleInfo from "../moduleInfo.json";
 import { combatEffectTemplates } from "./combat/combatEffectTemplates";
+import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
 
 
 export const space: GameModule =
@@ -53,9 +53,9 @@ export const space: GameModule =
   ),
   addToModuleData: moduleData =>
   {
-    moduleData.copyTemplates(abilityTemplates, "abilities");
     moduleData.copyTemplates(battleVfxTemplates, "battleVfx");
     moduleData.copyTemplates(buildingTemplates, "buildings");
+    moduleData.copyTemplates(combatAbilityTemplates, "combatAbilities");
     moduleData.copyTemplates(combatEffectTemplates, "combatEffects");
     moduleData.copyTemplates(itemTemplates, "items");
     moduleData.copyTemplates(mapGenTemplates, "mapGen");

@@ -4,7 +4,6 @@ import {UnitDrawingFunctionData} from "./UnitDrawingFunctionData";
 import {activeModuleData} from "../app/activeModuleData";
 import {idGenerators} from "../app/idGenerators";
 import {AbilityBase} from "../templateinterfaces/AbilityBase";
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
 import {PassiveSkillTemplate} from "../templateinterfaces/PassiveSkillTemplate";
 import {PortraitTemplate} from "../templateinterfaces/PortraitTemplate";
 import {RaceTemplate} from "../templateinterfaces/RaceTemplate";
@@ -42,6 +41,7 @@ import { Resources } from "../player/PlayerResources";
 import { UnitModifiersCollection } from "../maplevelmodifiers/UnitModifiersCollection";
 import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
 import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
+import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
 
 
 export class Unit
@@ -78,7 +78,7 @@ export class Unit
   public battleStats: UnitBattleStats;
   public drawingFunctionData: UnitDrawingFunctionData;
 
-  private readonly abilities: AbilityTemplate[] = [];
+  private readonly abilities: CombatAbilityTemplate[] = [];
   private readonly passiveSkills: PassiveSkillTemplate[] = [];
 
   private readonly learnableAbilities: AbilityBase[] = [];
@@ -112,7 +112,7 @@ export class Unit
     maxMovePoints: number;
     offensiveBattlesFoughtThisTurn: number;
 
-    abilities: AbilityTemplate[];
+    abilities: CombatAbilityTemplate[];
     passiveSkills: PassiveSkillTemplate[];
 
     learnableAbilities: AbilityBase[];
@@ -285,7 +285,7 @@ export class Unit
 
       abilities: data.abilityTypes.map(templateType =>
       {
-        return fetchTemplate(activeModuleData.templates.abilities, templateType, "ability");
+        return fetchTemplate(activeModuleData.templates.combatAbilities, templateType, "ability");
       }),
       passiveSkills: data.passiveSkillTypes.map(templateType =>
       {
@@ -295,7 +295,7 @@ export class Unit
       {
         const allAbilitiesAndPassiveSkills =
         {
-          ...activeModuleData.templates.abilities,
+          ...activeModuleData.templates.combatAbilities,
           ...activeModuleData.templates.passiveSkills,
         };
         const source = allAbilitiesAndPassiveSkills[currentUpgradeData.source];
@@ -304,7 +304,7 @@ export class Unit
           return fetchTemplate(allAbilitiesAndPassiveSkills, templateType, "ability / passive skill");
         });
 
-        allUpgradeData[source.type] =
+        allUpgradeData[source.key] =
         {
           source: source,
           possibleUpgrades: upgrades,
@@ -316,7 +316,7 @@ export class Unit
       {
         const allAbilitiesAndPassiveSkills =
         {
-          ...activeModuleData.templates.abilities,
+          ...activeModuleData.templates.combatAbilities,
           ...activeModuleData.templates.passiveSkills,
         };
 
@@ -413,7 +413,7 @@ export class Unit
   {
     this.addHealth(-amountToRemove);
   }
-  public setQueuedAction(ability: AbilityTemplate, target: Unit)
+  public setQueuedAction(ability: CombatAbilityTemplate, target: Unit)
   {
     this.battleStats.queuedAction =
     {
@@ -536,11 +536,11 @@ export class Unit
     this.cachedAttributes = this.getAttributesWithItemsAndEffects();
     this.attributesAreDirty = false;
   }
-  public getAllAbilities(): AbilityTemplate[]
+  public getAllAbilities(): CombatAbilityTemplate[]
   {
     const allAbilities = [...this.abilities, ...this.items.getAbilities()];
 
-    const allUniqueAbilities = getUniqueArrayKeys(allAbilities, template => template.type);
+    const allUniqueAbilities = getUniqueArrayKeys(allAbilities, template => template.key);
 
     return allUniqueAbilities;
   }
@@ -548,7 +548,7 @@ export class Unit
   {
     const allPassiveSkills = [...this.passiveSkills, ...this.items.getPassiveSkills()];
 
-    const allUniquePassiveSkills = getUniqueArrayKeys(allPassiveSkills, template => template.type);
+    const allUniquePassiveSkills = getUniqueArrayKeys(allPassiveSkills, template => template.key);
 
     return allUniquePassiveSkills;
   }
@@ -702,9 +702,9 @@ export class Unit
     const upgradeDataForCurrentAbilities: UpgradableAbilitiesData = {};
     [...this.abilities, ...this.passiveSkills].forEach(ability =>
     {
-      if (this.abilityUpgrades[ability.type])
+      if (this.abilityUpgrades[ability.key])
       {
-        upgradeDataForCurrentAbilities[ability.type] = this.abilityUpgrades[ability.type];
+        upgradeDataForCurrentAbilities[ability.key] = this.abilityUpgrades[ability.key];
       }
     });
 
@@ -727,9 +727,9 @@ export class Unit
     upgradeCandidates.forEach(sourceAbility =>
     {
       let probabilityDistributions: ProbabilityDistributions<AbilityBase>;
-      if (template.possibleAbilityUpgrades && template.possibleAbilityUpgrades[sourceAbility.type])
+      if (template.possibleAbilityUpgrades && template.possibleAbilityUpgrades[sourceAbility.key])
       {
-        probabilityDistributions = template.possibleAbilityUpgrades[sourceAbility.type](sourceAbility);
+        probabilityDistributions = template.possibleAbilityUpgrades[sourceAbility.key](sourceAbility);
       }
       else if (sourceAbility.defaultUpgrades)
       {
@@ -744,9 +744,9 @@ export class Unit
 
       if (chosenUpgrades.length !== 0)
       {
-        if (!fullUpgradeData[sourceAbility.type])
+        if (!fullUpgradeData[sourceAbility.key])
         {
-          fullUpgradeData[sourceAbility.type] =
+          fullUpgradeData[sourceAbility.key] =
           {
             source: sourceAbility,
             possibleUpgrades: [],
@@ -756,9 +756,9 @@ export class Unit
 
       chosenUpgrades.forEach(abilityToUpgradeInto =>
       {
-        fullUpgradeData[sourceAbility.type].possibleUpgrades.push(abilityToUpgradeInto);
+        fullUpgradeData[sourceAbility.key].possibleUpgrades.push(abilityToUpgradeInto);
 
-        if (!fullUpgradeData[abilityToUpgradeInto.type])
+        if (!fullUpgradeData[abilityToUpgradeInto.key])
         {
           newUpgradeCandidates.push(abilityToUpgradeInto);
         }
@@ -775,7 +775,7 @@ export class Unit
   }
   public upgradeAbility(source: AbilityBase, newAbility: AbilityBase): void
   {
-    const sourceIsPassiveSkill = !source.mainEffect;
+    const sourceIsPassiveSkill = !source.use;
 
     if (sourceIsPassiveSkill)
     {
@@ -783,7 +783,7 @@ export class Unit
     }
     else
     {
-      this.abilities.splice(this.abilities.indexOf(<AbilityTemplate> source), 1);
+      this.abilities.splice(this.abilities.indexOf(<CombatAbilityTemplate> source), 1);
     }
 
     this.addAbility(newAbility);
@@ -794,7 +794,7 @@ export class Unit
   }
   private addAbility(newAbility: AbilityBase): void
   {
-    const newAbilityIsPassiveSkill = !newAbility.mainEffect;
+    const newAbilityIsPassiveSkill = !newAbility.use;
 
     if (newAbilityIsPassiveSkill)
     {
@@ -802,7 +802,7 @@ export class Unit
     }
     else
     {
-      this.abilities.push(<AbilityTemplate> newAbility);
+      this.abilities.push(<CombatAbilityTemplate> newAbility);
     }
   }
   public drawBattleScene(params: VfxParams)
@@ -852,8 +852,8 @@ export class Unit
       offensiveBattlesFoughtThisTurn: this.offensiveBattlesFoughtThisTurn,
 
       baseAttributes: this.baseAttributes.serialize(),
-      abilityTypes: this.abilities.map(abilityTemplate => abilityTemplate.type),
-      passiveSkillTypes: this.passiveSkills.map(passiveSkillTemplate => passiveSkillTemplate.type),
+      abilityTypes: this.abilities.map(abilityTemplate => abilityTemplate.key),
+      passiveSkillTypes: this.passiveSkills.map(passiveSkillTemplate => passiveSkillTemplate.key),
 
       abilityUpgrades: Object.keys(this.abilityUpgrades).map(sourceAbilityType =>
       {
@@ -862,11 +862,11 @@ export class Unit
           source: sourceAbilityType,
           possibleUpgrades: this.abilityUpgrades[sourceAbilityType].possibleUpgrades.map(ability =>
           {
-            return ability.type;
+            return ability.key;
           }),
         });
       }),
-      learnableAbilities: this.learnableAbilities.map(abilityTemplate => abilityTemplate.type),
+      learnableAbilities: this.learnableAbilities.map(abilityTemplate => abilityTemplate.key),
 
       experienceForCurrentLevel: this.experienceForCurrentLevel,
       level: this.level,

@@ -1,10 +1,10 @@
 import {Item} from "../items/Item";
 import {UnitAttributeAdjustments} from "./UnitAttributes";
 
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
 import {PassiveSkillTemplate} from "../templateinterfaces/PassiveSkillTemplate";
 
 import {UnitItemsSaveData} from "../savedata/UnitItemsSaveData";
+import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
 
 
 interface ItemsBySlot
@@ -92,7 +92,7 @@ export class UnitItems
       return item.template.attributeAdjustments!;
     });
   }
-  public getAbilities(): AbilityTemplate[]
+  public getAbilities(): CombatAbilityTemplate[]
   {
     return this.getAllItems().filter(item =>
     {

@@ -1,4 +1,4 @@
-import {AbilityTemplate} from "../templateinterfaces/AbilityTemplate";
+import {CombatAbilityTemplate} from "../templateinterfaces/CombatAbilityTemplate";
 
 import {Battle} from "../battle/Battle";
 import {MCTree} from "./MCTree";
@@ -61,7 +61,7 @@ export class BattleSimulator
     this.simulateAbility(move.ability, target);
     this.battle.endTurn();
   }
-  simulateAbility(ability: AbilityTemplate, target: Unit)
+  simulateAbility(ability: CombatAbilityTemplate, target: Unit)
   {
     useAbility(this.battle, ability, this.battle.activeUnit, target);
   }

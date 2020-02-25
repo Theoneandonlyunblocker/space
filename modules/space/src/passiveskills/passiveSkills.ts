@@ -12,7 +12,7 @@ import { localize } from "modules/space/localization/localize";
 // TODO 2020.02.15 | unitModifier.selfBattlePrepEffects
 export const autoHeal: PassiveSkillTemplate =
 {
-  type: "autoHeal",
+  key: "autoHeal",
   get displayName()
   {
     return localize("autoHeal_displayName").toString();
@@ -38,7 +38,7 @@ export const autoHeal: PassiveSkillTemplate =
 // TODO 2020.02.15 | unitModifier.selfBattlePrepEffects
 export const overdrive: PassiveSkillTemplate =
 {
-  type: "overdrive",
+  key: "overdrive",
   get displayName()
   {
     return localize("overdrive_displayName").toString();
@@ -65,7 +65,7 @@ export const overdrive: PassiveSkillTemplate =
 const initialGuardStrength = 50;
 export const initialGuard: PassiveSkillTemplate =
 {
-  type: "initialGuard",
+  key: "initialGuard",
   get displayName()
   {
     return localize("initialGuard_displayName").toString();
@@ -109,7 +109,7 @@ export const initialGuard: PassiveSkillTemplate =
 };
 export const medic: PassiveSkillTemplate =
 {
-  type: "medic",
+  key: "medic",
   get displayName()
   {
     return localize("medic_displayName").toString();
@@ -150,7 +150,7 @@ function makeWarpJammerValidityModifier(user: Unit)
 
 export const warpJammer: PassiveSkillTemplate =
 {
-  type: "warpJammer",
+  key: "warpJammer",
   get displayName()
   {
     return localize("warpJammer_displayName").toString();

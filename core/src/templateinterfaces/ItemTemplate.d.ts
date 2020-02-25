@@ -1,6 +1,6 @@
 import {UnitAttributeAdjustments} from "../unit/UnitAttributes";
 
-import {AbilityTemplate} from "./AbilityTemplate";
+import {CombatAbilityTemplate} from "./CombatAbilityTemplate";
 import {ManufacturableThing} from "./ManufacturableThing";
 import {PassiveSkillTemplate} from "./PassiveSkillTemplate";
 import { Resources } from "../player/PlayerResources";
@@ -23,7 +23,7 @@ export interface ItemTemplate extends ManufacturableThing
 
   buildCost: Resources;
 
-  ability?: AbilityTemplate;
+  ability?: CombatAbilityTemplate;
   passiveSkill?: PassiveSkillTemplate;
   attributeAdjustments?: UnitAttributeAdjustments;
   availabilityData: AvailabilityData;
