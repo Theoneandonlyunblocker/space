@@ -52,7 +52,7 @@ class App
   public reactUI: ReactUI;
   public moduleAssetLoader: ModuleAssetLoader;
 
-  public readonly version: string = "0.5.3";
+  public readonly version: string = "0.6.0";
   public readonly initialModules: ModuleInfo[] = [];
 
   private seed: string;
