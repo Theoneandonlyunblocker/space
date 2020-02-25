@@ -4,13 +4,10 @@ import * as unitArchetypes from "modules/common/unitArchetypes";
 import {getAssetSrc} from "modules/common/assets";
 import { makeSquadronDrawingFunctionForPlaceholder } from "../squadronDrawingFunction";
 import { moneyResource } from "modules/money/src/moneyResource";
-import
-{
-  rangedAttack,
-  standBy,
-} from "modules/space/src/abilities/abilities";
 import { itemSlot } from "../../items/itemSlot";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import { standby } from "modules/common/src/combat/abilities/standby";
+import { rangedAttack } from "../../combat/abilities/rangedAttack";
 
 
 export const miningBarge: UnitTemplate =
@@ -57,7 +54,7 @@ export const miningBarge: UnitTemplate =
       probabilityItems:
       [
         rangedAttack,
-        standBy,
+        standby,
       ],
     },
   ],

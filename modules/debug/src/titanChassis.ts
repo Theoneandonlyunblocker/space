@@ -2,17 +2,14 @@ import { TitanChassisTemplate } from "modules/titans/src/TitanChassisTemplate";
 import * as unitArchetypes from "modules/common/unitArchetypes";
 import {makeSingleUnitDrawingFunction} from "modules/space/src/units/singleUnitDrawingFunction";
 
-import
-{
-  rangedAttack,
-  standBy,
-} from "modules/space/src/abilities/abilities";
 import {itemSlot} from "modules/space/src/items/itemSlot";
 
 import { localize } from "../localization/localize";
 import {getAssetSrc} from "modules/common/assets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
+import {standby} from "modules/common/src/combat/abilities/standby";
+import { rangedAttack } from "modules/space/src/combat/abilities/rangedAttack";
 
 
 export const debugChassis: TitanChassisTemplate =
@@ -59,7 +56,7 @@ export const debugChassis: TitanChassisTemplate =
       probabilityItems:
       [
         rangedAttack,
-        standBy,
+        standby,
       ],
     },
   ],
@@ -123,7 +120,7 @@ export const debugChassis2: TitanChassisTemplate =
       probabilityItems:
       [
         rangedAttack,
-        standBy,
+        standby,
       ],
     },
   ],

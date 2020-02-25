@@ -3,11 +3,6 @@ import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection
 
 import
 {
-  bombAttack,
-  guardRow,
-} from "../abilities/abilities";
-import
-{
   overdrive,
 } from "../passiveskills/passiveSkills";
 
@@ -15,6 +10,8 @@ import { localize } from "modules/space/localization/localize";
 import { getItemIcon } from "modules/space/assets/items/itemAssets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import { bombAttack } from "../combat/abilities/bombAttack";
+import { guardRow } from "modules/common/src/combat/abilities/guardRow";
 
 
 export const bombLauncher1: ItemTemplate =

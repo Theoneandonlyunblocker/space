@@ -3,17 +3,14 @@ import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 import * as unitArchetypes from "modules/common/unitArchetypes";
 import {makeSquadronDrawingFunction} from "../squadronDrawingFunction";
 
-import
-{
-  rangedAttack,
-  standBy,
-} from "modules/space/src/abilities/abilities";
 import {distributionGroups} from "modules/common/distributionGroups";
 import {itemSlot} from "modules/space/src/items/itemSlot";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 import { localize } from "modules/space/localization/localize";
 import { moneyResource } from "modules/money/src/moneyResource";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import { standby } from "modules/common/src/combat/abilities/standby";
+import { rangedAttack } from "../../combat/abilities/rangedAttack";
 
 
 export const scout: UnitTemplate =
@@ -60,7 +57,7 @@ export const scout: UnitTemplate =
       probabilityItems:
       [
         rangedAttack,
-        standBy,
+        standby,
       ],
     },
   ],

@@ -3,19 +3,6 @@ import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 import * as unitArchetypes from "modules/common/unitArchetypes";
 import {makeSingleUnitDrawingFunctionForPlaceholder} from "modules/space/src/units/singleUnitDrawingFunction";
 
-import
-{
-  boardingHook,
-  bombAttack,
-  closeAttack,
-  guardRow,
-  rangedAttack,
-  snipeAttack,
-  snipeDefence,
-  snipeIntelligence,
-  snipeSpeed,
-  standBy,
-} from "modules/space/src/abilities/abilities";
 import {itemSlot} from "modules/space/src/items/itemSlot";
 
 import
@@ -29,6 +16,8 @@ import {getAssetSrc} from "modules/common/assets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 import { debugAbility } from "./abilities";
+import { standby } from "modules/common/src/combat/abilities/standby";
+import {combatAbilityTemplates as spaceAbilities} from "modules/space/src/combat/combatAbilityTemplates";
 
 
 export const debugShip: UnitTemplate =
@@ -75,9 +64,9 @@ export const debugShip: UnitTemplate =
       probabilityItems:
       [
         debugAbility,
-        rangedAttack,
-        bombAttack,
-        standBy,
+        spaceAbilities.rangedAttack,
+        spaceAbilities.bombAttack,
+        standby,
       ],
     },
     {
@@ -86,15 +75,15 @@ export const debugShip: UnitTemplate =
       [
         {
           weight: 0.33,
-          probabilityItems: [bombAttack],
+          probabilityItems: [spaceAbilities.bombAttack],
         },
         {
           weight: 0.33,
-          probabilityItems: [boardingHook],
+          probabilityItems: [spaceAbilities.boardingHook],
         },
         {
           weight: 0.33,
-          probabilityItems: [guardRow],
+          probabilityItems: [spaceAbilities.guardRow],
         },
       ],
     },
@@ -102,20 +91,20 @@ export const debugShip: UnitTemplate =
       flatProbability: 1,
       probabilityItems:
       [
-        {weight: 0.25, probabilityItems: [snipeAttack]},
-        {weight: 0.25, probabilityItems: [snipeDefence]},
-        {weight: 0.25, probabilityItems: [snipeIntelligence]},
-        {weight: 0.25, probabilityItems: [snipeSpeed]},
+        {weight: 0.25, probabilityItems: [spaceAbilities.snipeAttack]},
+        {weight: 0.25, probabilityItems: [spaceAbilities.snipeDefence]},
+        {weight: 0.25, probabilityItems: [spaceAbilities.snipeIntelligence]},
+        {weight: 0.25, probabilityItems: [spaceAbilities.snipeSpeed]},
       ],
     },
     {
       flatProbability: 0.6,
       probabilityItems:
       [
-        {weight: 0.25, probabilityItems: [snipeAttack]},
-        {weight: 0.25, probabilityItems: [snipeDefence]},
-        {weight: 0.25, probabilityItems: [snipeIntelligence]},
-        {weight: 0.25, probabilityItems: [snipeSpeed]},
+        {weight: 0.25, probabilityItems: [spaceAbilities.snipeAttack]},
+        {weight: 0.25, probabilityItems: [spaceAbilities.snipeDefence]},
+        {weight: 0.25, probabilityItems: [spaceAbilities.snipeIntelligence]},
+        {weight: 0.25, probabilityItems: [spaceAbilities.snipeSpeed]},
       ],
     },
   ],
@@ -144,7 +133,7 @@ export const debugShip: UnitTemplate =
   [
     {
       flatProbability: 1,
-      probabilityItems: [guardRow, closeAttack],
+      probabilityItems: [spaceAbilities.guardRow, spaceAbilities.closeAttack],
     },
   ],
   itemSlots:

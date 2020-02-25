@@ -3,7 +3,7 @@ import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 import * as unitArchetypes from "modules/common/unitArchetypes";
 import {makeSquadronDrawingFunctionForPlaceholder} from "modules/space/src/units/squadronDrawingFunction";
 
-import * as CommonAbility from "modules/space/src/abilities/abilities";
+import { standby } from "modules/common/src/combat/abilities/standby";
 import {distributionGroups} from "modules/common/distributionGroups";
 import {getAssetSrc} from "modules/common/assets";
 import {moneyResource} from "modules/money/src/moneyResource";
@@ -60,7 +60,7 @@ export const droneSwarm: UnitTemplate =
       probabilityItems:
       [
         assimilate,
-        CommonAbility.standBy,
+        standby,
       ],
     },
     {
