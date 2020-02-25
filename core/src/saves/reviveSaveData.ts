@@ -143,7 +143,20 @@ const coreSaveDataRevivers: ReviversByVersion =
         return converted;
       }, {});
     }
-  ]
+  ],
+  "0.5.3":
+  [
+    function changeStatusEffectsToCombatEffects(saveData)
+    {
+      saveData.gameData.units.forEach((unitSaveData: any) =>
+      {
+        unitSaveData.battleStats.combatEffects =
+        {
+          effects: [...unitSaveData.battleStats.statusEffects],
+        };
+      });
+    }
+  ],
 };
 
 function reviveModuleSaveData(data: OutdatedFullSaveData): Promise<void>

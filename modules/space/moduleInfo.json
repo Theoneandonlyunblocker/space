@@ -29,6 +29,7 @@
   ],
   "modsThatShouldLoadBefore":
   [
+    "common",
     "titans"
   ],
   "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/space/index.js"],

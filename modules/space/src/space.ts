@@ -31,6 +31,9 @@ import { setBaseUrl as setAssetBaseUrl } from "../assets/baseUrl";
 import * as moduleInfo from "../moduleInfo.json";
 import { combatEffectTemplates } from "./combat/combatEffectTemplates";
 import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
+import * as semver from "core/src/generic/versions";
+import * as debug from "core/src/app/debug";
+import {common as commonModule} from "modules/common/common";
 
 
 export const space: GameModule =
@@ -104,5 +107,48 @@ export const space: GameModule =
     }
 
     return null;
-  }
+  },
+  reviveGameData: (saveData) =>
+  {
+    const dataVersion = saveData.appVersion;
+    if (semver.lt(dataVersion, "0.6.0"))
+    {
+      debug.log("saves", `Executing stored core save data reviver 'addCommonModuleToSaveData'`);
+      addCommonModuleToSaveData();
+
+      debug.log("saves", `Executing stored core save data reviver 'remapStandByToStandby'`);
+      remapStandByToStandby();
+    }
+
+    function addCommonModuleToSaveData()
+    {
+      saveData.moduleData.common =
+      {
+        info: commonModule.info,
+        moduleSaveData: null,
+      };
+    }
+    function remapStandByToStandby()
+    {
+      const remappedAbilityKeys =
+      {
+        standBy: "standby",
+      };
+
+      saveData.gameData.units.forEach((unitSaveData: any) =>
+      {
+        unitSaveData.abilityTypes = unitSaveData.abilityTypes.map((key: string) =>
+        {
+          if (remappedAbilityKeys[key])
+          {
+            return remappedAbilityKeys[key];
+          }
+          else
+          {
+            return key;
+          }
+        });
+      });
+    }
+  },
 };
