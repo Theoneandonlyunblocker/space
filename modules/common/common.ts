@@ -10,13 +10,15 @@ import
   assetsToLoadIntoTextureCache,
 } from "./assets";
 import * as moduleInfo from "./moduleInfo.json";
+import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
+import { combatAbilityTemplates } from "./src/combat/combatAbilityTemplates";
 
 
 // TODO 2020.02.15 | rename (baselib?) & reorganize
 export const common: GameModule =
 {
   info: moduleInfo,
-  supportedLanguages: "all",
+  supportedLanguages: [englishLanguage],
   assetLoaders:
   {
     [GameModuleInitializationPhase.GameSetup]:
@@ -38,5 +40,9 @@ export const common: GameModule =
         });
       },
     ]
+  },
+  addToModuleData: (moduleData) =>
+  {
+    moduleData.copyTemplates(combatAbilityTemplates, "combatAbilities");
   },
 };
