@@ -9,9 +9,6 @@ import { AbilityBase } from "./AbilityBase";
 
 export interface CombatAbilityTemplate<Phase extends string = CorePhase> extends AbilityBase
 {
-  key: string;
-  displayName: string;
-  description: string;
   moveDelay: number;
   actionsUse: number;
 
