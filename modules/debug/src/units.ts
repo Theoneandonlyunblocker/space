@@ -17,6 +17,7 @@ import { moneyResource } from "modules/money/src/moneyResource";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 import { debugAbility } from "./abilities";
 import { standby } from "modules/common/src/combat/abilities/standby";
+import { guardRow } from "modules/common/src/combat/abilities/guardRow";
 import {combatAbilityTemplates as spaceAbilities} from "modules/space/src/combat/combatAbilityTemplates";
 
 
@@ -133,7 +134,7 @@ export const debugShip: UnitTemplate =
   [
     {
       flatProbability: 1,
-      probabilityItems: [spaceAbilities.guardRow, spaceAbilities.closeAttack],
+      probabilityItems: [guardRow, spaceAbilities.closeAttack],
     },
   ],
   itemSlots:

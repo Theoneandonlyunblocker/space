@@ -1,6 +1,3 @@
-import { TemplateCollection } from "core/src/templateinterfaces/TemplateCollection"
-import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbilityTemplate"
-
 import { beamAttack } from "./abilities/beamAttack";
 import { boardingHook } from "./abilities/boardingHook";
 import { bombAttack } from "./abilities/bombAttack";
@@ -15,7 +12,7 @@ import
 } from "./abilities/snipe";
 
 
-export const combatAbilityTemplates: TemplateCollection<CombatAbilityTemplate> =
+export const combatAbilityTemplates =
 {
   [beamAttack.key]: beamAttack,
   [boardingHook.key]: boardingHook,
