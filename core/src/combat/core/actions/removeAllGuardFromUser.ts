@@ -3,7 +3,6 @@ import { Unit } from "core/src/unit/Unit";
 import { addGuardAmount } from "../modifiers/addGuardAmount";
 
 
-// TODO 2020.02.24 | add a listener for this
 export function removeAllGuardFromUser(
   user: Unit,
 ): CombatAction
