@@ -777,7 +777,7 @@ export class Unit
     this.baseAttributes[attribute] += amountToIncrease;
     this.attributesAreDirty = true;
   }
-  public upgradeAbility(source: AbilityBase, newAbility: CombatAbilityTemplate | PassiveSkillTemplate): void
+  public upgradeAbility(source: AbilityBase, newAbility: AbilityBase): void
   {
     if (Unit.abilityBaseIsPassiveSkill(source))
     {
@@ -790,11 +790,11 @@ export class Unit
 
     this.addAbility(newAbility);
   }
-  public learnAbility(newAbility: CombatAbilityTemplate | PassiveSkillTemplate): void
+  public learnAbility(newAbility: AbilityBase): void
   {
     this.addAbility(newAbility);
   }
-  private addAbility(newAbility: CombatAbilityTemplate | PassiveSkillTemplate): void
+  private addAbility(newAbility: AbilityBase): void
   {
     if (Unit.abilityBaseIsPassiveSkill(newAbility))
     {
