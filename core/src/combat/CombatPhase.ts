@@ -5,6 +5,14 @@ import { CombatPhaseFinishCallback } from "./CombatPhaseFinishCallback";
 import { CombatActionListener } from "./CombatActionListener";
 
 
+type ActionListenersByFlag<AllPhases extends string> =
+{
+  [flag: string]:
+  {
+    [listenerKey: string]: CombatActionListener<AllPhases>;
+  };
+};
+
 export class CombatPhase<AllPhases extends string>
 {
   public readonly name: string;
@@ -15,14 +23,7 @@ export class CombatPhase<AllPhases extends string>
   public afterPhaseIsFinished: CombatPhaseFinishCallback<AllPhases>;
 
   private readonly combatManager: CombatManager<AllPhases>;
-  private readonly actionListenersByFlag:
-  {
-    [flag: string]:
-    {
-      onAdd: CombatActionListener<AllPhases>["onAdd"][];
-      onRemove: CombatActionListener<AllPhases>["onRemove"][];
-    };
-  } = {};
+  private readonly actionListenersByTriggeringFlag: ActionListenersByFlag<AllPhases> = {};
 
   constructor(
     info: CombatPhaseInfo<AllPhases>,
@@ -56,39 +57,41 @@ export class CombatPhase<AllPhases extends string>
   }
   public addActionListener(listener: CombatActionListener<AllPhases>): void
   {
-    listener.flagsToListenTo.forEach(flag =>
+    if (listener.flagsToListenTo)
     {
-      if (!this.actionListenersByFlag[flag])
+      listener.flagsToListenTo.forEach(flag =>
       {
-        this.actionListenersByFlag[flag] =
+        if (!this.actionListenersByTriggeringFlag[flag])
         {
-          onAdd: [],
-          onRemove: [],
-        };
-      }
+          this.actionListenersByTriggeringFlag[flag] = {};
+        }
 
-      if (listener.onAdd)
-      {
-        this.actionListenersByFlag[flag].onAdd.push(listener.onAdd);
-      }
-      if (listener.onRemove)
-      {
-        this.actionListenersByFlag[flag].onRemove.push(listener.onRemove);
-      }
-    });
+        this.actionListenersByTriggeringFlag[flag][listener.key] = listener;
+      });
+    }
   }
 
-  private triggerActionListeners(action: CombatAction, type: "onAdd" | "onRemove"): void
+  private triggerActionListeners(action: CombatAction, event: "onAdd" | "onRemove"): void
   {
     if (action.mainAction.flags)
     {
       action.mainAction.flags.forEach(flag =>
       {
-        if (this.actionListenersByFlag[flag])
+        if (this.actionListenersByTriggeringFlag[flag])
         {
-          this.actionListenersByFlag[flag][type].forEach(listener =>
+          Object.keys(this.actionListenersByTriggeringFlag[flag]).forEach(listenerKey =>
           {
-            listener(action, this.combatManager);
+            const listener = this.actionListenersByTriggeringFlag[flag][listenerKey];
+
+            const isPrevented = listener.flagsWhichPrevent && listener.flagsWhichPrevent.some(preventingFlag =>
+            {
+              return action.mainAction.flags.has(preventingFlag);
+            });
+
+            if (!isPrevented && listener[event])
+            {
+              listener[event](action, this.combatManager);
+            }
           });
         }
       });
