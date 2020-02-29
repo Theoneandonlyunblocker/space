@@ -4,9 +4,10 @@ import { BattleVfxTemplate } from "./BattleVfxTemplate";
 import { Unit } from "../unit/Unit";
 import { CombatManager } from "../combat/CombatManager";
 import { CorePhase } from "../combat/core/coreCombatPhases";
+import { AbilityBase } from "./AbilityBase";
 
 
-export interface CombatAbilityTemplate<Phase extends string = CorePhase>
+export interface CombatAbilityTemplate<Phase extends string = CorePhase> extends AbilityBase
 {
   key: string;
   displayName: string;

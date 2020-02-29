@@ -16,25 +16,6 @@ export function getAbilityTargetDisplayData(
 ): AbilityTargetDisplayDataById
 {
   return ability.getDisplayDataForTarget(user, target, battle);
-
-  // TODO 2020.02.25 |
-  // const abilityEffects: AbilityEffectTemplate[] = [ability.mainEffect];
-  // if (ability.secondaryEffects)
-  // {
-  //   abilityEffects.push(...ability.secondaryEffects.filter(secondaryEffect =>
-  //   {
-  //     return Boolean(secondaryEffect.getDisplayDataForTarget);
-  //   }));
-  // }
-
-  // const allDisplayDataById = abilityEffects.map(abilityEffect =>
-  // {
-  //   return abilityEffect.getDisplayDataForTarget(user, target, battle);
-  // });
-
-  // const mergedDisplayDataById = mergeAbilityTargetDisplayDataById(...allDisplayDataById);
-
-  // return mergedDisplayDataById;
 }
 
 export
