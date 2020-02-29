@@ -8,7 +8,7 @@ import { removeAllGuardFromUser } from "../actions/removeAllGuardFromUser";
 export const removeGuardOnAbilityUse: CombatActionListener<CorePhase> =
 {
   key: "removeGuardOnAbilityUse",
-  flagsToListenTo: [coreCombatActionFlags.ability],
+  flagsWhichTrigger: [coreCombatActionFlags.ability],
   flagsWhichPrevent: [coreCombatActionFlags.preserveUserGuard],
   onAdd: (action, combatManager) =>
   {

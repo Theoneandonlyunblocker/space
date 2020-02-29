@@ -9,12 +9,11 @@ export interface CombatActionListener<AllPhases extends string>
   /**
    * f.ex removeAllGuardOnAbilityUse IF flags.abilityUse
    */
-  // TODO 2020.02.29 | rename flagsWhichTrigger
-  flagsToListenTo?: string[];
+  flagsWhichTrigger?: string[];
 
   /**
    * f.ex DO NOT removeAllGuardFromUser IF flags.preserveUserGuard
-   * will override flagsToListenTo
+   * will override flagsWhichTrigger
    */
   flagsWhichPrevent?: string[];
   onAdd?: (action: CombatAction, combatManager: CombatManager<AllPhases>) => void;

@@ -8,7 +8,7 @@ import { CombatActionListener } from "../../CombatActionListener";
 export const applySpeedToMoveDelay: CombatActionListener<CorePhase> =
 {
   key: "applySpeedToMoveDelay",
-  flagsToListenTo: [coreCombatActionFlags.moveDelay],
+  flagsWhichTrigger: [coreCombatActionFlags.moveDelay],
   onAdd: (action, combatManager) =>
   {
     action.modifiers.push(modifyPrimitiveByAttributes(

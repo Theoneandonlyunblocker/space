@@ -7,7 +7,7 @@ import { CombatActionListener } from "../../CombatActionListener";
 export const applyGuardDamageReductionToAttacks: CombatActionListener<CorePhase> =
 {
   key: "applyGuardDamageReductionToAttacks",
-  flagsToListenTo: [coreCombatActionFlags.attack],
+  flagsWhichTrigger: [coreCombatActionFlags.attack],
   onAdd: (action, combatManager) =>
   {
     if (action.target.battleStats.guardAmount)

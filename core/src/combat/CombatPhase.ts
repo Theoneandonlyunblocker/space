@@ -57,9 +57,9 @@ export class CombatPhase<AllPhases extends string>
   }
   public addActionListener(listener: CombatActionListener<AllPhases>): void
   {
-    if (listener.flagsToListenTo)
+    if (listener.flagsWhichTrigger)
     {
-      listener.flagsToListenTo.forEach(flag =>
+      listener.flagsWhichTrigger.forEach(flag =>
       {
         if (!this.actionListenersByTriggeringFlag[flag])
         {

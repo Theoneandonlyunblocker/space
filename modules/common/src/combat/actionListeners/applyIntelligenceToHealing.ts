@@ -9,7 +9,7 @@ import { CombatActionListener } from "core/src/combat/CombatActionListener";
 export const applyIntelligenceToHealing: CombatActionListener<CorePhase> =
 {
   key: "applyIntelligenceToHealing",
-  flagsToListenTo: [combatActionFlags.heal],
+  flagsWhichTrigger: [combatActionFlags.heal],
   onAdd: (action, combatManager) =>
   {
     action.modifiers.push(modifyPrimitiveByAttributes(

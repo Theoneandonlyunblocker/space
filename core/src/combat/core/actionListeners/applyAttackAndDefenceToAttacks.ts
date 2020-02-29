@@ -8,7 +8,7 @@ import { CombatActionListener } from "../../CombatActionListener";
 export const applyAttackAndDefenceToAttacks: CombatActionListener<CorePhase> =
 {
   key: "applyAttackAndDefenceToAttacks",
-  flagsToListenTo: [coreCombatActionFlags.attack],
+  flagsWhichTrigger: [coreCombatActionFlags.attack],
   onAdd: (action, combatManager) =>
   {
     action.modifiers.push(modifyPrimitiveByAttributes(
