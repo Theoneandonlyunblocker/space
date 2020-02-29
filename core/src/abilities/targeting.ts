@@ -131,27 +131,36 @@ export const areaOrthogonalNeighbors: GetUnitsInAreaFN = (user: Unit, target: Un
   return getFrom2dArray(allRows, targetLocations);
 };
 
-
-export function makeGetAbilityTargetDisplayDataFN(props:
+export function makeGetAbilityTargetDisplayDataFN(...effects:
 {
   areaFN: GetUnitsInAreaFN;
   targetType: AbilityTargetType;
   targetEffect: AbilityTargetEffect;
-}): GetUnitsInAreaFN<AbilityTargetDisplayDataById>
+}[]): GetUnitsInAreaFN<AbilityTargetDisplayDataById>
 {
   return (user: Unit, target: Unit, battle: Battle) =>
   {
-    const unitsInArea = props.areaFN(user, target, battle);
-
     const displayDataById: AbilityTargetDisplayDataById = {};
 
-    unitsInArea.forEach(unit =>
+    effects.forEach(props =>
     {
-      displayDataById[unit.id] =
+      const unitsInArea = props.areaFN(user, target, battle);
+
+      unitsInArea.forEach(unit =>
       {
-        targetType: props.targetType,
-        targetEffect: props.targetEffect,
-      };
+        if (!displayDataById[unit.id])
+        {
+          displayDataById[unit.id] =
+          {
+            targetType: 0,
+            targetEffect: 0,
+          };
+        }
+        // tslint:disable:no-bitwise
+        displayDataById[unit.id].targetType |= props.targetType;
+        displayDataById[unit.id].targetEffect |= props.targetEffect;
+        // tslint:enable:no-bitwise
+      });
     });
 
     return displayDataById;

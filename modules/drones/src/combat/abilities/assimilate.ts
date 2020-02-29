@@ -34,12 +34,16 @@ export const assimilate: CombatAbilityTemplate =
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetEnemies,
-  // TODO 2020.02.20 | currently only shows target being damaged, needs to show user being buffed as well
   getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
   {
     areaFN: areaSingle,
     targetType: AbilityTargetType.Primary,
     targetEffect: AbilityTargetEffect.Negative,
+  },
+  {
+    areaFN: user => [user],
+    targetType: AbilityTargetType.Primary,
+    targetEffect: AbilityTargetEffect.Positive,
   }),
   use: (user, target, combatManager) =>
   {

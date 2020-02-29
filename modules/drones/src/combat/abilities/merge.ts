@@ -9,6 +9,7 @@ import
 {
   makeGetAbilityTargetDisplayDataFN,
   targetOtherAllies,
+  areaSingle,
 } from "core/src/abilities/targeting";
 
 import { localize } from "../../../localization/localize";
@@ -33,12 +34,16 @@ export const merge: CombatAbilityTemplate =
   moveDelay: 100,
   actionsUse: 1,
   getPossibleTargets: targetOtherAllies,
-  // TODO 2020.02.20 | currently only shows user being damaged, needs to show target being buffed as well
   getDisplayDataForTarget: makeGetAbilityTargetDisplayDataFN(
   {
     areaFN: user => [user],
     targetType: AbilityTargetType.Primary,
     targetEffect: AbilityTargetEffect.Negative,
+  },
+  {
+    areaFN: areaSingle,
+    targetType: AbilityTargetType.Primary,
+    targetEffect: AbilityTargetEffect.Positive,
   }),
   use: (user, target, combatManager) =>
   {

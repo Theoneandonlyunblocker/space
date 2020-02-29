@@ -24,32 +24,3 @@ export type AbilityTargetDisplayDataById =
 {
   [id: number]: AbilityTargetDisplayData;
 };
-
-export function mergeAbilityTargetDisplayDataById(...toMerge: AbilityTargetDisplayDataById[]): AbilityTargetDisplayDataById
-{
-  const merged: AbilityTargetDisplayDataById = {};
-
-  toMerge.forEach(data =>
-  {
-    for (const unitId in data)
-    {
-      if (!merged[unitId])
-      {
-        merged[unitId] =
-        {
-          targetEffect: data[unitId].targetEffect,
-          targetType: data[unitId].targetType,
-        };
-      }
-      else
-      {
-        // tslint:disable:no-bitwise
-        merged[unitId].targetEffect = merged[unitId].targetEffect | data[unitId].targetEffect;
-        merged[unitId].targetType = merged[unitId].targetType | data[unitId].targetType;
-        // tslint:enable:no-bitwise
-      }
-    }
-  });
-
-  return merged;
-}
