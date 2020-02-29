@@ -369,6 +369,10 @@ export class Unit
       ),
     });
   }
+  private static abilityBaseIsPassiveSkill(ability: AbilityBase): ability is PassiveSkillTemplate
+  {
+    return !ability.use;
+  }
 
   public resetMovePoints()
   {
@@ -688,7 +692,7 @@ export class Unit
   }
   public getCurrentLearnableAbilities(): AbilityBase[]
   {
-    const currentlyKnownAbilities = [...this.abilities, ...this.passiveSkills];
+    const currentlyKnownAbilities = <AbilityBase[]>[...this.abilities, ...this.passiveSkills];
 
     const unknownLearnableAbilities = this.learnableAbilities.filter(ability =>
     {
@@ -773,11 +777,9 @@ export class Unit
     this.baseAttributes[attribute] += amountToIncrease;
     this.attributesAreDirty = true;
   }
-  public upgradeAbility(source: AbilityBase, newAbility: AbilityBase): void
+  public upgradeAbility(source: AbilityBase, newAbility: CombatAbilityTemplate | PassiveSkillTemplate): void
   {
-    const sourceIsPassiveSkill = !source.use;
-
-    if (sourceIsPassiveSkill)
+    if (Unit.abilityBaseIsPassiveSkill(source))
     {
       this.passiveSkills.splice(this.passiveSkills.indexOf(source), 1);
     }
@@ -788,15 +790,13 @@ export class Unit
 
     this.addAbility(newAbility);
   }
-  public learnAbility(newAbility: AbilityBase): void
+  public learnAbility(newAbility: CombatAbilityTemplate | PassiveSkillTemplate): void
   {
     this.addAbility(newAbility);
   }
-  private addAbility(newAbility: AbilityBase): void
+  private addAbility(newAbility: CombatAbilityTemplate | PassiveSkillTemplate): void
   {
-    const newAbilityIsPassiveSkill = !newAbility.use;
-
-    if (newAbilityIsPassiveSkill)
+    if (Unit.abilityBaseIsPassiveSkill(newAbility))
     {
       this.passiveSkills.push(newAbility);
     }
