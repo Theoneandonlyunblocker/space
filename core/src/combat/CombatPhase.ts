@@ -1,6 +1,8 @@
 import { CombatAction } from "./CombatAction";
-import { PhaseFinishCallback, CombatActionListener, CombatPhaseInfo } from "./CombatPhaseInfo";
+import { CombatPhaseInfo } from "./CombatPhaseInfo";
 import { CombatManager } from "./CombatManager";
+import { CombatPhaseFinishCallback } from "./CombatPhaseFinishCallback";
+import { CombatActionListener } from "./CombatActionListener";
 
 
 export class CombatPhase<AllPhases extends string>
@@ -10,7 +12,7 @@ export class CombatPhase<AllPhases extends string>
    * do not manipulate directly. use methods on CombatActionListener instead.
    */
   public readonly actions: CombatAction[] = [];
-  public afterPhaseIsFinished: PhaseFinishCallback<AllPhases>;
+  public afterPhaseIsFinished: CombatPhaseFinishCallback<AllPhases>;
 
   private readonly combatManager: CombatManager<AllPhases>;
   private readonly actionListenersByFlag:

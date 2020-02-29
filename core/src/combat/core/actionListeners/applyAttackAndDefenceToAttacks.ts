@@ -1,8 +1,8 @@
-import { CombatActionListener } from "../../CombatPhaseInfo";
 import { coreCombatActionFlags } from "../coreCombatActionFlags";
 import { modifyPrimitiveByAttributes } from "../modifiers/modifyPrimitiveByAttributes";
 import { physicalDamage } from "../primitives/physicalDamage";
 import { CorePhase } from "../coreCombatPhases";
+import { CombatActionListener } from "../../CombatActionListener";
 
 
 export const applyAttackAndDefenceToAttacks: CombatActionListener<CorePhase> =

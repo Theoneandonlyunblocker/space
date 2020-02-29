@@ -1,8 +1,8 @@
-import { CombatActionListener } from "core/src/combat/CombatPhaseInfo";
 import { CorePhase } from "core/src/combat/core/coreCombatPhases";
 import { modifyPrimitiveByAttributes } from "core/src/combat/core/modifiers/modifyPrimitiveByAttributes";
 import { combatActionFlags } from "../combatActionFlags";
 import { healing } from "../primitives/healing";
+import { CombatActionListener } from "core/src/combat/CombatActionListener";
 
 
 // TODO 2020.02.20 | this needs to be registered somewhere

@@ -1,7 +1,7 @@
-import { CombatActionListener } from "../../CombatPhaseInfo";
 import { coreCombatActionFlags } from "../coreCombatActionFlags";
 import { guardPhysicalDamageReduction } from "../modifiers/guardPhysicalDamageReduction";
 import { CorePhase } from "../coreCombatPhases";
+import { CombatActionListener } from "../../CombatActionListener";
 
 
 export const applyGuardDamageReductionToAttacks: CombatActionListener<CorePhase> =

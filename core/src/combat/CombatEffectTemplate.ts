@@ -1,6 +1,6 @@
 import { CorePhase } from "./core/coreCombatPhases";
-import { CombatActionFetcher, CombatActionListenerFetcher } from "./CombatPhaseInfo";
 import { UnitAttributeAdjustments } from "../unit/UnitAttributes";
+import { CombatActionFetcher, CombatActionListenerFetcher } from "./CombatActionFetcher";
 
 
 export interface CombatEffectTemplate<Phase extends string = CorePhase>
