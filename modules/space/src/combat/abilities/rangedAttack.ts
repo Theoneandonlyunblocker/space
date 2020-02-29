@@ -6,6 +6,8 @@ import { dealAttackDamage } from "modules/common/src/combat/actions/dealAttackDa
 import { rocketAttack as rocketAttackVfx } from "../../battlevfx/templates/battleVfx";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 import { physicalDamage } from "core/src/combat/core/primitives/physicalDamage";
+import { bombAttack } from "./bombAttack";
+import { boardingHook } from "./boardingHook";
 
 
 export const rangedAttack: CombatAbilityTemplate =
@@ -34,5 +36,15 @@ export const rangedAttack: CombatAbilityTemplate =
     combatManager.addQueuedAction(mainPhase, dealDamageAction);
   },
   vfx: rocketAttackVfx,
-  // TODO 2020.02.24 | allow upgrading
+  defaultUpgrades:
+  [
+    {
+      weight: 1,
+      probabilityItems: [bombAttack],
+    },
+    {
+      weight: 1,
+      probabilityItems: [boardingHook],
+    },
+  ],
 };
