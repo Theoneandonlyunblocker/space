@@ -72,5 +72,4 @@ export interface UnitTemplate extends ManufacturableThing
   unitDrawingFN: UnitDrawingFunction;
   distributionData: DistributionData;
   availabilityData: AvailabilityData;
-  mapLevelModifiers?: UnitModifier[];
 }

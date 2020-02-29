@@ -550,7 +550,7 @@ export class Unit
   }
   public getAllPassiveSkills(): PassiveSkillTemplate[]
   {
-    const allPassiveSkills = [...this.passiveSkills, ...this.items.getPassiveSkills()];
+    const allPassiveSkills = this.passiveSkills;
 
     const allUniquePassiveSkills = getUniqueArrayKeys(allPassiveSkills, template => template.key);
 

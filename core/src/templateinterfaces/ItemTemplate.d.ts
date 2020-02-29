@@ -24,7 +24,6 @@ export interface ItemTemplate extends ManufacturableThing
   buildCost: Resources;
 
   ability?: CombatAbilityTemplate;
-  passiveSkill?: PassiveSkillTemplate;
   attributeAdjustments?: UnitAttributeAdjustments;
   availabilityData: AvailabilityData;
   mapLevelModifiers?: ItemModifier[];

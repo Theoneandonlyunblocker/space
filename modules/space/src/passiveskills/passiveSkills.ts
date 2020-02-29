@@ -1,15 +1,12 @@
 import {PassiveSkillTemplate} from "core/src/templateinterfaces/PassiveSkillTemplate";
 
-import {BattlePrep} from "core/src/battleprep/BattlePrep";
-import {GuardCoverage} from "core/src/unit/GuardCoverage";
-import {Unit} from "core/src/unit/Unit";
-
-import { FormationValidityModifierSourceType } from "core/src/battleprep/BattlePrepFormationValidity";
-import * as EffectActions from "../effectactions/effectActions";
 import { localize } from "modules/space/localization/localize";
+import { GuardCoverage } from "core/src/unit/GuardCoverage";
+import { FormationValidityModifierSourceType, FormationValidityModifier } from "core/src/battleprep/BattlePrepFormationValidity";
+import { Unit } from "core/src/unit/Unit";
+import { autoHeal as autoHealEffect } from "modules/space/src/combat/effects/autoHeal";
 
 
-// TODO 2020.02.15 | unitModifier.selfBattlePrepEffects
 export const autoHeal: PassiveSkillTemplate =
 {
   key: "autoHeal",
@@ -21,48 +18,26 @@ export const autoHeal: PassiveSkillTemplate =
   {
     return localize("autoHeal_description").toString();
   },
-
-  // atBattleStart:
-  // [
-  //   {
-  //     id: "addStatusEffect",
-  //     getUnitsInArea: user => [user],
-  //     executeAction: EffectActions.addStatusEffect.bind(null,
-  //     {
-  //       duration: Infinity,
-  //       template: autoHealStatusEffect,
-  //     }),
-  //   },
-  // ],
+  mapLevelModifiers:
+  [
+    {
+      key: "autoHealInBattle",
+      selfBattlePrepEffects:
+      [
+        {
+          adjustment: {flat: 50},
+          effect:
+          {
+            initialize: (strength, unit) =>
+            {
+              unit.battleStats.combatEffects.get(autoHealEffect).strength += strength;
+            },
+          },
+        },
+      ],
+    },
+  ],
 };
-// TODO 2020.02.15 | unitModifier.selfBattlePrepEffects
-export const overdrive: PassiveSkillTemplate =
-{
-  key: "overdrive",
-  get displayName()
-  {
-    return localize("overdrive_displayName").toString();
-  },
-  get description()
-  {
-    return localize("overdrive_description").toString();
-  },
-
-  // atBattleStart:
-  // [
-  //   {
-  //     id: "addStatusEffect",
-  //     getUnitsInArea: user => [user],
-  //     executeAction: EffectActions.addStatusEffect.bind(null,
-  //     {
-  //       duration: 2,
-  //       template: poisonedStatusEffect,
-  //     }),
-  //   },
-  // ],
-};
-
-const initialGuardStrength = 50;
 export const initialGuard: PassiveSkillTemplate =
 {
   key: "initialGuard",
@@ -75,35 +50,24 @@ export const initialGuard: PassiveSkillTemplate =
     return localize("initialGuard_description").toString();
   },
   isHidden: true,
-
-  atBattleStart:
+  mapLevelModifiers:
   [
     {
-      id: "addStatusEffect",
-      getUnitsInArea: user => [user],
-      executeAction: EffectActions.addGuard.bind(null,
-      {
-        coverage: GuardCoverage.Row,
-        flat: initialGuardStrength,
-      }),
-    },
-  ],
-  inBattlePrep:
-  [
-    {
-      onAdd: (user: Unit, battlePrep: BattlePrep) =>
-      {
-        EffectActions.addGuard(
+      key: "addInitialGuardInBattle",
+      selfBattlePrepEffects:
+      [
         {
-          coverage: GuardCoverage.Row,
-          flat: initialGuardStrength,
+          adjustment: {flat: 50},
+          effect:
+          {
+            initialize: (strength, unit) =>
+            {
+              unit.battleStats.guardCoverage = GuardCoverage.Row;
+              unit.battleStats.guardAmount = strength;
+            },
+          },
         },
-        user, user, null, {});
-      },
-      onRemove: (user: Unit, battlePrep: BattlePrep) =>
-      {
-        user.removeGuard(initialGuardStrength);
-      },
+      ],
     },
   ],
 };
@@ -118,21 +82,23 @@ export const medic: PassiveSkillTemplate =
   {
     return localize("medic_description").toString();
   },
-
-  atTurnStart:
+  mapLevelModifiers:
   [
-    (user) =>
     {
-      const star = user.fleet.location;
-      const allFriendlyUnits = star.getUnits(player => player === user.fleet.player);
-      for (let i = 0; i < allFriendlyUnits.length; i++)
-      {
-        allFriendlyUnits[i].addHealth(allFriendlyUnits[i].maxHealth);
-      }
+      key: "medic",
+      // TODO 2020.02.29 | implement
+
+      // atTurnStart:
+      // const star = user.fleet.location;
+      // const allFriendlyUnits = star.getUnits(player => player === user.fleet.player);
+      // for (let i = 0; i < allFriendlyUnits.length; i++)
+      // {
+      //   allFriendlyUnits[i].addHealth(allFriendlyUnits[i].maxHealth);
+      // }
     },
   ],
 };
-function makeWarpJammerValidityModifier(user: Unit)
+function makeWarpJammerValidityModifier(unit: Unit): FormationValidityModifier
 {
   return {
     sourceType: FormationValidityModifierSourceType.PassiveAbility,
@@ -142,7 +108,7 @@ function makeWarpJammerValidityModifier(user: Unit)
     },
     sourcePassiveAbility:
     {
-      unit: user,
+      unit: unit,
       abilityTemplate: warpJammer,
     },
   };
@@ -159,36 +125,90 @@ export const warpJammer: PassiveSkillTemplate =
   {
     return localize("warpJammer_description").toString();
   },
-
-  inBattlePrep:
+  mapLevelModifiers:
   [
     {
-      onAdd: (user: Unit, battlePrep: BattlePrep) =>
-      {
-        const isAttackingSide = user.fleet.player === battlePrep.attacker;
-
-        if (isAttackingSide)
+      key: "addInitialGuardInBattle",
+      selfBattlePrepEffects:
+      [
         {
-          battlePrep.defenderFormation.addValidityModifier(makeWarpJammerValidityModifier(user));
-        }
-      },
-      onRemove: (user: Unit, battlePrep: BattlePrep) =>
-      {
-        const isAttackingSide = user.fleet.player === battlePrep.attacker;
+          adjustment: {flat: 50},
+          effect:
+          {
+            whenPartOfFormation:
+            {
+              onAdd: (strength, unit, battlePrep, ownFormation, enemyFormation) =>
+              {
+                const isAttackingSide = unit.fleet.player === battlePrep.attacker;
 
-        if (isAttackingSide)
-        {
-          battlePrep.defenderFormation.removeValidityModifier(makeWarpJammerValidityModifier(user));
-        }
-      },
+                if (isAttackingSide)
+                {
+                  battlePrep.defenderFormation.addValidityModifier(makeWarpJammerValidityModifier(unit));
+                }
+              },
+              onRemove: (strength, unit, battlePrep, ownFormation, enemyFormation) =>
+              {
+                const isAttackingSide = unit.fleet.player === battlePrep.attacker;
+
+                if (isAttackingSide)
+                {
+                  battlePrep.defenderFormation.removeValidityModifier(makeWarpJammerValidityModifier(unit));
+                }
+              },
+            },
+          },
+        },
+      ],
     },
   ],
-
   defaultUpgrades:
   [
     {
       flatProbability: 1,
       probabilityItems: [medic],
+    },
+  ],
+};
+
+export const miner: PassiveSkillTemplate =
+{
+  key: "miner",
+  get displayName()
+  {
+    return localize("miner_displayName").toString();
+  },
+  get description()
+  {
+    return localize("miner_description").toString();
+  },
+  mapLevelModifiers:
+  [
+    {
+      key: "miner",
+      // TODO 2019.11.05 | never gets rechecked if the star is captured while the unit is in it. same problem with other modifiers relying on checks outside their own scope
+      filter: unit =>
+      {
+        const locationHasResources = Boolean(unit.fleet.location.resource);
+        const locationIsControlledByOwner = unit.fleet.player === unit.fleet.location.owner;
+
+        return locationHasResources && locationIsControlledByOwner;
+      },
+      propagations:
+      {
+        localStar:
+        [
+          {
+            key: "localMiner",
+            self:
+            {
+              adjustments:
+              {
+                mining: {flat: 1},
+              },
+            },
+          },
+        ],
+      },
     },
   ],
 };

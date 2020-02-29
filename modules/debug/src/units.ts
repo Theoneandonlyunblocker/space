@@ -129,6 +129,39 @@ export const debugShip: UnitTemplate =
         },
       ],
     },
+    {
+      flatProbability: 1,
+      probabilityItems:
+      [
+        {
+          key: "debugPassive",
+          displayName: "debug passive",
+          description: "local money income x10",
+          mapLevelModifiers:
+          [
+            {
+              key: "debugShip",
+              propagations:
+              {
+                localStar:
+                [
+                  {
+                    key: "localDebugShip",
+                    self:
+                    {
+                      income:
+                      {
+                        [moneyResource.type]: {additiveMultiplier: 10},
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          ],
+        },
+      ],
+    },
   ],
   possibleLearnableAbilities:
   [
@@ -152,26 +185,4 @@ export const debugShip: UnitTemplate =
   {
     flags: [coreAvailabilityFlags.alwaysInDebugMode],
   },
-  mapLevelModifiers:
-  [
-    {
-      key: "debugShip",
-      propagations:
-      {
-        localStar:
-        [
-          {
-            key: "localDebugShip",
-            self:
-            {
-              income:
-              {
-                [moneyResource.type]: {additiveMultiplier: 10},
-              },
-            },
-          },
-        ],
-      },
-    },
-  ],
 };

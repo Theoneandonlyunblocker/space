@@ -8,6 +8,7 @@ import { itemSlot } from "../../items/itemSlot";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
 import { standby } from "modules/common/src/combat/abilities/standby";
 import { rangedAttack } from "../../combat/abilities/rangedAttack";
+import { miner } from "../../passiveskills/passiveSkills";
 
 
 export const miningBarge: UnitTemplate =
@@ -58,6 +59,16 @@ export const miningBarge: UnitTemplate =
       ],
     },
   ],
+  possiblePassiveSkills:
+  [
+    {
+      flatProbability: 1,
+      probabilityItems:
+      [
+        miner,
+      ],
+    },
+  ],
   itemSlots:
   {
     [itemSlot.low]: 1,
@@ -73,34 +84,4 @@ export const miningBarge: UnitTemplate =
   {
     flags: [commonAvailabilityFlags.humanLike],
   },
-  mapLevelModifiers:
-  [
-    {
-      key: "miningBarge",
-      // TODO 2019.11.05 | never gets rechecked if the star is captured while the unit is in it. same problem with other modifiers relying on checks outside their own scope
-      filter: unit =>
-      {
-        const locationHasResources = Boolean(unit.fleet.location.resource);
-        const locationIsControlledByOwner = unit.fleet.player === unit.fleet.location.owner;
-
-        return locationHasResources && locationIsControlledByOwner;
-      },
-      propagations:
-      {
-        localStar:
-        [
-          {
-            key: "localMiningbarge",
-            self:
-            {
-              adjustments:
-              {
-                mining: {flat: 1},
-              },
-            },
-          },
-        ],
-      },
-    },
-  ],
 };

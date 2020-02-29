@@ -8,6 +8,7 @@ import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { UnitModifier, UnitModifierAdjustments, getBaseUnitSelfModifier } from "./UnitModifier";
 import { onMapPresentModifierChange, onIncomeModifierChange } from "./onModifierChangeTriggers";
 import { activeModuleData } from "../app/activeModuleData";
+import { flatten2dArray } from "../generic/utility";
 
 
 export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitModifier>
@@ -56,10 +57,12 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
   }
   public handleConstruct(): void
   {
-    if (this.unit.template.mapLevelModifiers)
+    const allModifiersFromPassiveSkills = this.unit.getAllPassiveSkills().map(passiveSkill =>
     {
-      this.addOriginatingModifiers(...this.unit.template.mapLevelModifiers);
-    }
+      return passiveSkill.mapLevelModifiers;
+    });
+    const modifiersFromPassiveSkills = flatten2dArray(allModifiersFromPassiveSkills);
+    this.addOriginatingModifiers(...modifiersFromPassiveSkills);
 
     // TODO 2019.11.01 | necessary?
     this.propagateModifiersOfTypeTo("global", app.game.globalModifiers);

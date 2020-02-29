@@ -1,8 +1,6 @@
 import {Item} from "../items/Item";
 import {UnitAttributeAdjustments} from "./UnitAttributes";
 
-import {PassiveSkillTemplate} from "../templateinterfaces/PassiveSkillTemplate";
-
 import {UnitItemsSaveData} from "../savedata/UnitItemsSaveData";
 import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
 
@@ -100,16 +98,6 @@ export class UnitItems
     }).map(item =>
     {
       return item.template.ability!;
-    });
-  }
-  public getPassiveSkills(): PassiveSkillTemplate[]
-  {
-    return this.getAllItems().filter(item =>
-    {
-      return Boolean(item.template.passiveSkill);
-    }).map(item =>
-    {
-      return item.template.passiveSkill!;
     });
   }
 

@@ -1,6 +1,10 @@
 import {AbilityBase} from "./AbilityBase";
+import { UnitModifier } from "../maplevelmodifiers/UnitModifier";
 
-// TODO 2020.02.15 |
-export interface PassiveSkillTemplate extends AbilityBase/*, UnitEffectTemplate*/
+
+export interface PassiveSkillTemplate extends AbilityBase
 {
+  mapLevelModifiers: UnitModifier[];
+
+  use?: never;
 }

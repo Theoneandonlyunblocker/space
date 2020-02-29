@@ -1,17 +1,13 @@
 import {ItemTemplate} from "core/src/templateinterfaces/ItemTemplate";
 import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
 
-import
-{
-  overdrive,
-} from "../passiveskills/passiveSkills";
-
 import { localize } from "modules/space/localization/localize";
 import { getItemIcon } from "modules/space/assets/items/itemAssets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
 import { bombAttack } from "../combat/abilities/bombAttack";
 import { guardRow } from "modules/common/src/combat/abilities/guardRow";
+import { poisoned } from "../combat/effects/poisoned";
 
 
 export const bombLauncher1: ItemTemplate =
@@ -124,7 +120,34 @@ export const afterBurner1: ItemTemplate =
   },
 
   slot: "mid",
-  passiveSkill: overdrive,
+  mapLevelModifiers:
+  [
+    {
+      key: "afterburner",
+      propagations:
+      {
+        equippingUnit:
+        [
+          {
+            key: "equippedAfterBurner",
+            selfBattlePrepEffects:
+            [
+              {
+                adjustment: {flat: 2},
+                effect:
+                {
+                  initialize: (strength, unit) =>
+                  {
+                    unit.battleStats.combatEffects.get(poisoned).strength += strength;
+                  },
+                },
+              },
+            ],
+          },
+        ],
+      },
+    },
+  ],
   availabilityData:
   {
     flags: [commonAvailabilityFlags.humanLike],
