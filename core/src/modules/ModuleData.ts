@@ -53,7 +53,7 @@ interface Templates
 {
   aiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
   attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
-  battleVfx: TemplateCollection<BattleVfxTemplate<any, any>>;
+  battleVfx: TemplateCollection<BattleVfxTemplate>;
   buildings: TemplateCollection<BuildingTemplate>;
   combatAbilities: TemplateCollection<CombatAbilityTemplate>;
   combatEffects: TemplateCollection<CombatEffectTemplate>;

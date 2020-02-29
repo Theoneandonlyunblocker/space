@@ -4,27 +4,15 @@ import { VfxParams } from "core/src/templateinterfaces/VfxParams";
 import { AbsorbParticlesFromTarget } from "modules/common/src/combat/vfx/fragments/AbsorbParticlesFromTarget";
 
 
-// TODO 2020.02.24 | hook up particle count to new combat system somehow
-enum ResultType
+function getParticleCount(props: VfxParams): number
 {
-  HealthChanged,
-}
-export type EffectIds = "damage" | "increaseUserHealth";
-export type EffectResults =
-{
-  [ResultType.HealthChanged]: number;
-};
-
-function getParticleCount(props: VfxParams<EffectIds, EffectResults>): number
-{
-  const damageDealt = props.abilityUseEffects ?
-    -1 * props.abilityUseEffects.squashed.executedEffectsResult[ResultType.HealthChanged] :
-    400;
+  // TODO 2020.02.24 | hook up particle count to new combat system somehow
+  const damageDealt = 400;
 
   return Math.log(damageDealt) * 20;
 }
 
-export const assimilate: VfxDrawingFunction<EffectIds, EffectResults> = props =>
+export const assimilate: VfxDrawingFunction = props =>
 {
   const offsetUserData = props.user.drawingFunctionData.normalizeForBattleVfx(
     props.userOffset, props.width, "user");
@@ -98,4 +86,4 @@ export const assimilate: VfxDrawingFunction<EffectIds, EffectResults> = props =>
   const startTime = Date.now();
 
   animationHandle = requestAnimationFrame(animate);
-}
+};

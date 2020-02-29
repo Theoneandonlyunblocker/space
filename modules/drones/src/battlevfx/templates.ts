@@ -3,8 +3,6 @@ import { BattleVfxTemplate } from "core/src/templateinterfaces/BattleVfxTemplate
 import
 {
   assimilate as assimilateDrawingFunction,
-  EffectIds as AssimilateEffectIds,
-  EffectResults as AssimilateEffectResults,
 } from "./drawingfunctions/assimilate";
 import
 {
@@ -13,7 +11,7 @@ import
 } from "./drawingfunctions/merge";
 
 
-export const assimilate: BattleVfxTemplate<AssimilateEffectIds, AssimilateEffectResults> =
+export const assimilate: BattleVfxTemplate =
 {
   duration: 2500,
   vfxWillTriggerEffect: true,

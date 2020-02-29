@@ -5,10 +5,9 @@ import * as PIXI from "pixi.js";
 import {Point} from "../math/Point";
 import {Unit} from "../unit/Unit";
 import {AbilityUseEffectsForVfx} from "../abilities/AbilityUseEffectsForVfx";
-import { ExecutedEffectsResult } from "./ExecutedEffectsResult";
 
 
-export interface VfxParams<EffectId extends string = any, R extends ExecutedEffectsResult = any>
+export interface VfxParams
 {
   user: Unit;
   target?: Unit;
@@ -23,7 +22,7 @@ export interface VfxParams<EffectId extends string = any, R extends ExecutedEffe
   // TODO 2019.08.21 | rename userIsFacingRight?
   facingRight: boolean;
   renderer: PIXI.Renderer;
-  abilityUseEffects?: AbilityUseEffectsForVfx<EffectId, R>;
+  abilityUseEffects?: AbilityUseEffectsForVfx;
   triggerStart: (displayObject: PIXI.DisplayObject) => void;
   triggerEnd: () => void;
 }
