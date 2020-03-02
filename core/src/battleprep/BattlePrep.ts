@@ -86,10 +86,9 @@ export class BattlePrep
     // TODO 2020.02.12 | apply battle prep effects
   }
 
-  public forEachUnit(f: (u: Unit) => void): void
+  public getAllUnits(): Unit[]
   {
-    this.attackerUnits.forEach(f);
-    this.defenderUnits.forEach(f);
+    return [...this.attackerUnits, ...this.defenderUnits];
   }
   public makeBattle(): Battle
   {
@@ -138,7 +137,7 @@ export class BattlePrep
   }
   private resetBattleStats(): void
   {
-    this.forEachUnit(unit =>
+    this.getAllUnits().forEach(unit =>
     {
       unit.resetBattleStats();
     });
