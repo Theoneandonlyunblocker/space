@@ -1,6 +1,5 @@
 import {TerritoryBuildingTemplate} from "core/src/templateinterfaces/TerritoryBuildingTemplate";
 
-import {makeDefenderAdvantageEffect} from "./battleEffects";
 import
 {
   territoryBuildings, sectorCommandFamily,
@@ -10,6 +9,7 @@ import { getBuildingIconElement } from "modules/space/assets/buildings/buildingA
 import {moneyResource} from "modules/money/src/moneyResource";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
+import { makeDefenderAdvantageEffect } from "./battlePrepEffects";
 
 
 export const sectorCommand: TerritoryBuildingTemplate =
@@ -42,7 +42,13 @@ export const sectorCommand: TerritoryBuildingTemplate =
     sectorCommand1,
     sectorCommand2,
   ],
-  battleEffects: [makeDefenderAdvantageEffect(0.2)],
+  mapLevelModifiers:
+  [
+    {
+      key: "defenderAdvantage",
+      battlePrepEffects: [makeDefenderAdvantageEffect(0.2)],
+    },
+  ],
 };
 export const sectorCommand1: TerritoryBuildingTemplate =
 {
@@ -65,7 +71,13 @@ export const sectorCommand1: TerritoryBuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  battleEffects: [makeDefenderAdvantageEffect(0.3)],
+  mapLevelModifiers:
+  [
+    {
+      key: "defenderAdvantage",
+      battlePrepEffects: [makeDefenderAdvantageEffect(0.3)],
+    },
+  ],
   availabilityData:
   {
     flags: [commonAvailabilityFlags.humanLike],
@@ -92,7 +104,13 @@ export const sectorCommand2: TerritoryBuildingTemplate =
 
   maxBuiltAtLocation: 1,
 
-  battleEffects: [makeDefenderAdvantageEffect(0.3)],
+  mapLevelModifiers:
+  [
+    {
+      key: "defenderAdvantage",
+      battlePrepEffects: [makeDefenderAdvantageEffect(0.3)],
+    },
+  ],
   availabilityData:
   {
     flags: [commonAvailabilityFlags.humanLike],
@@ -117,7 +135,13 @@ export const starBase: TerritoryBuildingTemplate =
     [moneyResource.type]: 200,
   },
 
-  battleEffects: [makeDefenderAdvantageEffect(0.1)],
+  mapLevelModifiers:
+  [
+    {
+      key: "defenderAdvantage",
+      battlePrepEffects: [makeDefenderAdvantageEffect(0.1)],
+    },
+  ],
   getStandardUpgradeTargets: () =>
   [
     sectorCommand,
