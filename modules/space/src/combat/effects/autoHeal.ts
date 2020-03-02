@@ -1,7 +1,7 @@
 import {CombatEffectTemplate} from "core/src/combat/CombatEffectTemplate";
 import { localize } from "modules/space/localization/localize";
 import { CombatAction } from "core/src/combat/CombatAction";
-import { makeSimpleModifier } from "modules/common/src/combat/modifiers/makeSimpleModifier";
+import { makeSimpleModifier } from "core/src/combat/core/modifiers/makeSimpleModifier";
 import { rawHealthRestoration } from "modules/common/src/combat/primitives/rawHealthRestoration";
 
 

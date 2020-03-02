@@ -1,6 +1,6 @@
 import { Unit } from "core/src/unit/Unit";
 import { CombatAction } from "core/src/combat/CombatAction";
-import { makeSimpleModifier } from "../modifiers/makeSimpleModifier";
+import { makeSimpleModifier } from "core/src/combat/core/modifiers/makeSimpleModifier";
 import { rawHealthLoss } from "../primitives/rawHealthLoss";
 
 

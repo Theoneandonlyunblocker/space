@@ -1,6 +1,6 @@
 import { Unit } from "core/src/unit/Unit";
 import { CombatAction } from "core/src/combat/CombatAction";
-import { makeSimpleModifier } from "../modifiers/makeSimpleModifier";
+import { makeSimpleModifier } from "core/src/combat/core/modifiers/makeSimpleModifier";
 import { GuardCoverage } from "core/src/unit/GuardCoverage";
 import { AdjustmentsPerAttribute } from "core/src/unit/UnitAttributes";
 import { guardAmount } from "core/src/combat/core/primitives/guardAmount";

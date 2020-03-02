@@ -1,6 +1,7 @@
 import { CombatAction } from "../../CombatAction";
 import { Unit } from "core/src/unit/Unit";
-import { addGuardAmount } from "../modifiers/addGuardAmount";
+import { makeSimpleModifier } from "../modifiers/makeSimpleModifier";
+import { guardAmount } from "../primitives/guardAmount";
 
 
 export function removeAllGuardFromUser(
@@ -9,7 +10,7 @@ export function removeAllGuardFromUser(
 {
   return new CombatAction(
   {
-    mainAction: addGuardAmount({flat: -user.battleStats.guardAmount}),
+    mainAction: makeSimpleModifier(guardAmount, {flat: -Infinity}),
     source: user,
     target: user,
   });

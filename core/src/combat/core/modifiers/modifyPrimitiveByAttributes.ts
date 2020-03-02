@@ -10,7 +10,6 @@ export function modifyPrimitiveByAttributes(
   adjustments: AdjustmentsPerAttribute,
 ): CombatActionModifier
 {
-
   return {
     primitives:
     {

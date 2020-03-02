@@ -1,6 +1,7 @@
 import { CombatAction } from "../../CombatAction";
 import { Unit } from "core/src/unit/Unit";
-import { removeActionPoints } from "../modifiers/removeActionPoints";
+import { makeSimpleModifier } from "../modifiers/makeSimpleModifier";
+import { actionPoints } from "../primitives/actionPoints";
 
 
 export function removeActionPointsFromAbilityUse(
@@ -10,7 +11,7 @@ export function removeActionPointsFromAbilityUse(
 {
   const action = new CombatAction(
   {
-    mainAction: removeActionPoints({flat: amount}),
+    mainAction: makeSimpleModifier(actionPoints, {flat: -amount}),
     source: user,
     target: user,
   });
