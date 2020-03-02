@@ -61,8 +61,8 @@ export class Battle
   public deadUnits: Unit[];
 
   /**
-   * 0.4 == 40% increased base evaluation for side1,
-   * -0.1 == 10% increase for side2
+   * 0.4:  40% increased base evaluation for side1
+   * -0.1: 10% increased base evaluation for side2
    */
   public evaluationAdjustment: number = 0;
 

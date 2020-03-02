@@ -21,6 +21,7 @@ import { BaseUnitBattlePrepEffect } from "./UnitBattlePrepEffect";
 export class BattlePrepFormation
 {
   public readonly formation: Unit[][];
+  public readonly player: Player;
   public units: Unit[];
   public hasScouted: boolean;
   public placedUnitPositionsById:
@@ -28,7 +29,6 @@ export class BattlePrepFormation
     [id: number]: number[];
   } = {};
 
-  private player: Player;
   private isAttacker: boolean;
 
   private readonly validityModifiers: FormationValidityModifier[] = [];

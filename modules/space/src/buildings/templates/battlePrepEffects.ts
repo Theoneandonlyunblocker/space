@@ -1,4 +1,6 @@
 import { BuildingBattlePrepEffectWithAdjustment } from "core/src/battleprep/BuildingBattlePrepEffect";
+import { battleStartPhase } from "core/src/combat/core/phases/battleStartPhase";
+import { changeBattleEvaluation } from "modules/common/src/combat/actions/changeBattleEvaluation";
 
 
 export function makeDefenderAdvantageEffect(amount: number): BuildingBattlePrepEffectWithAdjustment
@@ -9,7 +11,13 @@ export function makeDefenderAdvantageEffect(amount: number): BuildingBattlePrepE
     {
       onBattlePrepStart: (strength, building, battlePrep) =>
       {
-        // TODO 2020.03.02 | implement
+        const sideOfBuildingController = battlePrep.getBattleSideForPlayer(building.controller);
+
+        const sign = sideOfBuildingController === "side1" ? 1 : -1;
+        const adjustmentAmount = strength * sign;
+
+        const adjustBattleEvaluationAction = changeBattleEvaluation(adjustmentAmount);
+        battlePrep.combatManager.addQueuedAction(battleStartPhase, adjustBattleEvaluationAction);
       },
     },
   };

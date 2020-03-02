@@ -8,8 +8,8 @@ import { getOrderedResultModifiers, CombatActionResultModifierWithValue } from "
 export class CombatAction
 {
   public readonly mainAction: CombatActionModifier;
-  public readonly source: Unit;
-  public readonly target: Unit;
+  public readonly source: Unit | undefined;
+  public readonly target: Unit | undefined;
   public actionAttachedTo: CombatAction | undefined;
 
   public get modifiers(): CombatActionModifier[]
@@ -44,8 +44,8 @@ export class CombatAction
   constructor(props:
   {
     mainAction: CombatActionModifier;
-    source: Unit;
-    target: Unit;
+    source: Unit | undefined;
+    target: Unit | undefined;
   })
   {
     this.mainAction = props.mainAction;
@@ -75,7 +75,7 @@ export class CombatAction
 
     return resolveCombatActionPrimitiveAdjustments(...allPrimitives);
   }
-  private getInitialResult(): CombatActionResults
+  private getResultWithoutResultModifiers(): CombatActionResults
   {
     const primitiveValues = this.getPrimitiveValues();
 
@@ -86,7 +86,7 @@ export class CombatAction
   }
   private getResult(): CombatActionResults
   {
-    const result = this.getInitialResult();
+    const result = this.getResultWithoutResultModifiers();
 
     const sortedResultModifiers = getOrderedResultModifiers(this.resultModifiers);
     sortedResultModifiers.forEach(modifierWithValue =>

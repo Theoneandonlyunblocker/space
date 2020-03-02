@@ -2,10 +2,11 @@ import { CombatPhase } from "./CombatPhase";
 import { CombatPhaseInfo } from "./CombatPhaseInfo";
 import { Battle } from "../battle/Battle";
 import { CombatAction } from "./CombatAction";
+import { CorePhase } from "./core/coreCombatPhases";
 
 
 
-export class CombatManager<Phase extends string>
+export class CombatManager<Phase extends string = CorePhase>
 {
   public currentPhase: CombatPhase<Phase>;
   public readonly battle: Battle;

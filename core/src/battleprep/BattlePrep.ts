@@ -9,11 +9,16 @@ import
 } from "./BattlePrepFormationValidity";
 import {Player} from "../player/Player";
 import {Unit} from "../unit/Unit";
+import { CombatManager } from "../combat/CombatManager";
+import { activeModuleData } from "../app/activeModuleData";
+import { UnitBattleSide } from "../unit/UnitBattleSide";
 
 
-export class BattlePrep
+// tslint:disable-next-line: no-any
+export class BattlePrep<CombatPhase extends string = any>
 {
   public battleData: BattleData;
+  public combatManager: CombatManager<CombatPhase>;
 
   public attacker: Player;
   public defender: Player;
@@ -29,8 +34,16 @@ export class BattlePrep
   public humanUnits: Unit[];
   public enemyUnits: Unit[];
 
-  public afterBattleFinishCallbacks: (() => void)[] = [];
+  public get side1Formation(): BattlePrepFormation
+  {
+    return this.humanFormation || this.attackerFormation;
+  }
+  public get side2Formation(): BattlePrepFormation
+  {
+    return this.enemyFormation || this.defenderFormation;
+  }
 
+  public afterBattleFinishCallbacks: (() => void)[] = [];
 
   constructor(battleData: BattleData)
   {
@@ -41,6 +54,7 @@ export class BattlePrep
     this.defenderUnits = battleData.defender.units;
 
     this.getAllUnits().forEach(unit => unit.resetBattleStats());
+    this.combatManager = new CombatManager(activeModuleData.combatPhases);
 
     const attackerHasScouted = this.attacker.starIsDetected(battleData.location);
     this.attackerFormation = new BattlePrepFormation(
@@ -91,19 +105,13 @@ export class BattlePrep
   }
   public makeBattle(): Battle
   {
-    const side1Formation = this.humanFormation || this.attackerFormation;
-    const side2Formation = this.enemyFormation || this.defenderFormation;
-
-    const side1Player = this.humanPlayer || this.attacker;
-    const side2Player = this.enemyPlayer || this.defender;
-
     const battle = new Battle(
     {
       battleData: this.battleData,
-      side1: side1Formation.formation,
-      side2: side2Formation.formation.reverse(),
-      side1Player: side1Player,
-      side2Player: side2Player,
+      side1: this.side1Formation.formation,
+      side2: this.side2Formation.formation.reverse(),
+      side1Player: this.side1Formation.player,
+      side2Player: this.side2Formation.player,
     });
 
     battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
@@ -111,6 +119,21 @@ export class BattlePrep
     battle.init();
 
     return battle;
+  }
+  public getBattleSideForPlayer(player: Player): UnitBattleSide
+  {
+    if (player === this.side1Formation.player)
+    {
+      return "side1";
+    }
+    else if (player === this.side2Formation.player)
+    {
+      return "side2";
+    }
+    else
+    {
+      throw new Error(`Player '${player.name.toString()}' is not part of battle.`);
+    }
   }
 
   private setHumanAndEnemy(): void
@@ -134,30 +157,37 @@ export class BattlePrep
       this.enemyFormation = this.attackerFormation;
     }
   }
-  private getOwnAndEnemyFormationForPlayer(player: Player): {
-    ownFormation: BattlePrepFormation;
-    enemyFormation: BattlePrepFormation;
-  }
+  private getFormationForPlayer(player: Player): BattlePrepFormation
   {
-    if (this.attacker === player)
+    if (player === this.attacker)
     {
-      return {
-        ownFormation: this.attackerFormation,
-        enemyFormation: this.defenderFormation,
-      };
+      return this.attackerFormation;
     }
-    else if (this.defender === player)
+    else if (player === this.defender)
     {
-      return {
-        ownFormation: this.defenderFormation,
-        enemyFormation: this.attackerFormation,
-      };
+      return this.defenderFormation;
     }
     else
     {
       throw new Error(`Player '${player.name.toString()}' is not part of battle.`);
     }
   }
+  private getOtherPlayerTo(player: Player): Player
+  {
+    if (player === this.attacker)
+    {
+      return this.defender;
+    }
+    else if (player === this.defender)
+    {
+      return this.attacker;
+    }
+    else
+    {
+      throw new Error(`Player '${player.name.toString()}' is not part of battle.`);
+    }
+  }
+
   private getAttackerFormationValidityModifiers(): FormationValidityModifier[]
   {
     const allModifiers: FormationValidityModifier[] = [];
@@ -207,7 +237,8 @@ export class BattlePrep
       return;
     }
 
-    const {ownFormation, enemyFormation} = this.getOwnAndEnemyFormationForPlayer(building.controller);
+    const ownFormation = this.getFormationForPlayer(building.controller);
+    const enemyFormation = this.getFormationForPlayer(this.getOtherPlayerTo(building.controller));
 
     const effects = building.modifiers.getBattlePrepEffects().resolve();
     effects.forEach((strength, effect) =>
