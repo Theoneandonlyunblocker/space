@@ -9,6 +9,9 @@ import { UnitModifier, UnitModifierAdjustments, getBaseUnitSelfModifier } from "
 import { onMapPresentModifierChange, onIncomeModifierChange } from "./onModifierChangeTriggers";
 import { activeModuleData } from "../app/activeModuleData";
 import { flatten2dArray } from "../generic/utility";
+import { AdjustmentsMap } from "../generic/AdjustmentsMap";
+import { UnitBattlePrepEffect } from "../battleprep/UnitBattlePrepEffect";
+import { getBattlePrepEffectsFromModifiers } from "../battleprep/battlePrepEffectUtils";
 
 
 export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitModifier>
@@ -54,6 +57,10 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
     const squashedSelfModifiers = squashMapLevelModifiers(getBaseUnitSelfModifier(), ...selfModifiers);
 
     return squashedSelfModifiers;
+  }
+  public getBattlePrepEffects(): AdjustmentsMap<UnitBattlePrepEffect>
+  {
+    return getBattlePrepEffectsFromModifiers(this, modifier => modifier.template.battlePrepEffects);
   }
   public handleConstruct(): void
   {

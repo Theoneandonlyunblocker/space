@@ -1,10 +1,10 @@
-import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
 import { Unit } from "../unit/Unit";
 import { BattlePrepFormation } from "./BattlePrepFormation";
 import { BattlePrep } from "./BattlePrep";
+import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
 
 
-export type BaseBattlePrepUnitEffect = (
+export type BaseUnitBattlePrepEffect = (
   strength: number,
   unit: Unit,
   battlePrep: BattlePrep,
@@ -12,18 +12,18 @@ export type BaseBattlePrepUnitEffect = (
   enemyFormation: BattlePrepFormation,
 ) => void;
 
-export type BattlePrepUnitEffect =
+export type UnitBattlePrepEffect =
 {
-  initialize?: BaseBattlePrepUnitEffect;
+  onBattlePrepStart?: BaseUnitBattlePrepEffect;
   whenPartOfFormation?:
   {
-    onAdd: BaseBattlePrepUnitEffect;
-    onRemove: BaseBattlePrepUnitEffect;
+    onAdd: BaseUnitBattlePrepEffect;
+    onRemove: BaseUnitBattlePrepEffect;
   };
 };
 
-export type BattlePrepUnitEffectWithAdjustment =
+export type UnitBattlePrepEffectWithAdjustment =
 {
-  effect: BattlePrepUnitEffect;
+  effect: UnitBattlePrepEffect;
   adjustment: Partial<FlatAndMultiplierAdjustment>;
 };

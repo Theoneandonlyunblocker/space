@@ -22,13 +22,13 @@ export const autoHeal: PassiveSkillTemplate =
   [
     {
       key: "autoHealInBattle",
-      selfBattlePrepEffects:
+      battlePrepEffects:
       [
         {
           adjustment: {flat: 50},
           effect:
           {
-            initialize: (strength, unit) =>
+            onBattlePrepStart: (strength, unit) =>
             {
               unit.battleStats.combatEffects.get(autoHealEffect).strength += strength;
             },
@@ -54,13 +54,13 @@ export const initialGuard: PassiveSkillTemplate =
   [
     {
       key: "addInitialGuardInBattle",
-      selfBattlePrepEffects:
+      battlePrepEffects:
       [
         {
           adjustment: {flat: 50},
           effect:
           {
-            initialize: (strength, unit) =>
+            onBattlePrepStart: (strength, unit) =>
             {
               unit.battleStats.guardCoverage = GuardCoverage.Row;
               unit.battleStats.guardAmount = strength;
@@ -129,7 +129,7 @@ export const warpJammer: PassiveSkillTemplate =
   [
     {
       key: "addInitialGuardInBattle",
-      selfBattlePrepEffects:
+      battlePrepEffects:
       [
         {
           adjustment: {flat: 50},

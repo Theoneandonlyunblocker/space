@@ -3,6 +3,9 @@ import { Building } from "../building/Building";
 import { app } from "../app/App";
 import { SimpleMapLevelModifiersPropagation } from "./ModifierPropagation";
 import { BuildingModifier } from "./BuildingModifier";
+import { AdjustmentsMap } from "../generic/AdjustmentsMap";
+import { BuildingBattlePrepEffect } from "../battleprep/BuildingBattlePrepEffect";
+import { getBattlePrepEffectsFromModifiers } from "../battleprep/battlePrepEffectUtils";
 
 
 export class BuildingModifiersCollection extends MapLevelModifiersCollection<BuildingModifier>
@@ -16,6 +19,10 @@ export class BuildingModifiersCollection extends MapLevelModifiersCollection<Bui
     this.building = building;
   }
 
+  public getBattlePrepEffects(): AdjustmentsMap<BuildingBattlePrepEffect>
+  {
+    return getBattlePrepEffectsFromModifiers(this, modifier => modifier.template.battlePrepEffects);
+  }
   public handleConstruct(): void
   {
     if (this.building.template.mapLevelModifiers)

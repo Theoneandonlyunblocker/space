@@ -130,13 +130,13 @@ export const afterBurner1: ItemTemplate =
         [
           {
             key: "equippedAfterBurner",
-            selfBattlePrepEffects:
+            battlePrepEffects:
             [
               {
                 adjustment: {flat: 2},
                 effect:
                 {
-                  initialize: (strength, unit) =>
+                  onBattlePrepStart: (strength, unit) =>
                   {
                     unit.battleStats.combatEffects.get(poisoned).strength += strength;
                   },

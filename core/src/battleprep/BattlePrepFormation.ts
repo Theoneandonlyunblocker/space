@@ -15,8 +15,7 @@ import
 {
   flatten2dArray,
 } from "../generic/utility";
-import { BaseBattlePrepUnitEffect, BattlePrepUnitEffect } from "./BattlePrepUnitEffect";
-import { AdjustmentsMap } from "../generic/AdjustmentsMap";
+import { BaseUnitBattlePrepEffect } from "./UnitBattlePrepEffect";
 
 
 export class BattlePrepFormation
@@ -37,7 +36,7 @@ export class BattlePrepFormation
   private cachedDisplayData: {[unitId: number]: UnitDisplayData};
   private displayDataIsDirty: boolean = true;
 
-  private triggerUnitEffect: (strength: number, effect: BaseBattlePrepUnitEffect, unit: Unit) => void;
+  private triggerUnitBattlePrepEffect: (strength: number, effect: BaseUnitBattlePrepEffect, unit: Unit) => void;
 
   constructor(props:
   {
@@ -46,7 +45,7 @@ export class BattlePrepFormation
     hasScouted: boolean;
     isAttacker: boolean;
     validityModifiers?: FormationValidityModifier[];
-    triggerUnitEffect: (strength: number, effect: BaseBattlePrepUnitEffect, unit: Unit) => void;
+    triggerUnitBattlePrepEffect: (strength: number, effect: BaseUnitBattlePrepEffect, unit: Unit) => void;
   })
   {
     this.player = props.player;
@@ -55,7 +54,7 @@ export class BattlePrepFormation
     this.isAttacker = props.isAttacker;
 
     this.validityModifiers.push(...props.validityModifiers);
-    this.triggerUnitEffect = props.triggerUnitEffect;
+    this.triggerUnitBattlePrepEffect = props.triggerUnitBattlePrepEffect;
 
     this.formation = getNullFormation();
   }
@@ -218,6 +217,22 @@ export class BattlePrepFormation
   {
     return this.formation[position[0]][position[1]];
   }
+  public triggerBattlePrepStartEffects(): void
+  {
+    this.units.forEach(unit =>
+    {
+      const battlePrepEffects = unit.mapLevelModifiers.getBattlePrepEffects();
+      const onBattlePrepStartEffectsWithStrengths = battlePrepEffects.map(effect =>
+      {
+        return effect.onBattlePrepStart;
+      }).filter(Boolean).resolve();
+
+      onBattlePrepStartEffectsWithStrengths.forEach((strength, effect) =>
+      {
+        this.triggerUnitBattlePrepEffect(strength, effect, unit);
+      });
+    });
+  }
 
   private getUnitPosition(unit: Unit): number[]
   {
@@ -287,61 +302,32 @@ export class BattlePrepFormation
   }
   private handleAddUnit(unit: Unit): void
   {
-    const unitEffects = this.getBattlePrepUnitEffectsForUnit(unit);
-    const onAddEffectsWithStrengths = unitEffects.filter(effect =>
+    const battlePrepEffects = unit.mapLevelModifiers.getBattlePrepEffects();
+    const onAddEffectsWithStrengths = battlePrepEffects.map(effect =>
     {
-      return Boolean(effect.whenPartOfFormation?.onAdd);
-    }).map(fullEffect => fullEffect.whenPartOfFormation.onAdd).resolve();
+      return effect.whenPartOfFormation?.onAdd;
+    }).filter(Boolean).resolve();
 
     onAddEffectsWithStrengths.forEach((strength, effect) =>
     {
-      this.triggerUnitEffect(
-        strength,
-        effect,
-        unit,
-      );
+      this.triggerUnitBattlePrepEffect(strength, effect, unit);
 
       this.displayDataIsDirty = true;
     });
   }
   private handleRemoveUnit(unit: Unit): void
   {
-    const unitEffects = this.getBattlePrepUnitEffectsForUnit(unit);
-    const onRemoveEffectsWithStrengths = unitEffects.filter(effect =>
+    const battlePrepEffects = unit.mapLevelModifiers.getBattlePrepEffects();
+    const onRemoveEffectsWithStrengths = battlePrepEffects.map(effect =>
     {
-      return Boolean(effect.whenPartOfFormation?.onRemove);
-    }).map(fullEffect => fullEffect.whenPartOfFormation.onRemove).resolve();
+      return effect.whenPartOfFormation?.onRemove;
+    }).filter(Boolean).resolve();
 
     onRemoveEffectsWithStrengths.forEach((strength, effect) =>
     {
-      this.triggerUnitEffect(
-        strength,
-        effect,
-        unit,
-      );
+      this.triggerUnitBattlePrepEffect(strength, effect, unit);
 
       this.displayDataIsDirty = true;
     });
-  }
-  private getBattlePrepUnitEffectsForUnit(unit: Unit): AdjustmentsMap<BattlePrepUnitEffect>
-  {
-    const activeModifiers = unit.mapLevelModifiers.getAllActiveModifiers();
-    const modifiersWithBattlePrepUnitEffect = activeModifiers.filter(modifier => modifier.template.selfBattlePrepEffects);
-
-    const allEffectsWithAdjustments = modifiersWithBattlePrepUnitEffect.map(modifier =>
-    {
-      return modifier.template.selfBattlePrepEffects;
-    });
-
-    const effectsWithAdjustments = flatten2dArray(allEffectsWithAdjustments);
-
-    const squashed = new AdjustmentsMap<BattlePrepUnitEffect>();
-
-    effectsWithAdjustments.forEach(effectWithAdjustment =>
-    {
-      squashed.add(effectWithAdjustment.effect, effectWithAdjustment.adjustment);
-    });
-
-    return squashed;
   }
 }

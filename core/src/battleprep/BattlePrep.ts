@@ -40,6 +40,8 @@ export class BattlePrep
     this.attackerUnits = battleData.attacker.units;
     this.defenderUnits = battleData.defender.units;
 
+    this.getAllUnits().forEach(unit => unit.resetBattleStats());
+
     const attackerHasScouted = this.attacker.starIsDetected(battleData.location);
     this.attackerFormation = new BattlePrepFormation(
     {
@@ -48,7 +50,7 @@ export class BattlePrep
       hasScouted: attackerHasScouted,
       isAttacker: true,
       validityModifiers: this.getAttackerFormationValidityModifiers(),
-      triggerUnitEffect: (strength, effect, unit) =>
+      triggerUnitBattlePrepEffect: (strength, effect, unit) =>
       {
         effect(strength, unit, this, this.attackerFormation, this.defenderFormation);
       },
@@ -63,14 +65,13 @@ export class BattlePrep
       hasScouted: defenderHasScouted,
       isAttacker: false,
       validityModifiers: this.getDefenderFormationValidityModifiers(),
-      triggerUnitEffect: (strength, effect, unit) =>
+      triggerUnitBattlePrepEffect: (strength, effect, unit) =>
       {
         effect(strength, unit, this, this.defenderFormation, this.attackerFormation);
       },
     });
 
-    this.resetBattleStats();
-
+    this.triggerBattlePrepStartEffects();
     this.setHumanAndEnemy();
 
     if (this.enemyFormation)
@@ -82,8 +83,6 @@ export class BattlePrep
       this.attackerFormation.setAutoFormation(this.defenderUnits);
       this.defenderFormation.setAutoFormation(this.attackerUnits, this.attackerFormation.formation);
     }
-
-    // TODO 2020.02.12 | apply battle prep effects
   }
 
   public getAllUnits(): Unit[]
@@ -135,12 +134,29 @@ export class BattlePrep
       this.enemyFormation = this.attackerFormation;
     }
   }
-  private resetBattleStats(): void
+  private getOwnAndEnemyFormationForPlayer(player: Player): {
+    ownFormation: BattlePrepFormation;
+    enemyFormation: BattlePrepFormation;
+  }
   {
-    this.getAllUnits().forEach(unit =>
+    if (this.attacker === player)
     {
-      unit.resetBattleStats();
-    });
+      return {
+        ownFormation: this.attackerFormation,
+        enemyFormation: this.defenderFormation,
+      };
+    }
+    else if (this.defender === player)
+    {
+      return {
+        ownFormation: this.defenderFormation,
+        enemyFormation: this.attackerFormation,
+      };
+    }
+    else
+    {
+      throw new Error(`Player '${player.name.toString()}' is not part of battle.`);
+    }
   }
   private getAttackerFormationValidityModifiers(): FormationValidityModifier[]
   {
@@ -175,5 +191,28 @@ export class BattlePrep
     }
 
     return allModifiers;
+  }
+  private triggerBattlePrepStartEffects(): void
+  {
+    this.defenderFormation.triggerBattlePrepStartEffects();
+    this.attackerFormation.triggerBattlePrepStartEffects();
+
+    this.triggerBuildingBattlePrepStartEffects();
+  }
+  private triggerBuildingBattlePrepStartEffects(): void
+  {
+    const building = this.battleData.building;
+    if (!building)
+    {
+      return;
+    }
+
+    const {ownFormation, enemyFormation} = this.getOwnAndEnemyFormationForPlayer(building.controller);
+
+    const effects = building.modifiers.getBattlePrepEffects().resolve();
+    effects.forEach((strength, effect) =>
+    {
+      effect.onBattlePrepStart(strength, building, this, ownFormation, enemyFormation);
+    });
   }
 }
