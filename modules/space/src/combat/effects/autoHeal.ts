@@ -18,7 +18,7 @@ export const autoHeal: CombatEffectTemplate =
   },
   actionsPerPhase:
   {
-    afterMainPhase: (unit) =>
+    afterMainPhase: (battle, unit) =>
     {
       const autoHealStrength = unit.battleStats.combatEffects.get(autoHeal).strength;
 

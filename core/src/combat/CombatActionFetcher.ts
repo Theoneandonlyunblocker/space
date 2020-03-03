@@ -5,7 +5,7 @@ import { CombatActionListener } from "./CombatActionListener";
 
 
 export type CombatActionFetcher =
-  (activeUnit: Unit, battle: Battle) => CombatAction[];
+  (battle: Battle, activeUnit: Unit) => CombatAction[];
 
 export type CombatActionListenerFetcher<AllPhases extends string> =
-  (activeUnit: Unit, battle: Battle) => CombatActionListener<AllPhases>[];
+  (battle: Battle, activeUnit: Unit) => CombatActionListener<AllPhases>[];
