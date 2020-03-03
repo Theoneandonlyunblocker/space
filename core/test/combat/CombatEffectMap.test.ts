@@ -1,7 +1,7 @@
-import { CombatEffectManager } from "../../src/combat/CombatEffectManager";
+import { CombatEffectMap } from "../../src/combat/CombatEffectMap";
 import { CombatEffectTemplate } from "../../src/combat/CombatEffectTemplate";
 
-describe("CombatEffectManager", () =>
+describe("CombatEffectMap", () =>
 {
   const dummyTemplate: CombatEffectTemplate =
   {
@@ -14,21 +14,21 @@ describe("CombatEffectManager", () =>
   {
     it("intiializes effects not present", () =>
     {
-      const manager = new CombatEffectManager();
+      const map = new CombatEffectMap();
 
-      const effect = manager.get(dummyTemplate);
+      const effect = map.get(dummyTemplate);
 
       expect(effect).toBeDefined();
       expect(effect.strength).toBe(0);
     });
     it("doesn't intitialize effects already present", () =>
     {
-      const manager = new CombatEffectManager();
+      const map = new CombatEffectMap();
 
-      const firstGet = manager.get(dummyTemplate);
+      const firstGet = map.get(dummyTemplate);
       firstGet.strength += 10;
 
-      const secondGet = manager.get(dummyTemplate);
+      const secondGet = map.get(dummyTemplate);
       expect(secondGet).toBe(firstGet);
       expect(secondGet.strength).toBe(10);
     });

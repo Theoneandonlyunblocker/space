@@ -4,7 +4,7 @@ import {UnitBattleSide} from "./UnitBattleSide";
 import { Unit } from "./Unit";
 import { activeModuleData } from "../app/activeModuleData";
 import { UnitBattleStatsSaveData } from "../savedata/UnitBattleStatsSaveData";
-import { CombatEffectManager } from "../combat/CombatEffectManager";
+import { CombatEffectMap } from "../combat/CombatEffectMap";
 
 
 export class UnitBattleStats
@@ -30,7 +30,7 @@ export class UnitBattleStats
    * units with the highest capture chance are prioritized if # of captures are limited
    */
   public captureChance: number;
-  public combatEffects: CombatEffectManager;
+  public combatEffects: CombatEffectMap;
   public lastHealthBeforeReceivingDamage: number;
   public queuedAction: QueuedActionData | null;
   public isAnnihilated: boolean;
@@ -45,7 +45,7 @@ export class UnitBattleStats
     guardCoverage: GuardCoverage | null;
     captureChance: number;
     // TODO 2020.02.08 | how should this be done?
-    combatEffects: CombatEffectManager;
+    combatEffects: CombatEffectMap;
     lastHealthBeforeReceivingDamage: number;
     queuedAction: QueuedActionData | null;
     isAnnihilated: boolean;
@@ -70,7 +70,7 @@ export class UnitBattleStats
       guardAmount: 0,
       guardCoverage: null,
       captureChance: activeModuleData.ruleSet.battle.baseUnitCaptureChance,
-      combatEffects: new CombatEffectManager(),
+      combatEffects: new CombatEffectMap(),
       lastHealthBeforeReceivingDamage: unit.currentHealth,
       queuedAction: null,
       isAnnihilated: false,
@@ -91,7 +91,7 @@ export class UnitBattleStats
 
       lastHealthBeforeReceivingDamage: data.lastHealthBeforeReceivingDamage,
 
-      combatEffects: CombatEffectManager.fromData(data.combatEffects, activeModuleData.templates.combatEffects),
+      combatEffects: CombatEffectMap.fromData(data.combatEffects, activeModuleData.templates.combatEffects),
       queuedAction:  data.queuedAction ?
         {
           ability: activeModuleData.templates.combatAbilities[data.queuedAction.abilityTemplateKey],

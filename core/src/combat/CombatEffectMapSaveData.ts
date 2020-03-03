@@ -1,7 +1,7 @@
 import { CombatEffectSaveData } from "./CombatEffectSaveData";
 
 
-export interface CombatEffectManagerSaveData
+export interface CombatEffectMapSaveData
 {
   effects: CombatEffectSaveData[];
 }

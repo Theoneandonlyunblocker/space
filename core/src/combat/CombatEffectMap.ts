@@ -1,13 +1,12 @@
 import { CombatEffect } from "./CombatEffect";
 import { CorePhase } from "./core/coreCombatPhases";
 import { CombatEffectTemplate } from "./CombatEffectTemplate";
-import { CombatEffectManagerSaveData } from "./CombatEffectManagerSaveData";
+import { CombatEffectMapSaveData } from "./CombatEffectMapSaveData";
 import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
 import { UnitAttributeAdjustments } from "../unit/UnitAttributes";
 
 
-// TODO 2020.02.18 | rename (CombatEffectMap?)
-export class CombatEffectManager<Phase extends string = CorePhase>
+export class CombatEffectMap<Phase extends string = CorePhase>
 {
   private readonly effects:
   {
@@ -23,19 +22,19 @@ export class CombatEffectManager<Phase extends string = CorePhase>
 
   }
   public static fromData<Phase extends string = CorePhase>(
-    data: CombatEffectManagerSaveData,
+    data: CombatEffectMapSaveData,
     effectTemplates: TemplateCollection<CombatEffectTemplate>,
-  ): CombatEffectManager<Phase>
+  ): CombatEffectMap<Phase>
   {
-    const manager = new CombatEffectManager<Phase>();
+    const map = new CombatEffectMap<Phase>();
 
     data.effects.forEach(effectSaveData =>
     {
       const effect = CombatEffect.fromData(effectSaveData, effectTemplates);
-      manager[effectSaveData.templateKey] = effect;
+      map[effectSaveData.templateKey] = effect;
     });
 
-    return manager;
+    return map;
   }
 
   public get(template: CombatEffectTemplate<Phase>): CombatEffect<Phase>
@@ -61,9 +60,9 @@ export class CombatEffectManager<Phase extends string = CorePhase>
       return effect.template.getAttributeAdjustments(effect.strength);
     });
   }
-  public clone(): CombatEffectManager<Phase>
+  public clone(): CombatEffectMap<Phase>
   {
-    const cloned = new CombatEffectManager<Phase>();
+    const cloned = new CombatEffectMap<Phase>();
 
     for (const key in this.effects)
     {
@@ -72,7 +71,7 @@ export class CombatEffectManager<Phase extends string = CorePhase>
 
     return cloned;
   }
-  public serialize(): CombatEffectManagerSaveData
+  public serialize(): CombatEffectMapSaveData
   {
     return {
       effects: Object.keys(this.effects).map(key =>
