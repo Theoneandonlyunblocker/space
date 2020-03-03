@@ -7,7 +7,7 @@ import
 import { localize } from "modules/space/localization/localize";
 import { getBuildingIconElement } from "modules/space/assets/buildings/buildingAssets";
 import {moneyResource} from "modules/money/src/moneyResource";
-import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/availabilityFlags";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 import { makeDefenderAdvantageEffect } from "./battlePrepEffects";
 

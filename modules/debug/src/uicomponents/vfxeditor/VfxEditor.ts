@@ -1,13 +1,13 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import {Beam} from "modules/common/src/combat/vfx/fragments/Beam";
-import {FocusingBeam} from "modules/common/src/combat/vfx/fragments/FocusingBeam";
-import {LightBurst} from "modules/common/src/combat/vfx/fragments/LightBurst";
-import {VfxFragment} from "modules/common/src/combat/vfx/fragments/VfxFragment";
-import {ShockWave} from "modules/common/src/combat/vfx/fragments/ShockWave";
-import {Projectile} from "modules/common/src/combat/vfx/fragments/Projectile";
-import {ProjectileWithImpact} from "modules/common/src/combat/vfx/fragments/ProjectileWithImpact";
+import {Beam} from "modules/baselib/src/combat/vfx/fragments/Beam";
+import {FocusingBeam} from "modules/baselib/src/combat/vfx/fragments/FocusingBeam";
+import {LightBurst} from "modules/baselib/src/combat/vfx/fragments/LightBurst";
+import {VfxFragment} from "modules/baselib/src/combat/vfx/fragments/VfxFragment";
+import {ShockWave} from "modules/baselib/src/combat/vfx/fragments/ShockWave";
+import {Projectile} from "modules/baselib/src/combat/vfx/fragments/Projectile";
+import {ProjectileWithImpact} from "modules/baselib/src/combat/vfx/fragments/ProjectileWithImpact";
 
 import
 {

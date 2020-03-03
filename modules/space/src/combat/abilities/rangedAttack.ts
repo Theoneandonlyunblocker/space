@@ -2,7 +2,7 @@ import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbility
 import { localize } from "modules/space/localization/localize";
 import { targetEnemies, makeGetAbilityTargetDisplayDataFN, areaSingle } from "core/src/abilities/targeting";
 import { AbilityTargetType, AbilityTargetEffect } from "core/src/abilities/AbilityTargetDisplayData";
-import { dealAttackDamage } from "modules/common/src/combat/actions/dealAttackDamage";
+import { dealAttackDamage } from "modules/baselib/src/combat/actions/dealAttackDamage";
 import { rocketAttack as rocketAttackVfx } from "../../battlevfx/templates/battleVfx";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 import { physicalDamage } from "core/src/combat/core/primitives/physicalDamage";

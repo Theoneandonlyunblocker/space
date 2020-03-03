@@ -1,4 +1,4 @@
-import {VfxFragment} from "modules/common/src/combat/vfx/fragments/VfxFragment";
+import {VfxFragment} from "modules/baselib/src/combat/vfx/fragments/VfxFragment";
 
 interface Constructor<T>
 {

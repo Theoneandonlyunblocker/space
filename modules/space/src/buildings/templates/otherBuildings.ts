@@ -3,7 +3,7 @@ import {BuildingTemplate} from "core/src/templateinterfaces/BuildingTemplate";
 import * as technologies from "modules/space/src/technologies/technologyTemplates";
 import { localize } from "modules/space/localization/localize";
 import {moneyResource} from "modules/money/src/moneyResource";
-import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/availabilityFlags";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 
 

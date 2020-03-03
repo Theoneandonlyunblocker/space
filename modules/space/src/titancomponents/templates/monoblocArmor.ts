@@ -3,7 +3,7 @@ import { getItemIcon } from "modules/space/assets/items/itemAssets";
 import { localize } from "modules/space/localization/localize";
 
 import { TitanComponentTemplate } from "modules/titans/src/TitanComponentTemplate";
-import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/availabilityFlags";
 import { moneyResource } from "modules/money/src/moneyResource";
 
 

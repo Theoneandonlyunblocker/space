@@ -1,7 +1,7 @@
 import { VfxDrawingFunction } from "core/src/templateinterfaces/VfxDrawingFunction";
 import { VfxParams } from "core/src/templateinterfaces/VfxParams";
 
-import { AbsorbParticlesFromTarget } from "modules/common/src/combat/vfx/fragments/AbsorbParticlesFromTarget";
+import { AbsorbParticlesFromTarget } from "modules/baselib/src/combat/vfx/fragments/AbsorbParticlesFromTarget";
 
 
 function getParticleCount(props: VfxParams): number

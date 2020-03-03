@@ -1,6 +1,6 @@
 import { getBuildableThingsByAvailabilityFlags } from "core/src/production/getBuildableThingsByAvailabilityFlags";
 import { AvailabilityData, coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
-import {availabilityFlags as commonAvailabilityFlags} from "modules/common/availabilityFlags";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/availabilityFlags";
 import { TemplateCollection } from "core/src/templateinterfaces/TemplateCollection";
 
 

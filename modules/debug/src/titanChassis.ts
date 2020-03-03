@@ -1,14 +1,14 @@
 import { TitanChassisTemplate } from "modules/titans/src/TitanChassisTemplate";
-import * as unitArchetypes from "modules/common/unitArchetypes";
+import * as unitArchetypes from "modules/baselib/unitArchetypes";
 import {makeSingleUnitDrawingFunction} from "modules/space/src/units/singleUnitDrawingFunction";
 
 import {itemSlot} from "modules/space/src/items/itemSlot";
 
 import { localize } from "../localization/localize";
-import {getAssetSrc} from "modules/common/assets";
+import {getAssetSrc} from "modules/baselib/assets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
-import {standby} from "modules/common/src/combat/abilities/standby";
+import {standby} from "modules/baselib/src/combat/abilities/standby";
 import { rangedAttack } from "modules/space/src/combat/abilities/rangedAttack";
 
 

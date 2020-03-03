@@ -14,8 +14,7 @@ import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
 import { combatAbilityTemplates } from "./src/combat/combatAbilityTemplates";
 
 
-// TODO 2020.02.15 | rename (baselib?) & reorganize
-export const common: GameModule =
+export const baseLib: GameModule =
 {
   info: moduleInfo,
   supportedLanguages: [englishLanguage],

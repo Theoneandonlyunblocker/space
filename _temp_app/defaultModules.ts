@@ -1,4 +1,4 @@
-import * as common from "modules/common/moduleInfo.json";
+import * as baseLib from "modules/baselib/moduleInfo.json";
 import * as defaultAi from "modules/defaultai/moduleInfo.json";
 import * as defaultAttitudeModifiers from "modules/defaultattitudemodifiers/moduleInfo.json";
 import * as defaultEmblems from "modules/defaultemblems/moduleInfo.json";
@@ -17,7 +17,7 @@ import {ModuleInfo} from "core/src/modules/ModuleInfo";
 
 export const defaultModules: ModuleInfo[] =
 [
-  common,
+  baseLib,
   englishLanguageSupport,
   money,
 

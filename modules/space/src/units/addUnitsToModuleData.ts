@@ -1,4 +1,4 @@
-import {unitArchetypes} from "modules/common/unitArchetypes";
+import {unitArchetypes} from "modules/baselib/unitArchetypes";
 import {unitTemplates} from "./unitTemplates";
 import { ModuleData } from "core/src/modules/ModuleData";
 

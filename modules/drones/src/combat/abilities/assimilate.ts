@@ -13,9 +13,9 @@ import
 
 import * as DroneBattleVfx from "../../battlevfx/templates";
 import { localize } from "../../../localization/localize";
-import { dealAttackDamage } from "modules/common/src/combat/actions/dealAttackDamage";
-import { leechLife } from "modules/common/src/combat/actions/leechLife";
-import { lifeLeechIncreasesMaxHealth } from "modules/common/src/combat/resultModifiers/lifeLeechIncreasesMaxHealth";
+import { dealAttackDamage } from "modules/baselib/src/combat/actions/dealAttackDamage";
+import { leechLife } from "modules/baselib/src/combat/actions/leechLife";
+import { lifeLeechIncreasesMaxHealth } from "modules/baselib/src/combat/resultModifiers/lifeLeechIncreasesMaxHealth";
 import { physicalDamage } from "core/src/combat/core/primitives/physicalDamage";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 

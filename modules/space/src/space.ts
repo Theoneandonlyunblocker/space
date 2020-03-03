@@ -4,7 +4,7 @@ import { ValuesByGameModuleInitializationPhase, GameModuleInitializationPhase } 
 import { AssetLoadingFunction } from "core/src/modules/AssetLoadingFunction";
 
 import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
-import {unitArchetypes} from "modules/common/unitArchetypes";
+import {unitArchetypes} from "modules/baselib/unitArchetypes";
 
 import {ruleSet} from "./ruleSet";
 
@@ -33,7 +33,7 @@ import { combatEffectTemplates } from "./combat/combatEffectTemplates";
 import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
 import * as semver from "core/src/generic/versions";
 import * as debug from "core/src/app/debug";
-import {common as commonModule} from "modules/common/common";
+import {baseLib} from "modules/baselib/baseLib";
 
 
 export const space: GameModule =
@@ -113,18 +113,18 @@ export const space: GameModule =
     const dataVersion = saveData.appVersion;
     if (semver.lt(dataVersion, "0.6.0"))
     {
-      debug.log("saves", `Executing stored core save data reviver 'addCommonModuleToSaveData'`);
-      addCommonModuleToSaveData();
+      debug.log("saves", `Executing stored core save data reviver 'addBaseLibToSaveData'`);
+      addBaseLibToSaveData();
 
       debug.log("saves", `Executing stored core save data reviver 'remapStandByToStandby'`);
       remapStandByToStandby();
     }
 
-    function addCommonModuleToSaveData()
+    function addBaseLibToSaveData()
     {
-      saveData.moduleData.common =
+      saveData.moduleData.baseLib =
       {
-        info: commonModule.info,
+        info: baseLib.info,
         moduleSaveData: null,
       };
     }

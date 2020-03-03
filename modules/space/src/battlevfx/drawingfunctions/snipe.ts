@@ -10,14 +10,14 @@ import
   generateTextureWithBounds,
 } from "core/src/graphics/pixiWrapperFunctions";
 
-import {FocusingBeam} from "modules/common/src/combat/vfx/fragments/FocusingBeam";
-import {RampingValue} from "modules/common/src/combat/vfx/fragments/RampingValue";
-import { ProjectileWithImpact } from "modules/common/src/combat/vfx/fragments/ProjectileWithImpact";
-import { Projectile } from "modules/common/src/combat/vfx/fragments/Projectile";
-import {ColorMatrixFilter} from "modules/common/src/combat/vfx/ColorMatrixFilter";
-import { PixiRenderer } from "modules/common/src/combat/vfx/proton/PixiRenderer";
-import { FunctionInitialize } from "modules/common/src/combat/vfx/proton/FunctionInitialize";
-import { PixiParticle } from "modules/common/src/combat/vfx/proton/PixiParticle";
+import {FocusingBeam} from "modules/baselib/src/combat/vfx/fragments/FocusingBeam";
+import {RampingValue} from "modules/baselib/src/combat/vfx/fragments/RampingValue";
+import { ProjectileWithImpact } from "modules/baselib/src/combat/vfx/fragments/ProjectileWithImpact";
+import { Projectile } from "modules/baselib/src/combat/vfx/fragments/Projectile";
+import {ColorMatrixFilter} from "modules/baselib/src/combat/vfx/ColorMatrixFilter";
+import { PixiRenderer } from "modules/baselib/src/combat/vfx/proton/PixiRenderer";
+import { FunctionInitialize } from "modules/baselib/src/combat/vfx/proton/FunctionInitialize";
+import { PixiParticle } from "modules/baselib/src/combat/vfx/proton/PixiParticle";
 
 import { getRelativeValue } from "core/src/generic/utility";
 import { battleVfxAssets } from "modules/space/assets/battleVfx/battleVfxAssets";

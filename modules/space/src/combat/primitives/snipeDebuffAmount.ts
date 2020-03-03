@@ -1,6 +1,6 @@
 import { CombatActionPrimitiveTemplate } from "core/src/combat/CombatActionPrimitiveTemplate";
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
-import { combatEffectChanges } from "modules/common/src/combat/resultTemplates/combatEffectChanges";
+import { combatEffectChanges } from "modules/baselib/src/combat/resultTemplates/combatEffectChanges";
 import { snipeAttack, snipeDefence, snipeIntelligence, snipeSpeed } from "../effects/snipe";
 
 

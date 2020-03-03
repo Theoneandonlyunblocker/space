@@ -6,7 +6,7 @@ import
 } from "core/src/abilities/targeting";
 
 import { localize } from "../../../localization/localize";
-import { makePlaceholderVfx } from "modules/common/makePlaceholderVfx";
+import { makePlaceholderVfx } from "modules/baselib/makePlaceholderVfx";
 
 
 export const standby: CombatAbilityTemplate =

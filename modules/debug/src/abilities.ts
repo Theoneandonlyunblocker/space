@@ -2,9 +2,9 @@ import { localize } from "../localization/localize";
 import { targetAll, areaSingle, makeGetAbilityTargetDisplayDataFN } from "core/src/abilities/targeting";
 import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbilityTemplate";
 import { AbilityTargetType, AbilityTargetEffect } from "core/src/abilities/AbilityTargetDisplayData";
-import { increaseCaptureChance } from "modules/common/src/combat/actions/increaseCaptureChance";
+import { increaseCaptureChance } from "modules/baselib/src/combat/actions/increaseCaptureChance";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
-import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
+import {makePlaceholderVfx} from "modules/baselib/makePlaceholderVfx";
 
 
 export const debugAbility: CombatAbilityTemplate =

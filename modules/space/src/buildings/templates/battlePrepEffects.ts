@@ -1,6 +1,6 @@
 import { BuildingBattlePrepEffectWithAdjustment } from "core/src/battleprep/BuildingBattlePrepEffect";
 import { battleStartPhase } from "core/src/combat/core/phases/battleStartPhase";
-import { changeBattleEvaluation } from "modules/common/src/combat/actions/changeBattleEvaluation";
+import { changeBattleEvaluation } from "modules/baselib/src/combat/actions/changeBattleEvaluation";
 
 
 export function makeDefenderAdvantageEffect(amount: number): BuildingBattlePrepEffectWithAdjustment

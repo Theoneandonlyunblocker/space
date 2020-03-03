@@ -7,7 +7,7 @@
   },
   "references": [
     {"path": "../../core"},
-    {"path": "../../modules/common"},
+    {"path": "../../modules/baselib"},
     {"path": "../../modules/space"},
     {"path": "../../modules/defaultai"},
     {"path": "../../modules/englishlanguage"},

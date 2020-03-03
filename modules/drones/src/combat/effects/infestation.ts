@@ -1,8 +1,8 @@
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { localize } from "modules/drones/localization/localize";
-import { losePercentCurrentHealth } from "modules/common/src/combat/actions/losePercentCurrentHealth";
+import { losePercentCurrentHealth } from "modules/baselib/src/combat/actions/losePercentCurrentHealth";
 import { increaseInfestationAmount } from "../actions/increaseInfestationAmount";
-import { combatEffectFlags } from "modules/common/src/combat/combatEffectFlags";
+import { combatEffectFlags } from "modules/baselib/src/combat/combatEffectFlags";
 
 export const infestation: CombatEffectTemplate =
 {

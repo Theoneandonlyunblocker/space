@@ -12,10 +12,10 @@ import
   targetAllAllies,
 } from "core/src/abilities/targeting";
 
-import {makePlaceholderVfx} from "modules/common/makePlaceholderVfx";
+import {makePlaceholderVfx} from "modules/baselib/makePlaceholderVfx";
 import { localize } from "../../../localization/localize";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
-import { healTarget } from "modules/common/src/combat/actions/healTarget";
+import { healTarget } from "modules/baselib/src/combat/actions/healTarget";
 
 
 export const massRepair: CombatAbilityTemplate =

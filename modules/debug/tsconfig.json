@@ -8,7 +8,7 @@
     {"path": "../../core"},
     {"path": "../../modules/englishlanguage"},
     {"path": "../../modules/space"},
-    {"path": "../../modules/common"},
+    {"path": "../../modules/baselib"},
     {"path": "../../modules/money"},
     {"path": "../../modules/titans"},
   ],

@@ -2,8 +2,8 @@ import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbility
 import { localize } from "modules/space/localization/localize";
 import { targetEnemies, makeGetAbilityTargetDisplayDataFN, GetUnitsInAreaFN, areaOrthogonalNeighbors } from "core/src/abilities/targeting";
 import { AbilityTargetType, AbilityTargetEffect } from "core/src/abilities/AbilityTargetDisplayData";
-import { makeFilteringUnitSelectFN, activeUnitsFilter } from "modules/common/src/combat/utility";
-import { dealAttackDamage } from "modules/common/src/combat/actions/dealAttackDamage";
+import { makeFilteringUnitSelectFN, activeUnitsFilter } from "modules/baselib/src/combat/utility";
+import { dealAttackDamage } from "modules/baselib/src/combat/actions/dealAttackDamage";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 import { physicalDamage } from "core/src/combat/core/primitives/physicalDamage";
 import { rocketAttack as rocketAttackVfx } from "../../battlevfx/templates/battleVfx";

@@ -1,6 +1,6 @@
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
-import * as unitArchetypes from "modules/common/unitArchetypes";
+import * as unitArchetypes from "modules/baselib/unitArchetypes";
 import {makeSingleUnitDrawingFunctionForPlaceholder} from "modules/space/src/units/singleUnitDrawingFunction";
 
 import {itemSlot} from "modules/space/src/items/itemSlot";
@@ -12,12 +12,12 @@ import
   warpJammer,
 } from "modules/space/src/passiveskills/passiveSkills";
 import { localize } from "../localization/localize";
-import {getAssetSrc} from "modules/common/assets";
+import {getAssetSrc} from "modules/baselib/assets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 import { debugAbility } from "./abilities";
-import { standby } from "modules/common/src/combat/abilities/standby";
-import { guardRow } from "modules/common/src/combat/abilities/guardRow";
+import { standby } from "modules/baselib/src/combat/abilities/standby";
+import { guardRow } from "modules/baselib/src/combat/abilities/guardRow";
 import {combatAbilityTemplates as spaceAbilities} from "modules/space/src/combat/combatAbilityTemplates";
 
 

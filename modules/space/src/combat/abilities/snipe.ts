@@ -23,7 +23,7 @@ import
 } from "modules/space/src/battlevfx/templates/battleVfx";
 
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
-import { dealAttackDamage } from "modules/common/src/combat/actions/dealAttackDamage";
+import { dealAttackDamage } from "modules/baselib/src/combat/actions/dealAttackDamage";
 import { physicalDamage } from "core/src/combat/core/primitives/physicalDamage";
 import { increaseSnipeDebuff } from "../actions/increaseSnipeDebuff";
 

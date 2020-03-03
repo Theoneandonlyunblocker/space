@@ -1,5 +1,5 @@
 import { CombatActionPrimitiveTemplate } from "core/src/combat/CombatActionPrimitiveTemplate";
-import {combatEffectChanges} from "modules/common/src/combat/resultTemplates/combatEffectChanges";
+import {combatEffectChanges} from "modules/baselib/src/combat/resultTemplates/combatEffectChanges";
 import { infestation } from "../effects/infestation";
 
 

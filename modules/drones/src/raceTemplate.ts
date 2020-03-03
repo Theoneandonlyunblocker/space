@@ -5,10 +5,10 @@ import
   getRandomProperty,
   randInt,
 } from "core/src/generic/utility";
-import {distributionGroups} from "../../common/distributionGroups";
-import {generateIndependentFleets} from "../../common/generateIndependentFleets";
-import {generateIndependentPlayer} from "../../common/generateIndependentPlayer";
-import {defaultAiConstructor} from "../../defaultai/src/mapai/DefaultAiConstructor";
+import {distributionGroups} from "modules/baselib/distributionGroups";
+import {generateIndependentFleets} from "modules/baselib/generateIndependentFleets";
+import {generateIndependentPlayer} from "modules/baselib/generateIndependentPlayer";
+import {defaultAiConstructor} from "modules/defaultai/src/mapai/DefaultAiConstructor";
 
 import { getBuildableThingsByAvailabilityFlags } from "core/src/production/getBuildableThingsByAvailabilityFlags";
 import { localizeName } from "../localization/localize";

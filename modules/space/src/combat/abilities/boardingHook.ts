@@ -2,8 +2,8 @@ import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbility
 import { localize } from "modules/space/localization/localize";
 import { targetEnemies, makeGetAbilityTargetDisplayDataFN, areaSingle } from "core/src/abilities/targeting";
 import { AbilityTargetType, AbilityTargetEffect } from "core/src/abilities/AbilityTargetDisplayData";
-import { dealAttackDamage } from "modules/common/src/combat/actions/dealAttackDamage";
-import { increaseCaptureChance } from "modules/common/src/combat/actions/increaseCaptureChance";
+import { dealAttackDamage } from "modules/baselib/src/combat/actions/dealAttackDamage";
+import { increaseCaptureChance } from "modules/baselib/src/combat/actions/increaseCaptureChance";
 import { boardingHook as boardingHookVfx } from "../../battlevfx/templates/battleVfx";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 import { physicalDamage } from "core/src/combat/core/primitives/physicalDamage";
