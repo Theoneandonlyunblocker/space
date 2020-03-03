@@ -22,7 +22,7 @@ export const poisoned: CombatEffectTemplate =
   roundingFN: Math.round,
   actionsPerPhase:
   {
-    afterMainPhase: (unit) =>
+    afterMainPhase: (battle, unit) =>
     {
       return [
         takePoisonDamage(unit),

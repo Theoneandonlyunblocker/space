@@ -23,7 +23,7 @@ export const infestation: CombatEffectTemplate =
   },
   actionsPerPhase:
   {
-    afterMainPhase: (unit) =>
+    afterMainPhase: (battle, unit) =>
     {
       const severity = unit.battleStats.combatEffects.get(infestation).strength;
       // 0.1, 0.2, 0.4, 0.8
