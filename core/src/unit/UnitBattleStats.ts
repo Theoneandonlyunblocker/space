@@ -61,12 +61,9 @@ export class UnitBattleStats
   }
   public static createInitialBattleStatsForUnit(unit: Unit): UnitBattleStats
   {
-    // TODO 2020.01.31 | do this elsewhere & differently
-    const baseMoveDelay = 30 - unit.attributes.speed;
-
     return new UnitBattleStats(
     {
-      moveDelay: baseMoveDelay,
+      moveDelay: 0,
       currentActionPoints: unit.attributes.maxActionPoints,
       side: null,
       position: null,
