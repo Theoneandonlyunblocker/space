@@ -3,7 +3,6 @@ import * as ReactDOMElements from "react-dom-factories";
 
 import {localize} from "../../../localization/localize";
 import {Item} from "core/src/items/Item";
-import {AbilityBase} from "core/src/templateinterfaces/AbilityBase";
 import {List} from "../list/List";
 import {ListColumn} from "../list/ListColumn";
 import {ListItem} from "../list/ListItem";
@@ -64,18 +63,6 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
     {
       const item = items[i];
 
-      let ability: AbilityBase = null;
-      let abilityIsPassive = false;
-      if (item.template.ability)
-      {
-        ability = item.template.ability;
-      }
-      else if (item.template.passiveSkill)
-      {
-        ability = item.template.passiveSkill;
-        abilityIsPassive = true;
-      }
-
       const props: ItemListItemProps =
       {
         typeName: item.template.displayName,
@@ -90,8 +77,9 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
         unit: item.unit ? item.unit : null,
         techLevel: item.template.techLevel,
 
-        ability: ability,
-        abilityIsPassive: abilityIsPassive,
+        ability: item.template.ability,
+        // TODO 2020.03.03 | never true
+        abilityIsPassive: false,
 
         isReserved: Boolean(item.unit),
 
