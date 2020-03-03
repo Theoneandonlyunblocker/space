@@ -15,7 +15,6 @@ type UnitModifierPropagations =
   global?: GlobalModifier[];
   localStar?: StarModifier[];
 };
-// TODO 2020.02.10 | rename this & similar => CoreUnitModifierAdjustments
 export type UnitModifierAdjustments =
 {
   vision: FlatAndMultiplierAdjustment;

@@ -4,7 +4,7 @@ import {StringLocalizer} from "core/src/localization/StringLocalizer";
 
 import {names as en_names} from "./en/names";
 import {units as en_units} from "./en/units";
-import {unitEffects as en_unitEffects} from "./en/unitEffects";
+import {combatEffects as en_unitEffects} from "./en/combatEffects";
 import {abilities as en_abilities} from "./en/abilities";
 import { Name } from "core/src/localization/Name";
 

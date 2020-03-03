@@ -831,8 +831,6 @@ export class Unit
       iconSrc: this.template.getIconSrc(),
 
       attributeChanges: this.getAttributesWithEffectsDifference().serialize(),
-      // TODO 2020.02.08 | old combat stuff
-      // passiveEffects: this.getPassiveEffectsForScene(scene),
     });
   }
   public serialize(): UnitSaveData
