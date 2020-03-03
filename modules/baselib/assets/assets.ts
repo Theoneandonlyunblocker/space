@@ -1,6 +1,6 @@
 export const assetSources =
 {
-  placeHolder: "./img/placeHolder.png"
+  placeHolder: "./assets/img/placeHolder.png"
 };
 
 export const assetsToLoadIntoTextureCache: (keyof typeof assetSources)[] =

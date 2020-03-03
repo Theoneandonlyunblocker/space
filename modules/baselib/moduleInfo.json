@@ -5,6 +5,6 @@
   "description": "generic stuff that can be used by various modules. not required to use the things in here, but useful for interoperability",
   "modsToReplace": ["common"],
   "moduleBundleUrls":  ["{DOCUMENT_PATH}/dist/modules/baselib/index.js"],
-  "moduleObjRequireJsName": "modules/baselib/baseLib",
+  "moduleObjRequireJsName": "modules/baselib/src/baseLib",
   "gameModuleVariableName": "baseLib"
 }

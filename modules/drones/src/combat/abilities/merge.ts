@@ -14,7 +14,7 @@ import
 
 import { localize } from "../../../localization/localize";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
-import { makePlaceholderVfx } from "modules/baselib/makePlaceholderVfx";
+import { makePlaceholderVfx } from "modules/baselib/src/makePlaceholderVfx";
 import { losePercentMaxHealth } from "modules/baselib/src/combat/actions/losePercentMaxHealth";
 import { increaseMergeBuffAmount } from "../actions/increaseMergeBuffAmount";
 import { leechLife } from "modules/baselib/src/combat/actions/leechLife";

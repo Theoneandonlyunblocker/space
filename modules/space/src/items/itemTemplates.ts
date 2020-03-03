@@ -4,7 +4,7 @@ import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection
 import { localize } from "modules/space/localization/localize";
 import { getItemIcon } from "modules/space/assets/items/itemAssets";
 import { moneyResource } from "modules/money/src/moneyResource";
-import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/availabilityFlags";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/src/availabilityFlags";
 import { bombAttack } from "../combat/abilities/bombAttack";
 import { guardRow } from "modules/baselib/src/combat/abilities/guardRow";
 import { poisoned } from "../combat/effects/poisoned";

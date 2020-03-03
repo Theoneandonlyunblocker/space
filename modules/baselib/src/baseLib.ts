@@ -8,10 +8,10 @@ import
   setBaseUrl as setAssetsBaseUrl,
   assetSources,
   assetsToLoadIntoTextureCache,
-} from "./assets";
-import * as moduleInfo from "./moduleInfo.json";
+} from "../assets/assets";
+import * as moduleInfo from "../moduleInfo.json";
 import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
-import { combatAbilityTemplates } from "./src/combat/combatAbilityTemplates";
+import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
 
 
 export const baseLib: GameModule =

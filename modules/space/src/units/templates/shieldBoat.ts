@@ -1,9 +1,9 @@
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
-import * as unitArchetypes from "modules/baselib/unitArchetypes";
+import * as unitArchetypes from "modules/baselib/src/unitArchetypes";
 import {makeSquadronDrawingFunction} from "../squadronDrawingFunction";
 
-import {distributionGroups} from "modules/baselib/distributionGroups";
+import {distributionGroups} from "modules/baselib/src/distributionGroups";
 import {itemSlot} from "modules/space/src/items/itemSlot";
 
 import
@@ -13,7 +13,7 @@ import
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 import { localize } from "modules/space/localization/localize";
 import { moneyResource } from "modules/money/src/moneyResource";
-import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/availabilityFlags";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/src/availabilityFlags";
 import { standby } from "modules/baselib/src/combat/abilities/standby";
 import { guardRow } from "modules/baselib/src/combat/abilities/guardRow";
 import { rangedAttack } from "../../combat/abilities/rangedAttack";

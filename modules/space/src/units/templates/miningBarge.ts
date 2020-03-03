@@ -1,11 +1,11 @@
 import { UnitTemplate } from "core/src/templateinterfaces/UnitTemplate";
 import { localize } from "modules/space/localization/localize";
-import * as unitArchetypes from "modules/baselib/unitArchetypes";
-import {getAssetSrc} from "modules/baselib/assets";
+import * as unitArchetypes from "modules/baselib/src/unitArchetypes";
+import {getAssetSrc} from "modules/baselib/assets/assets";
 import { makeSquadronDrawingFunctionForPlaceholder } from "../squadronDrawingFunction";
 import { moneyResource } from "modules/money/src/moneyResource";
 import { itemSlot } from "../../items/itemSlot";
-import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/availabilityFlags";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/src/availabilityFlags";
 import { standby } from "modules/baselib/src/combat/abilities/standby";
 import { rangedAttack } from "../../combat/abilities/rangedAttack";
 import { miner } from "../../passiveskills/passiveSkills";

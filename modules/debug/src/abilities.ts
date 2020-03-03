@@ -4,7 +4,7 @@ import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbility
 import { AbilityTargetType, AbilityTargetEffect } from "core/src/abilities/AbilityTargetDisplayData";
 import { increaseCaptureChance } from "modules/baselib/src/combat/actions/increaseCaptureChance";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
-import {makePlaceholderVfx} from "modules/baselib/makePlaceholderVfx";
+import {makePlaceholderVfx} from "modules/baselib/src/makePlaceholderVfx";
 
 
 export const debugAbility: CombatAbilityTemplate =

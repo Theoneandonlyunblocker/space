@@ -4,7 +4,7 @@ import { ValuesByGameModuleInitializationPhase, GameModuleInitializationPhase } 
 import { AssetLoadingFunction } from "core/src/modules/AssetLoadingFunction";
 
 import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
-import {unitArchetypes} from "modules/baselib/unitArchetypes";
+import {unitArchetypes} from "modules/baselib/src/unitArchetypes";
 
 import {ruleSet} from "./ruleSet";
 
@@ -33,7 +33,7 @@ import { combatEffectTemplates } from "./combat/combatEffectTemplates";
 import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
 import * as semver from "core/src/generic/versions";
 import * as debug from "core/src/app/debug";
-import {baseLib} from "modules/baselib/baseLib";
+import {baseLib} from "modules/baselib/src/baseLib";
 
 
 export const space: GameModule =

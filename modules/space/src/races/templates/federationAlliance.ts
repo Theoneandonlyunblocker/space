@@ -5,8 +5,8 @@ import
   getRandomProperty,
 } from "core/src/generic/utility";
 
-import {generateIndependentFleets} from "modules/baselib/generateIndependentFleets";
-import {generateIndependentPlayer} from "modules/baselib/generateIndependentPlayer";
+import {generateIndependentFleets} from "modules/baselib/src/generateIndependentFleets";
+import {generateIndependentPlayer} from "modules/baselib/src/generateIndependentPlayer";
 import {defaultAiConstructor} from "modules/defaultai/src/mapai/DefaultAiConstructor";
 import * as TechnologyTemplates from "modules/space/src/technologies/technologyTemplates";
 import {defaultRaceTechnologyValues} from "../common/defaultRaceTechnologyValues";
@@ -14,7 +14,7 @@ import {mergeTechnologyValues} from "../common/utility";
 import { localizeName } from "modules/space/localization/localize";
 import { getHumanLikeBuildableThings } from "../common/getHumanLikeBuildableThings";
 import { activeModuleData } from "core/src/app/activeModuleData";
-import { availabilityFlags as commonAvailabilityFlags } from "modules/baselib/availabilityFlags";
+import { availabilityFlags as commonAvailabilityFlags } from "modules/baselib/src/availabilityFlags";
 
 
 export const federationAlliance: RaceTemplate =

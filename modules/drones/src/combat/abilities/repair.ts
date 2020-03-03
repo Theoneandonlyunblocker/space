@@ -12,7 +12,7 @@ import
   targetAllAllies,
 } from "core/src/abilities/targeting";
 
-import {makePlaceholderVfx} from "modules/baselib/makePlaceholderVfx";
+import {makePlaceholderVfx} from "modules/baselib/src/makePlaceholderVfx";
 import { localize } from "../../../localization/localize";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 import { healTarget } from "modules/baselib/src/combat/actions/healTarget";

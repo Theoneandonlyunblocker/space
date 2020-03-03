@@ -1,11 +1,11 @@
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
-import * as unitArchetypes from "modules/baselib/unitArchetypes";
+import * as unitArchetypes from "modules/baselib/src/unitArchetypes";
 import {makeSquadronDrawingFunctionForPlaceholder} from "modules/space/src/units/squadronDrawingFunction";
 
 import { standby } from "modules/baselib/src/combat/abilities/standby";
-import {distributionGroups} from "modules/baselib/distributionGroups";
-import {getAssetSrc} from "modules/baselib/assets";
+import {distributionGroups} from "modules/baselib/src/distributionGroups";
+import {getAssetSrc} from "modules/baselib/assets/assets";
 import {moneyResource} from "modules/money/src/moneyResource";
 
 import {assimilate} from "../combat/abilities/assimilate";

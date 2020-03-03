@@ -5,9 +5,9 @@ import
   getRandomProperty,
   randInt,
 } from "core/src/generic/utility";
-import {distributionGroups} from "modules/baselib/distributionGroups";
-import {generateIndependentFleets} from "modules/baselib/generateIndependentFleets";
-import {generateIndependentPlayer} from "modules/baselib/generateIndependentPlayer";
+import {distributionGroups} from "modules/baselib/src/distributionGroups";
+import {generateIndependentFleets} from "modules/baselib/src/generateIndependentFleets";
+import {generateIndependentPlayer} from "modules/baselib/src/generateIndependentPlayer";
 import {defaultAiConstructor} from "modules/defaultai/src/mapai/DefaultAiConstructor";
 
 import { getBuildableThingsByAvailabilityFlags } from "core/src/production/getBuildableThingsByAvailabilityFlags";

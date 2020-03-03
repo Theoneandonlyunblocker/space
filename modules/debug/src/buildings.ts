@@ -1,7 +1,7 @@
 import {BuildingTemplate} from "core/src/templateinterfaces/BuildingTemplate";
 import {moneyResource} from "modules/money/src/moneyResource";
 import { testResource1, testResource2, testResource3, testResource4, testResource5 } from "modules/space/src/resources/resourceTemplates";
-import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/availabilityFlags";
+import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/src/availabilityFlags";
 import { localize } from "../localization/localize";
 
 

@@ -60,7 +60,7 @@
     "copy-ui-assets": "node scripts/copy_ui_assets.js",
     "copy-painting-portraits-assets": "node scripts/copy_painting_portraits_assets.js",
     "copy-emblems-assets": "mkdirp dist/modules/defaultemblems/assets && cpr modules/defaultemblems/assets dist/modules/defaultemblems/assets -o",
-    "copy-baselib-assets": "mkdirp dist/modules/baselib/img && cpr modules/baselib/img dist/modules/baselib/img -o",
+    "copy-baselib-assets": "mkdirp dist/modules/baselib/assets && cpr modules/baselib/assets dist/modules/baselib/assets -o",
     "copy-space-assets": "mkdirp dist/modules/space/assets && cpr modules/space/assets dist/modules/space/assets -o",
     "copy-notifications-assets": "mkdirp dist/modules/defaultnotifications/assets && cpr modules/defaultnotifications/assets dist/modules/defaultnotifications/assets -o",
 

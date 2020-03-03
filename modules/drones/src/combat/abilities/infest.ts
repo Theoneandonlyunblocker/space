@@ -10,7 +10,7 @@ import
   targetEnemies,
 } from "core/src/abilities/targeting";
 
-import {makePlaceholderVfx} from "modules/baselib/makePlaceholderVfx";
+import {makePlaceholderVfx} from "modules/baselib/src/makePlaceholderVfx";
 
 import { localize } from "../../../localization/localize";
 import { CombatAbilityTemplate } from "core/src/templateinterfaces/CombatAbilityTemplate";

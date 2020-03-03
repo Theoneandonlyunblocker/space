@@ -1,6 +1,6 @@
 import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
 
-import * as unitArchetypes from "modules/baselib/unitArchetypes";
+import * as unitArchetypes from "modules/baselib/src/unitArchetypes";
 import {makeSingleUnitDrawingFunctionForPlaceholder} from "modules/space/src/units/singleUnitDrawingFunction";
 
 import {itemSlot} from "modules/space/src/items/itemSlot";
@@ -12,7 +12,7 @@ import
   warpJammer,
 } from "modules/space/src/passiveskills/passiveSkills";
 import { localize } from "../localization/localize";
-import {getAssetSrc} from "modules/baselib/assets";
+import {getAssetSrc} from "modules/baselib/assets/assets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 import { debugAbility } from "./abilities";
