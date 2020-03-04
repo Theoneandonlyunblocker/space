@@ -45,7 +45,8 @@ import { Building } from "../building/Building";
 import {BuildingUpgradeData} from "../building/BuildingUpgradeData";
 import { Resources } from "./PlayerResources";
 import { PlayerModifiersCollection } from "../maplevelmodifiers/PlayerModifiersCollection";
-import { applyAdjustmentsObjects, applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
+import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
+import { applyAdjustmentsObjects } from "../generic/AdjustmentsObject";
 import { makeRandomPersonality } from "../ai/makeRandomPersonality";
 
 

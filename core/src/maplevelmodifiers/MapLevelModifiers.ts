@@ -1,4 +1,5 @@
-import { FlatAndMultiplierAdjustment, squashAdjustmentsObjects } from "../generic/FlatAndMultiplierAdjustment";
+import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
+import { squashAdjustmentsObjects } from "../generic/AdjustmentsObject";
 
 
 export type MapLevelModifier<T extends {[key: string]: FlatAndMultiplierAdjustment}> =

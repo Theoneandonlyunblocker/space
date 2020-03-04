@@ -1,5 +1,6 @@
 import { CombatActionResults } from "./CombatActionResults";
-import { FlatAndMultiplierAdjustment, PartialAdjustmentsObject, applyAdjustmentsObjects } from "../generic/FlatAndMultiplierAdjustment";
+import { FlatAndMultiplierAdjustment } from "../generic/FlatAndMultiplierAdjustment";
+import { applyAdjustmentsObjects, PartialAdjustmentsObject } from "../generic/AdjustmentsObject";
 
 
 export interface CombatActionPrimitiveTemplate<T>

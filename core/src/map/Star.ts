@@ -25,7 +25,8 @@ import
 } from "./pathFinding";
 
 import {StarSaveData} from "../savedata/StarSaveData";
-import { applyFlatAndMultiplierAdjustments, applyAdjustmentsObjects } from "../generic/FlatAndMultiplierAdjustment";
+import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
+import { applyAdjustmentsObjects } from "../generic/AdjustmentsObject";
 import {GalaxyMap} from "./GalaxyMap";
 import { getUniqueArrayKeys, sumObjectValues } from "../generic/utility";
 import { Resources } from "../player/PlayerResources";

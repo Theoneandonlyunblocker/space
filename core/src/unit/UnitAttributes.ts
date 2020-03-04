@@ -2,10 +2,10 @@
 import
 {
   FlatAndMultiplierAdjustment,
-  squashAdjustmentsObjects,
   getBaseAdjustment,
   applyFlatAndMultiplierAdjustments,
 } from "../generic/FlatAndMultiplierAdjustment";
+import { squashAdjustmentsObjects } from "../generic/AdjustmentsObject";
 import
 {
   clamp,
