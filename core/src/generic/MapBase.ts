@@ -1,6 +1,6 @@
 // TODO 2020.02.19 | probably a few classes that could be converted to use this
 export abstract class MapBase<
-  Key extends object,
+  Key,
   Value extends AddableValue,
   AddableValue,
 >
@@ -55,7 +55,7 @@ export abstract class MapBase<
 
   // don't think it's possible to type this polymorphically without higher kinded types
   // child class should define correct type signature and call this
-  protected mapRaw<NewKey extends object>(
+  protected mapRaw<NewKey>(
     mapFn: (key: Key) => NewKey,
   ): MapBase<NewKey, Value, AddableValue>
   {

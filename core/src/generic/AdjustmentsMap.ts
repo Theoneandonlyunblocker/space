@@ -2,7 +2,7 @@ import { FlatAndMultiplierAdjustment, getBaseAdjustment, squashFlatAndMultiplier
 import { MapBase } from "./MapBase";
 
 
-export class AdjustmentsMap<Key extends object> extends MapBase<
+export class AdjustmentsMap<Key> extends MapBase<
   Key,
   FlatAndMultiplierAdjustment,
   Partial<FlatAndMultiplierAdjustment>
@@ -13,7 +13,7 @@ export class AdjustmentsMap<Key extends object> extends MapBase<
     super();
   }
 
-  public map<NewKey extends object>(
+  public map<NewKey>(
     mapFn: (key: Key) => NewKey,
   ): AdjustmentsMap<NewKey>
   {

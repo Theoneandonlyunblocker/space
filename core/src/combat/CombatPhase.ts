@@ -17,7 +17,7 @@ export class CombatPhase<AllPhases extends string>
 {
   public readonly name: string;
   /**
-   * do not manipulate directly. use methods on CombatActionListener instead.
+   * do not manipulate directly. use methods on CombatActionManager instead.
    */
   public readonly actions: CombatAction[] = [];
   public afterPhaseIsFinished: CombatPhaseFinishCallback<AllPhases>;
