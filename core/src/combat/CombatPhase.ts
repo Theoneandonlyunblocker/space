@@ -31,7 +31,7 @@ export class CombatPhase<AllPhases extends string>
   )
   {
     this.combatManager = manager;
-    // TODO 2020.01.29 | implement
+    // TODO 2020.03.04 | implement
   }
 
   public addActionToFront(action: CombatAction): void

@@ -1,6 +1,5 @@
 import { CombatPhaseInfo } from "../../CombatPhaseInfo";
 import { CorePhase } from "../coreCombatPhases";
-import { universalCoreListenerFetchers } from "../universalCoreListenerFetchers";
 
 
 export const turnStartPhase: CombatPhaseInfo<CorePhase> =
@@ -16,13 +15,5 @@ export const turnStartPhase: CombatPhaseInfo<CorePhase> =
     {
       combatManager.setPhase("waitForAbilityUsePhase");
     }
-  },
-  combatActionFetchers:
-  {
-
-  },
-  combatListenerFetchers:
-  {
-    ...universalCoreListenerFetchers,
   },
 };

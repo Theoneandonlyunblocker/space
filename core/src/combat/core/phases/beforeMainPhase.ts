@@ -1,6 +1,5 @@
 import { CombatPhaseInfo } from "../../CombatPhaseInfo";
 import { CorePhase } from "../coreCombatPhases";
-import { universalCoreListenerFetchers } from "../universalCoreListenerFetchers";
 
 
 export const beforeMainPhase: CombatPhaseInfo<CorePhase> =
@@ -16,13 +15,5 @@ export const beforeMainPhase: CombatPhaseInfo<CorePhase> =
     {
       combatManager.setPhase("mainPhase");
     }
-  },
-  combatActionFetchers:
-  {
-
-  },
-  combatListenerFetchers:
-  {
-    ...universalCoreListenerFetchers,
   },
 };

@@ -9,6 +9,4 @@ export const waitForAbilityUsePhase: CombatPhaseInfo<CorePhase> =
   {
     combatManager.setPhase("beforeMainPhase");
   },
-  combatActionFetchers: {},
-  combatListenerFetchers: {},
 };

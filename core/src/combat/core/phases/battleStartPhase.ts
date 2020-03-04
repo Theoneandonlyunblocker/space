@@ -1,6 +1,5 @@
 import { CombatPhaseInfo } from "../../CombatPhaseInfo";
 import { CorePhase } from "../coreCombatPhases";
-import { addMoveDelayAtBattleStart } from "../actionFetchers/addMoveDelayAtBattleStart";
 
 
 export const battleStartPhase: CombatPhaseInfo<CorePhase> =
@@ -10,9 +9,4 @@ export const battleStartPhase: CombatPhaseInfo<CorePhase> =
   {
     combatManager.setPhase("turnStartPhase");
   },
-  combatActionFetchers:
-  {
-    addMoveDelayAtBattleStart: addMoveDelayAtBattleStart,
-  },
-  combatListenerFetchers: {},
 };

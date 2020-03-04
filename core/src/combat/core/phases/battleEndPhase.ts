@@ -9,6 +9,4 @@ export const battleEndPhase: CombatPhaseInfo<CorePhase> =
   {
     // TODO 2020.01.29 |
   },
-  combatActionFetchers: {},
-  combatListenerFetchers: {},
 };
