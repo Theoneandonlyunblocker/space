@@ -43,9 +43,11 @@ import { AllCoreScripts } from "../triggeredscripts/AllCoreScriptsWithData";
 import { ManufacturableThingKind } from "../templateinterfaces/ManufacturableThing";
 import { coreManufacturableThingKinds } from "../production/coreManufacturableThingKinds";
 import { CombatPhaseInfo } from "../combat/CombatPhaseInfo";
-import { coreCombatPhases } from "../combat/core/coreCombatPhases";
 import { CombatEffectTemplate } from "../combat/CombatEffectTemplate";
 import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
+import { CombatActionListenerFetcher, CombatActionFetcher } from "../combat/CombatActionFetcher";
+import { coreCombatPhases } from "../combat/core/coreCombatPhases";
+import { coreCombatActionListenerFetchers } from "../combat/core/coreCombatActionListenerFetchers";
 
 
 // tslint:disable:no-any
@@ -56,7 +58,10 @@ interface Templates
   battleVfx: TemplateCollection<BattleVfxTemplate>;
   buildings: TemplateCollection<BuildingTemplate>;
   combatAbilities: TemplateCollection<CombatAbilityTemplate>;
+  combatActionFetchers: TemplateCollection<CombatActionFetcher<any>>;
+  combatActionListenerFetchers: TemplateCollection<CombatActionListenerFetcher<any>>;
   combatEffects: TemplateCollection<CombatEffectTemplate>;
+  combatPhases: TemplateCollection<CombatPhaseInfo<any>>;
   items: TemplateCollection<ItemTemplate>;
   languages: TemplateCollection<Language>;
   mapGen: TemplateCollection<MapGenTemplate>;
@@ -100,7 +105,10 @@ export class ModuleData
     battleVfx: {},
     buildings: {},
     combatAbilities: {},
+    combatActionFetchers: {},
+    combatActionListenerFetchers: {},
     combatEffects: {},
+    combatPhases: {},
     items: {},
     languages: {},
     mapGen: {},
@@ -196,13 +204,6 @@ export class ModuleData
   {
     ...coreManufacturableThingKinds,
   };
-  public readonly combatPhases:
-  {
-    [key: string]: CombatPhaseInfo<any>;
-  } =
-  {
-    ...coreCombatPhases,
-  };
   // for content not used by the core game, but used modularly across modules
   // f.ex. modular ui components
   public readonly nonCoreData:
@@ -240,6 +241,8 @@ export class ModuleData
 
   constructor()
   {
+    this.copyTemplates(coreCombatPhases, "combatPhases");
+    this.copyTemplates(coreCombatActionListenerFetchers, "combatActionListenerFetchers");
   }
   public copyTemplates<T extends keyof Templates>(source: Templates[T], category: T): void
   {

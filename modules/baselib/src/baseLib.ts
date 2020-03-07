@@ -12,6 +12,8 @@ import
 import * as moduleInfo from "../moduleInfo.json";
 import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
 import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
+import { applyIntelligenceToHealing } from "./combat/actionListeners/applyIntelligenceToHealing";
+import {universalCoreListenerFetchers} from "core/src/combat/core/universalCoreListenerFetchers";
 
 
 export const baseLib: GameModule =
@@ -43,5 +45,15 @@ export const baseLib: GameModule =
   addToModuleData: (moduleData) =>
   {
     moduleData.copyTemplates(combatAbilityTemplates, "combatAbilities");
+    const actionListenerFetchers =
+    {
+      baseLibCombatActionListenerFetchers:
+      {
+        key: "baseLibCombatActionListenerFetchers",
+        phasesToApplyTo: new Set(universalCoreListenerFetchers.phasesToApplyTo),
+        fetch: () => [applyIntelligenceToHealing],
+      }
+    }
+    moduleData.copyTemplates(actionListenerFetchers, "combatActionListenerFetchers");
   },
 };

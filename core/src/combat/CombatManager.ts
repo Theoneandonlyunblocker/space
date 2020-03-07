@@ -37,6 +37,7 @@ export class CombatManager<Phase extends string = CorePhase>
   }
   public addQueuedAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
   {
+    // TODO 2020.03.04 | should add to current phase if active, shouldn't it?
     if (!this.queuedActions[phaseInfo.key])
     {
       this.queuedActions[phaseInfo.key] = [];
@@ -46,6 +47,7 @@ export class CombatManager<Phase extends string = CorePhase>
   }
   public attachAction(child: CombatAction, parent: CombatAction): void
   {
+    // TODO 2020.03.04 | same here
     const phase = this.getQueuedActionPhase(parent);
     if (!phase)
     {

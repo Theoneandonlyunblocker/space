@@ -3,6 +3,12 @@ import { CombatPhaseInfo } from "./CombatPhaseInfo";
 import { CombatManager } from "./CombatManager";
 import { CombatPhaseFinishCallback } from "./CombatPhaseFinishCallback";
 import { CombatActionListener } from "./CombatActionListener";
+import { CombatActionListenerFetcher, CombatActionFetcher } from "./CombatActionFetcher";
+import { Battle } from "../battle/Battle";
+import { Unit } from "../unit/Unit";
+import { activeModuleData } from "../app/activeModuleData";
+import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
+import { flatten2dArray } from "../generic/utility";
 
 
 type ActionListenersByFlag<AllPhases extends string> =
@@ -15,9 +21,9 @@ type ActionListenersByFlag<AllPhases extends string> =
 
 export class CombatPhase<AllPhases extends string>
 {
-  public readonly name: string;
+  public readonly template: CombatPhaseInfo<AllPhases>;
   /**
-   * do not manipulate directly. use methods on CombatActionManager instead.
+   * do not manipulate directly
    */
   public readonly actions: CombatAction[] = [];
   public afterPhaseIsFinished: CombatPhaseFinishCallback<AllPhases>;
@@ -26,12 +32,21 @@ export class CombatPhase<AllPhases extends string>
   private readonly actionListenersByTriggeringFlag: ActionListenersByFlag<AllPhases> = {};
 
   constructor(
-    info: CombatPhaseInfo<AllPhases>,
-    manager: CombatManager<AllPhases>,
+    template: CombatPhaseInfo<AllPhases>,
+    combatManager: CombatManager<AllPhases>,
   )
   {
-    this.combatManager = manager;
-    // TODO 2020.03.04 | implement
+    this.template = template;
+    this.combatManager = combatManager;
+
+    const battle = combatManager.battle;
+    const activeUnit = battle.activeUnit;
+
+    const combatActionListeners = this.fetchCombatActionListeners(battle, activeUnit);
+    combatActionListeners.forEach(listener => this.addActionListener(listener));
+
+    const combatActionsToAdd = this.fetchCombatActions(battle, activeUnit);
+    combatActionsToAdd.forEach(action => combatManager.addQueuedAction(this.template, action));
   }
 
   public addActionToFront(action: CombatAction): void
@@ -96,5 +111,37 @@ export class CombatPhase<AllPhases extends string>
         }
       });
     }
+  }
+  private getRelevantFetchers<T extends CombatActionFetcher<AllPhases> | CombatActionListenerFetcher<AllPhases>>(
+    fetchersByKey: TemplateCollection<T>,
+  ): T[]
+  {
+    const fetchers = Object.keys(fetchersByKey).map(key => fetchersByKey[key]);
+    const relevantFetchers = fetchers.filter(fetcher =>
+    {
+      fetcher.phasesToApplyTo.has(this.template);
+    });
+
+    return relevantFetchers;
+  }
+  private fetchCombatActionListeners(
+    battle: Battle,
+    activeUnit: Unit,
+  ): CombatActionListener<AllPhases>[]
+  {
+    const relevantFetchers = this.getRelevantFetchers(activeModuleData.templates.combatActionListenerFetchers);
+    const allListeners = relevantFetchers.map(fetcher => fetcher.fetch(battle, activeUnit));
+
+    return flatten2dArray(allListeners);
+  }
+  private fetchCombatActions(
+    battle: Battle,
+    activeUnit: Unit,
+  ): CombatAction[]
+  {
+    const relevantFetchers = this.getRelevantFetchers(activeModuleData.templates.combatActionFetchers);
+    const allActions = relevantFetchers.map(fetcher => fetcher.fetch(battle, activeUnit));
+
+    return flatten2dArray(allActions);
   }
 }

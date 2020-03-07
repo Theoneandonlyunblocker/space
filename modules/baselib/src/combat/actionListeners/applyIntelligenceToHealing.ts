@@ -5,7 +5,6 @@ import { healing } from "../primitives/healing";
 import { CombatActionListener } from "core/src/combat/CombatActionListener";
 
 
-// TODO 2020.02.20 | this needs to be registered somewhere
 export const applyIntelligenceToHealing: CombatActionListener<CorePhase> =
 {
   key: "applyIntelligenceToHealing",

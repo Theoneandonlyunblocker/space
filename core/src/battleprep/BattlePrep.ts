@@ -54,7 +54,7 @@ export class BattlePrep<CombatPhase extends string = any>
     this.defenderUnits = battleData.defender.units;
 
     this.getAllUnits().forEach(unit => unit.resetBattleStats());
-    this.combatManager = new CombatManager(activeModuleData.combatPhases);
+    this.combatManager = new CombatManager(activeModuleData.templates.combatPhases);
 
     const attackerHasScouted = this.attacker.starIsDetected(battleData.location);
     this.attackerFormation = new BattlePrepFormation(
