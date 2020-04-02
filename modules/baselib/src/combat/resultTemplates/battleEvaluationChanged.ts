@@ -5,7 +5,7 @@ export const battleEvaluationChanged: CombatActionResultTemplate<number> =
 {
   key: "battleEvaluationChanged",
   defaultValue: 0,
-  applyResult: (value, source, target, combatManager, parentAction) =>
+  applyResult: (value, source, target, combatManager) =>
   {
     combatManager.battle.evaluationAdjustment += value;
   },
