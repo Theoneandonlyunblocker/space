@@ -1,5 +1,7 @@
 import { CombatPhaseInfo } from "../../CombatPhaseInfo";
 import { CorePhase } from "../coreCombatPhases";
+import { battleEndPhase } from "./battleEndPhase";
+import { afterMainPhase } from "./afterMainPhase";
 
 
 export const mainPhase: CombatPhaseInfo<CorePhase> =
@@ -9,11 +11,11 @@ export const mainPhase: CombatPhaseInfo<CorePhase> =
   {
     if (combatManager.battle.shouldEnd())
     {
-      combatManager.setPhase("battleEndPhase");
+      combatManager.setPhase(battleEndPhase);
     }
     else
     {
-      combatManager.setPhase("afterMainPhase");
+      combatManager.setPhase(afterMainPhase);
     }
   },
 };

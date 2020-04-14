@@ -11,28 +11,27 @@ export class CombatManager<Phase extends string = CorePhase>
   public currentPhase: CombatPhase<Phase>;
   public readonly battle: Battle;
 
-  private readonly allCombatPhases: {[P in Phase]: CombatPhaseInfo<Phase>};
   private readonly queuedActions:
   {
     [P in Phase]?: CombatAction[];
   } = {};
 
-  constructor(allCombatPhases: {[P in Phase]: CombatPhaseInfo<Phase>})
+  constructor()
   {
-    this.allCombatPhases = allCombatPhases;
+
   }
 
-  public setPhase(phase: Phase): void
+  public setPhase(phaseInfo: CombatPhaseInfo<Phase>): void
   {
-    this.currentPhase = new CombatPhase(this.allCombatPhases[phase], this);
-    if (this.queuedActions[phase])
+    this.currentPhase = new CombatPhase(phaseInfo, this);
+    if (this.queuedActions[phaseInfo.key])
     {
-      this.queuedActions[phase].forEach(queuedAction =>
+      this.queuedActions[phaseInfo.key].forEach(queuedAction =>
       {
         this.currentPhase.addActionToBack(queuedAction);
       });
 
-      this.queuedActions[phase] = [];
+      this.queuedActions[phaseInfo.key] = [];
     }
   }
   public addQueuedAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
