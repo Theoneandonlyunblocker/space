@@ -36,7 +36,13 @@ export class CombatManager<Phase extends string = CorePhase>
   }
   public addQueuedAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
   {
-    // TODO 2020.03.04 | should add to current phase if active, shouldn't it?
+    if (this.currentPhase.template === phaseInfo)
+    {
+      this.currentPhase.addActionToBack(action);
+
+      return;
+    }
+
     if (!this.queuedActions[phaseInfo.key])
     {
       this.queuedActions[phaseInfo.key] = [];
@@ -46,30 +52,20 @@ export class CombatManager<Phase extends string = CorePhase>
   }
   public attachAction(child: CombatAction, parent: CombatAction): void
   {
-    // TODO 2020.03.04 | same here
+    if (this.currentPhase.hasAction(parent))
+    {
+      CombatManager.spliceAttachedAction(child, parent, this.currentPhase.actions);
+
+      return;
+    }
+
     const phase = this.getQueuedActionPhase(parent);
     if (!phase)
     {
       throw new Error("Tried to attach child action to parent that was not part of combat manager queue.");
     }
 
-    const parentIndex = this.queuedActions[phase].indexOf(parent);
-    const firstUnConnectedActionIndex = (() =>
-    {
-      for (let i = parentIndex + 1; i < this.queuedActions[phase].length; i++)
-      {
-        const action = this.queuedActions[phase][i];
-        if (!action.isConnectedToAction(parent))
-        {
-          return i;
-        }
-      }
-
-      return this.queuedActions[phase].length;
-    })();
-
-    this.queuedActions[phase].splice(firstUnConnectedActionIndex, 0, child);
-
+    CombatManager.spliceAttachedAction(child, parent, this.queuedActions[phase]);
     child.actionAttachedTo = parent;
   }
 
@@ -85,5 +81,26 @@ export class CombatManager<Phase extends string = CorePhase>
     }
 
     return null;
+  }
+
+  private static spliceAttachedAction(child: CombatAction, parent: CombatAction, actions: CombatAction[]): void
+  {
+    const parentIndex = actions.indexOf(parent);
+
+    const firstUnConnectedActionIndex = (() =>
+    {
+      for (let i = parentIndex + 1; i < actions.length; i++)
+      {
+        const action = actions[i];
+        if (!action.isConnectedToAction(parent))
+        {
+          return i;
+        }
+      }
+
+      return actions.length;
+    })();
+
+    actions.splice(firstUnConnectedActionIndex, 0, child);
   }
 }

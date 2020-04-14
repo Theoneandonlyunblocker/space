@@ -23,7 +23,7 @@ export class CombatPhase<AllPhases extends string>
 {
   public readonly template: CombatPhaseInfo<AllPhases>;
   /**
-   * do not manipulate directly
+   * do not manipulate directly, use methods in CombatManager instead
    */
   public readonly actions: CombatAction[] = [];
   public afterPhaseIsFinished: CombatPhaseFinishCallback<AllPhases>;
@@ -58,6 +58,10 @@ export class CombatPhase<AllPhases extends string>
   {
     this.actions.push(action);
     this.triggerActionListeners(action, "onAdd");
+  }
+  public hasAction(action: CombatAction): boolean
+  {
+    return this.actions.indexOf(action) !== -1;
   }
   public removeAction(action: CombatAction): void
   {
