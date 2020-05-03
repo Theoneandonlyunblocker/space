@@ -4,7 +4,7 @@ import {Battle} from "../battle/Battle";
 import {GuardCoverage} from "../unit/GuardCoverage";
 import {Unit} from "../unit/Unit";
 
-// TODO 2020.02.08 | rename / move
+// TODO 2020.02.08 | move
 export interface AbilityUseData
 {
   ability: CombatAbilityTemplate;
@@ -13,7 +13,7 @@ export interface AbilityUseData
   actualTarget?: Unit;
 }
 
-// TODO 2020.02.08 | rename / move
+// TODO 2020.02.08 | move
 export function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData): Unit
 {
   if (abilityUseData.ability.targetCannotBeDiverted)
@@ -21,23 +21,42 @@ export function getTargetOrGuard(battle: Battle, abilityUseData: AbilityUseData)
     return abilityUseData.intendedTarget;
   }
 
-  let guarding = getGuarders(battle, abilityUseData);
-
-  guarding = guarding.sort((a, b) =>
+  const guarders = getGuarders(battle, abilityUseData);
+  const guardersSortedByGuardAmount = guarders.sort((a, b) =>
   {
     return a.battleStats.guardAmount - b.battleStats.guardAmount;
   });
 
-  for (let i = 0; i < guarding.length; i++)
+  for (let i = 0; i < guardersSortedByGuardAmount.length; i++)
   {
     const guardRoll = Math.random() * 100;
-    if (guardRoll <= guarding[i].battleStats.guardAmount)
+    if (guardRoll <= guardersSortedByGuardAmount[i].battleStats.guardAmount)
     {
-      return guarding[i];
+      return guardersSortedByGuardAmount[i];
     }
   }
 
   return abilityUseData.intendedTarget;
+}
+
+function getGuarders(battle: Battle, abilityUseData: AbilityUseData): Unit[]
+{
+  const userSide = abilityUseData.user.battleStats.side;
+  const targetSide = abilityUseData.intendedTarget.battleStats.side;
+
+  if (userSide === targetSide)
+  {
+    return [];
+  }
+
+  const allEnemies = battle.getUnitsForSide(targetSide);
+
+  const guarders = allEnemies.filter(unit =>
+  {
+    return canUnitGuardTarget(unit, abilityUseData.intendedTarget);
+  });
+
+  return guarders;
 }
 function canUnitGuardTarget(unit: Unit, intendedTarget: Unit)
 {
@@ -58,23 +77,4 @@ function canUnitGuardTarget(unit: Unit, intendedTarget: Unit)
   }
 
   return false;
-}
-function getGuarders(battle: Battle, abilityUseData: AbilityUseData): Unit[]
-{
-  const userSide = abilityUseData.user.battleStats.side;
-  const targetSide = abilityUseData.intendedTarget.battleStats.side;
-
-  if (userSide === targetSide)
-  {
-    return [];
-  }
-
-  const allEnemies = battle.getUnitsForSide(targetSide);
-
-  const guarders = allEnemies.filter(unit =>
-  {
-    return canUnitGuardTarget(unit, abilityUseData.intendedTarget);
-  });
-
-  return guarders;
 }
