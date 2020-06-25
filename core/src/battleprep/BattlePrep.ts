@@ -10,7 +10,6 @@ import
 import {Player} from "../player/Player";
 import {Unit} from "../unit/Unit";
 import { CombatManager } from "../combat/CombatManager";
-import { activeModuleData } from "../app/activeModuleData";
 import { UnitBattleSide } from "../unit/UnitBattleSide";
 
 
@@ -54,7 +53,7 @@ export class BattlePrep<CombatPhase extends string = any>
     this.defenderUnits = battleData.defender.units;
 
     this.getAllUnits().forEach(unit => unit.resetBattleStats());
-    this.combatManager = new CombatManager(activeModuleData.templates.combatPhases);
+    this.combatManager = new CombatManager();
 
     const attackerHasScouted = this.attacker.starIsDetected(battleData.location);
     this.attackerFormation = new BattlePrepFormation(
