@@ -20,12 +20,8 @@ export interface CombatEffectTemplate<Phase extends string = CorePhase>
   flags?: Set<string>;
 
   getAttributeAdjustments?: (effectStrength: number) => UnitAttributeAdjustments;
-  actionsPerPhase?:
-  {
-    [key in Phase]?: CombatActionFetcher;
-  };
-  listenersPerPhase?:
-  {
-    [key in Phase]?: CombatActionListenerFetcher<Phase>;
-  };
+  // TODO 2020.06.08 | not read anywhere
+  actionFetchers?: CombatActionFetcher<Phase>[];
+  // TODO 2020.06.08 | not read anywhere
+  actionListenerFetchers?: CombatActionListenerFetcher<Phase>[];
 }

@@ -1,6 +1,7 @@
 import { localize } from "modules/space/localization/localize";
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { takePoisonDamage } from "../actions/takePoisonDamage";
+import { afterMainPhase } from "core/src/combat/core/phases/afterMainPhase";
 
 
 export const poisoned: CombatEffectTemplate =
@@ -20,13 +21,17 @@ export const poisoned: CombatEffectTemplate =
     max: Infinity,
   },
   roundingFN: Math.round,
-  actionsPerPhase:
-  {
-    afterMainPhase: (battle, unit) =>
+  actionFetchers:
+  [
     {
-      return [
-        takePoisonDamage(unit),
-      ];
+      key: "takePoisonDamage",
+      phasesToApplyTo: new Set([afterMainPhase]),
+      fetch: (battle, unit) =>
+      {
+        return [
+          takePoisonDamage(unit),
+        ];
+      },
     },
-  },
+  ],
 };
