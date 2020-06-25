@@ -36,7 +36,7 @@ export class CombatManager<Phase extends string = CorePhase>
   }
   public addQueuedAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
   {
-    if (this.currentPhase.template === phaseInfo)
+    if (this.currentPhase && this.currentPhase.template === phaseInfo)
     {
       this.currentPhase.addActionToBack(action);
 
