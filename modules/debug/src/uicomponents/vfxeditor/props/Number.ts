@@ -58,6 +58,7 @@ export class VfxFragmentPropNumberComponent extends React.Component<PropTypes, S
         NumberInput(
         {
           value: this.props.value,
+          noSpinner: true,
           onChange: newValue =>
           {
             this.props.fragment.props[this.props.propName] = newValue;

@@ -46,6 +46,7 @@ export class InlineNumberPropComponent extends React.Component<PropTypes, StateT
         NumberInput(
         {
           value: this.props.value,
+          noSpinner: true,
           onChange: this.props.onValueChange,
         }),
       )

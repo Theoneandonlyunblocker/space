@@ -10,7 +10,7 @@ import
 import {Spinner} from "./Spinner";
 
 
-export interface PropTypes extends React.Props<any>
+interface BasePropTypes extends React.Props<any>
 {
   value: number;
   onChange: (value: number) => void;
@@ -27,6 +27,11 @@ export interface PropTypes extends React.Props<any>
   stylizeValue?: (value: number) => string;
   attributes?: React.HTMLAttributes<HTMLInputElement>;
 }
+type PropTypesWithSpinner = BasePropTypes & {step: number};
+type PropTypesWithoutSpinner = BasePropTypes & {noSpinner: true};
+
+export type PropTypes = PropTypesWithSpinner | PropTypesWithoutSpinner;
+
 
 interface StateType
 {
