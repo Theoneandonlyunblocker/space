@@ -47,6 +47,7 @@
     "compile-defaultui-css": "lessc modules/defaultui/assets/css/main.less dist/modules/defaultui/assets/css/main.css",
     "compile-titans-css": "lessc modules/titans/assets/css/index.less dist/modules/titans/assets/css/index.css",
     "compile-englishlanguage-css": "lessc modules/englishlanguage/assets/css/index.less dist/modules/englishlanguage/assets/css/index.css",
+    "compile-debug-css": "lessc modules/debug/assets/css/index.less dist/modules/debug/assets/css/index.css",
 
     "convert-shaders": "node scripts/convert_shaders",
 

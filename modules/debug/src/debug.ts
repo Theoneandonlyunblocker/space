@@ -9,12 +9,27 @@ import { uiScenes } from "./uiScenes";
 import { debugAbility } from "./abilities";
 import { addTitanChassisToModuleData } from "modules/titans/src/nonCoreModuleData";
 import { debugChassis, debugChassis2 } from "./titanChassis";
+import { GameModuleInitializationPhase } from "core/src/modules/GameModuleInitializationPhase.js";
+import { cssSources } from "../assets/assets.js";
+import { loadCss } from "core/src/generic/utility.js";
 
 
 export const debug: GameModule =
 {
   info: moduleInfo,
   supportedLanguages: [englishLanguage],
+  assetLoaders:
+  {
+    [GameModuleInitializationPhase.BattleStart]:
+    [
+      baseUrl =>
+      {
+        cssSources.forEach(source => loadCss(source, baseUrl));
+
+        return Promise.resolve();
+      },
+    ],
+  },
   addToModuleData: moduleData =>
   {
     moduleData.copyTemplates(

@@ -3,6 +3,7 @@ import { GameModuleInitializationPhase } from "core/src/modules/GameModuleInitia
 import { FlagMaker } from "./uicomponents/FlagMaker";
 import { BattleSceneTester } from "./uicomponents/BattleSceneTester";
 import { VfxEditor } from "./uicomponents/vfxeditor/VfxEditor";
+import { CombatTester } from "./uicomponents/combattester/CombatTester";
 
 
 const nonCoreUiScenes: NonCoreUIScenes =
@@ -31,6 +32,16 @@ const nonCoreUiScenes: NonCoreUIScenes =
   {
     requiredInitializationPhase: GameModuleInitializationPhase.BattleStart,
     render: (reactUi, children) => VfxEditor(
+    {
+
+    },
+      children,
+    ),
+  },
+  combatTester:
+  {
+    requiredInitializationPhase: GameModuleInitializationPhase.BattleStart,
+    render: (reactUi, children) => CombatTester(
     {
 
     },
