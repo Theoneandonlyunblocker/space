@@ -202,13 +202,13 @@ export class Player
       isAi: false,
       isIndependent: false,
       id: -9999,
-      name: null,
+      name: Name.generateDummyName(),
 
       race:
       {
         type: null,
-        displayName: null,
         description: null,
+        displayName: Name.generateDummyName(),
 
         technologies: [],
         distributionData:
@@ -221,9 +221,9 @@ export class Player
         getBuildableUnits: undefined,
         getBuildableItems: undefined,
         associatedAvailabilityFlags: [],
-        getFleetName: undefined,
-        getPlayerName: undefined,
-        getUnitName: undefined,
+        getFleetName: Name.generateDummyName,
+        getPlayerName: Name.generateDummyName,
+        getUnitName: Name.generateDummyName,
         getUnitPortrait: undefined,
         generateIndependentPlayer: undefined,
         generateIndependentFleets: undefined,

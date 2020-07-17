@@ -33,6 +33,13 @@ export abstract class Name<
 
     return name;
   }
+  public static generateDummyName(): Name
+  {
+    const languageKey = Object.keys(activeModuleData.templates.languages)[0];
+    const language = activeModuleData.templates.languages[languageKey];
+
+    return language.constructName("dummy");
+  }
 
   public abstract applyData(data: NameSaveData<TagsSaveData>): void;
   public serialize(): NameSaveData<TagsSaveData>
