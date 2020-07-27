@@ -6,8 +6,7 @@ import { Star } from "../map/Star";
 import { Unit } from "../unit/Unit";
 
 
-// i add these on an as-needed basis
-// if there are hooks you'd like to be added, open up an issue on github
+// if there are hooks you'd like to be added, open an issue on github
 export type AllCoreScripts =
 {
   // battle

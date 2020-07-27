@@ -101,7 +101,7 @@ export class ModuleData
   {
     aiTemplateConstructors: {},
     attitudeModifiers: {},
-    // TODO 2020.02.08 | necessary to store these here?
+    // TODO 2020.07.09 | only used for debugging, store somewhere else?
     battleVfx: {},
     buildings: {},
     combatAbilities: {},
@@ -204,8 +204,7 @@ export class ModuleData
   {
     ...coreManufacturableThingKinds,
   };
-  // for content not used by the core game, but used modularly across modules
-  // f.ex. modular ui components
+  // for content not used by the core game, but used across modules
   public readonly nonCoreData:
   {
     [moduleKey: string]:

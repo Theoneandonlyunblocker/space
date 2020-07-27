@@ -403,7 +403,7 @@ class App
   private makePlayers()
   {
     const players: Player[] = [];
-    const candidateRaces = <RaceTemplate[]> Object.keys(activeModuleData.templates.races).map(raceKey =>
+    const allPlayableRaces = Object.keys(activeModuleData.templates.races).map(raceKey =>
     {
       return activeModuleData.templates.races[raceKey];
     }).filter(raceTemplate =>
@@ -418,7 +418,7 @@ class App
         isAi: i > 0,
         isIndependent: false,
 
-        race: getRandomArrayItem(candidateRaces),
+        race: getRandomArrayItem(allPlayableRaces),
         resources: {money: 1000},
       }));
     }
