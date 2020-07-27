@@ -109,12 +109,6 @@ export class Emblem
 
   private static getAvailableTemplatesForRandomGeneration(): SubEmblemTemplate[]
   {
-    return Object.keys(activeModuleData.templates.subEmblems).map(key =>
-    {
-      return activeModuleData.templates.subEmblems[key];
-    }).filter(template =>
-    {
-      return !template.disallowRandomGeneration;
-    });
+    return activeModuleData.templates.subEmblems.filter(template => !template.disallowRandomGeneration);
   }
 }

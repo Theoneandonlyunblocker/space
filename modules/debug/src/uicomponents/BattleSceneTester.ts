@@ -88,7 +88,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     battle.init();
 
     const initialVfxTemplateKey = "mergeRelease";
-    const initialVfxTemplate = activeModuleData.templates.battleVfx[initialVfxTemplateKey];
+    const initialVfxTemplate = activeModuleData.templates.battleVfx.get(initialVfxTemplateKey);
 
     return(
     {

@@ -253,23 +253,25 @@ export class Unit
   public static fromSaveData(data: UnitSaveData): Unit
   {
     function fetchTemplate<T>(
-      templates: TemplateCollection<T>,
-      key: keyof typeof templates,
       templatesCategoryDisplayString: string,
+      key: string,
+      ...templateCollections: TemplateCollection<T>[]
     ): T
     {
-      const template = templates[key];
-      if (!template)
+      for (let i = 0; i < templateCollections.length; i++)
       {
-        throw new Error(`Missing ${templatesCategoryDisplayString} template '${key}'`);
+        if (templateCollections[i].has(key))
+        {
+          return templateCollections[i].get(key);
+        }
       }
 
-      return template;
+      throw new Error(`Missing ${templatesCategoryDisplayString} template '${key}'`);
     }
 
     const unit = new Unit(
     {
-      template: fetchTemplate(activeModuleData.templatesByImplementation.unitLike, data.templateType, "unit"),
+      template: fetchTemplate("unit", data.templateType, activeModuleData.templatesByImplementation.unitLike),
 
       id: data.id,
       name: Name.fromData(data.name),
@@ -285,23 +287,26 @@ export class Unit
 
       abilities: data.abilityTypes.map(templateType =>
       {
-        return fetchTemplate(activeModuleData.templates.combatAbilities, templateType, "ability");
+        return fetchTemplate("ability", templateType, activeModuleData.templates.combatAbilities);
       }),
       passiveSkills: data.passiveSkillTypes.map(templateType =>
       {
-        return fetchTemplate(activeModuleData.templates.passiveSkills, templateType, "passive skill");
+        return fetchTemplate("passive skill", templateType, activeModuleData.templates.passiveSkills);
       }),
       abilityUpgrades: data.abilityUpgrades.reduce((allUpgradeData, currentUpgradeData) =>
       {
         const allAbilitiesAndPassiveSkills =
-        {
-          ...activeModuleData.templates.combatAbilities,
-          ...activeModuleData.templates.passiveSkills,
-        };
+        [
+          activeModuleData.templates.combatAbilities,
+          activeModuleData.templates.passiveSkills,
+        ];
         const source = allAbilitiesAndPassiveSkills[currentUpgradeData.source];
         const upgrades = currentUpgradeData.possibleUpgrades.map(templateType =>
         {
-          return fetchTemplate(allAbilitiesAndPassiveSkills, templateType, "ability / passive skill");
+          return fetchTemplate<CombatAbilityTemplate | PassiveSkillTemplate>("ability / passive skill", templateType,
+            activeModuleData.templates.combatAbilities,
+            activeModuleData.templates.passiveSkills,
+          );
         });
 
         allUpgradeData[source.key] =

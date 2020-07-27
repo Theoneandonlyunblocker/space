@@ -36,7 +36,6 @@ import {NotificationStore} from "../notifications/NotificationStore";
 import {activeNotificationStore, setActiveNotificationStore} from "./activeNotificationStore";
 import {tutorialStatus} from "../tutorials/TutorialStatus";
 import {MapGenOptionValues} from "../templateinterfaces/MapGenOptionValues";
-import {RaceTemplate} from "../templateinterfaces/RaceTemplate";
 import {FullSaveData} from "../savedata/FullSaveData";
 import { PlayerNotificationSubscriber } from "../notifications/PlayerNotificationSubscriber";
 import { storageStrings } from "../saves/storageStrings";
@@ -403,12 +402,9 @@ class App
   private makePlayers()
   {
     const players: Player[] = [];
-    const allPlayableRaces = Object.keys(activeModuleData.templates.races).map(raceKey =>
+    const allPlayableRaces = activeModuleData.templates.races.filter(race =>
     {
-      return activeModuleData.templates.races[raceKey];
-    }).filter(raceTemplate =>
-    {
-      return !raceTemplate.isNotPlayable;
+      return !race.isNotPlayable;
     });
 
     for (let i = 0; i < 5; i++)

@@ -13,10 +13,7 @@ export function getAlwaysAvailableBuildableThings<T extends {availabilityData: A
     validFlags.add(coreAvailabilityFlags.alwaysInDebugMode);
   }
 
-  return Object.keys(allTemplates).map(key =>
-  {
-    return allTemplates[key];
-  }).filter(template =>
+  return allTemplates.filter(template =>
   {
     return template.availabilityData.flags.some(flag => validFlags.has(flag));
   });

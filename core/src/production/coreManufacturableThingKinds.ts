@@ -23,7 +23,7 @@ const item: ManufacturableThingKind<ItemTemplate, Item, string> =
     });
   },
   serialize: (template) => template.type,
-  deserialize: (templateType) => activeModuleData.templates.items[templateType],
+  deserialize: (templateType) => activeModuleData.templates.items.get(templateType),
 };
 const unit: ManufacturableThingKind<UnitTemplate, Unit, string> =
 {
@@ -55,7 +55,7 @@ const unit: ManufacturableThingKind<UnitTemplate, Unit, string> =
     });
   },
   serialize: (template) => template.type,
-  deserialize: (templateType) => activeModuleData.templates.units[templateType],
+  deserialize: (templateType) => activeModuleData.templates.units.get(templateType),
 };
 
 export const coreManufacturableThingKinds =

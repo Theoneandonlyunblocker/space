@@ -74,8 +74,8 @@ class TemplateIndexes
   {
     return(
     {
-      resources: TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.resources),
-      races: TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.races),
+      resources: TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.resources.toObject()),
+      races: TemplateIndexes.getDistributablesByGroup(activeModuleData.templates.races.toObject()),
     });
   }
   private static getDistributablesByGroup<T extends Distributable>(
@@ -146,17 +146,16 @@ class TemplateIndexes
     {
       [techLevel: number]: ItemTemplate[];
     } = {};
-    for (const itemName in activeModuleData.templates.items)
-    {
-      const item = activeModuleData.templates.items[itemName];
 
+    activeModuleData.templates.items.forEach(item =>
+    {
       if (!itemsByTechLevel[item.techLevel])
       {
         itemsByTechLevel[item.techLevel] = [];
       }
 
       itemsByTechLevel[item.techLevel].push(item);
-    }
+    });
 
     return itemsByTechLevel;
   }

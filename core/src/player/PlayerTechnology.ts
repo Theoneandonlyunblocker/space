@@ -36,7 +36,7 @@ export class PlayerTechnology
     raceTechnologyValues.forEach(raceValue =>
     {
       const techKey = raceValue.tech.key;
-      const technology = activeModuleData.templates.technologies[techKey];
+      const technology = activeModuleData.templates.technologies.get(techKey);
 
       this.technologies[techKey] =
       {

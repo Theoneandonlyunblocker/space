@@ -55,6 +55,7 @@ interface Templates
 {
   aiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
   attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
+  // TODO 2020.07.27 | only used for debugging. store somewhere else
   battleVfx: TemplateCollection<BattleVfxTemplate>;
   buildings: TemplateCollection<BuildingTemplate>;
   combatAbilities: TemplateCollection<CombatAbilityTemplate>;
@@ -97,34 +98,111 @@ export class ModuleData
   public mapBackgroundDrawingFunction: BackgroundDrawingFunction;
   public starBackgroundDrawingFunction: BackgroundDrawingFunction;
 
+  // laziness. not all template types need to trigger onTemplatesAdded()
   public templates: Templates =
   {
-    aiTemplateConstructors: {},
-    attitudeModifiers: {},
-    // TODO 2020.07.09 | only used for debugging, store somewhere else?
-    battleVfx: {},
-    buildings: {},
-    combatAbilities: {},
-    combatActionFetchers: {},
-    combatActionListenerFetchers: {},
-    combatEffects: {},
-    combatPhases: {},
-    items: {},
-    languages: {},
-    mapGen: {},
-    mapRendererLayers: {},
-    mapRendererMapModes: {},
-    notifications: {},
-    passiveSkills: {},
-    personalities: {},
-    portraits: {},
-    races: {},
-    resources: {},
-    subEmblems: {},
-    technologies: {},
-    terrains: {},
-    unitArchetypes: {},
-    units: {},
+    // tslint:disable:no-any
+    aiTemplateConstructors: new TemplateCollection<AiTemplateConstructor<any>>(
+      "aiTemplateConstructors",
+      () => this.onTemplatesAdded(),
+    ),
+    attitudeModifiers: new TemplateCollection<AttitudeModifierTemplate>(
+      "attitudeModifiers",
+      () => this.onTemplatesAdded(),
+    ),
+    battleVfx: new TemplateCollection<BattleVfxTemplate>(
+      "battleVfx",
+      () => this.onTemplatesAdded(),
+    ),
+    buildings: new TemplateCollection<BuildingTemplate>(
+      "buildings",
+      () => this.onTemplatesAdded(),
+    ),
+    combatAbilities: new TemplateCollection<CombatAbilityTemplate>(
+      "combatAbilities",
+      () => this.onTemplatesAdded(),
+    ),
+    combatActionFetchers: new TemplateCollection<CombatActionFetcher<any>>(
+      "combatActionFetchers",
+      () => this.onTemplatesAdded(),
+    ),
+    combatActionListenerFetchers: new TemplateCollection<CombatActionListenerFetcher<any>>(
+      "combatActionListenerFetchers",
+      () => this.onTemplatesAdded(),
+    ),
+    combatEffects: new TemplateCollection<CombatEffectTemplate>(
+      "combatEffects",
+      () => this.onTemplatesAdded(),
+    ),
+    combatPhases: new TemplateCollection<CombatPhaseInfo<any>>(
+      "combatPhases",
+      () => this.onTemplatesAdded(),
+    ),
+    items: new TemplateCollection<ItemTemplate>(
+      "items",
+      () => this.onTemplatesAdded(),
+    ),
+    languages: new TemplateCollection<Language>(
+      "languages",
+      () => this.onTemplatesAdded(),
+    ),
+    mapGen: new TemplateCollection<MapGenTemplate>(
+      "mapGen",
+      () => this.onTemplatesAdded(),
+    ),
+    mapRendererLayers: new TemplateCollection<MapRendererLayerTemplate>(
+      "mapRendererLayers",
+      () => this.onTemplatesAdded(),
+    ),
+    mapRendererMapModes: new TemplateCollection<MapRendererMapModeTemplate>(
+      "mapRendererMapModes",
+      () => this.onTemplatesAdded(),
+    ),
+    notifications: new TemplateCollection<NotificationTemplate<any, any>>(
+      "notifications",
+      () => this.onTemplatesAdded(),
+    ),
+    passiveSkills: new TemplateCollection<PassiveSkillTemplate>(
+      "passiveSkills",
+      () => this.onTemplatesAdded(),
+    ),
+    personalities: new TemplateCollection<Personality>(
+      "personalities",
+      () => this.onTemplatesAdded(),
+    ),
+    portraits: new TemplateCollection<PortraitTemplate>(
+      "portraits",
+      () => this.onTemplatesAdded(),
+    ),
+    races: new TemplateCollection<RaceTemplate>(
+      "races",
+      () => this.onTemplatesAdded(),
+    ),
+    resources: new TemplateCollection<ResourceTemplate>(
+      "resources",
+      () => this.onTemplatesAdded(),
+    ),
+    subEmblems: new TemplateCollection<SubEmblemTemplate>(
+      "subEmblems",
+      () => this.onTemplatesAdded(),
+    ),
+    technologies: new TemplateCollection<TechnologyTemplate>(
+      "technologies",
+      () => this.onTemplatesAdded(),
+    ),
+    terrains: new TemplateCollection<TerrainTemplate>(
+      "terrains",
+      () => this.onTemplatesAdded(),
+    ),
+    unitArchetypes: new TemplateCollection<UnitArchetype>(
+      "unitArchetypes",
+      () => this.onTemplatesAdded(),
+    ),
+    units: new TemplateCollection<UnitTemplate>(
+      "units",
+      () => this.onTemplatesAdded(),
+    ),
+    // tslint:enable:no-any
   };
 
   public ruleSet: RuleSetValues;
@@ -233,49 +311,15 @@ export class ModuleData
     unitLike: TemplateCollection<UnitTemplate>;
   } =
   {
-    buildingLike: {},
-    itemLike: {},
-    unitLike: {},
+    buildingLike: new TemplateCollection<BuildingTemplate>("buildingLike"),
+    itemLike: new TemplateCollection<ItemTemplate>("itemLike"),
+    unitLike: new TemplateCollection<UnitTemplate>("unitLike"),
   };
 
   constructor()
   {
-    this.copyTemplates(coreCombatPhases, "combatPhases");
-    this.copyTemplates(coreCombatActionListenerFetchers, "combatActionListenerFetchers");
-  }
-  public copyTemplates<T extends keyof Templates>(source: Templates[T], category: T): void
-  {
-    if (!this.templates[category])
-    {
-      console.warn(`Tried to copy templates in invalid category "${category}". Category must be one of: ${Object.keys(this.templates).join(", ")}`);
-
-      return;
-    }
-
-    for (const templateType in source)
-    {
-      const hasDuplicate = Boolean(this.templates[category][templateType]);
-
-      if (hasDuplicate)
-      {
-        throw new Error(`Duplicate '${category}' template '${templateType}'`);
-      }
-
-      this.templates[category][templateType] = source[templateType];
-    }
-
-    this.technologyUnlocksAreDirty = true;
-    this.templatesByImplementationAreDirty = true;
-  }
-  public copyAllTemplates(source: Templates): void
-  {
-    for (const category in this.templates)
-    {
-      if (source[category])
-      {
-        this.copyTemplates(source[category], <keyof Templates> category);
-      }
-    }
+    this.templates.combatPhases.copyTemplates(coreCombatPhases);
+    this.templates.combatActionListenerFetchers.copyTemplates(coreCombatActionListenerFetchers);
   }
   public addGameModule(gameModule: GameModule): Promise<void>
   {
@@ -299,7 +343,7 @@ export class ModuleData
     }
     else if (Object.keys(this.templates.mapGen).length > 0)
     {
-      return getRandomProperty(this.templates.mapGen);
+      return this.templates.mapGen.getRandom();
     }
     else
     {
@@ -318,7 +362,7 @@ export class ModuleData
   }
   public fetchLanguageForCode(languageCode: string): Language
   {
-    const language = this.templates.languages[languageCode];
+    const language = this.templates.languages.get(languageCode);
 
     if (language)
     {
@@ -379,11 +423,11 @@ export class ModuleData
     {
       const templateCollection = this.templateCollectionsWithUnlockables[unlockableThingKindKey];
 
-      return Object.keys(templateCollection).map(templateKey =>
+      return templateCollection.map(template =>
       {
         return {
           unlockableThingKind: unlockableThingKindKey,
-          unlockableThing: templateCollection[templateKey],
+          unlockableThing: template,
         };
       });
     }).reduce((allUnlockables, unlockablesOfType) =>
@@ -415,5 +459,10 @@ export class ModuleData
     });
 
     return technologyUnlocks;
+  }
+  private onTemplatesAdded(): void
+  {
+    this.technologyUnlocksAreDirty = true;
+    this.templatesByImplementationAreDirty = true;
   }
 }

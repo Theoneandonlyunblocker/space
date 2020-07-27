@@ -459,7 +459,7 @@ export class GameLoader
     game: Game,
   ): AiController<S>
   {
-    const templateConstructor = activeModuleData.templates.aiTemplateConstructors[data.templateType];
+    const templateConstructor = activeModuleData.templates.aiTemplateConstructors.get(data.templateType);
 
     const template = templateConstructor.construct(
     {

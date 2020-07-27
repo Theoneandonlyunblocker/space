@@ -35,8 +35,7 @@ export abstract class Name<
   }
   public static generateDummyName(): Name
   {
-    const languageKey = Object.keys(activeModuleData.templates.languages)[0];
-    const language = activeModuleData.templates.languages[languageKey];
+    const language = activeModuleData.templates.languages.getRandom();
 
     return language.constructName("dummy");
   }

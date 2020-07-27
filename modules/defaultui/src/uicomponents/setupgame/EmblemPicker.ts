@@ -36,10 +36,8 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
   {
     const emblemElements: React.ReactHTMLElement<any>[] = [];
 
-    for (const emblemType in activeModuleData.templates.subEmblems)
+    activeModuleData.templates.subEmblems.forEach(template =>
     {
-      const template = activeModuleData.templates.subEmblems[emblemType];
-
       let className = "emblem-picker-image";
 
       const templateIsSelected = this.props.selectedEmblemTemplate && this.props.selectedEmblemTemplate.key === template.key;
@@ -70,7 +68,7 @@ export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateT
           }),
         ),
       );
-    }
+    });
 
     return(
       ReactDOMElements.div(

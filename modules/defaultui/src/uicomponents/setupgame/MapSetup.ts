@@ -45,16 +45,8 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   private getInitialStateTODO(): StateType
   {
-    const mapGenTemplates: MapGenTemplate[] = [];
-
-    for (const template in activeModuleData.templates.mapGen)
-    {
-      if (activeModuleData.templates.mapGen[template].key)
-      {
-        mapGenTemplates.push(activeModuleData.templates.mapGen[template]);
-      }
-    }
-
+    // TODO 2020.07.27 | when is this ever not true?
+    const mapGenTemplates: MapGenTemplate[] = activeModuleData.templates.mapGen.filter(template => template.key);
 
     return(
     {
@@ -79,7 +71,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   public async randomize(): Promise<void>
   {
-    const template = getRandomProperty(activeModuleData.templates.mapGen);
+    const template = activeModuleData.templates.mapGen.getRandom();
 
     await this.setTemplate(template);
 

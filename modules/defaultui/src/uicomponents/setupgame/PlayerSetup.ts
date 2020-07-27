@@ -47,15 +47,9 @@ interface StateType
 
 function getRandomPlayerRaceTemplate(): RaceTemplate
 {
-  const candidateRaces = Object.keys(activeModuleData.templates.races).map(raceKey =>
-  {
-    return activeModuleData.templates.races[raceKey];
-  }).filter(raceTemplate =>
-  {
-    return !raceTemplate.isNotPlayable;
-  });
+  const playableRaces = activeModuleData.templates.races.filter(race => !race.isNotPlayable);
 
-  return getRandomArrayItem(candidateRaces);
+  return getRandomArrayItem(playableRaces);
 }
 
 export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
@@ -236,13 +230,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
         }),
         RacePicker(
         {
-          availableRaces: Object.keys(activeModuleData.templates.races).map(raceKey =>
-          {
-            return activeModuleData.templates.races[raceKey];
-          }).filter(race =>
-          {
-            return !race.isNotPlayable;
-          }),
+          availableRaces: activeModuleData.templates.races.filter(race => !race.isNotPlayable),
           selectedRace: this.state.race,
           changeRace: this.setRace,
         }),

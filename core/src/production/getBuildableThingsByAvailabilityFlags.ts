@@ -7,10 +7,7 @@ export function getBuildableThingsByAvailabilityFlags<T extends {availabilityDat
   filterFN: (flags: Set<string>) => boolean,
 ): T[]
 {
-  return Object.keys(allTemplates).map(key =>
-  {
-    return allTemplates[key];
-  }).filter(template =>
+  return allTemplates.filter(template =>
   {
     const flags = new Set(template.availabilityData.flags);
 

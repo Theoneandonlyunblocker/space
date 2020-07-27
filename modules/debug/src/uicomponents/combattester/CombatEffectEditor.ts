@@ -17,11 +17,6 @@ const CombatEffectEditorComponent: React.FunctionComponent<PropTypes> = props =>
   const [selectedEffect, setSelectedEffect] = React.useState<CombatEffectTemplate | null>(null);
   const [effectStrength, setEffectStrength] = React.useState<number>(1);
 
-  const allCombatEffects = Object.keys(activeModuleData.templates.combatEffects).map(key =>
-  {
-    return activeModuleData.templates.combatEffects[key];
-  });
-
   return(
     ReactDOMElements.div(
     {
@@ -29,7 +24,7 @@ const CombatEffectEditorComponent: React.FunctionComponent<PropTypes> = props =>
     },
       CombatEffectPicker(
       {
-        availableEffects: allCombatEffects,
+        availableEffects: activeModuleData.templates.combatEffects.getAll(),
         effectStrength: effectStrength,
         onChange: effect =>
         {

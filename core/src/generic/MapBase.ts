@@ -1,4 +1,5 @@
 // TODO 2020.02.19 | probably a few classes that could be converted to use this
+// TODO 2020.07.27 | rename to AddableValueMap or something?
 export abstract class MapBase<
   Key,
   Value extends AddableValue,
