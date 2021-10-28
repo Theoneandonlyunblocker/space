@@ -1,10 +1,7 @@
-import {MapRendererLayerTemplate} from "core/src/templateinterfaces/MapRendererLayerTemplate";
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
-
 import * as MapLayers from "./allMapLayerTemplates";
 
 
-export const mapLayerTemplates: TemplateCollection<MapRendererLayerTemplate> =
+export const mapLayerTemplates =
 {
   [MapLayers.nonFillerStars.key]: MapLayers.nonFillerStars,
   [MapLayers.starLinks.key]: MapLayers.starLinks,

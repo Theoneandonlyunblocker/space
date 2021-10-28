@@ -1,8 +1,7 @@
 import { TitanComponentTemplate } from "./TitanComponentTemplate";
-import { TemplateCollection } from "core/src/templateinterfaces/TemplateCollection";
 import { ModuleData } from "core/src/modules/ModuleData";
 import { TitanChassisTemplate } from "./TitanChassisTemplate";
-
+import { TemplateCollection } from "core/src/templateinterfaces/TemplateCollection";
 
 export type NonCoreModuleData =
 {
@@ -25,9 +24,9 @@ export type NonCoreModuleData =
 export function createNonCoreModuleData(): NonCoreModuleData
 {
   return {
-    titanComponents: {},
+    titanComponents: new TemplateCollection<TitanComponentTemplate>("titanComponent"),
     getBuildableTitanComponentsForRace: {},
-    titanChassis: {},
+    titanChassis: new TemplateCollection<TitanChassisTemplate>("titanChassis"),
     getBuildableTitanChassisForRace: {},
     idGenerators:
     {
@@ -38,35 +37,17 @@ export function createNonCoreModuleData(): NonCoreModuleData
 
 export function addTitanComponentsToModuleData(
   moduleData: ModuleData,
-  componentsToAdd: TemplateCollection<TitanComponentTemplate>,
+  componentsToAdd: {[key: string]: TitanComponentTemplate},
 ): void
 {
   const existingComponents = (moduleData.nonCoreData.titans as NonCoreModuleData).titanComponents;
-
-  for (const key in componentsToAdd)
-  {
-    if (existingComponents[key])
-    {
-      throw new Error(`Duplicate titan component template '${key}'`);
-    }
-
-    existingComponents[key] = componentsToAdd[key];
-  }
+  existingComponents.copyTemplates(componentsToAdd);
 }
 export function addTitanChassisToModuleData(
   moduleData: ModuleData,
-  chassisToAdd: TemplateCollection<TitanChassisTemplate>,
+  chassisToAdd: {[key: string]: TitanChassisTemplate},
 ): void
 {
   const existingComponents = (moduleData.nonCoreData.titans as NonCoreModuleData).titanChassis;
-
-  for (const key in chassisToAdd)
-  {
-    if (existingComponents[key])
-    {
-      throw new Error(`Duplicate titan component template '${key}'`);
-    }
-
-    existingComponents[key] = chassisToAdd[key];
-  }
+  existingComponents.copyTemplates(chassisToAdd);
 }

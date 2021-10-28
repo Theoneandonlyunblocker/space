@@ -212,3 +212,12 @@ export const miner: PassiveSkillTemplate =
     },
   ],
 };
+
+export const passiveSkillTemplates =
+{
+  autoHeal: autoHeal,
+  initialGuard: initialGuard,
+  medic: medic,
+  warpJammer: warpJammer,
+  miner: miner,
+};

@@ -12,7 +12,7 @@ export const defaultAttitudeModifiers: GameModule =
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates(attitudeModifierTemplates, "attitudeModifiers");
+    moduleData.templates.attitudeModifiers.copyTemplates(attitudeModifierTemplates);
 
     moduleData.scripts.add(attitudeModifierModuleScripts);
 

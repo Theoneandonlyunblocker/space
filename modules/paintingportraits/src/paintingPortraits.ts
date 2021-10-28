@@ -25,7 +25,7 @@ export const paintingPortraits: GameModule =
   },
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates(paintingPortraitTemplates, "portraits");
+    moduleData.templates.portraits.copyTemplates(paintingPortraitTemplates);
 
     return moduleData;
   },

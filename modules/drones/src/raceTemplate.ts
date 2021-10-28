@@ -2,7 +2,6 @@ import {RaceTemplate} from "core/src/templateinterfaces/RaceTemplate";
 import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
 import
 {
-  getRandomProperty,
   randInt,
 } from "core/src/generic/utility";
 import {distributionGroups} from "modules/baselib/src/distributionGroups";
@@ -49,7 +48,7 @@ export const drones: RaceTemplate =
   getUnitName: unitTemplate => localizeName("unitName")(unitTemplate.displayName, randInt(0, 20000)),
   getUnitPortrait: (unitTemplate, allTemplates) =>
   {
-    return getRandomProperty(allTemplates);
+    return allTemplates.getRandom();
   },
   generateIndependentPlayer: emblemTemplates =>
   {
@@ -65,7 +64,7 @@ export const drones: RaceTemplate =
   getAiTemplateConstructor: player => defaultAiConstructor,
 };
 
-export const raceTemplates: TemplateCollection<RaceTemplate> =
+export const raceTemplates =
 {
   [drones.type]: drones,
 };

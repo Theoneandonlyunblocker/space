@@ -1,6 +1,3 @@
-import {NotificationTemplate} from "core/src/templateinterfaces/NotificationTemplate";
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
-
 import
 {
   battleFinishNotification,
@@ -19,7 +16,7 @@ import
 
 
 // tslint:disable-next-line:no-any
-export const notificationTemplates: TemplateCollection<NotificationTemplate<any, any>> =
+export const notificationTemplates =
 {
   [battleFinishNotification.key]: battleFinishNotification,
   [playerDiedNotification.key]: playerDiedNotification,

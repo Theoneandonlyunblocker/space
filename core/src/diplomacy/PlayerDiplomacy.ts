@@ -216,10 +216,8 @@ export class PlayerDiplomacy
       }
     }
 
-    for (const modifierType in allModifiers)
+    allModifiers.forEach(template =>
     {
-      const template = allModifiers[modifierType];
-
       const activeModifier = activeModifiers[template.type];
 
       if (!activeModifier && template.startCondition)
@@ -243,7 +241,7 @@ export class PlayerDiplomacy
       {
         activeModifier.update(evaluation);
       }
-    }
+    });
   }
   public serialize(): PlayerDiplomacySaveData
   {

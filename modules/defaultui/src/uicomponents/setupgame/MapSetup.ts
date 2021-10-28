@@ -4,7 +4,6 @@ import * as ReactDOMElements from "react-dom-factories";
 import {localize} from "../../../localization/localize";
 import {activeModuleData} from "core/src/app/activeModuleData";
 import {MapGenTemplate} from "core/src/templateinterfaces/MapGenTemplate";
-import { getRandomProperty } from "core/src/generic/utility";
 
 import {MapGenOptions, MapGenOptionsComponent} from "./MapGenOptions";
 
@@ -46,7 +45,12 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   private getInitialStateTODO(): StateType
   {
     // TODO 2020.07.27 | when is this ever not true?
-    const mapGenTemplates: MapGenTemplate[] = activeModuleData.templates.mapGen.filter(template => template.key);
+    const mapGenTemplates: MapGenTemplate[] = activeModuleData.templates.mapGen.filter(template =>
+    {
+      const templateHasKey = Boolean(template.key);
+
+      return templateHasKey;
+    });
 
     return(
     {
@@ -97,7 +101,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
   private handleSelectTemplate(e: React.FormEvent<HTMLSelectElement>): void
   {
     const target = e.currentTarget;
-    const selectedTemplate = activeModuleData.templates.mapGen[target.value];
+    const selectedTemplate = activeModuleData.templates.mapGen.get(target.value);
 
     this.setTemplate(selectedTemplate);
   }

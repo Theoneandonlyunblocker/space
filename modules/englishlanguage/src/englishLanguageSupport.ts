@@ -30,10 +30,10 @@ export const englishLanguageSupport: GameModule =
   },
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates(
+    moduleData.templates.languages.copyTemplates(
     {
       en: englishLanguage,
-    }, "languages");
+    });
 
     return moduleData;
   },

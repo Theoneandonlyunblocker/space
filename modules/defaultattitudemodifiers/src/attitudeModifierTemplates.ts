@@ -1,5 +1,4 @@
 import {AttitudeModifierTemplate} from "core/src/templateinterfaces/AttitudeModifierTemplate";
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
 
 import {DiplomacyEvaluation} from "core/src/diplomacy/DiplomacyEvaluation";
 import {DiplomacyState} from "core/src/diplomacy/DiplomacyState";
@@ -68,7 +67,7 @@ export const declaredWar: AttitudeModifierTemplate =
 };
 
 
-export const attitudeModifierTemplates: TemplateCollection<AttitudeModifierTemplate> =
+export const attitudeModifierTemplates =
 {
   [neighborStars.type]: neighborStars,
   [atWar.type]: atWar,

@@ -157,12 +157,12 @@ export class GameLoader
 
     data.notifications.forEach(notificationData =>
     {
-      const template = activeModuleData.templates.notifications[notificationData.templateKey];
+      const template = activeModuleData.templates.notifications.get(notificationData.templateKey);
 
       const notification = new Notification(
       {
         id: notificationData.id,
-        template: activeModuleData.templates.notifications[notificationData.templateKey],
+        template: activeModuleData.templates.notifications.get(notificationData.templateKey),
         props: template.deserializeProps(notificationData.props, this),
         turn: notificationData.turn,
         involvedPlayers: notificationData.involvedPlayerIds.map(id => this.playersById[id]),
@@ -251,14 +251,14 @@ export class GameLoader
       id: data.id,
       seed: data.seed,
       name: data.name,
-      race: activeModuleData.templates.races[data.raceType],
-      terrain: activeModuleData.templates.terrains[data.terrainType],
+      race: activeModuleData.templates.races.get(data.raceType),
+      terrain: activeModuleData.templates.terrains.get(data.terrainType),
     });
     star.baseIncome = data.baseIncome;
 
     if (data.resourceType)
     {
-      star.resource = activeModuleData.templates.resources[data.resourceType];
+      star.resource = activeModuleData.templates.resources.get(data.resourceType);
     }
 
     return star;
@@ -286,7 +286,7 @@ export class GameLoader
   }
   private deserializeBuilding<T extends Building>(data: BuildingSaveData): T
   {
-    const template = activeModuleData.templatesByImplementation.buildingLike[data.templateType];
+    const template = activeModuleData.templatesByImplementation.buildingLike.get(data.templateType);
     const building = new Building(
     {
       template: template,
@@ -307,7 +307,7 @@ export class GameLoader
       isIndependent: data.isIndependent,
       isDead: data.isDead,
 
-      race: activeModuleData.templates.races[data.raceKey],
+      race: activeModuleData.templates.races.get(data.raceKey),
 
       id: data.id,
       name: Name.fromData(data.name),
@@ -380,7 +380,7 @@ export class GameLoader
 
       modifiers.forEach(modifierData =>
       {
-        const template = activeModuleData.templates.attitudeModifiers[modifierData.templateType];
+        const template = activeModuleData.templates.attitudeModifiers.get(modifierData.templateType);
         const modifier = new AttitudeModifier(
         {
           template: template,
@@ -400,7 +400,7 @@ export class GameLoader
   {
     return new Emblem(
       emblemData.colors.map(colorData => Color.deserialize(colorData)),
-      activeModuleData.templates.subEmblems[emblemData.templateKey],
+      activeModuleData.templates.subEmblems.get(emblemData.templateKey),
     );
   }
   private deserializeFlag(data: FlagSaveData): Flag

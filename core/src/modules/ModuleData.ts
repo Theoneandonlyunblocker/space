@@ -30,7 +30,6 @@ import {UnitTemplate} from "../templateinterfaces/UnitTemplate";
 import
 {
   deepMerge,
-  getRandomProperty,
 } from "../generic/utility";
 import { UnlockableThing, UnlockableThingWithKind } from "../templateinterfaces/UnlockableThing";
 
@@ -225,6 +224,7 @@ export class ModuleData
   };
   // separated from templates to keep this.templates as a source of truth, but still allowing implementations to be reused
   // f.ex. titans from the titans module are implemented as units, but just adding them to this.templates.units means they become buildable as regular units, which they shouldn't be
+  // TODO 2021.10.28 | wouldn't using flags be better?
   public readonly templateCollectionsByImplementation:
   {
     buildingLike: {[key: string]: TemplateCollection<BuildingTemplate>};
@@ -385,14 +385,18 @@ export class ModuleData
     {
       chosenLanguage = this.defaultLanguage;
     }
-    else if (this.templates.languages["en"])
-    {
-      chosenLanguage = this.templates.languages["en"];
-    }
     else
     {
-      throw new Error("Please define a default language for your module configuration if " +
-        "it doesn't include English language support.");
+      const englishLanguage = this.templates.languages.get("en");
+      if (englishLanguage)
+      {
+        chosenLanguage = englishLanguage;
+      }
+      else
+      {
+        throw new Error("Please define a default language for your module configuration if " +
+          "it doesn't include English language support.");
+      }
     }
 
     return chosenLanguage;

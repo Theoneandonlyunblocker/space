@@ -117,16 +117,13 @@ export class CombatPhase<AllPhases extends string>
     }
   }
   private getRelevantFetchers<T extends CombatActionFetcher<AllPhases> | CombatActionListenerFetcher<AllPhases>>(
-    fetchersByKey: TemplateCollection<T>,
+    allFetchers: TemplateCollection<T>,
   ): T[]
   {
-    const fetchers = Object.keys(fetchersByKey).map(key => fetchersByKey[key]);
-    const relevantFetchers = fetchers.filter(fetcher =>
+    return allFetchers.filter(fetcher =>
     {
       fetcher.phasesToApplyTo.has(this.template);
     });
-
-    return relevantFetchers;
   }
   private fetchCombatActionListeners(
     battle: Battle,

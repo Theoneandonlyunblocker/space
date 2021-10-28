@@ -14,12 +14,10 @@ export const money: GameModule =
   supportedLanguages: [englishLanguage],
   addToModuleData: moduleData =>
   {
-    moduleData.copyTemplates(
+    moduleData.templates.resources.copyTemplates(
     {
       [moneyResource.type]: moneyResource,
-    },
-      "resources",
-    );
+    });
   },
   // TODO 2019.10.04 | these never get triggered since this module isn't part of saves
   // need to add some way of modules to define dependencies to load this module in

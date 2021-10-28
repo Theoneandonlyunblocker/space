@@ -1,4 +1,3 @@
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
 import {UnitArchetype} from "core/src/templateinterfaces/UnitArchetype";
 
 
@@ -75,7 +74,7 @@ export const economic: UnitArchetype =
   },
 }
 
-export const unitArchetypes: TemplateCollection<UnitArchetype> =
+export const unitArchetypes =
 {
   [combat.type]: combat,
   [utility.type]: utility,

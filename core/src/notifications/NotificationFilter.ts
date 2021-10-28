@@ -84,11 +84,11 @@ export class NotificationFilter
         filterState: NotificationFilterState[];
       }[];
     } = {};
-    const notifications = activeModuleData.templates.notifications;
+    const allTemplates = activeModuleData.templates.notifications;
 
     for (const key in this.filters)
     {
-      const notificationTemplate = notifications[key];
+      const notificationTemplate = allTemplates.get(key);
       if (notificationTemplate)
       {
         if (!filtersByCategory[notificationTemplate.category])
@@ -144,13 +144,11 @@ export class NotificationFilter
 
   private setDefaultFilterStates(): void
   {
-    const notifications = activeModuleData.templates.notifications;
-
-    for (const key in notifications)
+    activeModuleData.templates.notifications.forEach(notificationTemplate =>
     {
-      const notificationTemplate = notifications[key];
+      const key = notificationTemplate.key;
       this.filters[key] = notificationTemplate.defaultFilterState.slice(0);
-    }
+    });
   }
   private getCompatibleFilterStates(filterState: NotificationFilterState): NotificationFilterState[]
   {

@@ -94,7 +94,7 @@ export class UnitBattleStats
       combatEffects: CombatEffectMap.fromData(data.combatEffects, activeModuleData.templates.combatEffects),
       queuedAction:  data.queuedAction ?
         {
-          ability: activeModuleData.templates.combatAbilities[data.queuedAction.abilityTemplateKey],
+          ability: activeModuleData.templates.combatAbilities.get(data.queuedAction.abilityTemplateKey),
           targetId: data.queuedAction.targetId,
           turnsPrepared: data.queuedAction.turnsPrepared,
           timesInterrupted: data.queuedAction.timesInterrupted,

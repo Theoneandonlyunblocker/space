@@ -1,5 +1,4 @@
 import {SubEmblemTemplate} from "core/src/templateinterfaces/SubEmblemTemplate";
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
 import {Color} from "core/src/color/Color";
 import { svgCache } from "../assets/assets";
 
@@ -624,7 +623,7 @@ export const threeHorns: SubEmblemTemplate =
 };
 // tslint:enable:variable-name
 
-export const subEmblemTemplates: TemplateCollection<SubEmblemTemplate> =
+export const subEmblemTemplates =
 {
   [Aguila_explayada_2.key]: Aguila_explayada_2,
   [Berliner_Baer.key]: Berliner_Baer,

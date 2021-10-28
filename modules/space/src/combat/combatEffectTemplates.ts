@@ -1,11 +1,9 @@
-import { TemplateCollection } from "core/src/templateinterfaces/TemplateCollection";
-import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { autoHeal } from "./effects/autoHeal";
 import { poisoned } from "./effects/poisoned";
 import { snipeAttack, snipeDefence, snipeIntelligence, snipeSpeed } from "./effects/snipe";
 
 
-export const combatEffectTemplates: TemplateCollection<CombatEffectTemplate> =
+export const combatEffectTemplates =
 {
   [autoHeal.key]: autoHeal,
   [poisoned.key]: poisoned,

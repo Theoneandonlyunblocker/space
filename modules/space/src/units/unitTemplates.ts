@@ -1,6 +1,3 @@
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
-import {UnitTemplate} from "core/src/templateinterfaces/UnitTemplate";
-
 import {battleCruiser} from  "./templates/battleCruiser";
 import {bomberSquadron} from  "./templates/bomberSquadron";
 import {commandShip} from  "./templates/commandShip";
@@ -11,7 +8,7 @@ import {stealthShip} from  "./templates/stealthShip";
 import { miningBarge } from "./templates/miningBarge";
 
 
-export const unitTemplates: TemplateCollection<UnitTemplate> =
+export const unitTemplates =
 {
   [battleCruiser.type]: battleCruiser,
   [commandShip.type]: commandShip,

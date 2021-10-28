@@ -49,7 +49,7 @@ export class CombatEffect<Phase extends string = CorePhase>
   {
     return new CombatEffect({
       id: data.id,
-      template: templates[data.templateKey],
+      template: templates.get(data.templateKey),
       initialStrength: data.strength,
     });
   }

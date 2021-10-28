@@ -83,3 +83,12 @@ export const testResource5: ResourceTemplate =
   displayOrder: 10,
   baseValuableness: 100,
 };
+
+export const resourceTemplates =
+{
+  testResource1: testResource1,
+  testResource2: testResource2,
+  testResource3: testResource3,
+  testResource4: testResource4,
+  testResource5: testResource5,
+};

@@ -8,11 +8,6 @@ import {Player} from "core/src/player/Player";
 import {Star} from "core/src/map/Star";
 import {Unit} from "core/src/unit/Unit";
 import {options} from "core/src/app/Options";
-import
-{
-  extendObject,
-  getRandomProperty,
-} from "core/src/generic/utility";
 
 
 import {activeModuleData} from "core/src/app/activeModuleData";
@@ -111,12 +106,12 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
   makeUnit()
   {
-    const template = getRandomProperty(activeModuleData.templates.units);
+    const template = activeModuleData.templates.units.getRandom();
 
     return Unit.fromTemplate(
     {
       template: template,
-      race: getRandomProperty(activeModuleData.templates.races),
+      race: activeModuleData.templates.races.getRandom(),
     });
   }
 
@@ -211,7 +206,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   handleSelectVfxTemplate(e: React.FormEvent<HTMLSelectElement>)
   {
     const target = e.currentTarget;
-    const vfxTemplate = activeModuleData.templates.battleVfx[target.value];
+    const vfxTemplate = activeModuleData.templates.battleVfx.get(target.value);
 
     this.setState(
     {
@@ -235,7 +230,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     const target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
     const bs: BattleScene = this.battleScene;
-    const vfxTemplate = extendObject(activeModuleData.templates.battleVfx[this.state.selectedVfxTemplateKey]);
+    const vfxTemplate = {...activeModuleData.templates.battleVfx.get(this.state.selectedVfxTemplateKey)};
 
     if (this.state.duration)
     {

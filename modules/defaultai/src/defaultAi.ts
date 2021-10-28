@@ -12,10 +12,10 @@ export const defaultAi: GameModule =
   supportedLanguages: [englishLanguage],
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates(
+    moduleData.templates.aiTemplateConstructors.copyTemplates(
     {
       [defaultAiConstructor.type]: defaultAiConstructor,
-    }, "aiTemplateConstructors");
+    });
 
     moduleData.scripts.add(attachedUnitDataScripts);
 

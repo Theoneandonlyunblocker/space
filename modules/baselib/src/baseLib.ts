@@ -44,7 +44,7 @@ export const baseLib: GameModule =
   },
   addToModuleData: (moduleData) =>
   {
-    moduleData.copyTemplates(combatAbilityTemplates, "combatAbilities");
+    moduleData.templates.combatAbilities.copyTemplates(combatAbilityTemplates);
     const actionListenerFetchers =
     {
       baseLibCombatActionListenerFetchers:
@@ -54,6 +54,6 @@ export const baseLib: GameModule =
         fetch: () => [applyIntelligenceToHealing],
       }
     }
-    moduleData.copyTemplates(actionListenerFetchers, "combatActionListenerFetchers");
+    moduleData.templates.combatActionListenerFetchers.copyTemplates(actionListenerFetchers);
   },
 };

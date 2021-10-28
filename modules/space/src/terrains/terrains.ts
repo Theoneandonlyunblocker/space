@@ -19,3 +19,9 @@ export const asteroidsTerrain: TerrainTemplate =
     return localize("asteroidsTerrain_displayName").toString();
   },
 };
+
+export const terrainTemplates =
+{
+  noneTerrain: noneTerrain,
+  asteroidsTerrain: asteroidsTerrain,
+};

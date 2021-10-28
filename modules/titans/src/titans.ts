@@ -53,7 +53,7 @@ export const titans: GameModule<TitansModuleSaveData> =
 
     registerMapLevelModifiers(moduleData);
 
-    moduleData.copyTemplates(buildingTemplates, "buildings");
+    moduleData.templates.buildings.copyTemplates(buildingTemplates);
 
     (moduleData.nonCoreData.defaultUi.extendables as DefaultUiExtendables).manufacturableThingKinds.titans = <ManufacturableThingKindUiData<TitanPrototype>>
     {

@@ -1,9 +1,7 @@
-import {PortraitTemplate} from "core/src/templateinterfaces/PortraitTemplate";
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
 import {getImageSrc} from "../assets/assets";
 
 
-export const paintingPortraitTemplates: TemplateCollection<PortraitTemplate> =
+export const paintingPortraitTemplates =
 {
   adelaide_hanscom1:
   {

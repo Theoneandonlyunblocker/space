@@ -337,10 +337,10 @@ export class Unit
       items: [],
 
       portrait: data.portraitKey ?
-        activeModuleData.templates.portraits[data.portraitKey] :
+        activeModuleData.templates.portraits.get(data.portraitKey) :
         undefined,
       race: data.raceKey ?
-        activeModuleData.templates.races[data.raceKey] :
+        activeModuleData.templates.races.get(data.raceKey) :
         undefined,
     });
 

@@ -1,5 +1,4 @@
 import {ItemTemplate} from "core/src/templateinterfaces/ItemTemplate";
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
 
 import { localize } from "modules/space/localization/localize";
 import { getItemIcon } from "modules/space/assets/items/itemAssets";
@@ -302,8 +301,7 @@ export const shieldPlating3: ItemTemplate =
   ability: guardRow,
 };
 
-
-export const itemTemplates: TemplateCollection<ItemTemplate> =
+export const itemTemplates =
 {
   [bombLauncher1.type]: bombLauncher1,
   [bombLauncher2.type]: bombLauncher2,

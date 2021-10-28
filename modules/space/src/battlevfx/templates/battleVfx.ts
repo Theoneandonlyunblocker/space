@@ -41,3 +41,14 @@ export const boardingHook: BattleVfxTemplate =
   battleOverlay: boardingHookDrawingFunction,
   vfxWillTriggerEffect: true,
 };
+
+export const battleVfxTemplates =
+{
+  rocketAttack: rocketAttack,
+  beam: beam,
+  snipeAttack: snipeAttack,
+  snipeDefence: snipeDefence,
+  snipeIntelligence: snipeIntelligence,
+  snipeSpeed: snipeSpeed,
+  boardingHook: boardingHook,
+};

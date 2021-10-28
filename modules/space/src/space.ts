@@ -9,16 +9,16 @@ import {unitArchetypes} from "modules/baselib/src/unitArchetypes";
 import {ruleSet} from "./ruleSet";
 
 import {drawNebula} from "./backgrounds/drawNebula";
-import * as battleVfxTemplates from  "./battlevfx/templates/battleVfx";
+import {battleVfxTemplates} from  "./battlevfx/templates/battleVfx";
 import {buildingTemplates} from "./buildings/buildingTemplates";
-import * as passiveSkillTemplates from  "./passiveskills/passiveSkills";
-import * as terrainTemplates from  "./terrains/terrains";
+import {passiveSkillTemplates} from  "./passiveskills/passiveSkills";
+import {terrainTemplates} from  "./terrains/terrains";
 import {itemTemplates} from "./items/itemTemplates";
 import {mapGenTemplates} from "./mapgen/mapGenTemplates";
 import {mapLayerTemplates} from "./mapmodes/mapLayerTemplates";
 import {mapModeTemplates} from "./mapmodes/mapModeTemplates";
 import {raceTemplates} from "./races/raceTemplates";
-import * as resourceTemplates from "./resources/resourceTemplates";
+import {resourceTemplates} from "./resources/resourceTemplates";
 import {technologyTemplates} from "./technologies/technologyTemplates";
 import {unitTemplates} from "./units/unitTemplates";
 
@@ -56,21 +56,21 @@ export const space: GameModule =
   ),
   addToModuleData: moduleData =>
   {
-    moduleData.copyTemplates(battleVfxTemplates, "battleVfx");
-    moduleData.copyTemplates(buildingTemplates, "buildings");
-    moduleData.copyTemplates(combatAbilityTemplates, "combatAbilities");
-    moduleData.copyTemplates(combatEffectTemplates, "combatEffects");
-    moduleData.copyTemplates(itemTemplates, "items");
-    moduleData.copyTemplates(mapGenTemplates, "mapGen");
-    moduleData.copyTemplates(mapLayerTemplates, "mapRendererLayers");
-    moduleData.copyTemplates(mapModeTemplates, "mapRendererMapModes");
-    moduleData.copyTemplates(passiveSkillTemplates, "passiveSkills");
-    moduleData.copyTemplates(raceTemplates, "races");
-    moduleData.copyTemplates(resourceTemplates, "resources");
-    moduleData.copyTemplates(technologyTemplates, "technologies");
-    moduleData.copyTemplates(terrainTemplates, "terrains");
-    moduleData.copyTemplates(unitArchetypes, "unitArchetypes");
-    moduleData.copyTemplates(unitTemplates, "units");
+    moduleData.templates.battleVfx.copyTemplates(battleVfxTemplates);
+    moduleData.templates.buildings.copyTemplates(buildingTemplates);
+    moduleData.templates.combatAbilities.copyTemplates(combatAbilityTemplates);
+    moduleData.templates.combatEffects.copyTemplates(combatEffectTemplates);
+    moduleData.templates.items.copyTemplates(itemTemplates);
+    moduleData.templates.mapGen.copyTemplates(mapGenTemplates);
+    moduleData.templates.mapRendererLayers.copyTemplates(mapLayerTemplates);
+    moduleData.templates.mapRendererMapModes.copyTemplates(mapModeTemplates);
+    moduleData.templates.passiveSkills.copyTemplates(passiveSkillTemplates);
+    moduleData.templates.races.copyTemplates(raceTemplates);
+    moduleData.templates.resources.copyTemplates(resourceTemplates);
+    moduleData.templates.technologies.copyTemplates(technologyTemplates);
+    moduleData.templates.terrains.copyTemplates(terrainTemplates);
+    moduleData.templates.unitArchetypes.copyTemplates(unitArchetypes);
+    moduleData.templates.units.copyTemplates(unitTemplates);
 
     if (!moduleData.mapBackgroundDrawingFunction)
     {

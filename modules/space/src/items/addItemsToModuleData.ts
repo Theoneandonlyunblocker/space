@@ -4,7 +4,7 @@ import { ModuleData } from "core/src/modules/ModuleData";
 
 export function addItemsToModuleData(moduleData: ModuleData): void
 {
-  moduleData.copyTemplates(itemTemplates, "items");
+  moduleData.templates.items.copyTemplates(itemTemplates);
 }
 
 

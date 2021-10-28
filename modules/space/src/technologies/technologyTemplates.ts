@@ -1,5 +1,4 @@
 import {TechnologyTemplate} from "core/src/templateinterfaces/TechnologyTemplate";
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
 import { localize } from "modules/space/localization/localize";
 
 
@@ -69,7 +68,7 @@ export const test2: TechnologyTemplate =
   maxLevel: 2,
 };
 
-export const technologyTemplates: TemplateCollection<TechnologyTemplate> =
+export const technologyTemplates =
 {
   [stealth.key]: stealth,
   [lasers.key]: lasers,

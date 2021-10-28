@@ -1,10 +1,5 @@
 import {RaceTemplate} from "core/src/templateinterfaces/RaceTemplate";
 
-import
-{
-  getRandomProperty,
-} from "core/src/generic/utility";
-
 import {generateIndependentFleets} from "modules/baselib/src/generateIndependentFleets";
 import {generateIndependentPlayer} from "modules/baselib/src/generateIndependentPlayer";
 import {defaultAiConstructor} from "modules/defaultai/src/mapai/DefaultAiConstructor";
@@ -40,7 +35,7 @@ export const wormThings: RaceTemplate =
     localizeName("genericPlayer")(player.id),
   getFleetName: fleet => localizeName("genericFleet")(fleet.id),
   getUnitName: unitTemplate => localizeName("infestedUnitName")(unitTemplate.displayName),
-  getUnitPortrait: (unitTemplate, allPortraits) => getRandomProperty(allPortraits),
+  getUnitPortrait: (unitTemplate, allPortraits) => allPortraits.getRandom(),
   generateIndependentPlayer: emblemTemplates =>
   {
     return generateIndependentPlayer(wormThings);

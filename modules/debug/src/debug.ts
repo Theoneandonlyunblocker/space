@@ -32,23 +32,23 @@ export const debug: GameModule =
   },
   addToModuleData: moduleData =>
   {
-    moduleData.copyTemplates(
+    moduleData.templates.buildings.copyTemplates(
     {
       [nationalEpic.type]: nationalEpic,
       [thePyramids.type]: thePyramids,
-    }, "buildings");
-    moduleData.copyTemplates(
+    });
+    moduleData.templates.units.copyTemplates(
     {
       [debugShip.type]: debugShip,
-    }, "units");
-    moduleData.copyTemplates(
+    });
+    moduleData.templates.items.copyTemplates(
     {
       [debugItem.type]: debugItem,
-    }, "items");
-    moduleData.copyTemplates(
+    });
+    moduleData.templates.combatAbilities.copyTemplates(
     {
       [debugAbility.key]: debugAbility,
-    }, "combatAbilities");
+    });
 
     for (const key in uiScenes)
     {

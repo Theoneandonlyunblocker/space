@@ -5,6 +5,6 @@ import { ModuleData } from "core/src/modules/ModuleData";
 
 export function addUnitsToModuleData(moduleData: ModuleData): void
 {
-  moduleData.copyTemplates(unitTemplates, "units");
-  moduleData.copyTemplates(unitArchetypes, "unitArchetypes");
+  moduleData.templates.units.copyTemplates(unitTemplates);
+  moduleData.templates.unitArchetypes.copyTemplates(unitArchetypes);
 }
