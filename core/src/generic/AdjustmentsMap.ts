@@ -1,8 +1,8 @@
 import { FlatAndMultiplierAdjustment, getBaseAdjustment, squashFlatAndMultiplierAdjustments, applyFlatAndMultiplierAdjustments } from "./FlatAndMultiplierAdjustment";
-import { MapBase } from "./MapBase";
+import { AddableValueMap } from "./AddableValueMap";
 
 
-export class AdjustmentsMap<Key> extends MapBase<
+export class AdjustmentsMap<Key> extends AddableValueMap<
   Key,
   FlatAndMultiplierAdjustment,
   Partial<FlatAndMultiplierAdjustment>

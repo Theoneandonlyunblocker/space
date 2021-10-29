@@ -1,6 +1,5 @@
 // TODO 2020.02.19 | probably a few classes that could be converted to use this
-// TODO 2020.07.27 | rename to AddableValueMap or something?
-export abstract class MapBase<
+export abstract class AddableValueMap<
   Key,
   Value extends AddableValue,
   AddableValue,
@@ -58,9 +57,9 @@ export abstract class MapBase<
   // child class should define correct type signature and call this
   protected mapRaw<NewKey>(
     mapFn: (key: Key) => NewKey,
-  ): MapBase<NewKey, Value, AddableValue>
+  ): AddableValueMap<NewKey, Value, AddableValue>
   {
-    const mapped: MapBase<NewKey, Value, AddableValue> = this.constructor();
+    const mapped: AddableValueMap<NewKey, Value, AddableValue> = this.constructor();
 
     this.forEach((key, value) =>
     {
