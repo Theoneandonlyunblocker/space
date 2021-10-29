@@ -9,12 +9,14 @@ import {boardingHookBattleOverlay as boardingHookDrawingFunction, boardingHookEn
 
 export const rocketAttack: BattleVfxTemplate =
 {
+  key: "rocketAttack",
   duration: 1500,
   battleOverlay: rocketAttackDrawingFunction,
   vfxWillTriggerEffect: true,
 };
 export const beam: BattleVfxTemplate =
 {
+  key: "beam",
   duration: 3500,
   battleOverlay: beamDrawingFunction,
   vfxWillTriggerEffect: true,
@@ -24,6 +26,7 @@ function makeSnipeTemplate(attribute: UnitAttribute): BattleVfxTemplate
 {
   return(
   {
+    key: `snipe${attribute}`,
     duration: 3000,
     battleOverlay: snipeDrawingFunction.bind(null, attribute),
     vfxWillTriggerEffect: true,
@@ -36,6 +39,7 @@ export const snipeSpeed = makeSnipeTemplate(UnitAttribute.Speed);
 
 export const boardingHook: BattleVfxTemplate =
 {
+  key: "boardingHook",
   duration: 2500,
   enemySprite: boardingHookEnemySprite,
   battleOverlay: boardingHookDrawingFunction,

@@ -8,6 +8,7 @@ export function makePlaceholderVfx(abilityName: string): BattleVfxTemplate
 {
   return(
   {
+    key: "placeHolder",
     duration: 1000,
     battleOverlay: placeholderDrawingFunction.bind(null, abilityName),
     vfxWillTriggerEffect: false,
