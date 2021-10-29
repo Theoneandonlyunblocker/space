@@ -1,7 +1,7 @@
 import { TitanComponentTemplate } from "./TitanComponentTemplate";
 import { ModuleData } from "core/src/modules/ModuleData";
 import { TitanChassisTemplate } from "./TitanChassisTemplate";
-import { TemplateCollection } from "core/src/templateinterfaces/TemplateCollection";
+import { TemplateCollection } from "core/src/generic/TemplateCollection";
 
 export type NonCoreModuleData =
 {

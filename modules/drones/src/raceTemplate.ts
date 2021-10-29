@@ -1,5 +1,5 @@
 import {RaceTemplate} from "core/src/templateinterfaces/RaceTemplate";
-import {TemplateCollection} from "core/src/templateinterfaces/TemplateCollection";
+import {TemplateCollection} from "core/src/generic/TemplateCollection";
 import
 {
   randInt,

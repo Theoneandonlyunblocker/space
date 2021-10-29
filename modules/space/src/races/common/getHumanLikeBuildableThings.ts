@@ -1,7 +1,7 @@
 import { getBuildableThingsByAvailabilityFlags } from "core/src/production/getBuildableThingsByAvailabilityFlags";
 import { AvailabilityData, coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityData";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/src/availabilityFlags";
-import { TemplateCollection } from "core/src/templateinterfaces/TemplateCollection";
+import { TemplateCollection } from "core/src/generic/TemplateCollection";
 
 
 export function getHumanLikeBuildableThings<T extends {availabilityData: AvailabilityData}>(templates: TemplateCollection<T>): T[]
