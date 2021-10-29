@@ -7,7 +7,7 @@ import { CombatActionListenerFetcher, CombatActionFetcher } from "./CombatAction
 import { Battle } from "../battle/Battle";
 import { Unit } from "../unit/Unit";
 import { activeModuleData } from "../app/activeModuleData";
-import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
+import { TemplateCollection } from "../generic/TemplateCollection";
 import { flatten2dArray } from "../generic/utility";
 
 

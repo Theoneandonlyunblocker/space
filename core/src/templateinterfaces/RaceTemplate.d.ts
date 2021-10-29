@@ -12,7 +12,7 @@ import {ItemTemplate} from "./ItemTemplate";
 import {PortraitTemplate} from "./PortraitTemplate";
 import {RaceTechnologyValue} from "./RaceTechnologyValue";
 import {SubEmblemTemplate} from "./SubEmblemTemplate";
-import {TemplateCollection} from "./TemplateCollection";
+import {TemplateCollection} from "../generic/TemplateCollection";
 import {UnitTemplate} from "./UnitTemplate";
 import { Building } from "../building/Building";
 

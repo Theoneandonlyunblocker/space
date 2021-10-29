@@ -1,5 +1,5 @@
 import {Personality} from "../ai/Personality";
-import {TemplateCollection} from "../templateinterfaces/TemplateCollection";
+import {TemplateCollection} from "../generic/TemplateCollection";
 
 import {BackgroundDrawingFunction} from "../graphics/BackgroundDrawingFunction";
 import {GameModule, ModuleSaveData } from "./GameModule";

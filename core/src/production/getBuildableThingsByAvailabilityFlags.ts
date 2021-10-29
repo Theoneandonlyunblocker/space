@@ -1,4 +1,4 @@
-import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
+import { TemplateCollection } from "../generic/TemplateCollection";
 import { AvailabilityData } from "../templateinterfaces/AvailabilityData";
 
 

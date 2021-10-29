@@ -3,7 +3,7 @@ import { CorePhase } from "./core/coreCombatPhases";
 import { clamp } from "../generic/utility";
 import { CombatEffectTemplate } from "./CombatEffectTemplate";
 import { CombatEffectSaveData } from "./CombatEffectSaveData";
-import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
+import { TemplateCollection } from "../generic/TemplateCollection";
 
 
 export class CombatEffect<Phase extends string = CorePhase>

@@ -2,7 +2,7 @@ import { CombatEffect } from "./CombatEffect";
 import { CorePhase } from "./core/coreCombatPhases";
 import { CombatEffectTemplate } from "./CombatEffectTemplate";
 import { CombatEffectMapSaveData } from "./CombatEffectMapSaveData";
-import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
+import { TemplateCollection } from "../generic/TemplateCollection";
 import { UnitAttributeAdjustments } from "../unit/UnitAttributes";
 
 

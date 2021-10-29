@@ -1,7 +1,6 @@
-import { getRandomProperty } from "../generic/utility";
+import { getRandomProperty } from "./utility";
 
 
-// TODO 2020.07.27 | move
 export class TemplateCollection<T>
 {
   // prevents accidental assignment. don't think there's a way to prevent access completely

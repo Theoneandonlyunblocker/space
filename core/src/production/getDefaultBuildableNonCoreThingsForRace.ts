@@ -1,5 +1,5 @@
 import { AvailabilityData, coreAvailabilityFlags } from "../templateinterfaces/AvailabilityData";
-import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
+import { TemplateCollection } from "../generic/TemplateCollection";
 import { RaceTemplate } from "../templateinterfaces/RaceTemplate";
 import { getBuildableThingsByAvailabilityFlags } from "./getBuildableThingsByAvailabilityFlags";
 

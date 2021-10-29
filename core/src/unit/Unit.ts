@@ -40,7 +40,7 @@ import { Name } from "../localization/Name";
 import { Resources } from "../player/PlayerResources";
 import { UnitModifiersCollection } from "../maplevelmodifiers/UnitModifiersCollection";
 import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
-import { TemplateCollection } from "../templateinterfaces/TemplateCollection";
+import { TemplateCollection } from "../generic/TemplateCollection";
 import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
 
 
