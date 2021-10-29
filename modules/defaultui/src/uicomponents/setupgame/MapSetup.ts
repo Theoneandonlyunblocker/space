@@ -44,13 +44,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
   private getInitialStateTODO(): StateType
   {
-    // TODO 2020.07.27 | when is this ever not true?
-    const mapGenTemplates: MapGenTemplate[] = activeModuleData.templates.mapGen.filter(template =>
-    {
-      const templateHasKey = Boolean(template.key);
-
-      return templateHasKey;
-    });
+    const mapGenTemplates: MapGenTemplate[] = activeModuleData.templates.mapGen.getAll();
 
     return(
     {
