@@ -32,10 +32,3 @@ export const mergeAbsorb: BattleVfxTemplate =
   vfxWillTriggerEffect: true,
   battleOverlay: mergeAbsorbDrawingFunction,
 };
-
-export const battleVfxTemplates =
-{
-  assimilate: assimilate,
-  mergeRelease: mergeRelease,
-  mergeAbsorb: mergeAbsorb,
-};

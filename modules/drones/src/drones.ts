@@ -4,7 +4,6 @@ import {GameModule} from "core/src/modules/GameModule";
 
 import {raceTemplates} from "./raceTemplate";
 import {unitTemplates} from "./unitTemplates";
-import {battleVfxTemplates} from "./battlevfx/templates";
 
 import * as moduleInfo from "../moduleInfo.json";
 import { combatEffectTemplates } from "./combat/combatEffectTemplates";
@@ -19,7 +18,6 @@ export const drones: GameModule =
   {
     moduleData.templates.races.copyTemplates(raceTemplates);
     moduleData.templates.units.copyTemplates(unitTemplates);
-    moduleData.templates.battleVfx.copyTemplates(battleVfxTemplates);
     moduleData.templates.combatEffects.copyTemplates(combatEffectTemplates);
     moduleData.templates.combatAbilities.copyTemplates(combatAbilityTemplates);
 

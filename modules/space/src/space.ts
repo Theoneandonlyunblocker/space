@@ -9,7 +9,6 @@ import {unitArchetypes} from "modules/baselib/src/unitArchetypes";
 import {ruleSet} from "./ruleSet";
 
 import {drawNebula} from "./backgrounds/drawNebula";
-import {battleVfxTemplates} from  "./battlevfx/templates/battleVfx";
 import {buildingTemplates} from "./buildings/buildingTemplates";
 import {passiveSkillTemplates} from  "./passiveskills/passiveSkills";
 import {terrainTemplates} from  "./terrains/terrains";
@@ -56,7 +55,6 @@ export const space: GameModule =
   ),
   addToModuleData: moduleData =>
   {
-    moduleData.templates.battleVfx.copyTemplates(battleVfxTemplates);
     moduleData.templates.buildings.copyTemplates(buildingTemplates);
     moduleData.templates.combatAbilities.copyTemplates(combatAbilityTemplates);
     moduleData.templates.combatEffects.copyTemplates(combatEffectTemplates);

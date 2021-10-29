@@ -3,6 +3,7 @@ import {Distributable} from "../generic/Distributable";
 import {ItemTemplate} from "../templateinterfaces/ItemTemplate";
 import {RaceTemplate} from "../templateinterfaces/RaceTemplate";
 import {ResourceTemplate} from "../templateinterfaces/ResourceTemplate";
+import { BattleVfxTemplate } from "../templateinterfaces/BattleVfxTemplate";
 
 
 interface DistributablesByKey<T extends Distributable>
@@ -31,10 +32,12 @@ class TemplateIndexes
   {
     distributablesByTypeAndDistributionGroup: DistributablesByTypeAndDistributionGroup;
     itemsByTechLevel: ItemsByTechLevel;
+    battleVfx: {[key: string]: BattleVfxTemplate};
   } =
   {
     distributablesByTypeAndDistributionGroup: null,
     itemsByTechLevel: null,
+    battleVfx: null,
   };
 
   public get distributablesByDistributionGroup()
@@ -55,6 +58,15 @@ class TemplateIndexes
     }
 
     return this.builtIndexes.itemsByTechLevel;
+  }
+  public get battleVfx()
+  {
+    if (!this.builtIndexes.battleVfx)
+    {
+      this.builtIndexes.battleVfx = TemplateIndexes.getBattleVfx();
+    }
+
+    return this.builtIndexes.battleVfx;
   }
 
   constructor()
@@ -158,6 +170,17 @@ class TemplateIndexes
     });
 
     return itemsByTechLevel;
+  }
+  private static getBattleVfx()
+  {
+    const allVfx: {[key: string]: BattleVfxTemplate} = {};
+
+    activeModuleData.templates.combatAbilities.forEach(ability =>
+    {
+      allVfx[ability.vfx.key] = ability.vfx;
+    });
+
+    return allVfx;
   }
 }
 

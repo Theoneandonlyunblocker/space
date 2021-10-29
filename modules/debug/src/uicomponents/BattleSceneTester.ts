@@ -9,8 +9,8 @@ import {Star} from "core/src/map/Star";
 import {Unit} from "core/src/unit/Unit";
 import {options} from "core/src/app/Options";
 
-
 import {activeModuleData} from "core/src/app/activeModuleData";
+import { templateIndexes } from "core/src/app/TemplateIndexes";
 
 
 export interface PropTypes extends React.Props<any>
@@ -19,21 +19,20 @@ export interface PropTypes extends React.Props<any>
 
 interface StateType
 {
-  selectedSide1Unit: Unit;
-  selectedVfxTemplateKey: string;
   activeUnit: Unit;
+  selectedSide1Unit: Unit;
   selectedSide2Unit: Unit;
+  selectedVfxTemplateKey: string;
   duration: number;
 }
 
 export class BattleSceneTesterComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BattleSceneTester";
-  battle: Battle = null;
-  battleScene: BattleScene = null;
-
   public state: StateType;
 
+  private battle: Battle = null;
+  private battleScene: BattleScene = null;
   private readonly battleSceneContainer = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
@@ -83,7 +82,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     battle.init();
 
     const initialVfxTemplateKey = "mergeRelease";
-    const initialVfxTemplate = activeModuleData.templates.battleVfx.get(initialVfxTemplateKey);
+    const initialVfxTemplate = templateIndexes.battleVfx[initialVfxTemplateKey];
 
     return(
     {
@@ -206,7 +205,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
   handleSelectVfxTemplate(e: React.FormEvent<HTMLSelectElement>)
   {
     const target = e.currentTarget;
-    const vfxTemplate = activeModuleData.templates.battleVfx.get(target.value);
+    const vfxTemplate = templateIndexes.battleVfx[target.value];
 
     this.setState(
     {
@@ -230,7 +229,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     const target = user === this.state.selectedSide1Unit ? this.state.selectedSide2Unit : this.state.selectedSide1Unit;
 
     const bs: BattleScene = this.battleScene;
-    const vfxTemplate = {...activeModuleData.templates.battleVfx.get(this.state.selectedVfxTemplateKey)};
+    const vfxTemplate = {...templateIndexes.battleVfx[this.state.selectedVfxTemplateKey]};
 
     if (this.state.duration)
     {
@@ -300,7 +299,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
 
     const vfxTemplateSelectOptions: React.ReactHTMLElement<any>[] = [];
 
-    for (const key in activeModuleData.templates.battleVfx)
+    for (const key in templateIndexes.battleVfx)
     {
       vfxTemplateSelectOptions.push(ReactDOMElements.option(
       {

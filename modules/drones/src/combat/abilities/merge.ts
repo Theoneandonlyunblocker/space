@@ -14,10 +14,10 @@ import
 
 import { localize } from "../../../localization/localize";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
-import { makePlaceholderVfx } from "modules/baselib/src/makePlaceholderVfx";
 import { losePercentMaxHealth } from "modules/baselib/src/combat/actions/losePercentMaxHealth";
 import { increaseMergeBuffAmount } from "../actions/increaseMergeBuffAmount";
 import { leechLife } from "modules/baselib/src/combat/actions/leechLife";
+import { mergeRelease } from "../../battlevfx/templates";
 
 
 export const merge: CombatAbilityTemplate =
@@ -59,5 +59,5 @@ export const merge: CombatAbilityTemplate =
     const healTargetAction = leechLife(target, user, 1);
     combatManager.attachAction(healTargetAction, damageSelfAction);
   },
-  vfx: makePlaceholderVfx("merge"),
+  vfx: mergeRelease,
 };

@@ -10,7 +10,6 @@ import
 } from "./RuleSetValues";
 import {AiTemplateConstructor} from "../templateinterfaces/AiTemplateConstructor";
 import {AttitudeModifierTemplate} from "../templateinterfaces/AttitudeModifierTemplate";
-import {BattleVfxTemplate} from "../templateinterfaces/BattleVfxTemplate";
 import {BuildingTemplate} from "../templateinterfaces/BuildingTemplate";
 import {ItemTemplate} from "../templateinterfaces/ItemTemplate";
 import {Language} from "../localization/Language";
@@ -54,8 +53,6 @@ interface Templates
 {
   aiTemplateConstructors: TemplateCollection<AiTemplateConstructor<any>>;
   attitudeModifiers: TemplateCollection<AttitudeModifierTemplate>;
-  // TODO 2020.07.27 | only used for debugging. store somewhere else
-  battleVfx: TemplateCollection<BattleVfxTemplate>;
   buildings: TemplateCollection<BuildingTemplate>;
   combatAbilities: TemplateCollection<CombatAbilityTemplate>;
   combatActionFetchers: TemplateCollection<CombatActionFetcher<any>>;
@@ -107,10 +104,6 @@ export class ModuleData
     ),
     attitudeModifiers: new TemplateCollection<AttitudeModifierTemplate>(
       "attitudeModifiers",
-      () => this.onTemplatesAdded(),
-    ),
-    battleVfx: new TemplateCollection<BattleVfxTemplate>(
-      "battleVfx",
       () => this.onTemplatesAdded(),
     ),
     buildings: new TemplateCollection<BuildingTemplate>(
