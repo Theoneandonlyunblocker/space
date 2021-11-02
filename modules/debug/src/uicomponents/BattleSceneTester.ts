@@ -26,6 +26,7 @@ interface StateType
   duration: number;
 }
 
+// TODO 2021.10.29 | remove in favor of CombatTester component eventually
 export class BattleSceneTesterComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BattleSceneTester";

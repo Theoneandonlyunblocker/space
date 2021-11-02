@@ -5,7 +5,6 @@ import {AbilityTargetDisplayDataById} from "core/src/abilities/AbilityTargetDisp
 import {AbilityUseEffectQueue} from "core/src/abilities/AbilityUseEffectQueue";
 import {Battle as BattleObj} from "core/src/battle/Battle";
 import {BattleScene as BattleSceneObj} from "core/src/battle/BattleScene";
-import {MCTree} from "core/src/ai/MCTree";
 import {options} from "core/src/app/Options";
 import {Player} from "core/src/player/Player";
 import {Unit} from "core/src/unit/Unit";
@@ -48,6 +47,13 @@ export interface PropTypes extends React.Props<any>
 {
   battle: BattleObj;
   humanPlayer: Player;
+  onAbilityUse: (
+    ability: CombatAbilityTemplate,
+    user: Unit,
+    target: Unit,
+    abilityUseWasByHuman: boolean,
+  ) => void;
+  handleAiTurn: () => void;
 }
 
 interface StateType
@@ -80,6 +86,8 @@ interface StateType
 
 export class BattleComponent extends React.Component<PropTypes, StateType>
 {
+  // TODO 2020.07.20 | temporarily disabled
+  // tslint:disable:member-ordering
   public displayName: string = "Battle";
   public state: StateType;
 
@@ -91,12 +99,8 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   private abilityUseEffectQueue: AbilityUseEffectQueue;
 
   // set as a property of the class instead of its state
-  // as its not used to trigger updates
-  // and needs to be changed synchronously
+  // as its not used to trigger updates and needs to be changed synchronously
   private tempHoveredUnit: Unit = null;
-
-  // TODO 2018.04.14 | really doesn't belong in ui class
-  private mcTree: MCTree = null;
 
   private vfxStartTime: number;
   private battleStartStartTime: number;
@@ -130,7 +134,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.handleMouseEnterUnit = this.handleMouseEnterUnit.bind(this);
     this.handleMouseEnterAbility = this.handleMouseEnterAbility.bind(this);
     this.usePreparedAbility = this.usePreparedAbility.bind(this);
-    this.useAiAbility = this.useAiAbility.bind(this);
     this.handleMouseLeaveAbility = this.handleMouseLeaveAbility.bind(this);
     this.endTurn = this.endTurn.bind(this);
     this.startTurn = this.startTurn.bind(this);
@@ -197,32 +200,38 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     {
       return;
     }
-    else if (this.props.battle.ended)
-    {
-      this.setState(
-      {
-        UIState: BattleUIState.BattleEnding,
-      });
-    }
     else
     {
-      this.setState(
-      {
-        UIState: BattleUIState.Idle,
-      }, () =>
-      {
-        this.battleScene.activeUnit = this.props.battle.activeUnit;
-        this.battleScene.updateUnits();
-        if (this.tempHoveredUnit)
-        {
-          this.handleMouseEnterUnit(this.tempHoveredUnit);
-        }
-        if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
-        {
-          this.useAiAbility();
-        }
-      });
+      this.handleTurnStart();
     }
+
+    // TODO 2020.07.19 | unnecessary, right? these are all done in handleTurnStart()
+    // else if (this.props.battle.ended)
+    // {
+    //   this.setState(
+    //   {
+    //     UIState: BattleUIState.BattleEnding,
+    //   });
+    // }
+    // else
+    // {
+    //   this.setState(
+    //   {
+    //     UIState: BattleUIState.Idle,
+    //   }, () =>
+    //   {
+    //     this.battleScene.activeUnit = this.props.battle.activeUnit;
+    //     this.battleScene.updateUnits();
+    //     if (this.tempHoveredUnit)
+    //     {
+    //       this.handleMouseEnterUnit(this.tempHoveredUnit);
+    //     }
+    //     if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
+    //     {
+    //       this.useAiAbility();
+    //     }
+    //   });
+    // }
 
 
   }
@@ -356,7 +365,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     return document.getElementById("unit-id_" + unit.id);
   }
-  private handleAbilityUse(ability: CombatAbilityTemplate, target: Unit, wasByPlayer: boolean)
+  public handleAbilityUse(ability: CombatAbilityTemplate, target: Unit, wasByPlayer: boolean)
   {
     const user = this.props.battle.activeUnit;
 
@@ -369,16 +378,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
 
     this.abilityUseEffectQueue.addEffects(abilityUseEffects);
 
-    if (wasByPlayer && this.mcTree)
+    if (this.props.onAbilityUse)
     {
-      this.mcTree.advanceMove(
-      {
-        ability: ability,
-        userId: user.id,
-        targetId: target.id,
-      }, 0.25);
+      this.props.onAbilityUse(ability, user, target, wasByPlayer);
     }
-
 
     this.playQueuedBattleEffects();
   }
@@ -480,7 +483,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
     else if (this.props.battle.getActivePlayer() !== this.props.humanPlayer)
     {
-      this.useAiAbility();
+      this.props.handleAiTurn();
     }
     else
     {
@@ -512,29 +515,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   private usePlayerAbility(ability: CombatAbilityTemplate, target: Unit)
   {
     this.handleAbilityUse(ability, target, true);
-  }
-  private useAiAbility()
-  {
-    if (!this.props.battle.activeUnit || this.props.battle.ended)
-    {
-      return;
-    }
-
-    if (!this.mcTree)
-    {
-      this.mcTree = new MCTree(this.props.battle, this.props.battle.activeUnit.battleStats.side);
-    }
-
-    const iterations = Math.max(
-      options.debug.aiVsPlayerBattleSimulationDepth,
-      this.mcTree.rootNode.getPossibleMoves(this.props.battle).length * Math.sqrt(options.debug.aiVsPlayerBattleSimulationDepth),
-    );
-
-    const move = this.mcTree.getBestMoveAndAdvance(iterations, 0.25);
-
-    const target = this.props.battle.unitsById[move.targetId];
-
-    this.handleAbilityUse(move.ability, target, false);
   }
   private finishBattle()
   {

@@ -1,6 +1,10 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import { CombatEffectEditor } from "./CombatEffectEditor";
+import { Unit } from "core/src/unit/Unit";
+import { UnitEditor } from "./UnitEditor";
+import { DebugBattle } from "./DebugBattle";
+import { Battle } from "core/src/battle/Battle";
 
 
 // tslint:disable-next-line:no-any
@@ -15,17 +19,29 @@ type TabInfo =
   label: string;
   render: () => React.ReactElement<any>;
 };
-const tabs: TabInfo[] =
-[
-  {
-    key: "effects",
-    label: "Effects",
-    render: () => CombatEffectEditor(),
-  },
-];
 
 const CombatTesterComponent: React.FunctionComponent<PropTypes> = props =>
 {
+  const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(null);
+  const battle = React.useRef<Battle | null>(null);
+
+  const tabs: TabInfo[] =
+  [
+    {
+      key: "units",
+      label: "Units",
+      render: () => UnitEditor(
+      {
+        unit: selectedUnit,
+      }),
+    },
+    {
+      key: "effects",
+      label: "Effects",
+      render: () => CombatEffectEditor(),
+    },
+  ];
+
   const [selectedTab, setSelectedTab] = React.useState<TabInfo>(tabs[0]);
 
   function makeTab(tabInfo: TabInfo): React.ReactHTMLElement<HTMLButtonElement>
@@ -49,10 +65,13 @@ const CombatTesterComponent: React.FunctionComponent<PropTypes> = props =>
     },
       ReactDOMElements.div(
       {
-        className: "temp",
-        style: {border: "1px solid purple", flex: "0 0 50%"},
+        className: "combat-tester-battle-container",
       },
-
+        DebugBattle(
+        {
+          battle: battle.current,
+          onClickUnit: (unit) => setSelectedUnit(unit),
+        }),
       ),
       ReactDOMElements.div(
       {

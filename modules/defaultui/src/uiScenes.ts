@@ -2,25 +2,26 @@ import { CoreUIScenes } from "core/src/ui/CoreUIScenes";
 import { TopLevelErrorBoundary } from "./uicomponents/errors/TopLevelErrorBoundary";
 import { options } from "core/src/app/Options";
 import { GameModuleInitializationPhase } from "core/src/modules/GameModuleInitializationPhase";
-import { Battle } from "./uicomponents/battle/Battle";
 import { BattlePrep } from "./uicomponents/battleprep/BattlePrep";
 import { GalaxyMap } from "./uicomponents/galaxymap/GalaxyMap";
 import { SetupGame } from "./uicomponents/setupgame/SetupGame";
 import { SaveRecoveryWithDetails } from "./uicomponents/errors/SaveRecoveryWithDetails";
 import { activePlayer } from "core/src/app/activePlayer";
+import { HumanVsAiBattle } from "./uicomponents/battle/HumanVsAiBattle";
 
 
 const coreUiScenes: CoreUIScenes =
 {
+  // TODO 2020.07.17 | rename to humanVsAiBattle ?
   battle:
   {
     requiredInitializationPhase: GameModuleInitializationPhase.BattleStart,
-    render: (reactUi, children) => Battle(
+    render: (reactUi, children) => HumanVsAiBattle(
     {
       battle: reactUi.battle,
       humanPlayer: reactUi.player,
     },
-      children,
+      children
     ),
   },
   battlePrep:
