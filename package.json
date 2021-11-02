@@ -43,7 +43,7 @@
 
     "build": "tsc -b --verbose && node scripts/build/bundleDefaultModules",
 
-    "compile-all-css": "npm run compile-defaultui-css && npm run compile-titans-css && npm run compile-englishlanguage-css",
+    "compile-all-css": "npm run compile-defaultui-css && npm run compile-titans-css && npm run compile-englishlanguage-css && npm run compile-debug-css",
     "compile-defaultui-css": "lessc modules/defaultui/assets/css/main.less dist/modules/defaultui/assets/css/main.css",
     "compile-titans-css": "lessc modules/titans/assets/css/index.less dist/modules/titans/assets/css/index.css",
     "compile-englishlanguage-css": "lessc modules/englishlanguage/assets/css/index.less dist/modules/englishlanguage/assets/css/index.css",
