@@ -18,7 +18,7 @@ const DebugBattleComponent: React.FunctionComponent<PropTypes> = props =>
     Battle(
     {
       battle: props.battle,
-      // TODO 2020.07.20 |
+      // TODO 2021.11.02 |
       humanPlayer: null,
       onAbilityUse: (ability, user, target, abilityUseWasByHuman) =>
       {

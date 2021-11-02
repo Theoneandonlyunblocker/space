@@ -5,7 +5,7 @@ import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTempla
 
 export function getTargetsForAllAbilities(battle: Battle, user: Unit)
 {
-  // does this ever happen?
+  // TODO 2021.11.02 | does this ever happen?
   if (!user || !battle.activeUnit)
   {
     throw new Error();

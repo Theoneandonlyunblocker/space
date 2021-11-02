@@ -46,6 +46,7 @@ import {TurnOrder} from "./TurnOrder";
 export interface PropTypes extends React.Props<any>
 {
   battle: BattleObj;
+  // TODO 2021.11.02 | doesn't belong here
   humanPlayer: Player;
   onAbilityUse: (
     ability: CombatAbilityTemplate,
@@ -206,6 +207,12 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     // TODO 2020.07.19 | unnecessary, right? these are all done in handleTurnStart()
+    // TODO 2021.11.02 | migrate them there, though
+    //
+    // if (Date.now() < this.battleStartStartTime + 1000)
+    // {
+      // return;
+    // }
     // else if (this.props.battle.ended)
     // {
     //   this.setState(
@@ -448,7 +455,6 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
 
     this.props.battle.endTurn();
-    // TODO 2018.04.14 | should start calculating next ai move here
 
     this.battleScene.activeUnit = null;
     this.battleScene.updateUnits(() =>
