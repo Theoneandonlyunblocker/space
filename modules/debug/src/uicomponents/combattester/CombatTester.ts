@@ -5,6 +5,7 @@ import { Unit } from "core/src/unit/Unit";
 import { UnitEditor } from "./UnitEditor";
 import { DebugBattle } from "./DebugBattle";
 import { Battle } from "core/src/battle/Battle";
+import { generateRandomBattle } from "./generateRandomBattle";
 
 
 // tslint:disable-next-line:no-any
@@ -23,7 +24,8 @@ type TabInfo =
 const CombatTesterComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(null);
-  const battle = React.useRef<Battle | null>(null);
+  const battle = React.useRef<Battle | null>(generateRandomBattle(false));
+  battle.current.init();
 
   const tabs: TabInfo[] =
   [
