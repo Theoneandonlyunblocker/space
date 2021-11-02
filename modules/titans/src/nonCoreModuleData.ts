@@ -2,6 +2,7 @@ import { TitanComponentTemplate } from "./TitanComponentTemplate";
 import { ModuleData } from "core/src/modules/ModuleData";
 import { TitanChassisTemplate } from "./TitanChassisTemplate";
 import { TemplateCollection } from "core/src/generic/TemplateCollection";
+import { activeModuleData } from "core/src/app/activeModuleData";
 
 export type NonCoreModuleData =
 {
@@ -24,9 +25,21 @@ export type NonCoreModuleData =
 export function createNonCoreModuleData(): NonCoreModuleData
 {
   return {
-    titanComponents: new TemplateCollection<TitanComponentTemplate>("titanComponent"),
+    titanComponents: new TemplateCollection<TitanComponentTemplate>(
+      "titanComponent",
+      (copiedTemplates) =>
+      {
+        activeModuleData.templatesByImplementation.itemLike.copyTemplates(copiedTemplates);
+      },
+    ),
     getBuildableTitanComponentsForRace: {},
-    titanChassis: new TemplateCollection<TitanChassisTemplate>("titanChassis"),
+    titanChassis: new TemplateCollection<TitanChassisTemplate>(
+      "titanChassis",
+      (copiedTemplates) =>
+      {
+        activeModuleData.templatesByImplementation.unitLike.copyTemplates(copiedTemplates);
+      },
+    ),
     getBuildableTitanChassisForRace: {},
     idGenerators:
     {

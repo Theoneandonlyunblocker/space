@@ -16,11 +16,11 @@ export class TemplateCollection<T>
   {
     [key: string]: T;
   } = {};
-  private readonly onCopy?: () => void;
+  private readonly onCopy?: (copiedTemplates: {[key: string]: T}) => void;
   private cachedValuesArrayIsDirty: boolean = true;
   private cachedValuesArray: T[] = [];
 
-  constructor(displayName: string, onCopy?: () => void)
+  constructor(displayName: string, onCopy?: (copiedTemplates: {[key: string]: T}) => void)
   {
     this.category = displayName;
     this.onCopy = onCopy;
@@ -35,7 +35,7 @@ export class TemplateCollection<T>
 
     if (this.onCopy)
     {
-      this.onCopy();
+      this.onCopy(source);
     }
   }
   public has(key: string): boolean

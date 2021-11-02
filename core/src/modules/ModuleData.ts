@@ -46,6 +46,7 @@ import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTempla
 import { CombatActionListenerFetcher, CombatActionFetcher } from "../combat/CombatActionFetcher";
 import { coreCombatPhases } from "../combat/core/coreCombatPhases";
 import { coreCombatActionListenerFetchers } from "../combat/core/coreCombatActionListenerFetchers";
+import { AbilityBase } from "../templateinterfaces/AbilityBase";
 
 
 // tslint:disable:no-any
@@ -108,11 +109,19 @@ export class ModuleData
     ),
     buildings: new TemplateCollection<BuildingTemplate>(
       "buildings",
-      () => this.onTemplatesAdded(),
+      (copiedTemplates) =>
+      {
+        this.templatesByImplementation.buildingLike.copyTemplates(copiedTemplates);
+        this.onTemplatesAdded();
+      },
     ),
     combatAbilities: new TemplateCollection<CombatAbilityTemplate>(
       "combatAbilities",
-      () => this.onTemplatesAdded(),
+      (copiedTemplates) =>
+      {
+        this.templatesByImplementation.abilityLike.copyTemplates(copiedTemplates);
+        this.onTemplatesAdded();
+      },
     ),
     combatActionFetchers: new TemplateCollection<CombatActionFetcher<any>>(
       "combatActionFetchers",
@@ -132,7 +141,11 @@ export class ModuleData
     ),
     items: new TemplateCollection<ItemTemplate>(
       "items",
-      () => this.onTemplatesAdded(),
+      (copiedTemplates) =>
+      {
+        this.templatesByImplementation.itemLike.copyTemplates(copiedTemplates);
+        this.onTemplatesAdded();
+      },
     ),
     languages: new TemplateCollection<Language>(
       "languages",
@@ -156,7 +169,11 @@ export class ModuleData
     ),
     passiveSkills: new TemplateCollection<PassiveSkillTemplate>(
       "passiveSkills",
-      () => this.onTemplatesAdded(),
+      (copiedTemplates) =>
+      {
+        this.templatesByImplementation.abilityLike.copyTemplates(copiedTemplates);
+        this.onTemplatesAdded();
+      },
     ),
     personalities: new TemplateCollection<Personality>(
       "personalities",
@@ -192,7 +209,11 @@ export class ModuleData
     ),
     units: new TemplateCollection<UnitTemplate>(
       "units",
-      () => this.onTemplatesAdded(),
+      (copiedTemplates) =>
+      {
+        this.templatesByImplementation.unitLike.copyTemplates(copiedTemplates);
+        this.onTemplatesAdded();
+      },
     ),
     // tslint:enable:no-any
   };
@@ -205,7 +226,6 @@ export class ModuleData
   public readonly mapLevelModifierAdjustments: CustomModifierAdjustments = new CustomModifierAdjustments();
   public readonly templateCollectionsWithUnlockables:
   {
-    [key: string]: TemplateCollection<UnlockableThing>;
     buildings: TemplateCollection<BuildingTemplate>;
     items: TemplateCollection<ItemTemplate>;
     units: TemplateCollection<UnitTemplate>;
@@ -218,56 +238,19 @@ export class ModuleData
   // separated from templates to keep this.templates as a source of truth, but still allowing implementations to be reused
   // f.ex. titans from the titans module are implemented as units, but just adding them to this.templates.units means they become buildable as regular units, which they shouldn't be
   // TODO 2021.10.28 | wouldn't using flags be better?
-  public readonly templateCollectionsByImplementation:
+  public templatesByImplementation:
   {
-    buildingLike: {[key: string]: TemplateCollection<BuildingTemplate>};
-    itemLike: {[key: string]: TemplateCollection<ItemTemplate>};
-    unitLike: {[key: string]: TemplateCollection<UnitTemplate>};
+    abilityLike: TemplateCollection<AbilityBase>;
+    buildingLike: TemplateCollection<BuildingTemplate>;
+    itemLike: TemplateCollection<ItemTemplate>;
+    unitLike: TemplateCollection<UnitTemplate>;
   } =
   {
-    buildingLike: {buildings: this.templates.buildings},
-    itemLike: {items: this.templates.items},
-    unitLike: {units: this.templates.units},
+    abilityLike: new TemplateCollection<AbilityBase>("abilityLike"),
+    buildingLike: new TemplateCollection<BuildingTemplate>("buildingLike"),
+    itemLike: new TemplateCollection<ItemTemplate>("itemLike"),
+    unitLike: new TemplateCollection<UnitTemplate>("unitLike"),
   };
-  public get templatesByImplementation()
-  {
-    if (this.templatesByImplementationAreDirty)
-    {
-      for (const buildableType in this.templateCollectionsByImplementation)
-      {
-        this.cachedTemplatesByImplementation[buildableType] = {};
-
-        // just for error messages
-        const categoryTemplateWasAlreadyFoundIn:
-        {
-          [key: string]: string;
-        } = {};
-
-        for (const buildableCollectionKey in this.templateCollectionsByImplementation[buildableType])
-        {
-          const buildableTemplates = this.templateCollectionsByImplementation[buildableType][buildableCollectionKey];
-
-          for (const key in buildableTemplates)
-          {
-            if (categoryTemplateWasAlreadyFoundIn[key])
-            {
-              const a = categoryTemplateWasAlreadyFoundIn[key];
-              const b = buildableCollectionKey;
-
-              throw new Error(`Template with key '${key}' was found in both '${a}' and '${b}'.` +
-                `Both '${a}' and '${b}' implement templates buildable as '${buildableType}' and as such cannot have duplicate keys.`);
-            }
-
-            this.cachedTemplatesByImplementation[buildableType][key] = buildableTemplates[key];
-          }
-        }
-      }
-
-      this.templatesByImplementationAreDirty = false;
-    }
-
-    return this.cachedTemplatesByImplementation;
-  }
   public readonly manufacturableThingKinds:
   {
     [key: string]: ManufacturableThingKind<any, any, any>;
@@ -296,18 +279,7 @@ export class ModuleData
 
   private technologyUnlocksAreDirty: boolean = true;
   private cachedTechnologyUnlocks: TechnologyUnlocksByLevelByTech = {};
-  private templatesByImplementationAreDirty: boolean = true;
-  private readonly cachedTemplatesByImplementation:
-  {
-    buildingLike: TemplateCollection<BuildingTemplate>;
-    itemLike: TemplateCollection<ItemTemplate>;
-    unitLike: TemplateCollection<UnitTemplate>;
-  } =
-  {
-    buildingLike: new TemplateCollection<BuildingTemplate>("buildingLike"),
-    itemLike: new TemplateCollection<ItemTemplate>("itemLike"),
-    unitLike: new TemplateCollection<UnitTemplate>("unitLike"),
-  };
+
 
   constructor()
   {
@@ -418,7 +390,8 @@ export class ModuleData
 
     const allUnlockableThings = Object.keys(this.templateCollectionsWithUnlockables).map(unlockableThingKindKey =>
     {
-      const templateCollection = this.templateCollectionsWithUnlockables[unlockableThingKindKey];
+      const templateCollection: TemplateCollection<UnlockableThing> =
+        this.templateCollectionsWithUnlockables[unlockableThingKindKey];
 
       return templateCollection.map(template =>
       {
@@ -460,6 +433,5 @@ export class ModuleData
   private onTemplatesAdded(): void
   {
     this.technologyUnlocksAreDirty = true;
-    this.templatesByImplementationAreDirty = true;
   }
 }

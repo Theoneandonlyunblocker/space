@@ -40,7 +40,6 @@ import { Name } from "../localization/Name";
 import { Resources } from "../player/PlayerResources";
 import { UnitModifiersCollection } from "../maplevelmodifiers/UnitModifiersCollection";
 import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
-import { TemplateCollection } from "../generic/TemplateCollection";
 import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
 
 
@@ -252,26 +251,9 @@ export class Unit
   }
   public static fromSaveData(data: UnitSaveData): Unit
   {
-    function fetchTemplate<T>(
-      templatesCategoryDisplayString: string,
-      key: string,
-      ...templateCollections: TemplateCollection<T>[]
-    ): T
-    {
-      for (let i = 0; i < templateCollections.length; i++)
-      {
-        if (templateCollections[i].has(key))
-        {
-          return templateCollections[i].get(key);
-        }
-      }
-
-      throw new Error(`Missing ${templatesCategoryDisplayString} template '${key}'`);
-    }
-
     const unit = new Unit(
     {
-      template: fetchTemplate("unit", data.templateType, activeModuleData.templatesByImplementation.unitLike),
+      template: activeModuleData.templatesByImplementation.unitLike.get(data.templateType),
 
       id: data.id,
       name: Name.fromData(data.name),
@@ -287,26 +269,18 @@ export class Unit
 
       abilities: data.abilityTypes.map(templateType =>
       {
-        return fetchTemplate("ability", templateType, activeModuleData.templates.combatAbilities);
+        return activeModuleData.templates.combatAbilities.get(templateType);
       }),
       passiveSkills: data.passiveSkillTypes.map(templateType =>
       {
-        return fetchTemplate("passive skill", templateType, activeModuleData.templates.passiveSkills);
+        return activeModuleData.templates.passiveSkills.get(templateType);
       }),
       abilityUpgrades: data.abilityUpgrades.reduce((allUpgradeData, currentUpgradeData) =>
       {
-        const allAbilitiesAndPassiveSkills =
-        [
-          activeModuleData.templates.combatAbilities,
-          activeModuleData.templates.passiveSkills,
-        ];
-        const source = allAbilitiesAndPassiveSkills[currentUpgradeData.source];
+        const source = activeModuleData.templatesByImplementation.abilityLike.get(currentUpgradeData.source)
         const upgrades = currentUpgradeData.possibleUpgrades.map(templateType =>
         {
-          return fetchTemplate<CombatAbilityTemplate | PassiveSkillTemplate>("ability / passive skill", templateType,
-            activeModuleData.templates.combatAbilities,
-            activeModuleData.templates.passiveSkills,
-          );
+          return activeModuleData.templatesByImplementation.abilityLike.get(templateType);
         });
 
         allUpgradeData[source.key] =
@@ -319,13 +293,7 @@ export class Unit
       }, {}),
       learnableAbilities: data.learnableAbilities.map(templateType =>
       {
-        const allAbilitiesAndPassiveSkills =
-        {
-          ...activeModuleData.templates.combatAbilities,
-          ...activeModuleData.templates.passiveSkills,
-        };
-
-        return allAbilitiesAndPassiveSkills[templateType];
+        return activeModuleData.templatesByImplementation.abilityLike.get(templateType);
       }),
 
       level: data.level,

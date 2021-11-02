@@ -48,8 +48,6 @@ export const titans: GameModule<TitansModuleSaveData> =
 
     moduleData.nonCoreData.titans = customModuleData;
     moduleData.manufacturableThingKinds.titanFromPrototype = manufacturableThingKinds.titanFromPrototype;
-    moduleData.templateCollectionsByImplementation.unitLike.titanChassis = customModuleData.titanChassis;
-    moduleData.templateCollectionsByImplementation.itemLike.titanComponents = customModuleData.titanComponents;
 
     registerMapLevelModifiers(moduleData);
 
