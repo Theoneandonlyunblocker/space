@@ -16,6 +16,7 @@ export const infestation: CombatEffectTemplate =
   {
     return localize("infest_effect_description").toString();
   },
+  isActive: (strength) => strength > 0,
   flags: new Set([combatEffectFlags.negative]),
   limit:
   {

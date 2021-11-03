@@ -17,6 +17,11 @@ export const autoHeal: CombatEffectTemplate =
   {
     return localize("autoHeal_description").toString();
   },
+  isActive: (strength) => strength > 0,
+  limit:
+  {
+    min: 0,
+  },
   actionFetchers:
   [
     {

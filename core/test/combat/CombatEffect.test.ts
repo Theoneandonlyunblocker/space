@@ -9,6 +9,7 @@ describe("CombatEffect", () =>
     key: "dummy",
     getDisplayName: () => "",
     getDescription: () => "",
+    isActive: () => true,
   };
 
   it("clamps strength to template limits", () =>

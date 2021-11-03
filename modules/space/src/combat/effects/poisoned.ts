@@ -15,6 +15,7 @@ export const poisoned: CombatEffectTemplate =
   {
     return localize("poisoned_description");
   },
+  isActive: (strength) => strength > 0,
   limit:
   {
     min: 0,

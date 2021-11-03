@@ -12,10 +12,6 @@ export class CombatEffectMap<Phase extends string = CorePhase>
   {
     [key: string]: CombatEffect<Phase>;
   } = {};
-  private get allEffects(): CombatEffect<Phase>[]
-  {
-    return Object.keys(this.effects).map(key => this.effects[key]);
-  }
 
   constructor()
   {
@@ -50,9 +46,13 @@ export class CombatEffectMap<Phase extends string = CorePhase>
 
     return this.effects[template.key];
   }
+  public getAllActiveEffects(): CombatEffect<Phase>[]
+  {
+    return this.filter(effect => effect.template.isActive(effect.strength));
+  }
   public getAttributeAdjustments(): UnitAttributeAdjustments[]
   {
-    return this.allEffects.filter(effect =>
+    return this.getAll().filter(effect =>
     {
       return Boolean(effect.template.getAttributeAdjustments);
     }).map(effect =>
@@ -79,5 +79,14 @@ export class CombatEffectMap<Phase extends string = CorePhase>
         return this.effects[key].serialize();
       }),
     };
+  }
+
+  private getAll(): CombatEffect<Phase>[]
+  {
+    return Object.keys(this.effects).map(key => this.effects[key]);
+  }
+  private filter(filterFn: (effect: CombatEffect<Phase>) => boolean): CombatEffect<Phase>[]
+  {
+    return this.getAll().filter(filterFn);
   }
 }

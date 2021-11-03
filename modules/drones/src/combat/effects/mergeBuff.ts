@@ -10,6 +10,7 @@ export const mergeBuff: CombatEffectTemplate =
     return localize("merge_effect_displayName").toString();
   },
   getDescription: strength => "",
+  isActive: (strength) => strength > 0,
   limit:
   {
     min: 0,

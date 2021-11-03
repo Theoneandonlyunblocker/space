@@ -8,6 +8,7 @@ describe("CombatEffectMap", () =>
     key: "dummy",
     getDisplayName: () => "",
     getDescription: () => "",
+    isActive: (strength) => strength > 0,
   };
 
   describe("get", () =>
@@ -31,6 +32,16 @@ describe("CombatEffectMap", () =>
       const secondGet = map.get(dummyTemplate);
       expect(secondGet).toBe(firstGet);
       expect(secondGet.strength).toBe(10);
+    });
+    it("filters out inactive effects", () =>
+    {
+      const map = new CombatEffectMap();
+
+      map.get(dummyTemplate).strength = 5;
+      expect(map.getAllActiveEffects().length).toBe(1);
+
+      map.get(dummyTemplate).strength = 0;
+      expect(map.getAllActiveEffects().length).toBe(0);
     });
   });
 });

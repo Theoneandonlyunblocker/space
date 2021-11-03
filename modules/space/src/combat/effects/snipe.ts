@@ -55,6 +55,7 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
     key: key,
     getDisplayName: () => localize(displayNameKey),
     getDescription: () => "",
+    isActive: (strength) => strength > 0,
     getAttributeAdjustments: () =>
     {
       return {
