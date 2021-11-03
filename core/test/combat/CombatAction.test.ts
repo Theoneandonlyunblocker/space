@@ -76,7 +76,7 @@ describe("CombatAction", () =>
   });
   it("applies result to target unit", () =>
   {
-    action.result.apply(sourceUnit, targetUnit, null);
+    action.result.apply(sourceUnit, targetUnit, null, action);
 
     expect(targetUnit.currentHealth).toBe(500 - 50);
   });

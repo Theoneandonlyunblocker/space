@@ -3,6 +3,7 @@ import {UnitAttributesObject} from "./UnitAttributes";
 
 export interface UnitDisplayData
 {
+  // TODO 2021.11.03 | change to isFacingRight for clarity & consistency with vfx
   facesLeft: boolean;
   name: string;
 
@@ -21,7 +22,7 @@ export interface UnitDisplayData
   portraitSrc: string; // could also allow other portrait elements
   iconSrc: string; // could also allow other icon elements
 
-  // in core/uicomponents/unit.ts:DisplayStatus
+  // in modules/defaultui/src/uicomponents/unit/unit.ts:DisplayStatus
   // wasDestroyed?: boolean;
   // wasCaptured?: boolean;
 

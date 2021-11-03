@@ -7,6 +7,8 @@ describe("CombatEffect", () =>
   const dummyTemplate: CombatEffectTemplate =
   {
     key: "dummy",
+    getDisplayName: () => "",
+    getDescription: () => "",
   };
 
   it("clamps strength to template limits", () =>

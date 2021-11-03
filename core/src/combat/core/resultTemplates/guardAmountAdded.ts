@@ -5,7 +5,7 @@ export const guardAmountAdded: CombatActionResultTemplate<number> =
 {
   key: "guardAmountAdded",
   defaultValue: 0,
-  applyResult: (value, user, target, battle) =>
+  applyResult: (value, user, target, combatManager) =>
   {
     target.battleStats.guardAmount += value;
 

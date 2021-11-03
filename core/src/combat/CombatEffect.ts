@@ -18,7 +18,7 @@ export class CombatEffect<Phase extends string = CorePhase>
   {
     let strength = rawStrength;
 
-    const roundingFN = this.template.roundingFN || Math.random;
+    const roundingFN = this.template.roundingFN || Math.round;
     strength = roundingFN(strength);
 
     if (this.template.limit)
