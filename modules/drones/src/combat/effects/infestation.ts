@@ -5,16 +5,26 @@ import { increaseInfestationAmount } from "../actions/increaseInfestationAmount"
 import { combatEffectFlags } from "modules/baselib/src/combat/combatEffectFlags";
 import { afterMainPhase } from "core/src/combat/core/phases/afterMainPhase";
 
+
+export function getPercentageHealthLostForInfestationLevel(strength: number): number
+{
+  // 0.1, 0.2, 0.4, 0.8
+  return 0.1 * Math.pow(2, strength - 1);
+}
+
 export const infestation: CombatEffectTemplate =
 {
   key: "infestation",
   get displayName()
   {
+    // TODO 2021.11.05 | rename
     return localizeMessage("infest_effect_displayName").toString();
   },
   getDescription: strength =>
   {
-    return localizeMessage("infest_effect_description").format(strength);
+    const percentageLost = getPercentageHealthLostForInfestationLevel(strength);
+
+    return localizeMessage("infest_effect_description").format(percentageLost);
   },
   isActive: (strength) => strength > 0,
   flags: new Set([combatEffectFlags.negative]),
@@ -30,9 +40,8 @@ export const infestation: CombatEffectTemplate =
       phasesToApplyTo: new Set([afterMainPhase]),
       fetch: (battle, unit) =>
       {
-        const severity = unit.battleStats.combatEffects.get(infestation).strength;
-        // 0.1, 0.2, 0.4, 0.8
-        const percentCurrentHealthRemoved = 0.1 * Math.pow(2, severity - 1);
+        const strength = unit.battleStats.combatEffects.get(infestation).strength;
+        const percentCurrentHealthRemoved = getPercentageHealthLostForInfestationLevel(strength);
 
         return [
           losePercentCurrentHealth(unit, unit, percentCurrentHealthRemoved),

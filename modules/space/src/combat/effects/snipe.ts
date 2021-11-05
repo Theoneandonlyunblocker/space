@@ -9,12 +9,14 @@ export const snipeDefence = makeSnipeEffect(UnitAttribute.Defence);
 export const snipeIntelligence = makeSnipeEffect(UnitAttribute.Intelligence);
 export const snipeSpeed = makeSnipeEffect(UnitAttribute.Speed);
 
+
+export const snipeAttributeAdjustment: Partial<FlatAndMultiplierAdjustment> =
+{
+  multiplicativeMultiplier: 0.5,
+};
+
 function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
 {
-  const attributeAdjustment: Partial<FlatAndMultiplierAdjustment> =
-  {
-    multiplicativeMultiplier: 0.5,
-  };
 
   let key: "snipeAttack" | "snipeDefence" | "snipeIntelligence" | "snipeSpeed";
   let displayNameKey:
@@ -76,7 +78,7 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
     getAttributeAdjustments: () =>
     {
       return {
-        [getKeyForAttribute(attribute)]: attributeAdjustment,
+        [getKeyForAttribute(attribute)]: snipeAttributeAdjustment,
       };
     },
   });

@@ -42,9 +42,9 @@ const CombatEffectEditorComponent: React.FunctionComponent<PropTypes> = props =>
         ReactDOMElements.div(
         {
           className: "selected-combat-effect-name",
-          title: selectedEffect ? selectedEffect.getDescription(effectStrength) : "",
         },
           selectedEffect ? selectedEffect.displayName : "",
+          selectedEffect ? selectedEffect.getDescription(effectStrength) : "",
         ),
         ReactDOMElements.div(
         {
