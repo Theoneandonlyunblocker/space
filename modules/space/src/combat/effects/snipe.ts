@@ -1,7 +1,6 @@
 import { UnitAttribute, getKeyForAttribute } from "core/src/unit/UnitAttributes";
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { FlatAndMultiplierAdjustment } from "core/src/generic/FlatAndMultiplierAdjustment";
-import { localize } from "modules/space/localization/localize";
 import { localizeMessage } from "modules/space/localization/localize";
 
 
@@ -18,7 +17,11 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
   };
 
   let key: "snipeAttack" | "snipeDefence" | "snipeIntelligence" | "snipeSpeed";
-  let displayNameKey: "snipeAttack_displayName" | "snipeDefence_displayName" | "snipeIntelligence_displayName" | "snipeSpeed_displayName";
+  let displayNameKey:
+    "combatEffect_snipeAttack_displayName" |
+    "combatEffect_snipeDefence_displayName" |
+    "combatEffect_snipeIntelligence_displayName" |
+    "combatEffect_snipeSpeed_displayName";
   let descriptionKey:
     "combatEffect_snipeAttack_description" |
     "combatEffect_snipeDefence_description" |
@@ -30,7 +33,7 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
     case UnitAttribute.Attack:
     {
       key = "snipeAttack";
-      displayNameKey = "snipeAttack_displayName";
+      displayNameKey = "combatEffect_snipeAttack_displayName";
       descriptionKey = "combatEffect_snipeAttack_description";
 
       break;
@@ -38,7 +41,7 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
     case UnitAttribute.Defence:
     {
       key = "snipeDefence";
-      displayNameKey = "snipeDefence_displayName";
+      displayNameKey = "combatEffect_snipeDefence_displayName";
       descriptionKey = "combatEffect_snipeDefence_description";
 
       break;
@@ -46,7 +49,7 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
     case UnitAttribute.Intelligence:
     {
       key = "snipeIntelligence";
-      displayNameKey = "snipeIntelligence_displayName";
+      displayNameKey = "combatEffect_snipeIntelligence_displayName";
       descriptionKey = "combatEffect_snipeIntelligence_description";
 
       break;
@@ -54,7 +57,7 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
     case UnitAttribute.Speed:
     {
       key = "snipeSpeed";
-      displayNameKey = "snipeSpeed_displayName";
+      displayNameKey = "combatEffect_snipeSpeed_displayName";
       descriptionKey = "combatEffect_snipeSpeed_description";
 
       break;
@@ -64,7 +67,10 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
   return(
   {
     key: key,
-    getDisplayName: () => localize(displayNameKey),
+    get displayName()
+    {
+      return localizeMessage(displayNameKey).toString();
+    },
     getDescription: (strength) => localizeMessage(descriptionKey).format(strength),
     isActive: (strength) => strength > 0,
     getAttributeAdjustments: () =>

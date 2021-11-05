@@ -1,5 +1,4 @@
 import {CombatEffectTemplate} from "core/src/combat/CombatEffectTemplate";
-import { localize } from "modules/space/localization/localize";
 import { localizeMessage } from "modules/space/localization/localize";
 import { CombatAction } from "core/src/combat/CombatAction";
 import { makeSimpleModifier } from "core/src/combat/core/modifiers/makeSimpleModifier";
@@ -10,9 +9,9 @@ import { afterMainPhase } from "core/src/combat/core/phases/afterMainPhase";
 export const autoHeal: CombatEffectTemplate =
 {
   key: "autoHeal",
-  getDisplayName: stength =>
+  get displayName()
   {
-    return localize("autoHeal_displayName").toString();
+    return localizeMessage("combatEffect_autoHeal_displayName").toString();
   },
   getDescription: strength =>
   {

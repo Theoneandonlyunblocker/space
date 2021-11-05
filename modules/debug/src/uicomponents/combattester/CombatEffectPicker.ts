@@ -15,7 +15,7 @@ const CombatEffectPickerComponent: React.FunctionComponent<PropTypes> = props =>
 {
   const sortedAvailableEffects = props.availableEffects.sort((a, b) =>
   {
-    const alphabetSort = a.getDisplayName(0).localeCompare(b.getDisplayName(props.effectStrength));
+    const alphabetSort = a.displayName.localeCompare(b.displayName);
     if (alphabetSort)
     {
       return alphabetSort;
@@ -46,7 +46,7 @@ const CombatEffectPickerComponent: React.FunctionComponent<PropTypes> = props =>
         value: effect.key,
         key: effect.key,
       },
-        effect.getDisplayName(props.effectStrength),
+        effect.displayName,
       )),
     )
   );

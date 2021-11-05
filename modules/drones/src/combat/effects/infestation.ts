@@ -1,5 +1,4 @@
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
-import { localize } from "modules/drones/localization/localize";
 import { localizeMessage } from "modules/drones/localization/localize";
 import { losePercentCurrentHealth } from "modules/baselib/src/combat/actions/losePercentCurrentHealth";
 import { increaseInfestationAmount } from "../actions/increaseInfestationAmount";
@@ -9,9 +8,9 @@ import { afterMainPhase } from "core/src/combat/core/phases/afterMainPhase";
 export const infestation: CombatEffectTemplate =
 {
   key: "infestation",
-  getDisplayName: strength =>
+  get displayName()
   {
-    return localize("infest_effect_displayName").toString();
+    return localizeMessage("infest_effect_displayName").toString();
   },
   getDescription: strength =>
   {

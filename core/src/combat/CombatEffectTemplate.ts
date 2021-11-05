@@ -6,7 +6,7 @@ import { CombatActionFetcher, CombatActionListenerFetcher } from "./CombatAction
 export interface CombatEffectTemplate<Phase extends string = CorePhase>
 {
   key: string;
-  getDisplayName: (strength: number) => string;
+  displayName: string;
   getDescription: (strength: number) => string;
   isActive: (strength: number) => boolean;
   limit?:
