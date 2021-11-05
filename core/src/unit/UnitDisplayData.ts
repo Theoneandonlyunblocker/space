@@ -4,8 +4,7 @@ import { CombatEffect } from "../combat/CombatEffect";
 
 export interface UnitDisplayData
 {
-  // TODO 2021.11.03 | change to isFacingRight for clarity & consistency with vfx
-  facesLeft: boolean;
+  isFacingRight: boolean;
   name: string;
 
   currentHealth: number;

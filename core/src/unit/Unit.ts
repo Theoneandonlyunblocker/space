@@ -788,7 +788,7 @@ export class Unit
     return(
     {
       name: this.name.toString(),
-      facesLeft: this.battleStats.side === "side2",
+      isFacingRight: this.battleStats.side === "side1",
 
       currentHealth: this.currentHealth,
       maxHealth: this.maxHealth,

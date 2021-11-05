@@ -191,7 +191,7 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
         {
           key: "playerFormation",
           formation: props.battlePrep.humanFormation.formation,
-          facesLeft: false,
+          isFacingRight: true,
           unitDisplayDataById: props.battlePrep.humanFormation.getDisplayData(),
 
           isInBattlePrep: true,
@@ -218,7 +218,7 @@ const BattlePrepComponent: React.FunctionComponent<PropTypes> = props =>
         {
           key: "enemyFormation",
           formation: props.battlePrep.enemyFormation.formation,
-          facesLeft: true,
+          isFacingRight: false,
           unitDisplayDataById: props.battlePrep.enemyFormation.getDisplayData(),
 
           isInBattlePrep: true,

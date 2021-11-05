@@ -7,7 +7,7 @@ import {UnitIconContainer} from "./UnitIconContainer";
 
 export interface PropTypes extends React.Props<any>
 {
-  facesLeft: boolean;
+  isFacingRight: boolean;
   onMouseUp?: () => void;
 }
 
@@ -39,12 +39,12 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
       UnitIconContainer(
         {
           iconSrc: null,
-          facesLeft: this.props.facesLeft,
+          isFacingRight: this.props.isFacingRight,
           key: "icon",
         }),
     ];
 
-    if (this.props.facesLeft)
+    if (!this.props.isFacingRight)
     {
       innerElements.reverse();
     }
@@ -52,7 +52,7 @@ export class EmptyUnitComponent extends React.PureComponent<PropTypes, StateType
     return(
       ReactDOMElements.div(
       {
-        className: "unit empty-unit" + (this.props.facesLeft ? " enemy-unit" : " friendly-unit"),
+        className: "unit empty-unit" + (this.props.isFacingRight ? " friendly-unit" : " enemy-unit"),
         onMouseUp: this.props.onMouseUp,
       },
         innerElements,

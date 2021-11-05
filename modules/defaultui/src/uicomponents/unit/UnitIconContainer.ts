@@ -4,7 +4,7 @@ import * as ReactDOMElements from "react-dom-factories";
 
 export interface PropTypes extends React.Props<any>
 {
-  facesLeft: boolean;
+  isFacingRight: boolean;
   iconSrc?: string;
 }
 
@@ -34,15 +34,15 @@ export class UnitIconContainerComponent extends React.PureComponent<PropTypes, S
       className: "unit-icon-filler",
     };
 
-    if (this.props.facesLeft)
-    {
-      fillerProps.className += " unit-border-right";
-      containerProps.className += " unit-border-no-right";
-    }
-    else
+    if (this.props.isFacingRight)
     {
       fillerProps.className += " unit-border-left";
       containerProps.className += " unit-border-no-left";
+    }
+    else
+    {
+      fillerProps.className += " unit-border-right";
+      containerProps.className += " unit-border-no-right";
     }
 
     const iconElement = React.Children.count(this.props.children) === 1 ?

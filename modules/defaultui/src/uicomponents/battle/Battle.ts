@@ -71,7 +71,7 @@ interface StateType
   abilityTooltip:
   {
     parentElement?: HTMLElement;
-    facesLeft?: boolean;
+    isFacingRight?: boolean;
   };
 
   battleSceneUnit1: Unit;
@@ -174,7 +174,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       abilityTooltip:
       {
         parentElement: null,
-        facesLeft: null,
+        isFacingRight: null,
       },
 
       battleSceneUnit1: null,
@@ -320,7 +320,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       return;
     }
 
-    const facesLeft = unit.battleStats.side === "side2";
+    const isFacingRight = unit.battleStats.side === "side1";
     const parentElement = this.getUnitElement(unit);
 
     this.setState(
@@ -328,7 +328,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
       abilityTooltip:
       {
         parentElement: parentElement,
-        facesLeft: facesLeft,
+        isFacingRight: isFacingRight,
       },
       hoveredUnit: unit,
       highlightedUnit: unit,
@@ -556,7 +556,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
         handleMouseLeaveAbility: this.handleMouseLeaveAbility,
         targetUnit: this.state.hoveredUnit,
         parentElement: this.state.abilityTooltip.parentElement,
-        facesLeft: this.state.abilityTooltip.facesLeft,
+        isFacingRight: this.state.abilityTooltip.isFacingRight,
         activeTargets: activeTargets,
         ref: this.abilityTooltip,
         key: this.state.hoveredUnit.id,
@@ -710,7 +710,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             {
               unitDisplayDataById: this.state.unitDisplayDataById,
               formation: battle.side1,
-              facesLeft: false,
+              isFacingRight: true,
 
               handleMouseEnterUnit: this.handleMouseEnterUnit,
               handleMouseLeaveUnit: this.handleMouseLeaveUnit,
@@ -736,7 +736,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
             {
               unitDisplayDataById: this.state.unitDisplayDataById,
               formation: battle.side2,
-              facesLeft: true,
+              isFacingRight: false,
 
               handleMouseEnterUnit: this.handleMouseEnterUnit,
               handleMouseLeaveUnit: this.handleMouseLeaveUnit,

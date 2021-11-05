@@ -8,7 +8,7 @@ import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTe
 export interface PropTypes extends React.Props<any>
 {
   parentElement: HTMLElement;
-  facesLeft: boolean;
+  isFacingRight: boolean;
   activeTargets: {[unitId: number]: CombatAbilityTemplate[]};
   handleMouseLeave: (e: React.MouseEvent<HTMLDivElement>) => void;
   handleAbilityUse: (ability: CombatAbilityTemplate, target: Unit) => void;
@@ -69,16 +69,16 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
       top: parentRect.top,
     };
 
-    if (this.props.facesLeft)
-    {
-      containerProps.className += " ability-tooltip-faces-left";
-      containerProps.style.left = parentRect.left;
-    }
-    else
+    if (this.props.isFacingRight)
     {
       containerProps.className += " ability-tooltip-faces-right";
       // aligning right to right doesnt work for some reason
       containerProps.style.left = parentRect.right - 128;
+    }
+    else
+    {
+      containerProps.className += " ability-tooltip-faces-left";
+      containerProps.style.left = parentRect.left;
     }
 
     for (let i = 0; i < abilities.length; i++)

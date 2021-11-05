@@ -141,13 +141,13 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
       }
     }
 
-    if (this.props.facesLeft)
+    if (this.props.isFacingRight)
     {
-      wrapperProps.className += " enemy-unit";
+      wrapperProps.className += " friendly-unit";
     }
     else
     {
-      wrapperProps.className += " friendly-unit";
+      wrapperProps.className += " enemy-unit";
     }
     if (this.props.isActiveUnit)
     {
@@ -210,7 +210,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
       }),
     ];
 
-    if (this.props.facesLeft)
+    if (!this.props.isFacingRight)
     {
       bodyElements.reverse();
     }
@@ -237,14 +237,14 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
       UnitIconContainer(
         {
           key: "icon",
-          facesLeft: this.props.facesLeft,
+          isFacingRight: this.props.isFacingRight,
           iconSrc: this.props.iconSrc,
         }),
     ];
 
     return(
       ReactDOMElements.div(wrapperProps,
-        this.props.facesLeft ? innerElements.reverse() : innerElements,
+        !this.props.isFacingRight ? innerElements.reverse() : innerElements,
       )
     );
   }

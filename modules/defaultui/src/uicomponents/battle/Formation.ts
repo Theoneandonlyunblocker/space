@@ -36,7 +36,7 @@ function bindFunctionIfExists(functionToBind: Function | undefined, valueToBind:
 export interface PropTypes extends React.Props<any>
 {
   formation: UnitObj[][];
-  facesLeft: boolean;
+  isFacingRight: boolean;
   unitStrengthAnimateDuration: number | undefined;
   unitDisplayDataById:
   {
@@ -85,9 +85,9 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
 
     for (let i = 0; i < this.props.formation.length; i++)
     {
-      const absoluteRowIndex = this.props.facesLeft ?
-        i + activeModuleData.ruleSet.battle.rowsPerFormation :
-        i;
+      const absoluteRowIndex = this.props.isFacingRight ?
+        i :
+        i + activeModuleData.ruleSet.battle.rowsPerFormation;
       const unitElements: React.ReactElement<any>[] = [];
       for (let j = 0; j < this.props.formation[i].length; j++)
       {
@@ -132,9 +132,10 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
           };
 
           unitProps = shallowExtend(unitDisplayData, componentProps, displayProps);
-          if (this.props.facesLeft && this.props.isInBattlePrep)
+          // TODO 2021.11.05 | needs fixing?
+          if (this.props.isFacingRight && this.props.isInBattlePrep)
           {
-            unitProps.facesLeft = true;
+            unitProps.isFacingRight = true;
           }
         }
 
@@ -145,7 +146,7 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
           },
             EmptyUnit(
             {
-              facesLeft: this.props.facesLeft,
+              isFacingRight: this.props.isFacingRight,
               onMouseUp: onMouseUp,
             }),
             !unit ? null : Unit(
