@@ -4,6 +4,7 @@ const base = require("./jest.config.base");
 module.exports = {
   ...base,
   projects: [
-    "<rootDir>/core/jest.config.js",
+    "<rootDir>/core/test/jest.config.js",
+    "<rootDir>/modules/baselib/test/jest.config.js",
   ],
 };
