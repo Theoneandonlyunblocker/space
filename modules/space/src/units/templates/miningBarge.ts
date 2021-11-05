@@ -8,7 +8,7 @@ import { itemSlot } from "../../items/itemSlot";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/src/availabilityFlags";
 import { standby } from "modules/baselib/src/combat/abilities/standby";
 import { rangedAttack } from "../../combat/abilities/rangedAttack";
-import { miner } from "../../passiveskills/passiveSkills";
+import { miner } from "../../passiveskills/templates/miner";
 
 
 export const miningBarge: UnitTemplate =

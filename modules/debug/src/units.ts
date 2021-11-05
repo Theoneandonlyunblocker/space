@@ -5,12 +5,8 @@ import {makeSingleUnitDrawingFunctionForPlaceholder} from "modules/space/src/uni
 
 import {itemSlot} from "modules/space/src/items/itemSlot";
 
-import
-{
-  autoHeal,
-  medic,
-  warpJammer,
-} from "modules/space/src/passiveskills/passiveSkills";
+
+import {passiveSkillTemplates as spacePassiveSkills} from "modules/space/src/passiveskills/passiveSkills";
 import { localize } from "../localization/localize";
 import {getAssetSrc} from "modules/baselib/assets/assets";
 import { moneyResource } from "modules/money/src/moneyResource";
@@ -117,15 +113,15 @@ export const debugShip: UnitTemplate =
       [
         {
           weight: 0.33,
-          probabilityItems: [autoHeal],
+          probabilityItems: [spacePassiveSkills.autoHeal],
         },
         {
           weight: 0.33,
-          probabilityItems: [warpJammer],
+          probabilityItems: [spacePassiveSkills.warpJammer],
         },
         {
           weight: 0.33,
-          probabilityItems: [medic],
+          probabilityItems: [spacePassiveSkills.medic],
         },
       ],
     },

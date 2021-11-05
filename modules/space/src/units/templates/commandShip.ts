@@ -6,16 +6,13 @@ import {makeSingleUnitDrawingFunction} from "../singleUnitDrawingFunction";
 import {distributionGroups} from "modules/baselib/src/distributionGroups";
 import {itemSlot} from "modules/space/src/items/itemSlot";
 
-import
-{
-  initialGuard,
-} from "modules/space/src/passiveskills/passiveSkills";
 import { localize } from "modules/space/localization/localize";
 import { getUnitIconSrc } from "modules/space/assets/units/unitAssets";
 import { moneyResource } from "modules/money/src/moneyResource";
 import {availabilityFlags as commonAvailabilityFlags} from "modules/baselib/src/availabilityFlags";
 import { standby } from "modules/baselib/src/combat/abilities/standby";
 import { rangedAttack } from "../../combat/abilities/rangedAttack";
+import { initialGuard } from "../../passiveskills/templates/initialGuard";
 
 
 export const commandShip: UnitTemplate =
