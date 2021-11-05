@@ -14,13 +14,13 @@ import
 
 export const combatAbilityTemplates =
 {
-  [beamAttack.key]: beamAttack,
-  [boardingHook.key]: boardingHook,
-  [bombAttack.key]: bombAttack,
-  [closeAttack.key]: closeAttack,
-  [rangedAttack.key]: rangedAttack,
-  [snipeAttack.key]: snipeAttack,
-  [snipeDefence.key]: snipeDefence,
-  [snipeIntelligence.key]: snipeIntelligence,
-  [snipeSpeed.key]: snipeSpeed,
+  beamAttack: beamAttack,
+  boardingHook: boardingHook,
+  bombAttack: bombAttack,
+  closeAttack: closeAttack,
+  rangedAttack: rangedAttack,
+  snipeAttack: snipeAttack,
+  snipeDefence: snipeDefence,
+  snipeIntelligence: snipeIntelligence,
+  snipeSpeed: snipeSpeed,
 };

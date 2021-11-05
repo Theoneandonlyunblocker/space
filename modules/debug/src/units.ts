@@ -84,7 +84,7 @@ export const debugShip: UnitTemplate =
         },
         {
           weight: 0.33,
-          probabilityItems: [spaceAbilities.guardRow],
+          probabilityItems: [guardRow],
         },
       ],
     },
