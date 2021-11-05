@@ -1,4 +1,5 @@
 import { localize } from "modules/space/localization/localize";
+import { localizeMessage } from "modules/space/localization/localize";
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { takePoisonDamage } from "../actions/takePoisonDamage";
 import { afterMainPhase } from "core/src/combat/core/phases/afterMainPhase";
@@ -13,7 +14,7 @@ export const poisoned: CombatEffectTemplate =
   },
   getDescription: strength =>
   {
-    return localize("poisoned_description");
+    return localizeMessage("combatEffect_poisoned_description").format(strength);
   },
   isActive: (strength) => strength > 0,
   limit:

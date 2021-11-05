@@ -1,5 +1,6 @@
 import {CombatEffectTemplate} from "core/src/combat/CombatEffectTemplate";
 import { localize } from "modules/space/localization/localize";
+import { localizeMessage } from "modules/space/localization/localize";
 import { CombatAction } from "core/src/combat/CombatAction";
 import { makeSimpleModifier } from "core/src/combat/core/modifiers/makeSimpleModifier";
 import { rawHealthRestoration } from "modules/baselib/src/combat/primitives/rawHealthRestoration";
@@ -13,9 +14,9 @@ export const autoHeal: CombatEffectTemplate =
   {
     return localize("autoHeal_displayName").toString();
   },
-  getDescription: stength =>
+  getDescription: strength =>
   {
-    return localize("autoHeal_description").toString();
+    return localizeMessage("combatEffect_autoHeal_description").format(strength);
   },
   isActive: (strength) => strength > 0,
   limit:

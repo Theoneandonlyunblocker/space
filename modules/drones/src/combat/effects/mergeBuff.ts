@@ -1,5 +1,6 @@
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { localize } from "modules/drones/localization/localize";
+import { localizeMessage } from "modules/drones/localization/localize";
 
 
 export const mergeBuff: CombatEffectTemplate =
@@ -8,8 +9,10 @@ export const mergeBuff: CombatEffectTemplate =
   getDisplayName: strength =>
   {
     return localize("merge_effect_displayName").toString();
+  getDescription: strength =>
+  {
+    return localizeMessage("merge_effect_description").format(strength);
   },
-  getDescription: strength => "",
   isActive: (strength) => strength > 0,
   limit:
   {

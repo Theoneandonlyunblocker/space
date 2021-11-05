@@ -1,12 +1,44 @@
 import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 import {Localizer} from "core/src/localization/Localizer";
 import {StringLocalizer} from "core/src/localization/StringLocalizer";
+import {MessageFormatLocalizer} from "core/src/localization/MessageFormatLocalizer";
+import {formatters as englishFormatters} from "modules/englishlanguage/src/formatters";
+
+import {units as en_units} from "./en/units";
+import {abilities as en_abilities} from "./en/abilities";
+
+import {combatEffects as en_combatEffects} from "./en/combatEffects";
+import {CombatEffects as CombatEffects_args} from "./messageArgs/combatEffects";
 
 import {names as en_names} from "./en/names";
-import {units as en_units} from "./en/units";
-import {combatEffects as en_unitEffects} from "./en/combatEffects";
-import {abilities as en_abilities} from "./en/abilities";
 import { Name } from "core/src/localization/Name";
+
+
+const allStrings =
+{
+  ...en_units,
+  ...en_abilities,
+};
+
+export const localizer = new StringLocalizer<typeof allStrings>("drones");
+localizer.setAll(allStrings, englishLanguage);
+
+export const localize = localizer.localize.bind(localizer);
+
+
+type MessageArgs =
+  CombatEffects_args;
+
+const allMessages =
+{
+  ...en_combatEffects,
+};
+
+export const messageLocalizer = new MessageFormatLocalizer<MessageArgs>("drones");
+messageLocalizer.addFormatters(englishFormatters, englishLanguage);
+messageLocalizer.setAll(allMessages, englishLanguage);
+
+export const localizeMessage = messageLocalizer.localize.bind(messageLocalizer);
 
 
 const allNames =
@@ -26,15 +58,3 @@ export const nameLocalizer = new Localizer<GenericNamesType, () => Name>(
 nameLocalizer.setAll(en_names, englishLanguage);
 
 export const localizeName = nameLocalizer.localize.bind(nameLocalizer);
-
-const allMessages =
-{
-  ...en_units,
-  ...en_unitEffects,
-  ...en_abilities,
-};
-
-export const localizer = new StringLocalizer<typeof allMessages>("drones");
-localizer.setAll(allMessages, englishLanguage);
-
-export const localize = localizer.localize.bind(localizer);
