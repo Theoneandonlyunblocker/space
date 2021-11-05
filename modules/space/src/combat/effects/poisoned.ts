@@ -9,11 +9,11 @@ export const poisoned: CombatEffectTemplate =
   key: "poisoned",
   get displayName()
   {
-    return localizeMessage("combatEffect_poisoned_displayName").toString();
+    return localizeMessage("effect_poisoned_displayName").toString();
   },
   getDescription: strength =>
   {
-    return localizeMessage("combatEffect_poisoned_description").format(strength);
+    return localizeMessage("effect_poisoned_description").format(strength);
   },
   isActive: (strength) => strength > 0,
   limit:

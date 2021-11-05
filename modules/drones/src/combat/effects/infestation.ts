@@ -17,14 +17,13 @@ export const infestation: CombatEffectTemplate =
   key: "infestation",
   get displayName()
   {
-    // TODO 2021.11.05 | rename
-    return localizeMessage("infest_effect_displayName").toString();
+    return localizeMessage("effect_infestation_displayName").toString();
   },
   getDescription: strength =>
   {
     const percentageLost = getPercentageHealthLostForInfestationLevel(strength);
 
-    return localizeMessage("infest_effect_description").format(percentageLost);
+    return localizeMessage("effect_infestation_description").format(percentageLost);
   },
   isActive: (strength) => strength > 0,
   flags: new Set([combatEffectFlags.negative]),

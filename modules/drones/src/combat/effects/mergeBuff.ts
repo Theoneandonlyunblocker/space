@@ -7,11 +7,11 @@ export const mergeBuff: CombatEffectTemplate =
   key: "mergeBuff",
   get displayName()
   {
-    return localizeMessage("merge_effect_displayName").toString();
+    return localizeMessage("effect_merge_displayName").toString();
   },
   getDescription: strength =>
   {
-    return localizeMessage("merge_effect_description").format(strength);
+    return localizeMessage("effect_merge_description").format(strength);
   },
   isActive: (strength) => strength > 0,
   limit:

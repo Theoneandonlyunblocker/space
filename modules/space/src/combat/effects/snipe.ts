@@ -20,47 +20,47 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
 
   let key: "snipeAttack" | "snipeDefence" | "snipeIntelligence" | "snipeSpeed";
   let displayNameKey:
-    "combatEffect_snipeAttack_displayName" |
-    "combatEffect_snipeDefence_displayName" |
-    "combatEffect_snipeIntelligence_displayName" |
-    "combatEffect_snipeSpeed_displayName";
+    "effect_snipeAttack_displayName" |
+    "effect_snipeDefence_displayName" |
+    "effect_snipeIntelligence_displayName" |
+    "effect_snipeSpeed_displayName";
   let descriptionKey:
-    "combatEffect_snipeAttack_description" |
-    "combatEffect_snipeDefence_description" |
-    "combatEffect_snipeIntelligence_description" |
-    "combatEffect_snipeSpeed_description";
+    "effect_snipeAttack_description" |
+    "effect_snipeDefence_description" |
+    "effect_snipeIntelligence_description" |
+    "effect_snipeSpeed_description";
 
   switch (attribute)
   {
     case UnitAttribute.Attack:
     {
       key = "snipeAttack";
-      displayNameKey = "combatEffect_snipeAttack_displayName";
-      descriptionKey = "combatEffect_snipeAttack_description";
+      displayNameKey = "effect_snipeAttack_displayName";
+      descriptionKey = "effect_snipeAttack_description";
 
       break;
     }
     case UnitAttribute.Defence:
     {
       key = "snipeDefence";
-      displayNameKey = "combatEffect_snipeDefence_displayName";
-      descriptionKey = "combatEffect_snipeDefence_description";
+      displayNameKey = "effect_snipeDefence_displayName";
+      descriptionKey = "effect_snipeDefence_description";
 
       break;
     }
     case UnitAttribute.Intelligence:
     {
       key = "snipeIntelligence";
-      displayNameKey = "combatEffect_snipeIntelligence_displayName";
-      descriptionKey = "combatEffect_snipeIntelligence_description";
+      displayNameKey = "effect_snipeIntelligence_displayName";
+      descriptionKey = "effect_snipeIntelligence_description";
 
       break;
     }
     case UnitAttribute.Speed:
     {
       key = "snipeSpeed";
-      displayNameKey = "combatEffect_snipeSpeed_displayName";
-      descriptionKey = "combatEffect_snipeSpeed_description";
+      displayNameKey = "effect_snipeSpeed_displayName";
+      descriptionKey = "effect_snipeSpeed_description";
 
       break;
     }
