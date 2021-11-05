@@ -21,6 +21,7 @@ function makeSnipeDebuffPrimitive(
       const changes = result.get(combatEffectChanges);
       const previousAmount = changes.get(debuff) || 0;
       changes.set(debuff, previousAmount + value);
+      result.set(combatEffectChanges, changes);
     },
   };
 }

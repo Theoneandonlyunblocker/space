@@ -11,5 +11,6 @@ export const mergeBuffAmount: CombatActionPrimitiveTemplate<number> =
     const changes = result.get(combatEffectChanges);
     const previousAmount = changes.get(mergeBuff) || 0;
     changes.set(mergeBuff, previousAmount + value);
+    result.set(combatEffectChanges, changes);
   },
 };

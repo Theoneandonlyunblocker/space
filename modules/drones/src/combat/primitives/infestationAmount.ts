@@ -11,5 +11,6 @@ export const infestationAmount: CombatActionPrimitiveTemplate<number> =
     const changes = result.get(combatEffectChanges);
     const previousAmount = changes.get(infestation) || 0;
     changes.set(infestation, previousAmount + value);
+    result.set(combatEffectChanges, changes);
   },
 };
