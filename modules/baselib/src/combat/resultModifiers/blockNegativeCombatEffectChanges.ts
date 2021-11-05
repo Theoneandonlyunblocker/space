@@ -40,17 +40,20 @@ function combatEffectChangeIsNegative(effectTemplate: CombatEffectTemplate, chan
 export const blockNegativeCombatEffectChanges: CombatActionResultModifier<number> =
 {
   key: "blockNegativeCombatEffectChanges",
-  modifyResult: (result) =>
+  modifyResult: (result, maxEffectsToBlock) =>
   {
     let amountOfEffectsBlocked = 0;
 
     const effectChanges = result.get(combatEffectChanges);
     effectChanges.forEach((amount, effectTemplate) =>
     {
-      if (combatEffectChangeIsNegative(effectTemplate, amount))
+      if (amountOfEffectsBlocked < maxEffectsToBlock)
       {
-        effectChanges.delete(effectTemplate); // deleting entries mid-iteration is safe
-        amountOfEffectsBlocked += 1;
+        if (combatEffectChangeIsNegative(effectTemplate, amount))
+        {
+          effectChanges.delete(effectTemplate); // deleting entries mid-iteration is safe
+          amountOfEffectsBlocked += 1;
+        }
       }
     });
 

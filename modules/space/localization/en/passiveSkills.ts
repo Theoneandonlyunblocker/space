@@ -10,4 +10,6 @@ export const passiveSkills =
   warpJammer_description: "Forces an extra unit to defend when starting a battle",
   miner_displayName: "Miner",
   miner_description: "Extracts 1 resource per turn from local star",
+  systemsHardening_displayName: "Systems hardening",
+  systemsHardening_description: "Block 1 negative effect each battle",
 };

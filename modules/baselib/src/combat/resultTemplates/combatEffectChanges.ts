@@ -5,7 +5,10 @@ import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 export const combatEffectChanges: CombatActionResultTemplate<Map<CombatEffectTemplate, number>> =
 {
   key: "combatEffectChanges",
-  defaultValue: new Map(),
+  get defaultValue()
+  {
+    return new Map();
+  },
   applyResult: (changes, source, target, combatManager) =>
   {
     changes.forEach((changeAmount, effectTemplate) =>

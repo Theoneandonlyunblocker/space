@@ -7,6 +7,6 @@ export const negativeEffectsBlocked: CombatActionResultTemplate<number> =
   defaultValue: 0,
   applyResult: (changes, source, target, combatManager) =>
   {
-
+    // TODO 2021.11.05 | remove negativeEffectsBlocked effect by # of effects blocked
   },
 };
