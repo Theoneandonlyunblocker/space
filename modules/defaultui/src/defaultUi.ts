@@ -1,12 +1,9 @@
-import * as PIXI from "pixi.js";
-
 import {englishLanguage} from "modules/englishlanguage/src/englishLanguage";
 import {GameModule} from "core/src/modules/GameModule";
 import {GameModuleInitializationPhase} from "core/src/modules/GameModuleInitializationPhase";
 import {loadCss} from "core/src/generic/utility";
 import
 {
-  cachedAssets,
   setBaseUrl as setAssetBaseUrl,
   assetSources,
 } from "../assets/assets";
@@ -30,26 +27,7 @@ export const defaultUi: GameModule =
         loadCss(assetSources.css, baseUrl);
         setAssetBaseUrl(baseUrl);
 
-        const loader = new PIXI.Loader(baseUrl);
-
-        const battleSceneFlagFadeUrl = assetSources.battleSceneFlagFade;
-        loader.add(
-        {
-          url: battleSceneFlagFadeUrl,
-          loadType: 1, // XML
-        });
-
-        return new Promise(resolve =>
-        {
-          loader.load(() =>
-          {
-            const response = <XMLDocument> loader.resources[battleSceneFlagFadeUrl].data;
-            const svgDoc = <SVGElement> response.children[0];
-            cachedAssets.battleSceneFlagFade = svgDoc;
-
-            resolve();
-          });
-        });
+        return Promise.resolve();
       },
     ],
   },

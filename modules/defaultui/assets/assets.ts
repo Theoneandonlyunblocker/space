@@ -17,17 +17,8 @@ export const assetSources =
   statusEffect_positive_intelligence: "./assets/img/icons/statusEffect_positive_intelligence.png",
   statusEffect_positive_speed:        "./assets/img/icons/statusEffect_positive_speed.png",
 
-  battleSceneFlagFade: "./assets/img/battleSceneFlagFade.svg",
 
   css: "./assets/css/main.css",
-};
-
-export const cachedAssets:
-{
-  battleSceneFlagFade: SVGElement;
-} =
-{
-  battleSceneFlagFade: undefined,
 };
 
 

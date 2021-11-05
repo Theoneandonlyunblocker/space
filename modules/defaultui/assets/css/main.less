@@ -821,31 +821,54 @@ ul, ol
   position: relative;
 }
 
+.battle-scene-flag-gradient(@dir)
+{
+  @gradient: linear-gradient(@dir,
+    rgba(0, 0, 0, 0.5) 0%,
+    rgba(0, 0, 0, 0.3) 60%,
+    rgba(0, 0, 0, 0.15) 80%,
+    rgba(0, 0, 0, 0) 100%);
+
+  -webkit-mask-image: @gradient;
+  mask-image: @gradient;
+}
+
 .battle-scene-flag-container
 {
   flex: 1 1 50%;
   height: 100%;
   width: 50%;
+
+  .player-flag
+  {
+    display: flex;
+  }
+
+  &.facing-right .player-flag
+  {
+    .battle-scene-flag-gradient(to right);
+    flex-direction: row;
+  }
+  &.facing-left .player-flag
+  {
+    .battle-scene-flag-gradient(to left);
+    flex-direction: row-reverse;
+  }
 }
 
 .battle-scene-flag
 {
   height: 100%;
   width: 100%;
-}
 
-.battle-scene-flag-fade-right
-{
-  >svg>*
+  .emblem
   {
-    mask: url(#battle-scene-flag-fade-right);
-  }
-}
-.battle-scene-flag-fade-left
-{
-  >svg>*
-  {
-    mask: url(#battle-scene-flag-fade-left);
+    @margin: 15%;
+
+    width: auto;
+    left: auto;
+    margin: 0 @margin;
+    max-width: 100% - @margin * 2;
   }
 }
 

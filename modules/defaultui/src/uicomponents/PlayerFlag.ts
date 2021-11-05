@@ -12,8 +12,6 @@ export interface PropTypes extends React.Props<any>
 {
   flag: Flag;
   props: React.HTMLProps<any>;
-
-  onUpdate?: (flagElement: HTMLDivElement) => void;
 }
 
 interface StateType
@@ -65,11 +63,6 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
     const flagElement = this.props.flag.draw();
     flagElement.classList.add("player-flag");
     containerNode.appendChild(flagElement);
-
-    if (this.props.onUpdate)
-    {
-      this.props.onUpdate(flagElement);
-    }
   }
 }
 
