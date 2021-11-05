@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import { CombatEffectEditor } from "./CombatEffectEditor";
 import { Unit } from "core/src/unit/Unit";
-import { UnitEditor } from "./UnitEditor";
+import { UnitEditor } from "../uniteditor/UnitEditor";
 import { DebugBattle } from "./DebugBattle";
 import { Battle } from "core/src/battle/Battle";
 import { generateRandomBattle } from "./generateRandomBattle";
@@ -23,9 +23,13 @@ type TabInfo =
 
 const CombatTesterComponent: React.FunctionComponent<PropTypes> = props =>
 {
-  const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(null);
-  const battle = React.useRef<Battle | null>(generateRandomBattle(false));
-  battle.current.init();
+  const battle = React.useRef<Battle | null>(null);
+  if (battle.current === null)
+  {
+    battle.current = generateRandomBattle(false);
+    battle.current.init();
+  }
+  const [selectedUnit, setSelectedUnit] = React.useState<Unit | null>(battle.current.activeUnit);
 
   const tabs: TabInfo[] =
   [
@@ -40,7 +44,12 @@ const CombatTesterComponent: React.FunctionComponent<PropTypes> = props =>
     {
       key: "effects",
       label: "Effects",
-      render: () => CombatEffectEditor(),
+      render: () => CombatEffectEditor(
+      {
+        // TODO 2021.11.03 | implement
+        triggerUpdate: () => {},
+        selectedUnit: selectedUnit,
+      }),
     },
   ];
 

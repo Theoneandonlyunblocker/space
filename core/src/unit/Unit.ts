@@ -804,6 +804,7 @@ export class Unit
       iconSrc: this.template.getIconSrc(),
 
       attributeChanges: this.getAttributesWithEffectsDifference().serialize(),
+      combatEffects: this.battleStats.combatEffects.getAllActiveEffects(),
     });
   }
   public serialize(): UnitSaveData

@@ -4,17 +4,21 @@ import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { NumberInput } from "modules/defaultui/src/uicomponents/generic/NumberInput";
 import { CombatEffectPicker } from "./CombatEffectPicker";
 import { activeModuleData } from "core/src/app/activeModuleData";
+import { Unit } from "core/src/unit/Unit";
 
 
 // tslint:disable-next-line:no-any
 export interface PropTypes extends React.Props<any>
 {
-
+  triggerUpdate: () => void;
+  selectedUnit: Unit;
 }
 
 const CombatEffectEditorComponent: React.FunctionComponent<PropTypes> = props =>
 {
-  const [selectedEffect, setSelectedEffect] = React.useState<CombatEffectTemplate | null>(null);
+  const availableEffects = activeModuleData.templates.combatEffects.getAll();
+
+  const [selectedEffect, setSelectedEffect] = React.useState<CombatEffectTemplate | null>(availableEffects[0]);
   const [effectStrength, setEffectStrength] = React.useState<number>(1);
 
   return(
@@ -24,7 +28,7 @@ const CombatEffectEditorComponent: React.FunctionComponent<PropTypes> = props =>
     },
       CombatEffectPicker(
       {
-        availableEffects: activeModuleData.templates.combatEffects.getAll(),
+        availableEffects: availableEffects,
         effectStrength: effectStrength,
         onChange: effect =>
         {
@@ -64,6 +68,17 @@ const CombatEffectEditorComponent: React.FunctionComponent<PropTypes> = props =>
             min: selectedEffect?.limit?.min,
             max: selectedEffect?.limit?.max,
           }),
+          ReactDOMElements.button(
+          {
+            onClick: () =>
+            {
+              const effect = props.selectedUnit.battleStats.combatEffects.get(selectedEffect);
+              effect.strength = effectStrength;
+              props.triggerUpdate();
+            }
+          },
+            "Set"
+          ),
         ),
       ),
     )

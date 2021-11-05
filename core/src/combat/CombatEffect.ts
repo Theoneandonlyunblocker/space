@@ -10,6 +10,10 @@ export class CombatEffect<Phase extends string = CorePhase>
 {
   public readonly id: number;
   public readonly template: CombatEffectTemplate<Phase>;
+  public get description(): string
+  {
+    return this.template.getDescription(this.strength);
+  }
   public get strength(): number
   {
     return this._strength;

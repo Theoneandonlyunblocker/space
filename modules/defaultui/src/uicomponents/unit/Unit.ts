@@ -11,6 +11,7 @@ import {UnitAttributeChanges} from "./UnitAttributeChanges";
 import {UnitIconContainer} from "./UnitIconContainer";
 import {UnitInfo} from "./UnitInfo";
 import {UnitPortrait} from "./UnitPortrait";
+import { UnitCombatEffects } from "./UnitCombatEffects";
 
 
 export interface ComponentPropTypes extends React.Props<any>
@@ -182,6 +183,10 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
         UnitPortrait(
         {
           imageSrc: (this.props.portraitSrc || ""),
+        }),
+        UnitCombatEffects(
+        {
+          effects: this.props.combatEffects,
         }),
         UnitAttributeChanges(
         {

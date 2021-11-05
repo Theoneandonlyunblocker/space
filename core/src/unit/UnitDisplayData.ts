@@ -1,5 +1,6 @@
 import {GuardCoverage} from "./GuardCoverage";
 import {UnitAttributesObject} from "./UnitAttributes";
+import { CombatEffect } from "../combat/CombatEffect";
 
 export interface UnitDisplayData
 {
@@ -18,6 +19,8 @@ export interface UnitDisplayData
   isSquadron: boolean;
 
   attributeChanges?: Partial<UnitAttributesObject>;
+  // TODO 2021.11.03 | does this trigger react updates?
+  combatEffects: CombatEffect[];
 
   portraitSrc: string; // could also allow other portrait elements
   iconSrc: string; // could also allow other icon elements
