@@ -1,12 +1,14 @@
 import { CombatActionResultTemplate } from "core/src/combat/CombatActionResultTemplate";
+import { blockNegativeEffect } from "../effects/blockNegativeEffect";
 
 
 export const negativeEffectsBlocked: CombatActionResultTemplate<number> =
 {
   key: "negativeEffectsBlocked",
   defaultValue: 0,
-  applyResult: (changes, source, target, combatManager) =>
+  applyResult: (value, source, target, combatManager, parentAction) =>
   {
-    // TODO 2021.11.05 | remove negativeEffectsBlocked effect by # of effects blocked
+    // should this create an action? so you could do shit like "heal everytime a debuff is blocked"
+    target.battleStats.combatEffects.get(blockNegativeEffect).strength -= value;
   },
 };
