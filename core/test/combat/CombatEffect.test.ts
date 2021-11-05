@@ -7,7 +7,7 @@ describe("CombatEffect", () =>
   const dummyTemplate: CombatEffectTemplate =
   {
     key: "dummy",
-    getDisplayName: () => "",
+    displayName: "",
     getDescription: () => "",
     isActive: () => true,
   };

@@ -10,7 +10,7 @@ export const combatEffectFlags =
   //
   // increases are considered negative so that "block debuff" will block whole debuff and not just negative component
   // increases considered negative, decreases considered negative
-  // slay the spire example: 'shackled' (gain strength at end of turn)
+  // slay the spire example: 'shackled' (lose strength, gain back at end of turn)
   positiveLinkedToNegative: "linkedToNegative",
 
   // increases considered negative, decreases considered positive
@@ -18,6 +18,6 @@ export const combatEffectFlags =
   negative: "negative",
 
   // increases considered negative, decreases considered positive
-  // slay the spire example: 'flex' (lose strength at end of turn)
+  // slay the spire example: 'flex' (gain strength, lose it at end of turn)
   negativeLinkedToPositive: "linkedToPositive",
 };

@@ -132,7 +132,6 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
           };
 
           unitProps = shallowExtend(unitDisplayData, componentProps, displayProps);
-          // TODO 2021.11.05 | needs fixing?
           if (this.props.isFacingRight && this.props.isInBattlePrep)
           {
             unitProps.isFacingRight = true;
