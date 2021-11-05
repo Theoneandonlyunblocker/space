@@ -42,7 +42,7 @@ import {Unit as Unit_args} from "./messageArgs/unit";
 import {UnitUpgrade as UnitUpgrade_args} from "./messageArgs/unitUpgrade";
 
 
-export type UiMessageArgs =
+type UiMessageArgs =
   Battle_args &
   Diplomacy_args &
   Errors_args &
@@ -60,7 +60,7 @@ export type UiMessageArgs =
   Trade_args &
   Technology_args &
   Unit_args &
-  UnitUpgrade_args ;
+  UnitUpgrade_args;
 
 const mergedMessages =
 {

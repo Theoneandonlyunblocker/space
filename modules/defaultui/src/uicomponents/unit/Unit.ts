@@ -20,16 +20,13 @@ export interface ComponentPropTypes extends React.Props<any>
 
   animateDuration?: number;
 
-  // onUnitClick?: (unit: Unit) => void;
   onUnitClick?: () => void;
   onMouseUp?: () => void;
 
   handleMouseLeaveUnit?: (e: React.MouseEvent<HTMLDivElement>) => void;
-  // handleMouseEnterUnit?: (unit: Unit) => void;
   handleMouseEnterUnit?: () => void;
 
   isDraggable?: boolean;
-  // onDragStart?: (unit: Unit) => void;
   onDragStart?: () => void;
   onDragEnd?: (dropSuccessful?: boolean) => void;
   dragPositionerProps?: DragPositionerProps;
