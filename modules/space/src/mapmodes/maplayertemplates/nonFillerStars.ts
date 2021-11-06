@@ -26,9 +26,39 @@ export const nonFillerStars: MapRendererLayerTemplate =
 
     const points = perspectivePlayer ? perspectivePlayer.getRevealedStars() : map.stars;
 
+    const doubleClickThreshold = 1000;
+    // TODO 2021.11.06 | this doesn't leak memory, does it?
+    const lastSingleClick:
+    {
+      star: Star;
+      time: number;
+    } =
+    {
+      star: undefined,
+      time: undefined,
+    };
+
     const onClickFN = (star: Star) =>
     {
       eventManager.dispatchEvent("starClick", star);
+
+      const now = window.performance.now();
+
+      const isOnSameStar = lastSingleClick.star === star;
+
+      const timeSinceLastClick = now - lastSingleClick.time;
+      const isWithinDoubleClickThreshold = timeSinceLastClick <= doubleClickThreshold;
+      if (isOnSameStar && isWithinDoubleClickThreshold)
+      {
+        eventManager.dispatchEvent("starDoubleClick", star);
+        lastSingleClick.star = undefined;
+      }
+      else
+      {
+        lastSingleClick.star = star;
+        lastSingleClick.time = now;
+      }
+
     };
     const mouseOverFN = (star: Star) =>
     {

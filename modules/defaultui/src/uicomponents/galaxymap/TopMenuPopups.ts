@@ -20,6 +20,7 @@ import {DefaultWindow, DefaultWindowComponent} from "../windows/DefaultWindow";
 import {EconomySummary} from "./EconomySummary";
 import {FullOptionsList} from "../options/FullOptionsList";
 import { storageStrings } from "core/src/saves/storageStrings";
+import { eventManager } from "core/src/app/eventManager";
 
 
 interface ValuesByPopup<T>
@@ -39,6 +40,7 @@ export type PopupType = keyof ValuesByPopup<{}>;
 interface PopupConstructData
 {
   makeContent: () => React.ReactElement<any>;
+  onClose?: () => void;
   title: string;
 }
 
@@ -60,6 +62,7 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   public displayName: string = "TopMenuPopups";
   public state: StateType;
 
+  private highlightedPlayerForDiplomacy: Player = null;
   private popupComponents: Partial<ValuesByPopup<React.RefObject<DefaultWindowComponent>>> = {};
   private cachedPopupPositions: Partial<ValuesByPopup<Rect>> = {};
   private popupConstructData: ValuesByPopup<PopupConstructData> =
@@ -127,6 +130,10 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       {
         activeLanguage: this.props.activeLanguage,
       }),
+      onClose: () =>
+      {
+        options.save();
+      },
       get title()
       {
         return localize("options").toString();
@@ -134,10 +141,18 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     },
     diplomacy:
     {
-      makeContent: () => DiplomacyOverview(
+      makeContent: () =>
       {
-        player: this.props.player,
-      }),
+        return DiplomacyOverview(
+        {
+          player: this.props.player,
+          highlightedPlayer: this.highlightedPlayerForDiplomacy,
+        });
+      },
+      onClose: () =>
+      {
+        this.highlightedPlayerForDiplomacy = null;
+      },
       get title()
       {
         return localize("diplomacy").toString();
@@ -221,8 +236,13 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       this.openPopup(popupType);
     }
   }
+  public componentDidMount(): void
+  {
+    eventManager.addEventListener("starDoubleClick", this.handleStarDoubleClick);
+  }
   public componentWillUnmount(): void
   {
+    eventManager.removeEventListener("starDoubleClick", this.handleStarDoubleClick);
     this.cacheAllWindowPositions();
     this.storeWindowPositions();
   }
@@ -257,21 +277,22 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     this.cacheWindowPosition = this.cacheWindowPosition.bind(this);
     this.cacheAllWindowPositions = this.cacheAllWindowPositions.bind(this);
     this.storeWindowPositions = this.storeWindowPositions.bind(this);
+    this.handleStarDoubleClick = this.handleStarDoubleClick.bind(this);
   }
-  private closePopup(popupType: PopupType)
+  private closePopup(popupType: PopupType, callback?: () => void)
   {
     this.cacheWindowPosition(popupType);
     this.storeWindowPositions();
 
-    if (popupType === "options")
+    if (this.popupConstructData[popupType].onClose)
     {
-      options.save();
+      this.popupConstructData[popupType].onClose();
     }
 
     this.popupComponents[popupType] = null;
 
     const changedState = <Pick<OpenedPopupsState, PopupType>> {[popupType]: false};
-    this.setState(changedState);
+    this.setState(changedState, callback);
   }
   private openPopup(popupType: PopupType)
   {
@@ -283,9 +304,9 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
     const constructData = this.popupConstructData[popupType];
 
     if (!this.popupComponents[popupType])
-      {
-        this.popupComponents[popupType] = React.createRef<DefaultWindowComponent>();
-      }
+    {
+      this.popupComponents[popupType] = React.createRef<DefaultWindowComponent>();
+    }
 
     return DefaultWindow(
     {
@@ -325,6 +346,37 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
   private storeWindowPositions(): void
   {
     localForage.setItem(storageStrings.windowPositions, JSON.stringify(this.cachedPopupPositions));
+  }
+  private handleStarDoubleClick(star: Star): void
+  {
+    if (star.owner === this.props.player)
+    {
+      this.toggleOrBringPopupToFront("production");
+    }
+    else if (!star.owner.isIndependent)
+    {
+      if (this.highlightedPlayerForDiplomacy === star.owner)
+      {
+        this.togglePopup("diplomacy");
+      }
+      else
+      {
+        this.highlightedPlayerForDiplomacy = star.owner;
+
+        if (this.state.diplomacy)
+        {
+          this.closePopup("diplomacy", () =>
+          {
+            this.highlightedPlayerForDiplomacy = star.owner;
+            this.openPopup("diplomacy");
+          });
+        }
+        else
+        {
+          this.openPopup("diplomacy");
+        }
+      }
+    }
   }
 }
 

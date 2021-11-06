@@ -15,6 +15,7 @@ import {DiplomaticStatusPlayer, PropTypes as DiplomaticStatusPlayerProps} from "
 export interface PropTypes extends React.Props<any>
 {
   player: Player;
+  highlightedPlayer?: Player;
 }
 
 interface StateType
@@ -46,11 +47,13 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
     const alivePlayers = metPlayers.filter(player => !player.isDead);
     const deadPlayers = metPlayers.filter(player => player.isDead);
 
+    let selected: ListItem<DiplomaticStatusPlayerProps> | null = null;
+
     const rows: ListItem<DiplomaticStatusPlayerProps>[] = alivePlayers.map(player =>
     {
       const status = this.props.player.diplomacy.getStatusWithPlayer(player)!;
 
-      return(
+      const row =
       {
         key: "" + player.id,
         content: DiplomaticStatusPlayer(
@@ -64,7 +67,14 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
 
           attitudeModifiers: player.diplomacy.getAttitudeModifiersForPlayer(this.props.player)!,
         }),
-      });
+      };
+
+      if (player === this.props.highlightedPlayer)
+      {
+        selected = row;
+      }
+
+      return row;
     }).concat(deadPlayers.map(player =>
     {
       return(
@@ -144,12 +154,21 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
             listItems: rows,
             initialColumns: columns,
             initialSortOrder: [columns[2], columns[1]],
+            initialSelected: selected,
             onRowChange: this.toggleDiplomacyActionsPopup,
             addSpacer: true,
           }),
         ),
       )
     );
+  }
+  public openDiplomacyActionsPopup(player: Player): void
+  {
+    this.setState(
+    {
+      playersWithOpenedDiplomacyActionsPopup:
+        this.state.playersWithOpenedDiplomacyActionsPopup.concat(player),
+    });
   }
 
   private bindMethods(): void
@@ -162,14 +181,6 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
   private hasDiplomacyActionsPopup(player: Player): boolean
   {
     return this.state.playersWithOpenedDiplomacyActionsPopup.indexOf(player) !== -1;
-  }
-  private openDiplomacyActionsPopup(player: Player): void
-  {
-    this.setState(
-    {
-      playersWithOpenedDiplomacyActionsPopup:
-        this.state.playersWithOpenedDiplomacyActionsPopup.concat(player),
-    });
   }
   private closeDiplomacyActionsPopup(playerToCloseFor: Player): void
   {
