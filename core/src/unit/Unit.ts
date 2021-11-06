@@ -525,7 +525,10 @@ export class Unit
   {
     const allPassiveSkills = this.passiveSkills;
 
-    const allUniquePassiveSkills = getUniqueArrayKeys(allPassiveSkills, template => template.key);
+    const allUniquePassiveSkills = getUniqueArrayKeys(allPassiveSkills, template =>
+    {
+      return template.key;
+    });
 
     return allUniquePassiveSkills;
   }
