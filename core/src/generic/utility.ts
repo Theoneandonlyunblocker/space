@@ -175,7 +175,7 @@ export function stringToHex(text: string)
 
   return parseInt(toParse, 16);
 }
-// TODO 2018.05.31 | many calls to this can be replaced with spread operator I think
+// TODO 2021.11.08 | many calls to this can be replaced with spread operator I think
 //
 // extends 'from' object with members of 'to'. If 'to' is null, a deep clone of 'from' is returned
 //
@@ -206,11 +206,12 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
   return to;
 }
 
-// TODO 2017.07.26 | remove & replace with object spread
+// TODO 2021.11.08 | remove & replace with object spread
 export function shallowCopy<T>(toCopy: T): T
 {
   return shallowExtend(toCopy);
 }
+// TODO 2021.11.08 | can this be removed?
 // don't think there's a better way
 export function shallowExtend<T1, T2>(s1: T1, s2: T2): T1 & T2;
 export function shallowExtend<T1, T2, T3>(s1: T1, s2: T2, s3: T3): T1 & T2 & T3;
