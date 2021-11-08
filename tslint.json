@@ -7,7 +7,7 @@
       "localStorage"
     ],
 
-    // try to follow these while writing new code
+    // VVVVV present in old stuff, but follow these while writing new code VVVVV
     "member-access": true,
     "member-ordering": [true, {"order": [
       "public-static-field",
@@ -35,11 +35,12 @@
     "typedef": [true, "parameter", "member-variable-declaration"],
     "prefer-function-over-method": true,
 
+    // ^^^^^  ^^^^^
+
     "no-internal-module": true,
     "no-namespace": [true, "allow-declarations"],
 
-    // currently using references for libraries. might be dumb?
-    // "no-reference": true,
+    "no-reference": true,
     "no-var-requires": true,
     "only-arrow-functions": [true, "allow-declarations", "allow-named-functions"],
     "curly": true,
@@ -57,8 +58,7 @@
     "triple-equals": true,
     "use-isnan": true,
 
-    // should enable this later. isn't there a way to automatically fix these?
-    // "no-default-export": true,
+    "no-default-export": true,
     "no-mergeable-namespace": true,
     "no-require-imports": true,
     "variable-name": [true, "ban-keywords", "check-format", "allow-leading-underscore", "allow-pascal-case"],
