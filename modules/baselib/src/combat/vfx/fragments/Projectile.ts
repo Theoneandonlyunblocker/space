@@ -37,7 +37,11 @@ export class Projectile<D extends PIXI.DisplayObject = PIXI.Sprite> extends VfxF
     decelerationAboveTerminalVelocity: new PropInfo.Number(0),
   }
 
-  public displayObject: D;
+  protected _displayObject: D;
+  public get displayObject(): D
+  {
+    return this._displayObject;
+  }
 
   constructor(props: ProjectileProps<D>)
   {
