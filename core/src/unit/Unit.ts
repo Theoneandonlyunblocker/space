@@ -277,7 +277,7 @@ export class Unit
       }),
       abilityUpgrades: data.abilityUpgrades.reduce((allUpgradeData, currentUpgradeData) =>
       {
-        const source = activeModuleData.templatesByImplementation.abilityLike.get(currentUpgradeData.source)
+        const source = activeModuleData.templatesByImplementation.abilityLike.get(currentUpgradeData.source);
         const upgrades = currentUpgradeData.possibleUpgrades.map(templateType =>
         {
           return activeModuleData.templatesByImplementation.abilityLike.get(templateType);

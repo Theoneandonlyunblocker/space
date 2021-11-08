@@ -35,7 +35,7 @@ const TitanChassisListComponent: React.FunctionComponent<PropTypes> = props =>
         chassis: chassis,
         isSelected: chassis === props.selectedChassis,
       }),
-    }
+    };
   });
 
   return(

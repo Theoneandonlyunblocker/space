@@ -105,7 +105,7 @@ export abstract class MapLevelModifiersCollection<T extends ModifierTemplate<any
     {
       if (this.onChange)
       {
-        this.onChange(this.getAllOwnModifiersInUpdateChain(updateChain))
+        this.onChange(this.getAllOwnModifiersInUpdateChain(updateChain));
       }
     }
   }

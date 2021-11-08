@@ -13,7 +13,7 @@ export class ProtonEmitter<P extends Proton.Particle = PixiParticle> extends Pro
   {
     if (this.dead)
     {
-      return
+      return;
     }
 
     this.age += time;

@@ -122,5 +122,5 @@ export const rocketAttack: VfxDrawingFunction = params =>
   params.triggerStart(container);
 
   animate();
-}
+};
 

@@ -135,8 +135,8 @@ export class Trade
   {
     return Object.keys(this.stagedItems).every(category =>
     {
-      return Object.keys(this.stagedItems[category]).length === 0
-    })
+      return Object.keys(this.stagedItems[category]).length === 0;
+    });
   }
 
   private setAllTradeableItems(): void

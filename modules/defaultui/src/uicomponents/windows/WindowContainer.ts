@@ -55,10 +55,12 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     height: undefined,
   };
 
+  // tslint:disable: typedef-whitespace
   private minWidth : number;
   private minHeight: number;
   private maxWidth : number;
   private maxHeight: number;
+  // tslint:enable: typedef-whitespace
 
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
   private readonly parentContainer: HTMLDivElement;

@@ -36,7 +36,7 @@ export const targetAllAllies: GetBattleTargetsFN = (user: Unit, battle: Battle) 
 export const targetOtherAllies: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
   return targetAllAllies(user, battle).filter(unit => unit !== user);
-}
+};
 export const targetEnemies: GetBattleTargetsFN = (user: Unit, battle: Battle) =>
 {
   return battle.getUnitsForSide(reverseSide(user.battleStats.side));

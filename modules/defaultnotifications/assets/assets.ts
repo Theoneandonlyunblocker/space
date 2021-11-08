@@ -55,7 +55,7 @@ export function getIcon(key: keyof typeof iconSources, ...id: (string | number)[
   const background = document.createElementNS("http://www.w3.org/2000/svg", "rect");
   background.setAttribute("width", `${width}`);
   background.setAttribute("height", `${height}`);
-  background.setAttribute("mask", `url(#${mask.id})`)
+  background.setAttribute("mask", `url(#${mask.id})`);
   background.classList.add("stenciled-svg-background");
 
   const foreground = <SVGElement> stencilElement.cloneNode(true);

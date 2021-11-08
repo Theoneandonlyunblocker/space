@@ -403,4 +403,4 @@ export const beam: VfxDrawingFunction = props =>
   const startTime = Date.now();
   particleShaderColorTween.start();
   animate();
-}
+};

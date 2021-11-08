@@ -44,7 +44,7 @@ export class AbilityUseEffectsForVfx<EffectId extends string = any>
     }
     else if (indexOfEffectToStopBefore === -1)
     {
-      throw new Error(`Vfx tried to trigger ability use effect '${effectToStopBefore}', but that effect had already been triggered`)
+      throw new Error(`Vfx tried to trigger ability use effect '${effectToStopBefore}', but that effect had already been triggered`);
     }
 
     const effectsToTrigger = this.unTriggeredEffectIds.slice(0, indexOfEffectToStopBefore);

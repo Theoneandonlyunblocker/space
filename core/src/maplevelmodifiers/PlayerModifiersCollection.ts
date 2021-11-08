@@ -53,7 +53,7 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
           return {
             template: modifierTemplate,
             target: location.modifiers,
-          }
+          };
         }));
       });
     }
@@ -66,7 +66,7 @@ export class PlayerModifiersCollection extends MapLevelModifiersCollection<Playe
           return {
             template: modifierTemplate,
             target: unit.mapLevelModifiers,
-          }
+          };
         }));
       });
     }

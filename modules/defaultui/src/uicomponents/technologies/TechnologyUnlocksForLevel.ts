@@ -30,18 +30,18 @@ export class TechnologyUnlocksForLevelComponent extends React.Component<PropType
 
   public render()
   {
-    const unlocksByKind = this.props.unlocks.reduce((unlocksByKind, unlockableThingWithKind) =>
+    const unlocksByKind = this.props.unlocks.reduce((groupedUnlocks, unlockableThingWithKind) =>
     {
       const {unlockableThing, unlockableThingKind} = unlockableThingWithKind;
 
-      if (!unlocksByKind[unlockableThingKind])
+      if (!groupedUnlocks[unlockableThingKind])
       {
-        unlocksByKind[unlockableThingKind] = [];
+        groupedUnlocks[unlockableThingKind] = [];
       }
 
-      unlocksByKind[unlockableThingKind].push(unlockableThing);
+      groupedUnlocks[unlockableThingKind].push(unlockableThing);
 
-      return unlocksByKind;
+      return groupedUnlocks;
     }, <{[unlockableThingKind: string]: UnlockableThing[]}>{});
 
     return(

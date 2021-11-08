@@ -432,7 +432,10 @@ export function loadDom(): Promise<void>
   {
     return new Promise((resolve) =>
     {
-      document.addEventListener("DOMContentLoaded", () => {resolve()});
+      document.addEventListener("DOMContentLoaded", () =>
+      {
+        resolve();
+      });
     });
   }
 }

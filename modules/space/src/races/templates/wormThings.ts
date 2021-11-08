@@ -40,8 +40,7 @@ export const wormThings: RaceTemplate =
   {
     return generateIndependentPlayer(wormThings);
   },
-  generateIndependentFleets: (player, location, globalStrength, localStrength,
-    maxUnitsPerSideInBattle) =>
+  generateIndependentFleets: (player, location, globalStrength, localStrength, maxUnitsPerSideInBattle) =>
   {
     return generateIndependentFleets(wormThings, player, location,
       globalStrength, localStrength, maxUnitsPerSideInBattle);

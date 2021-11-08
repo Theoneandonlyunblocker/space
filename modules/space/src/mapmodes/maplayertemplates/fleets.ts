@@ -79,8 +79,8 @@ export const fleets: MapRendererLayerTemplate =
     for (let i = 0; i < points.length; i++)
     {
       const star = points[i];
-      const fleets = star.getFleets();
-      if (!fleets || fleets.length < 1)
+      const localFleets = star.getFleets();
+      if (!localFleets || localFleets.length < 1)
       {
         continue;
       }
@@ -89,17 +89,21 @@ export const fleets: MapRendererLayerTemplate =
       fleetsContainer.x = star.x;
       fleetsContainer.y = star.y - 40;
 
-      for (let j = 0; j < fleets.length; j++)
+      for (let j = 0; j < localFleets.length; j++)
       {
-        if (fleets[j].units.length === 0)
+        if (localFleets[j].units.length === 0)
         {
           continue;
         }
-        if (fleets[j].isStealthy && perspectivePlayer && !perspectivePlayer.starIsDetected(fleets[j].location))
+        if (
+          localFleets[j].isStealthy &&
+          perspectivePlayer &&
+          !perspectivePlayer.starIsDetected(localFleets[j].location)
+        )
         {
           continue;
         }
-        const drawnFleet = singleFleetDrawFN(fleets[j]);
+        const drawnFleet = singleFleetDrawFN(localFleets[j]);
         drawnFleet.position.x = fleetsContainer.width;
         fleetsContainer.addChild(drawnFleet);
       }

@@ -1,3 +1,4 @@
+// tslint:disable-next-line: no-reference
 /// <reference path="../../../node_modules/@types/requirejs/index.d.ts" />
 
 import {GameModule} from "./GameModule";
@@ -229,7 +230,7 @@ export class ModuleStore
   {
     const macros:
     {
-      [macroIdentifier: string]: () => string
+      [macroIdentifier: string]: () => string;
     } =
     {
       "{DOCUMENT_PATH}": () =>

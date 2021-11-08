@@ -53,7 +53,7 @@ export const baseLib: GameModule =
         phasesToApplyTo: new Set(universalCoreListenerFetchers.phasesToApplyTo),
         fetch: () => [applyIntelligenceToHealing],
       }
-    }
+    };
     moduleData.templates.combatActionListenerFetchers.copyTemplates(actionListenerFetchers);
   },
 };

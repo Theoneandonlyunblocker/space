@@ -5,6 +5,6 @@ export class StringLocalizer<Items extends {[K in keyof Items]: string}> extends
 {
   constructor(key: string)
   {
-    super(key, (key, language, missingLocalizationString) => missingLocalizationString);
+    super(key, (inputItemKey, language, missingLocalizationString) => missingLocalizationString);
   }
 }

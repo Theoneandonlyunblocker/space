@@ -119,7 +119,8 @@ export class AbsorbParticlesFromTarget extends VfxFragment<AbsorbParticlesFromTa
       const targetDisplayObject = targetData.individualUnitDisplayObjects[i];
       const imageData = extractImageData(targetDisplayObject, renderer.plugins.extract);
 
-      const desiredAcceleration = Math.abs(solveAcceleration( // px/s/s
+      // px/s/s
+      const desiredAcceleration = Math.abs(solveAcceleration(
       {
         initialVelocity: initialBurstVelocity,
         duration: this.props.duration / 1000,

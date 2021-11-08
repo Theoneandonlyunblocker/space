@@ -96,7 +96,7 @@ const componentsReducer: React.Reducer<ComponentsState, ComponentsAction> = (pre
 
           return newSlots;
         }, <TitanComponentTemplatesBySlot>{}),
-      }
+      };
     }
   }
 };

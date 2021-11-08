@@ -60,7 +60,7 @@ export const boardingHookEnemySprite: VfxDrawingFunction = params =>
   const startTime = performance.now();
 
   animate(startTime);
-}
+};
 
 export const boardingHookBattleOverlay: VfxDrawingFunction = params =>
 {
@@ -221,4 +221,4 @@ export const boardingHookBattleOverlay: VfxDrawingFunction = params =>
 
   const startTime = performance.now();
   animate(startTime);
-}
+};

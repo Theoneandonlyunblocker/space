@@ -54,8 +54,7 @@ export const drones: RaceTemplate =
   {
     return generateIndependentPlayer(drones);
   },
-  generateIndependentFleets: (player, location, globalStrength, localStrength,
-    maxUnitsPerSideInBattle) =>
+  generateIndependentFleets: (player, location, globalStrength, localStrength, maxUnitsPerSideInBattle) =>
   {
     return generateIndependentFleets(drones, player, location,
       globalStrength, localStrength, maxUnitsPerSideInBattle);

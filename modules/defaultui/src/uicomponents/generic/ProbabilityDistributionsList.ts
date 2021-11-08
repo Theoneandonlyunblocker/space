@@ -42,7 +42,7 @@ const ProbabilityDistributionsListComponent = <T>(props: PropTypes<T>) =>
       {
         probabilityItems.push(item);
       }
-    })
+    });
 
     return ReactDOMElements.div(
     {

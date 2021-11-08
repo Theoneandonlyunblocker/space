@@ -18,10 +18,12 @@ import { AbilityUseEffectsForVfx } from "../abilities/AbilityUseEffectsForVfx";
 //
 export class BattleScene
 {
+  // tslint:disable: typedef-whitespace
   public targetUnit : Unit | null; // being targeted by ability      | priority
   public userUnit   : Unit | null; // using an ability               |
   public activeUnit : Unit | null; // currently acting in turn order |
   public hoveredUnit: Unit | null; // hovered by player              V
+  // tslint:enable: typedef-whitespace
 
 
   private container: PIXI.Container;

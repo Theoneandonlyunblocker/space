@@ -41,8 +41,7 @@ export const federationAlliance: RaceTemplate =
 
     return player;
   },
-  generateIndependentFleets: (player, location, globalStrength, localStrength,
-    maxUnitsPerSideInBattle) =>
+  generateIndependentFleets: (player, location, globalStrength, localStrength, maxUnitsPerSideInBattle) =>
   {
     return generateIndependentFleets(federationAlliance, player, location,
       globalStrength, localStrength, maxUnitsPerSideInBattle);

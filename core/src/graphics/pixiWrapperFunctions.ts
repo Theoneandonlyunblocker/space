@@ -13,14 +13,14 @@ export const dummyShaderTexture = (() =>
 })();
 
 // TODO 2019.07.31 | rename. not a sprite
-export function makeShaderSprite<U>(shader: PIXI.Shader<U>): PIXI.Mesh
+export function makeShaderSprite<U>(shader: PIXI.Shader<U>): PIXI.Mesh;
 export function makeShaderSprite<U>(
   shader: PIXI.Shader<U>,
   x: number,
   y: number,
   width: number,
   height: number,
-): PIXI.Mesh
+): PIXI.Mesh;
 export function makeShaderSprite<U>(
   shader: PIXI.Shader<U>,
   x?: number,
@@ -49,6 +49,7 @@ export function makeShaderSprite<U>(
 }
 export function makeCenteredShaderSprite<U>(shader: PIXI.Shader<U>): PIXI.Mesh
 {
+  // tslint:disable: align
   const mesh = makeShaderSprite(shader);
   mesh.geometry.addAttribute("aVertexPosition",
   [
@@ -57,9 +58,11 @@ export function makeCenteredShaderSprite<U>(shader: PIXI.Shader<U>): PIXI.Mesh
      0.5,  0.5,
     -0.5,  0.5,
   ]);
+  // tslint:enable: align
 
   return mesh;
 }
+
 export function convertClientRectToPixiRect(rect: ClientRect): PIXI.Rectangle
 {
   return new PIXI.Rectangle(

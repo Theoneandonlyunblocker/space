@@ -35,7 +35,7 @@ export class Projectile<D extends PIXI.DisplayObject = PIXI.Sprite> extends VfxF
     terminalVelocity: new PropInfo.Number(Infinity),
     acceleration: new PropInfo.Number(0),
     decelerationAboveTerminalVelocity: new PropInfo.Number(0),
-  }
+  };
 
   protected _displayObject: D;
   public get displayObject(): D

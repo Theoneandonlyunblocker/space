@@ -60,7 +60,7 @@ export interface UnitTemplate extends ManufacturableThing
   // will fall back on AbilityBase.defaultUpgrades if not specified for an ability
   possibleAbilityUpgrades?:
   {
-    [abilityType: string]: (beingUpgraded: AbilityBase) => ProbabilityDistributions<AbilityBase>,
+    [abilityType: string]: (beingUpgraded: AbilityBase) => ProbabilityDistributions<AbilityBase>;
   };
   possibleLearnableAbilities?: ProbabilityDistributions<AbilityBase>;
 

@@ -61,7 +61,7 @@ export function applyCombatActionPrimitivesToResult(
 {
   Object.keys(primitivesWithValues).forEach(key =>
   {
-    const {primitive, value} = primitivesWithValues[key]
+    const {primitive, value} = primitivesWithValues[key];
     primitive.applyToResult(value, result);
   });
 }

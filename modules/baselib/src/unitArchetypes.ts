@@ -72,7 +72,7 @@ export const economic: UnitArchetype =
     ROW_FRONT: 0.01,
     ROW_BACK: 0.02,
   },
-}
+};
 
 export const unitArchetypes =
 {

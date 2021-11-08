@@ -157,7 +157,7 @@ export const mergeRelease: VfxDrawingFunction = props =>
   const startTime = Date.now();
 
   animationHandle = window.requestAnimationFrame(animate);
-}
+};
 
 export const mergeAbsorb: VfxDrawingFunction = props =>
 {
@@ -273,4 +273,4 @@ export const mergeAbsorb: VfxDrawingFunction = props =>
   const startTime = Date.now();
 
   animationHandle = window.requestAnimationFrame(animate);
-}
+};
