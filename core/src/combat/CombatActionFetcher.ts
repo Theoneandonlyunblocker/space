@@ -7,7 +7,7 @@ import { CorePhase } from "./core/coreCombatPhases";
 
 
 /**
- * f.ex would fetch takePoisonDamage action if unit has poisoned status effect
+ * f.ex would fetch 'takePoisonDamage' action every turn if unit has 'poisoned' status effect
  */
 export type CombatActionFetcher<AllPhases extends string = CorePhase> =
 {
@@ -18,7 +18,8 @@ export type CombatActionFetcher<AllPhases extends string = CorePhase> =
 
 
 /**
- * f.ex would fetch reduceTakenPoisonDamage modifier if unit has an item with poison resist equipped
+ * f.ex would fetch 'reduceTakenPoisonDamage' modifier if unit has an item with poison resist equipped
+ * which would then listen for a 'takePoisonDamage' action and add a damage reducing modifier
  */
 export type CombatActionListenerFetcher<AllPhases extends string = CorePhase> =
 {

@@ -6,7 +6,7 @@ type GlobalModifierPropagations =
 {
   stars?: StarModifier[];
   units?: UnitModifier[];
-}
+};
 export interface GlobalModifier extends ModifierTemplate<GlobalModifierPropagations>
 {
 

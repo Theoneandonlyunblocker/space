@@ -97,7 +97,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
   }
   public componentWillUnmount(): void
   {
-    windowManager.handleUnount(this);
+    windowManager.handleUnmount(this);
 
     window.removeEventListener("resize", this.onDocumentWindowResize);
 

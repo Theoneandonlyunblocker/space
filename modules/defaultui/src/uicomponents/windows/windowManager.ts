@@ -70,7 +70,7 @@ export function handleMount(component: WindowContainerComponent): void
   byId.set(component, component);
 }
 
-export function handleUnount(component: WindowContainerComponent): void
+export function handleUnmount(component: WindowContainerComponent): void
 {
   byId.delete(component);
 }
