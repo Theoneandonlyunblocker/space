@@ -177,8 +177,8 @@ export class VfxEditorComponent extends React.Component<PropTypes, StateType>
       isPlaying: true,
     }, () =>
     {
-      this.lastAnimationTickTime = window.performance.now();
       this.animationHandle = window.requestAnimationFrame(this.advanceTime);
+      this.lastAnimationTickTime = performance.now();
     });
   }
   private stopAnimating(): void

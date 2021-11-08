@@ -35,7 +35,7 @@ export const boardingHookEnemySprite: VfxDrawingFunction = params =>
         enemiesSprite.x = hookXAtYankStart - activeYankProjectile.position.x;
       }
 
-      requestAnimationFrame(animate);
+      window.requestAnimationFrame(animate);
     }
     else
     {
@@ -207,7 +207,7 @@ export const boardingHookBattleOverlay: VfxDrawingFunction = params =>
 
       ropeFragment.animate(relativeTime);
 
-      requestAnimationFrame(animate);
+      window.requestAnimationFrame(animate);
     }
     else
     {

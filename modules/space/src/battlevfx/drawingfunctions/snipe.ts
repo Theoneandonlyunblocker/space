@@ -276,7 +276,7 @@ export function snipe(type: UnitAttribute, params: VfxParams)
 
     if (elapsedTime < params.duration)
     {
-      requestAnimationFrame(animate);
+      window.requestAnimationFrame(animate);
     }
     else
     {

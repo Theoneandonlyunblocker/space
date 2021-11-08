@@ -170,9 +170,9 @@ export class MouseEventHandler
   {
     if (this.preventingGhost[type] !== undefined)
     {
-      window.clearTimeout(this.preventingGhost[type]!);
+      clearTimeout(this.preventingGhost[type]!);
     }
-    this.preventingGhost[type] = window.setTimeout(() =>
+    this.preventingGhost[type] = setTimeout(() =>
     {
       this.preventingGhost[type] = undefined;
     }, delay);
@@ -275,7 +275,7 @@ export class MouseEventHandler
   }
   private clearHoveredStar(): void
   {
-    const timeout = window.setTimeout(() =>
+    const timeout = setTimeout(() =>
     {
       if (!this.preventingGhost.hover)
       {
@@ -285,7 +285,7 @@ export class MouseEventHandler
           this.clearFleetMoveTarget();
         }
       }
-      window.clearTimeout(timeout);
+      clearTimeout(timeout);
     }, 15);
   }
 

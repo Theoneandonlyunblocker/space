@@ -75,7 +75,7 @@ export class PathfindingArrow
     this.container = null;
     this.currentTarget = null;
 
-    window.clearTimeout(this.clearTargetTimeout);
+    clearTimeout(this.clearTargetTimeout);
     this.selectedFleets = null;
     this.labelCache = null;
   }
@@ -140,11 +140,11 @@ export class PathfindingArrow
 
     if (this.clearTargetTimeout)
     {
-      window.clearTimeout(this.clearTargetTimeout);
+      clearTimeout(this.clearTargetTimeout);
     }
 
     this.currentTarget = star;
-    window.setTimeout(this.drawAllCurrentCurves.bind(this), 10);
+    setTimeout(this.drawAllCurrentCurves.bind(this), 10);
     // this.drawAllCurrentCurves();
   }
 
@@ -156,10 +156,10 @@ export class PathfindingArrow
     }
     if (this.clearTargetTimeout)
     {
-      window.clearTimeout(this.clearTargetTimeout);
+      clearTimeout(this.clearTargetTimeout);
     }
 
-    this.clearTargetTimeout = window.setTimeout(() =>
+    this.clearTargetTimeout = setTimeout(() =>
     {
       this.currentTarget = null;
       this.clearArrows();

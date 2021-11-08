@@ -38,7 +38,7 @@ function placeholderDrawingFunction(abilityName: string, params: VfxParams): voi
   {
     if (currentTime < endTime)
     {
-      requestAnimationFrame(animate);
+      window.requestAnimationFrame(animate);
     }
     else
     {

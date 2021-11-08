@@ -144,13 +144,13 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
   {
     if (this.onChangeTimeoutHandle)
     {
-      window.clearTimeout(this.onChangeTimeoutHandle);
+      clearTimeout(this.onChangeTimeoutHandle);
       this.onChangeTimeoutHandle = null;
     }
 
     if (this.props.minUpdateBuffer)
     {
-      this.onChangeTimeoutHandle = window.setTimeout(() =>
+      this.onChangeTimeoutHandle = setTimeout(() =>
       {
       }, this.props.minUpdateBuffer || 0);
     }

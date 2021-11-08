@@ -108,7 +108,7 @@ export const rocketAttack: VfxDrawingFunction = params =>
 
     if (elapsedTime < params.duration)
     {
-      requestAnimationFrame(animate);
+      window.requestAnimationFrame(animate);
     }
     else
     {

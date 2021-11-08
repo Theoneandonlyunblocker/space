@@ -49,7 +49,7 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
         isExiting: true,
       }, () =>
       {
-        window.setTimeout(this.finishFadeOutAnimation, this.props.animationDuration);
+        setTimeout(this.finishFadeOutAnimation, this.props.animationDuration);
       });
     }
   }
@@ -57,7 +57,7 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
   {
     if (this.animationTimeoutHandle)
     {
-      window.clearTimeout(this.animationTimeoutHandle);
+      clearTimeout(this.animationTimeoutHandle);
     }
   }
   public render()
@@ -82,7 +82,7 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
   }
   private finishFadeOutAnimation(): void
   {
-    window.clearTimeout(this.animationTimeoutHandle);
+    clearTimeout(this.animationTimeoutHandle);
     this.setState(
     {
       isExiting: false,

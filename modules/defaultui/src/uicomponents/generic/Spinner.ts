@@ -117,7 +117,7 @@ export class SpinnerComponent extends React.Component<PropTypes, StateType>
     document.addEventListener("mouseup", this.stopSpin);
     document.addEventListener("touchend", this.stopSpin);
 
-    this.startSpinTimeoutHandle = window.setTimeout(() =>
+    this.startSpinTimeoutHandle = setTimeout(() =>
     {
       this.ticker.start();
     }, this.spinStartDelay);
@@ -128,7 +128,7 @@ export class SpinnerComponent extends React.Component<PropTypes, StateType>
 
     if (isFinite(this.startSpinTimeoutHandle))
     {
-      window.clearTimeout(this.startSpinTimeoutHandle);
+      clearTimeout(this.startSpinTimeoutHandle);
     }
     this.startSpinTimeoutHandle = undefined;
 

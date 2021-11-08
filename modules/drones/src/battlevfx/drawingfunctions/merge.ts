@@ -128,7 +128,7 @@ export const mergeRelease: VfxDrawingFunction = props =>
   function end()
   {
     hasEnded = true;
-    cancelAnimationFrame(animationHandle);
+    window.cancelAnimationFrame(animationHandle);
     container.removeChildren();
 
     props.triggerEnd();
@@ -143,7 +143,7 @@ export const mergeRelease: VfxDrawingFunction = props =>
 
     if (!hasEnded)
     {
-      animationHandle = requestAnimationFrame(animate);
+      animationHandle = window.requestAnimationFrame(animate);
     }
 
     if (!hasEnded && elapsedTime > fallbackAnimationStopTime)
@@ -156,7 +156,7 @@ export const mergeRelease: VfxDrawingFunction = props =>
   props.abilityUseEffects.triggerAllEffects();
   const startTime = Date.now();
 
-  animationHandle = requestAnimationFrame(animate);
+  animationHandle = window.requestAnimationFrame(animate);
 }
 
 export const mergeAbsorb: VfxDrawingFunction = props =>
@@ -244,7 +244,7 @@ export const mergeAbsorb: VfxDrawingFunction = props =>
   function end()
   {
     hasEnded = true;
-    cancelAnimationFrame(animationHandle);
+    window.cancelAnimationFrame(animationHandle);
     container.removeChildren();
 
     props.triggerEnd();
@@ -259,7 +259,7 @@ export const mergeAbsorb: VfxDrawingFunction = props =>
 
     if (!hasEnded)
     {
-      animationHandle = requestAnimationFrame(animate);
+      animationHandle = window.requestAnimationFrame(animate);
     }
 
     if (!hasEnded && elapsedTime > fallbackAnimationStopTime)
@@ -272,5 +272,5 @@ export const mergeAbsorb: VfxDrawingFunction = props =>
   props.abilityUseEffects.triggerAllEffects();
   const startTime = Date.now();
 
-  animationHandle = requestAnimationFrame(animate);
+  animationHandle = window.requestAnimationFrame(animate);
 }

@@ -49,14 +49,14 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   {
     if (this.setStateTimeoutHandle)
     {
-      window.clearTimeout(this.setStateTimeoutHandle);
+      clearTimeout(this.setStateTimeoutHandle);
     }
     const target = e.currentTarget;
     const value = parseInt(target.value);
     if (isFinite(value))
     {
       this.sizeValue = value;
-      this.setStateTimeoutHandle = window.setTimeout(this.setState.bind(this, {size: value}), 500);
+      this.setStateTimeoutHandle = setTimeout(this.setState.bind(this, {size: value}), 500);
     }
   }
   makeFlags()

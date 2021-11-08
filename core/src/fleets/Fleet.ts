@@ -231,11 +231,11 @@ export class Fleet
   {
     const path = this.getPathTo(newLocation);
 
-    const interval = window.setInterval(() =>
+    const interval = setInterval(() =>
     {
       if (!path || path.length <= 0)
       {
-        window.clearInterval(interval);
+        clearInterval(interval);
         if (afterMove)
         {
           afterMove();

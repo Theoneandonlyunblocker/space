@@ -94,7 +94,7 @@ export const guardDrawingFunction: VfxDrawingFunction = props =>
 
     if (elapsedTime < props.duration)
     {
-      requestAnimationFrame(animate);
+      window.requestAnimationFrame(animate);
     }
     else
     {

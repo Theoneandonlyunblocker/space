@@ -240,7 +240,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
   }
   private delayedResize()
   {
-    window.setTimeout(this.handleResize, 0);
+    setTimeout(this.handleResize, 0);
   }
   private handleResize()
   {

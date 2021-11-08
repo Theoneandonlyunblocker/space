@@ -327,7 +327,7 @@ export const beam: VfxDrawingFunction = props =>
 
     proton.update();
 
-    const tweenTime = window.performance.now();
+    const tweenTime = performance.now();
 
     particleShaderColorTween.update(tweenTime);
     particleShaderColorArray[0] = particleShaderColor.r;
@@ -388,7 +388,7 @@ export const beam: VfxDrawingFunction = props =>
 
     if (elapsedTime < props.duration)
     {
-      requestAnimationFrame(animate);
+      window.requestAnimationFrame(animate);
     }
     else
     {

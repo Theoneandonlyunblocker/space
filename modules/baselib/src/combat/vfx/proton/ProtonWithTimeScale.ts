@@ -16,7 +16,7 @@ export class ProtonWithTimeScale extends Proton
   {
     this.dispatchEvent(Proton.PROTON_UPDATE);
 
-    const time = window.performance.now() / 1000;
+    const time = performance.now() / 1000;
     if (!this.oldTime)
     {
       this.oldTime = time;

@@ -137,7 +137,7 @@ function getFleetTextTexture(fleet: Fleet)
       PIXI.settings.SCALE_MODE,
       1,
     );
-    window.setTimeout(() =>
+    setTimeout(() =>
     {
       text.texture.destroy(true);
     }, 0);

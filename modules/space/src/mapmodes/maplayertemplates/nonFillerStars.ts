@@ -42,7 +42,7 @@ export const nonFillerStars: MapRendererLayerTemplate =
     {
       eventManager.dispatchEvent("starClick", star);
 
-      const now = window.performance.now();
+      const now = performance.now();
 
       const isOnSameStar = lastSingleClick.star === star;
 

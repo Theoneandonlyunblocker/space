@@ -90,7 +90,7 @@ class App
       // some things called in this.makeApp() rely on global app variable
       // this timeout allows constructor to finish and variable to be assigned
       // still necessary with promise, as Promise.all may be synchronous
-      window.setTimeout(() =>
+      setTimeout(() =>
       {
         return this.moduleAssetLoader.loadAssetsNeededForPhase(GameModuleInitializationPhase.AppInit).then(() =>
         {

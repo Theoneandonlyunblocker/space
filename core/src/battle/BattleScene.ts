@@ -373,7 +373,7 @@ export class BattleScene
     {
       if (beforeUseDelay >= 0)
       {
-        window.setTimeout(this.executeBeforeUseDelayHasFinishedCallback.bind(this),
+        setTimeout(this.executeBeforeUseDelayHasFinishedCallback.bind(this),
           beforeUseDelay);
       }
       else
@@ -432,7 +432,7 @@ export class BattleScene
 
     if (afterUseDelay >= 0)
     {
-      window.setTimeout(this.executeAfterUseDelayHasFinishedCallback.bind(this), afterUseDelay);
+      setTimeout(this.executeAfterUseDelayHasFinishedCallback.bind(this), afterUseDelay);
     }
     else
     {

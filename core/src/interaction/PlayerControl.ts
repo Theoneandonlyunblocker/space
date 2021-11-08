@@ -116,10 +116,10 @@ export class PlayerControl
   preventGhost(delay: number): void
   {
     this.preventingGhost = true;
-    const timeout = window.setTimeout(() =>
+    const timeout = setTimeout(() =>
     {
       this.preventingGhost = false;
-      window.clearTimeout(timeout);
+      clearTimeout(timeout);
     }, delay);
   }
   clearSelection(): void

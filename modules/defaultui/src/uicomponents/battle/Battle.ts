@@ -459,7 +459,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.battleScene.activeUnit = null;
     this.battleScene.updateUnits(() =>
     {
-      window.setTimeout(cb, options.battle.animationTiming.turnTransition);
+      setTimeout(cb, options.battle.animationTiming.turnTransition);
       this.setState(
       {
         UIState: BattleUIState.TransitioningTurn,

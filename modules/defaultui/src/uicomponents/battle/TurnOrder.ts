@@ -91,7 +91,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     window.removeEventListener("resize", this.setMaxUnits);
     if (isFinite(this.timeoutHandle))
     {
-      window.clearTimeout(this.timeoutHandle);
+      clearTimeout(this.timeoutHandle);
     }
   }
   public componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
@@ -141,7 +141,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 
   private setFinishAnimatingTimeout()
   {
-    this.timeoutHandle = window.setTimeout(() =>
+    this.timeoutHandle = setTimeout(() =>
     {
       this.setState(
       {
@@ -169,7 +169,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
         pendingDeadUnitIndices: deadUnitIndices,
       }, () =>
       {
-        this.timeoutHandle = window.setTimeout(() =>
+        this.timeoutHandle = setTimeout(() =>
         {
           this.fillSpaceLeftByDeadUnits();
         }, this.props.transitionDuration);
@@ -187,7 +187,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.FillSpaceLeftByDeadUnits,
     }, () =>
     {
-      this.timeoutHandle = window.setTimeout(() =>
+      this.timeoutHandle = setTimeout(() =>
       {
         this.setState(
         {
@@ -209,7 +209,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.RemoveUnit,
     }, () =>
     {
-      this.timeoutHandle = window.setTimeout(() =>
+      this.timeoutHandle = setTimeout(() =>
       {
         this.setState(
         {
@@ -234,7 +234,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.ClearSpaceForUnit,
     }, () =>
     {
-      this.timeoutHandle = window.setTimeout(() =>
+      this.timeoutHandle = setTimeout(() =>
       {
         this.insertUnit();
       }, this.props.transitionDuration);

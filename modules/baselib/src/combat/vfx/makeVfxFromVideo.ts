@@ -85,7 +85,7 @@ export function makeVfxFromVideo(
     videoResource.update();
     if (!videoResource.source.paused && !videoResource.source.ended)
     {
-      requestAnimationFrame(animate);
+      window.requestAnimationFrame(animate);
     }
     else
     {

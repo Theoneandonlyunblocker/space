@@ -55,7 +55,7 @@ export const assimilate: VfxDrawingFunction = props =>
   function end()
   {
     hasEnded = true;
-    cancelAnimationFrame(animationHandle);
+    window.cancelAnimationFrame(animationHandle);
     container.removeChildren();
 
     props.triggerEnd();
@@ -72,7 +72,7 @@ export const assimilate: VfxDrawingFunction = props =>
 
     if (!hasEnded)
     {
-      animationHandle = requestAnimationFrame(animate);
+      animationHandle = window.requestAnimationFrame(animate);
     }
 
     if (!hasEnded && elapsedTime > fallbackAnimationStopTime)
@@ -85,5 +85,5 @@ export const assimilate: VfxDrawingFunction = props =>
   props.abilityUseEffects.triggerEffectsUntil("increaseUserHealth");
   const startTime = Date.now();
 
-  animationHandle = requestAnimationFrame(animate);
+  animationHandle = window.requestAnimationFrame(animate);
 };
