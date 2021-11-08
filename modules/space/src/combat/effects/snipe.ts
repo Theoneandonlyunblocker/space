@@ -73,7 +73,7 @@ function makeSnipeEffect(attribute: UnitAttribute): CombatEffectTemplate
     {
       return localizeMessage(displayNameKey).toString();
     },
-    getDescription: (strength) => localizeMessage(descriptionKey).format(strength),
+    getDescription: (strength) => localizeMessage(descriptionKey).toString(),
     isActive: (strength) => strength > 0,
     getAttributeAdjustments: () =>
     {

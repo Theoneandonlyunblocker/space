@@ -1,6 +1,6 @@
 export type Technology =
 {
-  technologyLevel: [number];
+  technologyLevel: [level: number];
   technologyUnlocks: [{technologyName: string}];
   techUnlock_buildings: [];
   techUnlock_items: [];

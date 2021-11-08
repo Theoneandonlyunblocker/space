@@ -5,8 +5,8 @@ export type Production =
   upgradeManufactoryCapacityTooltip: [];
   manufactureUnitsButton: [];
   manufactureItemsButton: [];
-  reservedCapacity: [number];
-  totalCapacity: [number];
-  currentCapacity: [number];
-  maxCapacity: [number];
+  reservedCapacity: [capacity: number];
+  totalCapacity: [capacity: number];
+  currentCapacity: [capacity: number];
+  maxCapacity: [capacity: number];
 };

@@ -11,8 +11,8 @@ export type Battle =
   destroyed_statusText: [];
   captured_statusText: [];
   unitAnnihilated: [];
-  delay_tooltip: [number];
-  turnsLeft_tooltip: [number];
+  delay_tooltip: [delayAmount: number];
+  turnsLeft_tooltip: [turnsLeft: number];
   battleFinish_victory: [];
   battleFinish_loss: [];
   battleFinish_clickAnywhereToContinue: [];

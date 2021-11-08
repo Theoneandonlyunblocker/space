@@ -5,7 +5,7 @@ export type Fleet =
   merge: [];
   reorganize: [];
   reorganizeFleets: [];
-  fleet_movesRemaining: [number | string, number | string];
+  fleet_movesRemaining: [currentMovePoints: number | string, maxMovePoints: number | string];
   select_fleet: [];
   deselect_fleet: [];
   split_fleet: [];

@@ -145,21 +145,21 @@ export class Color
   /**
    * 0-1
    */
-  public getRGB(): [number, number, number]
+  public getRGB(): [r: number, g: number, b: number]
   {
     return [this.r, this.g, this.b];
   }
   /**
    * 0-1
    */
-  public getRGBA(alpha: number): [number, number, number, number]
+  public getRGBA(alpha: number): [r: number, g: number, b: number, a: number]
   {
     return [this.r, this.g, this.b, alpha];
   }
   /**
    * 0-255
    */
-  public get8BitRGB(): [number, number, number]
+  public get8BitRGB(): [r: number, g: number, b: number]
   {
     return <[number, number, number]>this.getRGB().map(x => Math.round(x * 255));
   }
@@ -186,7 +186,7 @@ export class Color
   /**
    * 0-1
    */
-  public getHUSL(): [number, number, number]
+  public getHUSL(): [h: number, s: number, l: number]
   {
     const husl = hsluv.rgbToHsluv([this.r, this.g, this.b]);
 
@@ -196,7 +196,7 @@ export class Color
   /**
    * 0-1
    */
-  public getHSV(): [number, number, number]
+  public getHSV(): [h: number, s: number, v: number]
   {
     const r = this.r;
     const g = this.g;

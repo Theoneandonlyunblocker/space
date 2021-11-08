@@ -16,10 +16,7 @@ interface PathfindingArrowCurveStyle
 }
 
 // cp = control point, dp = destination point
-/**
- *                    cp1.x,  cp1.y,  cp2.x,  cp2.y,   dp.x,   dp.y
- */
-type CurveSegment = [number, number, number, number, number, number];
+type CurveSegment = [cp1X: number, cp1Y: number, cp2X: number, cp2Y: number, dpX: number, dpY: number];
 
 // TODO 2018.05.30 | curve calculation stuff should be in a different module
 export class PathfindingArrow
