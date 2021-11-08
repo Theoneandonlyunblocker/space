@@ -23,7 +23,7 @@ interface StateType
 export class AutoPositionedTitanComponentSelectionComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AutoPositionedTitanComponentSelection";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
@@ -34,7 +34,7 @@ export class AutoPositionedTitanComponentSelectionComponent extends React.Compon
     applyMixins(this, new AutoPositioner(this, this.ownDOMNode));
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

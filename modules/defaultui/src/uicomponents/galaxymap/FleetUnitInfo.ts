@@ -26,7 +26,7 @@ interface StateType
 export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetUnitInfo";
-  public state: StateType;
+  public override state: StateType;
 
   dragPositioner: DragPositioner<FleetUnitInfoComponent>;
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
@@ -60,7 +60,7 @@ export class FleetUnitInfoComponent extends React.Component<PropTypes, StateType
     this.props.onDragEnd();
   }
 
-  render()
+  public override render()
   {
     const unit = this.props.unit;
     const isNotDetected = !this.props.isIdentified;

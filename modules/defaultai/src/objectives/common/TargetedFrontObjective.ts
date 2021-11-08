@@ -29,7 +29,7 @@ export abstract class TargetedFrontObjective extends FrontObjective
     this.musterLocation = mapEvaluator.player.getNearestOwnedStarTo(target);
   }
 
-  protected static updateOngoingObjectivesList<T extends TargetedFrontObjective>(
+  protected static override updateOngoingObjectivesList<T extends TargetedFrontObjective>(
     allOngoingObjectives: Objective[],
     createdObjectives: T[],
   ): Objective[]
@@ -37,7 +37,7 @@ export abstract class TargetedFrontObjective extends FrontObjective
     return this.updateTargetedObjectives(allOngoingObjectives, createdObjectives);
   }
 
-  public getRallyPoint(): Star
+  public override getRallyPoint(): Star
   {
     return this.hasMustered ? this.target : this.musterLocation;
   }

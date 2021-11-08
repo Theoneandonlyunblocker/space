@@ -47,14 +47,14 @@ interface StateType
 export class TurnOrderUnitComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "TurnOrderUnit";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     let additionalUnitClasses = "";
     if (this.props.isFriendly)

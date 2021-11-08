@@ -11,7 +11,7 @@ import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 
 export class CleanUpPirates extends TargetedFrontObjective
 {
-  public static readonly type = "CleanUpPirates";
+  public static override readonly type = "CleanUpPirates";
   public readonly type = "CleanUpPirates";
 
   public readonly movePriority = MovePriority.CleanUpPirates;
@@ -21,7 +21,7 @@ export class CleanUpPirates extends TargetedFrontObjective
     super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): CleanUpPirates[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): CleanUpPirates[]
   {
     const ownedStarsWithPirates = mapEvaluator.player.controlledLocations.filter(star =>
     {
@@ -43,7 +43,7 @@ export class CleanUpPirates extends TargetedFrontObjective
       return new CleanUpPirates(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     return grandStrategyAi.desireForConsolidation;
   }

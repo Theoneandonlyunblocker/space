@@ -41,14 +41,14 @@ function getIconSrc(attributeType: AttributeType, isPositive: boolean): string
 export class UnitAttributeChangesComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "UnitAttributeChanges";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const attributeElements: React.ReactHTMLElement<any>[] = [];
 

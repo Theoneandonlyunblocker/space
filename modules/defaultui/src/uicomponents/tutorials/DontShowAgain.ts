@@ -22,7 +22,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
   public displayName = "DontShowAgain";
 
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -70,7 +70,7 @@ export class DontShowAgainComponent extends React.Component<PropTypes, StateType
     });
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

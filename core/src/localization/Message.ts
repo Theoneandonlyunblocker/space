@@ -34,7 +34,7 @@ export class ErrorMessage extends Message<[]>
     super(message);
   }
 
-  public format(): string
+  public override format(): string
   {
     return this.toString();
   }

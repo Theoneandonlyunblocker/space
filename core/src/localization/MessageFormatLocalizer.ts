@@ -30,7 +30,7 @@ export class MessageFormatLocalizer<
     super(key);
   }
 
-  public set(rawMessages: Partial<Record<keyof ItemArgs, string>>, language: Language): void
+  public override set(rawMessages: Partial<Record<keyof ItemArgs, string>>, language: Language): void
   {
     if (!this.languageHasBeenInit(language))
     {
@@ -43,7 +43,7 @@ export class MessageFormatLocalizer<
       ...this.compileRawMessages(rawMessages, language),
     };
   }
-  public localize<K extends keyof ItemArgs>(key: K): Message<ItemArgs[K]> | ErrorMessage
+  public override localize<K extends keyof ItemArgs>(key: K): Message<ItemArgs[K]> | ErrorMessage
   {
     const compiledMessage = this.get(key);
     if (compiledMessage)

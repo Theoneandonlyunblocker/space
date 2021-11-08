@@ -22,7 +22,7 @@ interface StateType
 export class EconomySummaryItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "EconomySummaryItem";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -69,7 +69,7 @@ export class EconomySummaryItemComponent extends React.Component<PropTypes, Stat
     );
   }
 
-  render()
+  public override render()
   {
     const columns = this.props.activeColumns;
 

@@ -25,14 +25,14 @@ interface StateType
 export class EmblemPickerComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "EmblemPicker";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     const emblemElements: React.ReactHTMLElement<any>[] = [];
 

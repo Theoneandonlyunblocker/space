@@ -26,7 +26,7 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
   public displayName = "AbilityTooltip";
   public readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
-  shouldComponentUpdate(newProps: PropTypes)
+  public override shouldComponentUpdate(newProps: PropTypes)
   {
     for (const prop in newProps)
     {
@@ -41,14 +41,14 @@ export class AbilityTooltipComponent extends React.Component<PropTypes, StateTyp
 
     return false;
   }
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const abilities = this.props.activeTargets[this.props.targetUnit.id];
 

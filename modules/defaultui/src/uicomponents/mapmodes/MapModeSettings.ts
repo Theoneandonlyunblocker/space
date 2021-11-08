@@ -21,7 +21,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
 {
   public displayName = "MapModeSettings";
 
-  public state: StateType;
+  public override state: StateType;
   private readonly layersListComponent = React.createRef<MapRendererLayersListComponent>();
 
   constructor(props: PropTypes)
@@ -44,7 +44,7 @@ export class MapModeSettingsComponent extends React.Component<PropTypes, StateTy
     this.layersListComponent.current.forceUpdate();
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

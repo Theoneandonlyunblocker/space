@@ -27,7 +27,7 @@ interface StateType
 export class ColorSetterComponent extends React.Component<PropTypes, StateType> implements SetterComponentBase
 {
   public displayName = "ColorSetter";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly ownNode = React.createRef<HTMLDivElement>();
 
@@ -46,11 +46,11 @@ export class ColorSetterComponent extends React.Component<PropTypes, StateType> 
     this.getClientRect = this.getClientRect.bind(this);
   }
 
-  public componentWillUnmount()
+  public override componentWillUnmount()
   {
     document.removeEventListener("click", this.handleClick);
   }
-  public render()
+  public override render()
   {
     const displayElement = !this.props.color ?
       ReactDOMElements.img(

@@ -25,10 +25,10 @@ interface StateType
 export class NotificationFilterListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "NotificationFilterList";
-  public state: StateType;
+  public override state: StateType;
   private readonly bodyElement = React.createRef<HTMLDivElement>();
 
-  static get defaultProps(): Partial<PropTypes>
+  static override get defaultProps(): Partial<PropTypes>
   {
     return(
     {
@@ -69,7 +69,7 @@ export class NotificationFilterListComponent extends React.Component<PropTypes, 
     this.scrollToHighlighted();
   }
 
-  render()
+  public override render()
   {
     const filter = this.props.filter;
 

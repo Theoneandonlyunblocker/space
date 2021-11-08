@@ -29,14 +29,14 @@ interface StateType
 export class AbilityListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AbilityListItem";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.li(

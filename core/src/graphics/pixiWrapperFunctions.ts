@@ -184,8 +184,8 @@ export function extractImageData(target: PIXI.DisplayObject, extract: PIXI.extra
 export class TilingRope extends PIXI.Mesh
 {
   public autoUpdate: boolean;
-  public shader: PIXI.Shader;
-  public geometry: PIXI.RopeGeometry;
+  public override shader: PIXI.Shader;
+  public override geometry: PIXI.RopeGeometry;
 
   constructor(texture: PIXI.Texture, points: PIXI.Point[], ropeLength: number)
   {
@@ -238,7 +238,7 @@ export class TilingRope extends PIXI.Mesh
   {
     this.geometry.build();
   }
-  public _render(renderer: PIXI.Renderer): void
+  public override _render(renderer: PIXI.Renderer): void
   {
     if (this.autoUpdate || this.geometry.width !== this.texture.height)
     {

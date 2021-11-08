@@ -19,14 +19,14 @@ interface StateType
 export class VfxFragmentPropsListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxFragmentPropsList";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const fragment = this.props.fragment;
 

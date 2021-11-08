@@ -26,7 +26,7 @@ interface StateType
 export class DiplomacyOverviewComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "DiplomacyOverview";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -40,7 +40,7 @@ export class DiplomacyOverviewComponent extends React.Component<PropTypes, State
     this.bindMethods();
   }
 
-  public render()
+  public override render()
   {
     const metPlayers = this.props.player.diplomacy.getMetPlayers();
 

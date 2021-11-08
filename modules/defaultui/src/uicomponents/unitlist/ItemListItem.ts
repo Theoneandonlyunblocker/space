@@ -39,7 +39,7 @@ interface StateType
 export class ItemListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "ItemListItem";
-  public state: StateType;
+  public override state: StateType;
 
   dragPositioner: DragPositioner<ItemListItemComponent>;
   private readonly ownDOMNode = React.createRef<HTMLTableRowElement>();
@@ -126,7 +126,7 @@ export class ItemListItemComponent extends React.Component<PropTypes, StateType>
     return clone;
   }
 
-  render()
+  public override render()
   {
     const columns = this.props.activeColumns;
 

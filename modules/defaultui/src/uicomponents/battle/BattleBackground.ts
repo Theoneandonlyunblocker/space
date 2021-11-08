@@ -20,7 +20,7 @@ interface StateType
 export class BattleBackgroundComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BattleBackground";
-  public state: StateType;
+  public override state: StateType;
 
   public readonly pixiContainer = React.createRef<HTMLDivElement>();
   backgroundDrawer: BackgroundDrawer;
@@ -40,7 +40,7 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
   {
     this.handleResize = this.handleResize.bind(this);
   }
-  public componentDidUpdate(prevProps: PropTypes)
+  public override componentDidUpdate(prevProps: PropTypes)
   {
     const propsToCheck = ["getBlurArea", "backgroundSeed", "backgroundDrawingFunction"];
     for (const prop of propsToCheck)
@@ -64,20 +64,20 @@ export class BattleBackgroundComponent extends React.Component<PropTypes, StateT
 
     this.backgroundDrawer.handleResize();
   }
-  public componentDidMount()
+  public override componentDidMount()
   {
     this.backgroundDrawer.bindRendererView(this.pixiContainer.current);
 
     window.addEventListener("resize", this.handleResize, false);
   }
 
-  componentWillUnmount()
+  public override componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
     this.backgroundDrawer.destroy();
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

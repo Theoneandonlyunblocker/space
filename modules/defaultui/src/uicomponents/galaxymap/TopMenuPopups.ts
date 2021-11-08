@@ -60,7 +60,7 @@ type StateType = OpenedPopupsState;
 export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "TopMenuPopups";
-  public state: StateType;
+  public override state: StateType;
 
   private highlightedPlayerForDiplomacy: Player = null;
   private popupComponents: Partial<ValuesByPopup<React.RefObject<DefaultWindowComponent>>> = {};
@@ -236,17 +236,17 @@ export class TopMenuPopupsComponent extends React.Component<PropTypes, StateType
       this.openPopup(popupType);
     }
   }
-  public componentDidMount(): void
+  public override componentDidMount(): void
   {
     eventManager.addEventListener("starDoubleClick", this.handleStarDoubleClick);
   }
-  public componentWillUnmount(): void
+  public override componentWillUnmount(): void
   {
     eventManager.removeEventListener("starDoubleClick", this.handleStarDoubleClick);
     this.cacheAllWindowPositions();
     this.storeWindowPositions();
   }
-  public render()
+  public override render()
   {
     const popups: React.ReactElement<any>[] = [];
     for (const popupType in this.state)

@@ -45,7 +45,7 @@ interface StateType
 export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "GalaxyMapUILeft";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly fleetSelectionComponent = React.createRef<FleetSelectionComponent>();
 
@@ -65,15 +65,15 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
     this.handlePlayerBuiltBuilding = this.handlePlayerBuiltBuilding.bind(this);
   }
 
-  public componentDidMount(): void
+  public override componentDidMount(): void
   {
     eventManager.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
   }
-  public componentWillUnmount(): void
+  public override componentWillUnmount(): void
   {
     eventManager.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
   }
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

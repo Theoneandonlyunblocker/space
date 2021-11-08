@@ -8,8 +8,6 @@ import { randRange, getDistanceBetweenPoints, getAngleBetweenPoints } from "core
 
 export class ArcZone<T extends Proton.Particle = PixiParticle> extends Proton.Zone<T>
 {
-  public x: number;
-  public y: number;
   public heading: number; // rad
   public angle: number; // rad
   public innerRadius: number;

@@ -21,7 +21,7 @@ interface StateType
 export class NotificationFilterButtonComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "NotificationFilterButton";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -35,7 +35,7 @@ export class NotificationFilterButtonComponent extends React.Component<PropTypes
     this.bindMethods();
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

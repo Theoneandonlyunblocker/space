@@ -29,7 +29,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
   public displayName = "ManufacturableItems";
 
 
-  shouldComponentUpdate(newProps: PropTypes)
+  public override shouldComponentUpdate(newProps: PropTypes)
   {
     if (this.props.selectedLocation !== newProps.selectedLocation)
     {
@@ -58,7 +58,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
     this.props.triggerParentUpdate();
   }
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -77,7 +77,7 @@ export class ManufacturableItemsComponent extends React.Component<PropTypes, Sta
 
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

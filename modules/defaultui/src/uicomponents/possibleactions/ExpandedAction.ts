@@ -35,14 +35,14 @@ interface StateType
 export class ExpandedActionComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "ExpandedAction";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     let innerElement: React.ReactElement<any>;
 

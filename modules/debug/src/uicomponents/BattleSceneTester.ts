@@ -30,7 +30,7 @@ interface StateType
 export class BattleSceneTesterComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BattleSceneTester";
-  public state: StateType;
+  public override state: StateType;
 
   private battle: Battle = null;
   private battleScene: BattleScene = null;
@@ -96,7 +96,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     });
   }
 
-  componentDidMount()
+  public override componentDidMount()
   {
     const battleScene = this.battleScene = new BattleScene(this.battleSceneContainer.current);
     battleScene.resume();
@@ -291,7 +291,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
     return unitElements;
   }
 
-  render()
+  public override render()
   {
     const battle: Battle = this.battle;
 

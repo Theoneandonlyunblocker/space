@@ -19,7 +19,7 @@ interface StateType
 export class TerritoryBuildingListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TerritoryBuildingList";
-  shouldComponentUpdate(newProps: PropTypes)
+  public override shouldComponentUpdate(newProps: PropTypes)
   {
     const newBuildings = newProps.buildings;
     const oldBuildings = this.props.buildings;
@@ -34,14 +34,14 @@ export class TerritoryBuildingListComponent extends React.Component<PropTypes, S
 
     return false;
   }
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     if (!this.props.buildings)
     {

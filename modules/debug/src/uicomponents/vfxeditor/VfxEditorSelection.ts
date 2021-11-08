@@ -32,7 +32,7 @@ interface StateType
 export class VfxEditorSelectionComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxEditorSelection";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -54,7 +54,7 @@ export class VfxEditorSelectionComponent extends React.Component<PropTypes, Stat
     });
   }
 
-  render()
+  public override render()
   {
 
     const activeSelectionElements: React.ReactElement<any>[] = [];

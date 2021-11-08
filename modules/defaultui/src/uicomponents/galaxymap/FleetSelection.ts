@@ -30,7 +30,7 @@ interface StateType
 export class FleetSelectionComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetSelection";
-  public state: StateType;
+  public override state: StateType;
 
   public readonly contentsElement = React.createRef<HTMLDivElement>();
 
@@ -51,7 +51,7 @@ export class FleetSelectionComponent extends React.Component<PropTypes, StateTyp
     this.reorganizeFleets = this.reorganizeFleets.bind(this);
     this.mergeFleets = this.mergeFleets.bind(this);
   }
-  public render()
+  public override render()
   {
     const selectedFleets: Fleet[] = this.props.selectedFleets;
     if (!selectedFleets || selectedFleets.length <= 0)

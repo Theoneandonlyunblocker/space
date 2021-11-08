@@ -26,7 +26,7 @@ interface StateType
 export class AttitudeModifierListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AttitudeModifierList";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
@@ -39,7 +39,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
     }
   }
 
-  render()
+  public override render()
   {
     const modifiers = this.props.attitudeModifiers;
     const rows: ListItem<AttitudeModifierInfoProps>[] = [];

@@ -41,7 +41,7 @@ let id = 0;
 export class WindowContainerComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "WindowContainer";
-  public state: StateType;
+  public override state: StateType;
 
   public id: number;
   public dragPositioner: DragPositioner<WindowContainerComponent>;
@@ -90,14 +90,14 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
     applyMixins(this, this.dragPositioner);
   }
 
-  public componentDidMount(): void
+  public override componentDidMount(): void
   {
     this.setInitialPosition();
     windowManager.handleMount(this);
 
     window.addEventListener("resize", this.onDocumentWindowResize, false);
   }
-  public componentWillUnmount(): void
+  public override componentWillUnmount(): void
   {
     windowManager.handleUnmount(this);
 
@@ -108,7 +108,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       window.cancelAnimationFrame(this.onDocumentWindowResizeTimeoutHandle);
     }
   }
-  public componentDidUpdate(prevProps: PropTypes): void
+  public override componentDidUpdate(prevProps: PropTypes): void
   {
     const propsToCheck: (keyof PropTypes)[] = ["minWidth", "minHeight", "maxWidth", "maxHeight"];
     for (const prop of propsToCheck)
@@ -120,7 +120,7 @@ export class WindowContainerComponent extends React.Component<PropTypes, StateTy
       }
     }
   }
-  public render()
+  public override render()
   {
     const defaultAttributes: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
     {

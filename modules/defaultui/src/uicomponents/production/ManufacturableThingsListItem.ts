@@ -29,7 +29,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
   public displayName = "ManufacturableThingsListItem";
 
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -46,7 +46,7 @@ export class ManufacturableThingsListItemComponent extends React.Component<PropT
     }));
   }
 
-  public render()
+  public override render()
   {
     const isDisabled = !this.state.canClick;
 

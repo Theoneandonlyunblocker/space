@@ -101,7 +101,7 @@ interface StateType
 export class VfxEditorComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "vfxEditor";
-  public state: StateType;
+  public override state: StateType;
 
   lastAnimationTickTime: number;
   animationHandle: number;
@@ -268,7 +268,7 @@ export class VfxEditorComponent extends React.Component<PropTypes, StateType>
     this.forceUpdate();
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

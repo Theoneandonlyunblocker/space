@@ -27,7 +27,7 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
 {
   public displayName = "ProductionOverview";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -54,15 +54,15 @@ export class ProductionOverviewComponent extends React.Component<PropTypes, Stat
     }
   }
 
-  public componentDidMount()
+  public override componentDidMount()
   {
     eventManager.addEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
   }
-  public componentWillUnmount()
+  public override componentWillUnmount()
   {
     eventManager.removeEventListener("playerManufactoryBuiltThings", this.triggerUpdate);
   }
-  public render()
+  public override render()
   {
     const player = this.props.player;
     const selectedStar = this.state.selectedStar;

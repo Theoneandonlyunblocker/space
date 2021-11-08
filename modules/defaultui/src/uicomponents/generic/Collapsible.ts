@@ -19,7 +19,7 @@ interface StateType
 export class CollapsibleComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Collapsible";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -33,7 +33,7 @@ export class CollapsibleComponent extends React.Component<PropTypes, StateType>
     this.toggleCollapse = this.toggleCollapse.bind(this);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

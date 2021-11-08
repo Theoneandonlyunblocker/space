@@ -28,14 +28,14 @@ export class OptionsGroupComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "OptionsGroup";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     const resetButton = !this.props.resetFN ?
       null :

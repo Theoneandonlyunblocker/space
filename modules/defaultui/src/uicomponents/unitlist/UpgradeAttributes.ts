@@ -20,7 +20,7 @@ interface StateType
 export class UpgradeAttributesComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UpgradeAttributes";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -33,7 +33,7 @@ export class UpgradeAttributesComponent extends React.Component<PropTypes, State
     this.upgradeAttribute = this.upgradeAttribute.bind(this);
   }
 
-  render()
+  public override render()
   {
     const unit = this.props.unit;
     const rows: React.ReactHTMLElement<any>[] = [];

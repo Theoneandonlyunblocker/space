@@ -21,14 +21,14 @@ interface StateType
 export class ManufactoryStarsListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "ManufactoryStarsListItem";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     const hasManufactory = Boolean(this.props.totalCapacity);
     const hasCapacity = hasManufactory && this.props.usedCapacity < this.props.totalCapacity;

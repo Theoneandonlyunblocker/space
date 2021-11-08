@@ -39,7 +39,7 @@ interface StateType
 export class SaveListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SaveList";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -73,11 +73,11 @@ export class SaveListComponent extends React.Component<PropTypes, StateType>
       this.setState({saveKeys: allSaveDataForDisplay});
     });
   }
-  public componentDidMount()
+  public override componentDidMount()
   {
     this.updateAvailableSaves();
   }
-  public render()
+  public override render()
   {
     const rows: ListItem<SaveListItemProps>[] = [];
     let selected: ListItem<SaveListItemProps> | null = null;

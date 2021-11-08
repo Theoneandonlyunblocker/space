@@ -28,7 +28,7 @@ interface StateType
 export class VfxFragmentListItemComponent<P extends Fragment> extends React.Component<PropTypes<P>, StateType>
 {
   public displayName = "VfxFragmentListItem";
-  public state: StateType;
+  public override state: StateType;
 
   dragPositioner: DragPositioner<VfxFragmentListItemComponent<P>>;
   private readonly ownDOMNode = React.createRef<HTMLLIElement>();
@@ -68,7 +68,7 @@ export class VfxFragmentListItemComponent<P extends Fragment> extends React.Comp
     this.props.onClick!(this.props.fragment);
   }
 
-  render()
+  public override render()
   {
     const listItemProps: React.HTMLProps<HTMLLIElement> & React.ClassAttributes<HTMLLIElement> =
     {

@@ -25,7 +25,7 @@ interface StateType
 export class OpinionComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Opinion";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly opinionTextNode = React.createRef<HTMLSpanElement>();
 
@@ -88,7 +88,7 @@ export class OpinionComponent extends React.Component<PropTypes, StateType>
     );
   }
 
-  render()
+  public override render()
   {
     let tooltip: React.ReactElement<any> | null = null;
     if (this.state.hasAttitudeModifierTootlip)

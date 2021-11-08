@@ -27,7 +27,7 @@ interface StateType
 export class AppLanguageSelectComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AppLanguageSelect";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -36,7 +36,7 @@ export class AppLanguageSelectComponent extends React.Component<PropTypes, State
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
   }
 
-  public render()
+  public override render()
   {
     const availableLanguagesByCode = getLanguagesByCodeFromGameModules(...activeModuleData.gameModules);
     const languageSupportLevelByCode = getLanguageSupportLevelForGameModules(...activeModuleData.gameModules);

@@ -57,7 +57,7 @@ interface StateType
 export class UnitComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "Unit";
-  public state: StateType;
+  public override state: StateType;
 
   dragPositioner: DragPositioner<UnitComponent>;
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
@@ -117,7 +117,7 @@ export class UnitComponent extends React.PureComponent<PropTypes, StateType>
     this.props.handleMouseLeaveUnit(e);
   }
 
-  render()
+  public override render()
   {
     const wrapperProps: React.HTMLAttributes<HTMLDivElement> & React.ClassAttributes<HTMLDivElement> =
     {

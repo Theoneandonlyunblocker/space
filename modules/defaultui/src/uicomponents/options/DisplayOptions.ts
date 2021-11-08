@@ -25,14 +25,14 @@ interface StateType
 export class DisplayOptionsComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "DisplayOptions";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

@@ -29,7 +29,7 @@ interface StateType
 export class VfxFragmentPropVecBaseComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxFragmentPropVecBase";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -50,7 +50,7 @@ export class VfxFragmentPropVecBaseComponent extends React.Component<PropTypes, 
     this.props.onValueChange();
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

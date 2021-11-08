@@ -27,7 +27,7 @@ interface StateType
 export class SpinnerComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Spinner";
-  public state: StateType;
+  public override state: StateType;
 
   private spinDirection: 1 | -1;
   private startSpinTimeoutHandle: number;
@@ -50,11 +50,11 @@ export class SpinnerComponent extends React.Component<PropTypes, StateType>
     this.ticker = new FixedRateTicker(this.onSpinTick, this.timeBetweenSpins);
   }
 
-  public componentWillUnmount(): void
+  public override componentWillUnmount(): void
   {
     this.stopSpin();
   }
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

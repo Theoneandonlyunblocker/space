@@ -26,14 +26,14 @@ export class UnitStatusComponent extends React.Component<PropTypes, StateType>
   public displayName = "UnitStatus";
 
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     let statusElement: React.ReactHTMLElement<any> | null = null;
 

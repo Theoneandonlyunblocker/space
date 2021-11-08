@@ -34,7 +34,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
 {
   public displayName = "MapGenOptions";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -59,7 +59,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     return this.getDefaultValues(this.props.mapGenTemplate);
   }
 
-  public componentDidUpdate(prevProps: PropTypes): void
+  public override componentDidUpdate(prevProps: PropTypes): void
   {
     if (prevProps.mapGenTemplate.key !== this.props.mapGenTemplate.key)
     {
@@ -170,7 +170,7 @@ export class MapGenOptionsComponent extends React.Component<PropTypes, StateType
     return optionValues;
   }
 
-  render()
+  public override render()
   {
     const optionGroups: React.ReactElement<any>[] = [];
 

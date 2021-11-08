@@ -26,7 +26,7 @@ interface StateType
 export class SaveGameComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "SaveGame";
-  public state: StateType =
+  public override state: StateType =
   {
     saveName: app.game.gameStorageKey ?
       app.game.gameStorageKey.replace(storageStrings.savePrefix, "") :
@@ -44,7 +44,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
     this.bindMethods();
   }
 
-  public componentDidMount()
+  public override componentDidMount()
   {
     if (this.state.saveName)
     {
@@ -55,7 +55,7 @@ export class SaveGameComponent extends React.Component<PropTypes, StateType>
       this.saveNameElement.current.focus();
     }
   }
-  public render()
+  public override render()
   {
     const saveNameInputHtmlName = "save-name";
 

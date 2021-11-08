@@ -23,7 +23,7 @@ interface StateType
 export class WindowResizeHandleComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "WindowResizeHandle";
-  public state: StateType;
+  public override state: StateType;
 
   private dragPositioner: DragPositioner<WindowResizeHandleComponent>;
   private directionRestriction: DirectionRestriction;
@@ -79,7 +79,7 @@ export class WindowResizeHandleComponent extends React.Component<PropTypes, Stat
     applyMixins(this, this.dragPositioner);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

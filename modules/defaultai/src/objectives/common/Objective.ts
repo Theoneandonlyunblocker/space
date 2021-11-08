@@ -14,6 +14,7 @@ export abstract class Objective
 
   // TODO 2017.02.28 | family and type might be a bit confusingly named here
   // type is used like this for templates, so it's used here as well at least for now
+  // TODO 2021.11.08 | rename type => key
   public static readonly type: string;
   public static readonly family: ObjectiveFamily;
 

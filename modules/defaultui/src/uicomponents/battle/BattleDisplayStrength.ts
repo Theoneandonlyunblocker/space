@@ -18,14 +18,14 @@ interface StateType
 export class BattleDisplayStrengthComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "BattleDisplayStrength";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     return(
       React.createElement(ReactMotion.Motion,

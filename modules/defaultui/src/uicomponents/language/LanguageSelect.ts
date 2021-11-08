@@ -22,7 +22,7 @@ interface StateType
 export class LanguageSelectComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "LanguageSelect";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -31,7 +31,7 @@ export class LanguageSelectComponent extends React.Component<PropTypes, StateTyp
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
   }
 
-  public render()
+  public override render()
   {
     const sortedLanguages = Object.keys(this.props.availableLanguagesByCode).map(code =>
     {

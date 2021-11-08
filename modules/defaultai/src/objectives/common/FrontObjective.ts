@@ -12,7 +12,7 @@ let frontIdGenerator = 0;
 
 export abstract class FrontObjective extends Objective
 {
-  public static readonly family = ObjectiveFamily.Front;
+  public static override readonly family = ObjectiveFamily.Front;
   public readonly family = ObjectiveFamily.Front;
 
   public front: Front;

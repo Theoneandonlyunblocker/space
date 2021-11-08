@@ -11,7 +11,7 @@ import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 
 export class Conquer extends TargetedFrontObjective
 {
-  public static readonly type = "Conquer";
+  public static override readonly type = "Conquer";
   public readonly type = "Conquer";
 
   public readonly movePriority = MovePriority.Conquer;
@@ -21,7 +21,7 @@ export class Conquer extends TargetedFrontObjective
     super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Conquer[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Conquer[]
   {
     const possibleTargets = mapEvaluator.player.getNeighboringStars().filter(star =>
     {
@@ -53,7 +53,7 @@ export class Conquer extends TargetedFrontObjective
       return new Conquer(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     return grandStrategyAi.desireForExpansion;
   }

@@ -26,7 +26,7 @@ interface StateType
 export class SaveListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SaveListItem";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -103,7 +103,7 @@ export class SaveListItemComponent extends React.Component<PropTypes, StateType>
     );
   }
 
-  render()
+  public override render()
   {
     const columns = this.props.activeColumns;
 

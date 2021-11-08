@@ -20,7 +20,7 @@ interface StateType
 export class NotificationComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Notification";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly iconContainer = React.createRef<HTMLDivElement>();
 
@@ -33,15 +33,15 @@ export class NotificationComponent extends React.Component<PropTypes, StateType>
     this.handleRightClick = this.handleRightClick.bind(this);
   }
 
-  public componentDidMount(): void
+  public override componentDidMount(): void
   {
     this.setIconContent();
   }
-  public componentDidUpdate(): void
+  public override componentDidUpdate(): void
   {
     this.setIconContent();
   }
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.li(

@@ -22,7 +22,7 @@ interface StateType
 export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "UpgradeUnit";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -31,7 +31,7 @@ export class UpgradeUnitComponent extends React.Component<PropTypes, StateType>
     this.bindMethods();
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

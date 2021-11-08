@@ -24,14 +24,14 @@ export class FleetInfoComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetInfo";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const fleet = this.props.fleet;
     const isNotDetected = this.props.isNotDetected;

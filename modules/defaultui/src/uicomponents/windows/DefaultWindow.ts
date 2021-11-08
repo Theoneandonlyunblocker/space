@@ -44,7 +44,7 @@ interface StateType
 export class DefaultWindowComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "DefaultWindow";
-  public state: StateType;
+  public override state: StateType;
 
   public readonly windowContainerComponent = React.createRef<WindowContainerComponent>();
   private readonly contentContainerElement = React.createRef<HTMLDivElement>();
@@ -70,14 +70,14 @@ export class DefaultWindowComponent extends React.Component<PropTypes, StateType
     };
   }
 
-  public componentDidMount(): void
+  public override componentDidMount(): void
   {
     this.setState(
     {
       sizeBounds: {...this.state.sizeBounds, ...this.getContentSizeBounds()},
     });
   }
-  public render()
+  public override render()
   {
     return(
       WindowContainer(

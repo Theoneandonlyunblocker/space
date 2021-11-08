@@ -15,14 +15,14 @@ interface StateType
 export class UnitIconContainerComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "UnitIconContainer";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const containerProps: React.HTMLAttributes<HTMLDivElement> =
     {

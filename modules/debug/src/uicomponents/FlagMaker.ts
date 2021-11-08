@@ -20,7 +20,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
 {
   setStateTimeoutHandle: number = undefined;
   sizeValue: number = 46;
-  public state: StateType;
+  public override state: StateType;
   private readonly flagsElement = React.createRef<HTMLDivElement>();
 
   constructor(props: PropTypes)
@@ -63,7 +63,7 @@ export class FlagMakerComponent extends React.Component<PropTypes, StateType>
   {
     this.forceUpdate();
   }
-  render()
+  public override render()
   {
     const flagElements: React.ReactElement<any>[] = [];
     for (let i = 0; i < 100; i++)

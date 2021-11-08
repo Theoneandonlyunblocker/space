@@ -22,7 +22,7 @@ interface StateType
 export class SetupGamePlayersComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SetupGamePlayers";
-  public state: StateType;
+  public override state: StateType;
 
   private newPlayerId: number = 0;
   private desiredPlayerCountFromMax: number = 0;
@@ -65,7 +65,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     });
   }
 
-  public componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
+  public override componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
   {
     if (this.props.maxPlayers !== prevProps.maxPlayers)
     {
@@ -186,7 +186,7 @@ export class SetupGamePlayersComponent extends React.Component<PropTypes, StateT
     });
   }
 
-  render()
+  public override render()
   {
     const playerSetups: React.ReactElement<any>[] = [];
     this.state.playerKeys.forEach((playerId, i) =>

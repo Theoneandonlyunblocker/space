@@ -13,7 +13,7 @@ import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
 export class ScoutingPerimeter extends TargetedFrontObjective
 {
-  public static readonly type = "ScoutingPerimeter";
+  public static override readonly type = "ScoutingPerimeter";
   public readonly type = "ScoutingPerimeter";
 
   public readonly movePriority = MovePriority.ScoutingPerimeter;
@@ -23,7 +23,7 @@ export class ScoutingPerimeter extends TargetedFrontObjective
     super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): ScoutingPerimeter[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): ScoutingPerimeter[]
   {
     const playersToEstablishPerimeterAgainst = mapEvaluator.player.diplomacy.getMetPlayers().filter(player =>
     {
@@ -50,7 +50,7 @@ export class ScoutingPerimeter extends TargetedFrontObjective
       return new ScoutingPerimeter(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     return grandStrategyAi.desireForConsolidation;
   }

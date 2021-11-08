@@ -26,7 +26,7 @@ interface StateType
 export class EmblemSetterListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "EmblemSetterList";
-  public state: StateType;
+  public override state: StateType;
 
 
   constructor(props: PropTypes)
@@ -34,7 +34,7 @@ export class EmblemSetterListComponent extends React.Component<PropTypes, StateT
     super(props);
   }
 
-  render()
+  public override render()
   {
     const canAddNewEmblem = this.props.emblems.length < this.props.maxEmblems;
 

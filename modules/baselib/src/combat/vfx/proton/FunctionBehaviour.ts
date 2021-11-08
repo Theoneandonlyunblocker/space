@@ -7,7 +7,7 @@ export class FunctionBehaviour<T extends Proton.Particle = PixiParticle> extends
   public name: string;
 
   public applyBehaviour: (particle: T, time?: number, particleIndex?: number) => void;
-  public initialize: (target: T) => void;
+  public override initialize: (target: T) => void;
 
   constructor(
     name: string,

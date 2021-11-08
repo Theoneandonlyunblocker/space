@@ -41,7 +41,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
     else { return 0; }
   }
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -54,7 +54,7 @@ export class ItemListComponent extends React.Component<PropTypes, StateType>
     this.getSlotIndex = this.getSlotIndex.bind(this);
   }
 
-  render()
+  public override render()
   {
     const rows: ListItem<ItemListItemProps>[] = [];
     const items: Item[] = this.props.items;

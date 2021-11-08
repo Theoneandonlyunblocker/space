@@ -24,7 +24,7 @@ interface StateType
 export class AttitudeModifierInfoComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AttitudeModifierInfo";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -99,7 +99,7 @@ export class AttitudeModifierInfoComponent extends React.Component<PropTypes, St
     );
   }
 
-  render()
+  public override render()
   {
     const columns = this.props.activeColumns;
 

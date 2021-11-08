@@ -37,7 +37,7 @@ interface StateType
 
 export class ListComponent extends React.Component<PropTypes<any>, StateType>
 {
-  public state: StateType;
+  public override state: StateType;
 
   private sortedItems: ListItem<any>[];
   private readonly ownDOMNode = React.createRef<HTMLTableElement>();
@@ -51,7 +51,7 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
     this.bindMethods();
   }
 
-  public componentDidMount()
+  public override componentDidMount()
   {
     if (this.props.keyboardSelect)
     {
@@ -90,7 +90,7 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
       this.setState({selected: this.sortedItems[0]});
     }
   }
-  public render()
+  public override render()
   {
     const columns: React.ReactHTMLElement<any>[] = [];
     const headerLabels: React.ReactHTMLElement<any>[] = [];

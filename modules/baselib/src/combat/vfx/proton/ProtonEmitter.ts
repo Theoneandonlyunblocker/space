@@ -9,7 +9,7 @@ export class ProtonEmitter<P extends Proton.Particle = PixiParticle> extends Pro
     super();
   }
 
-  public update(time: number)
+  public override update(time: number)
   {
     if (this.dead)
     {

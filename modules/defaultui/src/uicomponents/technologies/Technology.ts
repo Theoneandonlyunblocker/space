@@ -27,7 +27,7 @@ interface StateType
 export class TechnologyComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "Technology";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -44,7 +44,7 @@ export class TechnologyComponent extends React.Component<PropTypes, StateType>
     this.closeUnlocksPopup = this.closeUnlocksPopup.bind(this);
   }
 
-  public render()
+  public override render()
   {
     const technology = this.props.technology;
     let isAtMaxLevel: boolean = false;

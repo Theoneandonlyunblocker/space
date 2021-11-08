@@ -23,14 +23,14 @@ export class EconomySummaryComponent extends React.Component<PropTypes, StateTyp
 {
   public displayName = "EconomySummary";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const rows: ListItem<EconomySummaryItemProps>[] = [];
     const player = this.props.player;

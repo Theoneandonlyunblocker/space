@@ -26,7 +26,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
   public displayName = "FleetContents";
 
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -46,7 +46,7 @@ export class FleetContentsComponent extends React.Component<PropTypes, StateType
     this.props.onMouseUp(this.props.fleet);
   }
 
-  render()
+  public override render()
   {
     const fleetUnitInfos: React.ReactElement<any>[] = [];
     const fleet = this.props.fleet;

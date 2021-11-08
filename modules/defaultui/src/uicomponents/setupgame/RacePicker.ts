@@ -18,7 +18,7 @@ interface StateType
 export class RacePickerComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "RacePicker";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -38,7 +38,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
     this.props.changeRace(newRace);
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.select(

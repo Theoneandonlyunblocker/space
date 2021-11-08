@@ -23,7 +23,7 @@ interface StateType
 export class SaveRecoveryComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SaveRecovery";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly saveRecoveryErrorBoundary: React.RefObject<ErrorBoundaryComponent> = React.createRef<ErrorBoundaryComponent>();
 
@@ -39,7 +39,7 @@ export class SaveRecoveryComponent extends React.Component<PropTypes, StateType>
     this.handleExpandButtonClick = this.handleExpandButtonClick.bind(this);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

@@ -16,7 +16,7 @@ import { Projectile } from "./Projectile";
 interface ProjectileAttackProps<ProjD extends PIXI.Sprite = PIXI.Sprite>
 {
   makeProjectileSprite: (projectileNumber: number) => ProjD;
-  animateProjectile?: (displayObject: ProjD, time: number, x: number, y: number) => void;
+  animateProjectile?: (displayObject: PIXI.DisplayObject, time: number, x: number, y: number) => void;
 
   onImpact?: (projectileIndex: number, x: number, y: number, time: number) => void;
   animateImpact?: (projectileIndex: number, time: number) => void;

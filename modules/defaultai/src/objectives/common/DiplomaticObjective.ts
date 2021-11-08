@@ -6,7 +6,7 @@ import {ObjectiveFamily} from "./ObjectiveFamily";
 
 export abstract class DiplomaticObjective extends Objective
 {
-  public static readonly family = ObjectiveFamily.Diplomatic;
+  public static override readonly family = ObjectiveFamily.Diplomatic;
   public readonly family = ObjectiveFamily.Diplomatic;
 
   protected readonly playerDiplomacy: PlayerDiplomacy;

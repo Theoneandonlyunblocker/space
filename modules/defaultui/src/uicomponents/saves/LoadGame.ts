@@ -26,7 +26,7 @@ interface StateType
 export class LoadGameComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "LoadGame";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly saveList = React.createRef<SaveListComponent>();
   private readonly loadButtonElement = React.createRef<HTMLButtonElement>();
@@ -46,11 +46,11 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
     this.bindMethods();
   }
 
-  public componentDidMount()
+  public override componentDidMount()
   {
     this.loadButtonElement.current.focus();
   }
-  public render()
+  public override render()
   {
     const saveNameInputHtmlName = "save-name";
 

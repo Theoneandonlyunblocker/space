@@ -23,14 +23,14 @@ interface StateType
 export class VfxFragmentPropPointComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxFragmentPropPoint";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

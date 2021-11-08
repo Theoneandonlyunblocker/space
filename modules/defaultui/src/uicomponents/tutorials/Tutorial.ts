@@ -29,7 +29,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "Tutorial";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -55,12 +55,12 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  componentDidMount()
+  public override componentDidMount()
   {
     this.handleEnterPage(this.props.pages[this.state.currentPageIndex]);
   }
 
-  componentWillUnmount()
+  public override componentWillUnmount()
   {
     this.handleLeavePage(this.props.pages[this.state.currentPageIndex]);
     this.handleClose();
@@ -114,7 +114,7 @@ export class TutorialComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  render()
+  public override render()
   {
     const hasBackArrow = this.state.currentPageIndex > 0;
     let backElement: React.ReactHTMLElement<any>;

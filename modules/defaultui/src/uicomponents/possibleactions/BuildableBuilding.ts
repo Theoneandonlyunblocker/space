@@ -28,7 +28,7 @@ interface StateType
 export class BuildableBuildingComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BuildableBuilding";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -93,7 +93,7 @@ export class BuildableBuildingComponent extends React.Component<PropTypes, State
     );
   }
 
-  render()
+  public override render()
   {
     const template = this.props.template;
     const cells: React.ReactHTMLElement<any>[] = [];

@@ -20,14 +20,14 @@ interface StateType
 export class InlineNumberPropComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "InlineNumberProp";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const baseId = "vfx-fragment-prop-inline-number-" + this.props.propName + "-" + this.props.label;
 

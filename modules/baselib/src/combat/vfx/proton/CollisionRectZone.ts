@@ -10,7 +10,7 @@ export class CollisionRectZone<P extends Proton.Particle = PixiParticle> extends
     super(x, y, width, height);
   }
 
-  public crossing(particle: P): void
+  public override crossing(particle: P): void
   {
     const xIsWithin = particle.p.x + particle.radius > this.x &&
       particle.p.x - particle.radius < this.x + this.width;

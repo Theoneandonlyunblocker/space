@@ -23,7 +23,7 @@ interface StateType
 export class EmergencySaveGameComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "EmergencySaveGame";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly saveNameElement = React.createRef<HTMLInputElement>();
 
@@ -52,7 +52,7 @@ export class EmergencySaveGameComponent extends React.Component<PropTypes, State
     this.handleSave = this.handleSave.bind(this);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

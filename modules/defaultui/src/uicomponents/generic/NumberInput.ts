@@ -42,7 +42,7 @@ interface StateType
 export class NumberInputComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "NumberInput";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -61,7 +61,7 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
     this.handleBlur = this.handleBlur.bind(this);
   }
 
-  public componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
+  public override componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
   {
     const value = NumberInputComponent.roundValue(this.props.value, this.props.step);
 
@@ -76,11 +76,11 @@ export class NumberInputComponent extends React.Component<PropTypes, StateType>
       });
     }
   }
-  public componentWillUnmount(): void
+  public override componentWillUnmount(): void
   {
     this.handleBlur();
   }
-  public render()
+  public override render()
   {
     const valueStringIsValid = NumberInputComponent.valueStringIsValid(this.state.displayedValue, this.props);
 

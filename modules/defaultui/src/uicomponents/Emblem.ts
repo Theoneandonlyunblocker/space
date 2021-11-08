@@ -24,7 +24,7 @@ interface StateType
 export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "Emblem";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly container = React.createRef<HTMLDivElement>();
 
@@ -48,16 +48,16 @@ export class EmblemComponent extends React.PureComponent<PropTypes, StateType>
     this.container.current.appendChild(emblem.draw());
   }
 
-  componentDidMount()
+  public override componentDidMount()
   {
     this.renderEmblemCanvas();
   }
-  componentDidUpdate()
+  public override componentDidUpdate()
   {
     this.renderEmblemCanvas();
   }
 
-  render()
+  public override render()
   {
     const baseClassName = "standalone-emblem";
     const hasSpecifiedTitle = this.props.containerProps && this.props.containerProps.title;

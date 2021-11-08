@@ -26,7 +26,7 @@ class PlayerDiedNotificationComponent extends React.Component<PropTypes, {}>
     super(props);
   }
 
-  public render()
+  public override render()
   {
     const notification = this.props.notification;
 

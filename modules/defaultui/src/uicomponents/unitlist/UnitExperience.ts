@@ -24,7 +24,7 @@ interface StateType
 export class UnitExperienceComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "UnitExperience";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -38,7 +38,7 @@ export class UnitExperienceComponent extends React.Component<PropTypes, StateTyp
     this.bindMethods();
   }
 
-  public render()
+  public override render()
   {
     const rows: React.ReactHTMLElement<any>[] = [];
 

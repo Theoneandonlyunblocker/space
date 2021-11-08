@@ -21,14 +21,14 @@ interface StateType
 export class FleetUnitInfoNameComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetUnitInfoName";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     if (this.props.isNotDetected)
     {

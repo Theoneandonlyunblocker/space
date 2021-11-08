@@ -47,7 +47,7 @@ interface StateType
 export class UnitListItemComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitListItem";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly dragPositioner: DragPositioner<UnitListItemComponent>;
   private readonly ownDOMNode = React.createRef<HTMLTableRowElement>();
@@ -69,7 +69,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  public componentDidMount()
+  public override componentDidMount()
   {
     if (!this.props.isDraggable) { return; }
 
@@ -81,7 +81,7 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
       y: container.offsetHeight / 2,
     };
   }
-  public render(): React.ReactElement<any>
+  public override render(): React.ReactElement<any>
   {
     const columns = this.props.activeColumns;
 

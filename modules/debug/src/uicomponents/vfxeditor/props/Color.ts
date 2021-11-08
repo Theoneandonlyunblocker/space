@@ -23,7 +23,7 @@ interface StateType
 export class VfxFragmentPropColorComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxFragmentPropColor";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -44,7 +44,7 @@ export class VfxFragmentPropColorComponent extends React.Component<PropTypes, St
     this.props.onValueChange();
   }
 
-  render()
+  public override render()
   {
     return(
       ColorSetter(

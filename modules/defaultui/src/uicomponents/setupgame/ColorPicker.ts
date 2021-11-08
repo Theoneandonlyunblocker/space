@@ -36,7 +36,7 @@ interface StateType
 export class ColorPickerComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "ColorPicker";
-  public state: StateType;
+  public override state: StateType;
 
   private onChangeTimeoutHandle: number = null;
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
@@ -56,7 +56,7 @@ export class ColorPickerComponent extends React.Component<PropTypes, StateType>
     this.bindMethods();
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div({className: "color-picker", ref: this.ownDOMNode},

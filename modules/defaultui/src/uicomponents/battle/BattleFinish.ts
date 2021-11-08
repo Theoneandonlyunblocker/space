@@ -16,14 +16,14 @@ interface StateType
 export class BattleFinishComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "BattleFinish";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

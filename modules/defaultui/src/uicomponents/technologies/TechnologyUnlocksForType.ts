@@ -26,14 +26,14 @@ interface StateType
 export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TechnologyUnlocksForType";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     return ReactDOMElements.div(
     {

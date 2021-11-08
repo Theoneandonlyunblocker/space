@@ -17,7 +17,7 @@ interface StateType
 export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitStrength";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -97,7 +97,7 @@ export class UnitStrengthComponent extends React.Component<PropTypes, StateType>
       )
     );
   }
-  render()
+  public override render()
   {
     if (this.props.isSquadron)
     {

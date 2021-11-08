@@ -27,7 +27,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
 {
   public displayName = "DiplomacyActions";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -41,7 +41,7 @@ export class DiplomacyActionsComponent extends React.Component<PropTypes, StateT
     this.bindMethods();
   }
 
-  public render()
+  public override render()
   {
     const player = this.props.player;
     const targetPlayer = this.props.targetPlayer;

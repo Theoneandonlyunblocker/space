@@ -25,7 +25,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
   public displayName = "ManufacturableThings";
 
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -34,7 +34,7 @@ export class ManufacturableThingsComponent extends React.Component<PropTypes, St
     this.state = {activeTab: "units"};
   }
 
-  public render()
+  public override render()
   {
     const extendables = getExtendables();
     const activeTabData = extendables.manufacturableThingKinds[this.state.activeTab];

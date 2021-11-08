@@ -23,7 +23,7 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
   public displayName = "FleetControls";
 
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -53,7 +53,7 @@ export class FleetControlsComponent extends React.Component<PropTypes, StateType
     eventManager.dispatchEvent("splitFleet", this.props.fleet);
   }
 
-  render()
+  public override render()
   {
     const fleet = this.props.fleet;
 

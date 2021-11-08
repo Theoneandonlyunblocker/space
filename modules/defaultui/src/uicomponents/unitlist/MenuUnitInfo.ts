@@ -30,7 +30,7 @@ interface StateType
 export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "MenuUnitInfo";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -39,7 +39,7 @@ export class MenuUnitInfoComponent extends React.Component<PropTypes, StateType>
     this.handleUnitUpgrade = this.handleUnitUpgrade.bind(this);
   }
 
-  public render()
+  public override render()
   {
     const unit = this.props.unit;
     if (!unit)

@@ -56,7 +56,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "PlayerSetup";
 
-  public state: StateType;
+  public override state: StateType;
 
   flag: Flag;
 
@@ -94,13 +94,13 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
     });
   }
   // bit of a hack
-  public getSnapshotBeforeUpdate(prevProps: PropTypes, prevState: StateType): void
+  public override getSnapshotBeforeUpdate(prevProps: PropTypes, prevState: StateType): void
   {
     this.flag.backgroundColor = this.state.mainColor;
 
     return null;
   }
-  public componentDidUpdate(): void
+  public override componentDidUpdate(): void
   {
     // just to supress error. see ^^^
   }
@@ -204,7 +204,7 @@ export class PlayerSetupComponent extends React.Component<PropTypes, StateType>
 
     return player;
   }
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

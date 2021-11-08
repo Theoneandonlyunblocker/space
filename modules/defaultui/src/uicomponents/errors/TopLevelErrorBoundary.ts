@@ -21,14 +21,14 @@ interface StateType
 export class TopLevelErrorBoundaryComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "TopLevelErrorBoundary";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render(): React.ReactNode
+  public override render(): React.ReactNode
   {
     return(
       ErrorBoundary(

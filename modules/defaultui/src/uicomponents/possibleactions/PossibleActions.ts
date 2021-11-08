@@ -25,13 +25,13 @@ interface StateType
 export class PossibleActionsComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "PossibleActions";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
-  public render()
+  public override render()
   {
     const star = this.props.selectedStar;
     const hasPlayerStarSelected = star && star.owner === this.props.player;

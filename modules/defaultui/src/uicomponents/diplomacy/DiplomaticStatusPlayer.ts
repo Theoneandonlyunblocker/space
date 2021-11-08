@@ -32,7 +32,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
 {
   public displayName = "DiplomaticStatusPlayer";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -43,7 +43,7 @@ export class DiplomaticStatusPlayerComponent extends React.Component<PropTypes, 
     this.bindMethods();
   }
 
-  public render()
+  public override render()
   {
     const columns = this.props.activeColumns;
 

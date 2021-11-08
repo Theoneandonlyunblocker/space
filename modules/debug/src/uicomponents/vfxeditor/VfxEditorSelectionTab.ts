@@ -26,7 +26,7 @@ interface StateType
 export class VfxEditorSelectionTabComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxEditorSelectionTab";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -40,7 +40,7 @@ export class VfxEditorSelectionTabComponent extends React.Component<PropTypes, S
     this.props.setTab(this.props.type);
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.button(

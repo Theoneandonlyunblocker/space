@@ -17,14 +17,14 @@ interface StateType
 export class ErrorDetailsComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "ErrorDetails";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render(): React.DetailedReactHTMLElement<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
+  public override render(): React.DetailedReactHTMLElement<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement>
   {
     return(
       ReactDOMElements.div(

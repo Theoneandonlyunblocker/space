@@ -28,7 +28,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
 {
   public displayName = "ManufacturableUnits";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -37,7 +37,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
     this.addUnitToBuildQueue = this.addUnitToBuildQueue.bind(this);
   }
 
-  public shouldComponentUpdate(newProps: PropTypes)
+  public override shouldComponentUpdate(newProps: PropTypes)
   {
     if (this.props.selectedLocation !== newProps.selectedLocation)
     {
@@ -58,7 +58,7 @@ export class ManufacturableUnitsComponent extends React.Component<PropTypes, Sta
 
     return false;
   }
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

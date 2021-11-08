@@ -28,7 +28,7 @@ interface StateType
 export class FlagSetterComponent extends React.Component<PropTypes, StateType> implements SetterComponentBase
 {
   public displayName: string = "FlagSetter";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly playerFlagContainer = React.createRef<PlayerFlagComponent>();
 
@@ -46,7 +46,7 @@ export class FlagSetterComponent extends React.Component<PropTypes, StateType> i
     this.getClientRect = this.getClientRect.bind(this);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

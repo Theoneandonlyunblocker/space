@@ -21,7 +21,7 @@ interface StateType
 export class TechnologyPrioritySliderComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TechnologyPrioritySlider";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -45,11 +45,11 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
       priority: this.getPlayerPriority(),
     });
   }
-  componentDidMount()
+  public override componentDidMount()
   {
     eventManager.addEventListener("technologyPrioritiesUpdated", this.updatePriority);
   }
-  componentWillUnmount()
+  public override componentWillUnmount()
   {
     eventManager.removeEventListener("technologyPrioritiesUpdated", this.updatePriority);
   }
@@ -78,7 +78,7 @@ export class TechnologyPrioritySliderComponent extends React.Component<PropTypes
     const target = e.currentTarget;
     this.props.playerTechnology.setTechnologyPriority(this.props.technology, parseFloat(target.value));
   }
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

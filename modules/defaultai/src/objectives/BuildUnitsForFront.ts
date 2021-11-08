@@ -19,10 +19,10 @@ import { coreManufacturableThingKinds } from "core/src/production/coreManufactur
 // TODO 2021.11.08 | is this fixable?
 export class BuildUnitsForFront extends EconomicObjective
 {
-  public static readonly type = "BuildUnitsForFront";
+  public static override readonly type = "BuildUnitsForFront";
   public readonly type = "BuildUnitsForFront";
 
-  protected readonly ongoingMultiplier = 1;
+  protected override readonly ongoingMultiplier = 1;
 
   private objective: FrontObjective;
   private player: Player;
@@ -35,7 +35,7 @@ export class BuildUnitsForFront extends EconomicObjective
     this.player = player;
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): BuildUnitsForFront[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): BuildUnitsForFront[]
   {
     const frontObjectives = <FrontObjective[]> allOngoingObjectives.filter(objective =>
     {
@@ -52,12 +52,12 @@ export class BuildUnitsForFront extends EconomicObjective
       return new BuildUnitsForFront(objective, mapEvaluator.player);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     // todo
     return 0.66;
   }
-  protected static updateOngoingObjectivesList(
+  protected static override updateOngoingObjectivesList(
     allOngoingObjectives: Objective[],
     createdObjectives: BuildUnitsForFront[],
   ): Objective[]

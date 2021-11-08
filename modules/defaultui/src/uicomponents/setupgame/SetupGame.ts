@@ -23,7 +23,7 @@ interface StateType
 export class SetupGameComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SetupGame";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly setupPlayersComponent = React.createRef<SetupGamePlayersComponent>();
   private readonly mapSetupComponent = React.createRef<MapSetupComponent>();
@@ -84,7 +84,7 @@ export class SetupGameComponent extends React.Component<PropTypes, StateType>
     await this.setupPlayersComponent.current.randomizeAllPlayers();
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

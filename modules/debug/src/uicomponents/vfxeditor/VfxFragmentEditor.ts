@@ -19,7 +19,7 @@ interface StateType
 export class VfxFragmentEditorComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxFragmentEditor";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -34,7 +34,7 @@ export class VfxFragmentEditorComponent extends React.Component<PropTypes, State
     this.props.onActiveFragmentPropValueChange();
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

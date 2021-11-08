@@ -16,7 +16,7 @@ interface StateType
 export class TurnCounterComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "TurnCounter";
-  public state: StateType;
+  public override state: StateType;
 
   private inner: HTMLDivElement | null;
   private animationTimeoutHandle: number;
@@ -33,14 +33,14 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
     this.finishFadeOutAnimation = this.finishFadeOutAnimation.bind(this);
   }
 
-  public componentDidMount(): void
+  public override componentDidMount(): void
   {
     if (this.inner)
     {
       this.inner.style.animationDuration = "" + this.props.animationDuration + "ms";
     }
   }
-  public componentDidUpdate(prevProps: PropTypes): void
+  public override componentDidUpdate(prevProps: PropTypes): void
   {
     if (!prevProps.isEmpty && this.props.isEmpty)
     {
@@ -53,14 +53,14 @@ export class TurnCounterComponent extends React.PureComponent<PropTypes, StateTy
       });
     }
   }
-  public componentWillUnmount(): void
+  public override componentWillUnmount(): void
   {
     if (this.animationTimeoutHandle)
     {
       clearTimeout(this.animationTimeoutHandle);
     }
   }
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

@@ -27,7 +27,7 @@ interface StateType
 export class ItemEquipComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "ItemEquip";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -47,7 +47,7 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     this.equipItemOnSelectedUnit = this.equipItemOnSelectedUnit.bind(this);
   }
 
-  public render()
+  public override render()
   {
     const player = this.props.player;
 

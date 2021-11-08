@@ -28,7 +28,7 @@ interface StateType
 export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "EmblemEditor";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -45,7 +45,7 @@ export class EmblemEditorComponent extends React.PureComponent<PropTypes, StateT
     this.toggleEmblemPickerCollapse = this.toggleEmblemPickerCollapse.bind(this);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

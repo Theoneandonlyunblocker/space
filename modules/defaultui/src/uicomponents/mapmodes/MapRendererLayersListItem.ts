@@ -32,7 +32,7 @@ interface StateType
 export class MapRendererLayersListItemComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName: string = "MapRendererLayersListItem";
-  public state: StateType;
+  public override state: StateType;
 
   private dragPositioner: DragPositioner<MapRendererLayersListItemComponent>;
   private readonly ownDOMNode = React.createRef<HTMLLIElement>();
@@ -55,14 +55,14 @@ export class MapRendererLayersListItemComponent extends React.PureComponent<Prop
     applyMixins(this, this.dragPositioner);
   }
 
-  public componentDidUpdate(prevProps: PropTypes): void
+  public override componentDidUpdate(prevProps: PropTypes): void
   {
     if (prevProps.listItemIsDragging !== this.props.listItemIsDragging)
     {
       this.clearHover();
     }
   }
-  public render(): React.ReactHTMLElement<HTMLLIElement>
+  public override render(): React.ReactHTMLElement<HTMLLIElement>
   {
     const liProps: React.HTMLAttributes<HTMLLIElement> & React.ClassAttributes<HTMLLIElement> =
     {

@@ -25,7 +25,7 @@ interface StateType
 export class FullOptionsListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "FullOptionsList";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -39,7 +39,7 @@ export class FullOptionsListComponent extends React.Component<PropTypes, StateTy
     this.bindMethods();
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div({className: "options"},

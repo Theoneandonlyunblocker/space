@@ -35,14 +35,14 @@ interface StateType
 export class UnitListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitList";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const rows: ListItem<UnitListItemProps>[] = this.props.units.map(unit =>
     {

@@ -72,14 +72,14 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
   public displayName = "Formation";
 
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     const formationRowElements: React.ReactHTMLElement<HTMLDivElement>[] = [];
 

@@ -22,7 +22,7 @@ interface StateType
 export class VfxFragmentPropNumberComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxFragmentPropNumber";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -48,7 +48,7 @@ export class VfxFragmentPropNumberComponent extends React.Component<PropTypes, S
     this.props.onValueChange();
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

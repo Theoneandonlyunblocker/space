@@ -28,14 +28,14 @@ interface StateType
 export class VfxFragmentListComponent<P extends Fragment> extends React.Component<PropTypes<P>, StateType>
 {
   public displayName = "VfxFragmentList";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes<P>)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.ol(

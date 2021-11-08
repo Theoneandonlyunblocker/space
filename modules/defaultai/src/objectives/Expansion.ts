@@ -11,7 +11,7 @@ import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 
 export class Expansion extends TargetedFrontObjective
 {
-  public static readonly type = "Expansion";
+  public static override readonly type = "Expansion";
   public readonly type = "Expansion";
 
   public readonly movePriority = MovePriority.Expansion;
@@ -21,7 +21,7 @@ export class Expansion extends TargetedFrontObjective
     super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Expansion[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Expansion[]
   {
     const independentNeighborStars = mapEvaluator.getIndependentNeighborStars();
 
@@ -33,7 +33,7 @@ export class Expansion extends TargetedFrontObjective
       return new Expansion(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     return grandStrategyAi.desireForExpansion;
   }

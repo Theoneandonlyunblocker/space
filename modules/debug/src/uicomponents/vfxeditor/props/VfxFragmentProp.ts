@@ -35,7 +35,7 @@ interface StateType
 export class VfxFragmentPropComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxFragmentProp";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -57,7 +57,7 @@ export class VfxFragmentPropComponent extends React.Component<PropTypes, StateTy
     });
   }
 
-  render()
+  public override render()
   {
     let propValuesElement: React.ReactElement<any>;
 

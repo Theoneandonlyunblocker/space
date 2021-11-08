@@ -32,7 +32,7 @@ interface StateType
 export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName: string = "TopMenu";
-  public state: StateType;
+  public override state: StateType;
 
   private cachedTopMenuWidth: number = undefined;
   private cachedButtonWidths: number[] = [];
@@ -51,7 +51,7 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
     this.bindMethods();
   }
 
-  public componentDidMount()
+  public override componentDidMount()
   {
     window.addEventListener("resize", this.handleResize, false);
     eventManager.addEventListener("playerControlUpdated", this.delayedResize);
@@ -59,13 +59,13 @@ export class TopMenuComponent extends React.PureComponent<PropTypes, StateType>
 
     this.handleResize();
   }
-  public componentWillUnmount()
+  public override componentWillUnmount()
   {
     window.removeEventListener("resize", this.handleResize);
     eventManager.removeEventListener("playerControlUpdated", this.delayedResize);
     eventManager.removeEventListener("updateHamburgerMenu", this.handleToggleHamburger);
   }
-  public render()
+  public override render()
   {
     const menuItemTabIndex = this.state.opened ? -1 : 0;
     const buttonActionExplanation = localize("topMenuButtonActionExplanation").toString();

@@ -21,7 +21,7 @@ interface StateType
 export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName: string = "PlayerFlag";
-  public state: StateType;
+  public override state: StateType;
 
   public readonly containerElement = React.createRef<HTMLDivElement>();
 
@@ -30,15 +30,15 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
     super(props);
   }
 
-  public componentDidMount()
+  public override componentDidMount()
   {
     this.renderFlagElement();
   }
-  public componentDidUpdate()
+  public override componentDidUpdate()
   {
     this.renderFlagElement();
   }
-  public render(): React.ReactHTMLElement<any>
+  public override render(): React.ReactHTMLElement<any>
   {
     const props = shallowExtend(this.props.props,
     {

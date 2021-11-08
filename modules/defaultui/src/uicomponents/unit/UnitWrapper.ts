@@ -13,7 +13,7 @@ interface StateType
 export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitWrapper";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -84,7 +84,7 @@ export class UnitWrapperComponent extends React.Component<PropTypes, StateType>
   //   return false;
   // }
 
-  render()
+  public override render()
   {
     // const wrapperProps: React.HTMLAttributes =
     // {

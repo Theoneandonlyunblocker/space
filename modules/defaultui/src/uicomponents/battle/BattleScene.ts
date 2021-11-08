@@ -25,7 +25,7 @@ interface StateType
 export class BattleSceneComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BattleScene";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
@@ -34,7 +34,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
     super(props);
   }
 
-  shouldComponentUpdate(newProps: PropTypes)
+  public override shouldComponentUpdate(newProps: PropTypes)
   {
     const propsThatShouldTriggerUpdate =
     {
@@ -52,7 +52,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
     return false;
   }
 
-  componentDidUpdate(prevProps: PropTypes)
+  public override componentDidUpdate(prevProps: PropTypes)
   {
     if (prevProps.battleState === "start" && this.props.battleState === "active")
     {
@@ -65,7 +65,7 @@ export class BattleSceneComponent extends React.Component<PropTypes, StateType>
     }
   }
 
-  render()
+  public override render()
   {
     let componentToRender: React.ReactElement<any> | null;
 

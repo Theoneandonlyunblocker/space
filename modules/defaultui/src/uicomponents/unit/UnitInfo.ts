@@ -36,14 +36,14 @@ interface StateType
 export class UnitInfoComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "UnitInfo";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     let battleEndStatus: React.ReactHTMLElement<any> = null;
     if (this.props.wasDestroyed)

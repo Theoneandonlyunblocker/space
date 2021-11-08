@@ -30,14 +30,14 @@ interface StateType
 export class UnitItemWrapperComponent<T extends ItemTemplate | Item> extends React.Component<PropTypes<T>, StateType>
 {
   public displayName = "UnitItemWrapper";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes<T>)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     const wrapperProps: React.HTMLAttributes<HTMLDivElement> =
     {

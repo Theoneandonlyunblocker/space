@@ -6,8 +6,8 @@ export class FunctionInitialize<T extends Proton.Particle = PixiParticle> extend
 {
   public name: string;
 
-  public initialize: (target: T) => void;
-  public reset: () => void;
+  public override initialize: (target: T) => void;
+  public override reset: () => void;
 
   constructor(name: string, initializeFN: (target: T) => void, resetFN?: () => void)
   {

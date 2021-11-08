@@ -20,11 +20,11 @@ interface StateType
 export class StarInfoComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "StarInfo";
-  shouldComponentUpdate(newProps: PropTypes)
+  public override shouldComponentUpdate(newProps: PropTypes)
   {
     return this.props.selectedStar !== newProps.selectedStar;
   }
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -33,15 +33,15 @@ export class StarInfoComponent extends React.Component<PropTypes, StateType>
     this.handlePlayerBuiltBuilding = this.handlePlayerBuiltBuilding.bind(this);
   }
 
-  public componentDidMount(): void
+  public override componentDidMount(): void
   {
     eventManager.addEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
   }
-  public componentWillUnmount(): void
+  public override componentWillUnmount(): void
   {
     eventManager.removeEventListener("humanPlayerBuiltBuilding", this.handlePlayerBuiltBuilding);
   }
-  public render()
+  public override render()
   {
     const star = this.props.selectedStar;
     if (!star) { return null; }

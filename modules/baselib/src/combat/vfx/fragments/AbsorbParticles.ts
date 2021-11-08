@@ -3,8 +3,8 @@ import { ParticleBurst, ParticleBurstProps } from "./ParticleBurst";
 
 export class AbsorbParticles<D extends PIXI.DisplayObject> extends ParticleBurst<D>
 {
-  public displayName = "AbsorbParticles";
-  public key = "absorbParticles";
+  public override displayName = "AbsorbParticles";
+  public override key = "absorbParticles";
 
   constructor(props: ParticleBurstProps<D>)
   {

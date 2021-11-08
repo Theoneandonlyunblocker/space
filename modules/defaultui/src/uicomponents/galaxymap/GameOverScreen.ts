@@ -23,7 +23,7 @@ interface StateType
 export class GameOverScreenComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "GameOverScreen";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -41,7 +41,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
     this.closeNewGamePopup = this.closeNewGamePopup.bind(this);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

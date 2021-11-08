@@ -28,7 +28,7 @@ interface StateType
 export class DialogBoxComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "DialogBox";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly okButtonElement = React.createRef<HTMLButtonElement>();
 
@@ -37,11 +37,11 @@ export class DialogBoxComponent extends React.Component<PropTypes, StateType>
     super(props);
   }
 
-  public componentDidMount()
+  public override componentDidMount()
   {
     this.okButtonElement.current.focus();
   }
-  public render()
+  public override render()
   {
     return(
       DefaultWindow(

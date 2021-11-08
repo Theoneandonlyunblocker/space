@@ -23,14 +23,14 @@ interface StateType
 export class VfxFragmentPropRangeComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxFragmentPropRange";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

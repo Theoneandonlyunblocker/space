@@ -11,7 +11,7 @@ import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 
 export class FightInvadingEnemy extends TargetedFrontObjective
 {
-  public static readonly type = "FightInvadingEnemy";
+  public static override readonly type = "FightInvadingEnemy";
   public readonly type = "FightInvadingEnemy";
 
   public readonly movePriority = MovePriority.FightInvadingEnemy;
@@ -21,7 +21,7 @@ export class FightInvadingEnemy extends TargetedFrontObjective
     super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): FightInvadingEnemy[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): FightInvadingEnemy[]
   {
     const ownedStarsWithInvaders = mapEvaluator.player.controlledLocations.filter(star =>
     {
@@ -50,7 +50,7 @@ export class FightInvadingEnemy extends TargetedFrontObjective
       return new FightInvadingEnemy(score, star, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     return grandStrategyAi.desireForConsolidation;
   }

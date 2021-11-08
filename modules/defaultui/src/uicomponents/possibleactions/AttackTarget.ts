@@ -20,7 +20,7 @@ interface StateType
 export class AttackTargetComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "AttackTarget";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -38,7 +38,7 @@ export class AttackTargetComponent extends React.Component<PropTypes, StateType>
     eventManager.dispatchEvent("attackTarget", this.props.attackTarget);
   }
 
-  render()
+  public override render()
   {
     const target = this.props.attackTarget;
 

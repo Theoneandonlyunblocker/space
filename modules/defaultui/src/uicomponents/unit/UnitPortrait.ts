@@ -15,14 +15,14 @@ interface StateType
 export class UnitPortraitComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "UnitPortrait";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const props: React.HTMLAttributes<HTMLDivElement> = {};
     props.className = "unit-portrait " + (this.props.className || "");

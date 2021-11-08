@@ -25,7 +25,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
   public displayName = "BuildingUpgradeList";
 
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -53,7 +53,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     this.forceUpdate();
   }
 
-  public render()
+  public override render()
   {
     const upgradeGroups: React.ReactHTMLElement<any>[] = [];
 

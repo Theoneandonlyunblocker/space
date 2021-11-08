@@ -23,14 +23,14 @@ interface StateType
 export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "DebugOptions";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

@@ -32,7 +32,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
     }
   }
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -67,7 +67,7 @@ export class MapModeSelectorComponent extends React.Component<PropTypes, StateTy
   }
 
 
-  render()
+  public override render()
   {
     const mapRenderer = this.props.mapRenderer;
 

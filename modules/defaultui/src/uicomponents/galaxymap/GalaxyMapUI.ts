@@ -49,7 +49,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "GalaxyMapUI";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -85,7 +85,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  componentDidMount()
+  public override componentDidMount()
   {
     eventManager.addEventListener("playerControlUpdated",
       this.updateSelection);
@@ -93,7 +93,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     eventManager.addEventListener("endTurn",
       this.setPlayerTurn);
   }
-  componentWillUnmount()
+  public override componentWillUnmount()
   {
     eventManager.removeEventListener("playerControlUpdated",
       this.updateSelection);
@@ -147,7 +147,7 @@ export class GalaxyMapUIComponent extends React.Component<PropTypes, StateType>
     this.updateSelection();
   }
 
-  render()
+  public override render()
   {
     const endTurnButtonProps: any =
     {

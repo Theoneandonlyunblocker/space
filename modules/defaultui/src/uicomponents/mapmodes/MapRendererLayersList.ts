@@ -24,7 +24,7 @@ interface StateType
 export class MapRendererLayersListComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName: string = "MapRendererLayersList";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly ownDOMNode = React.createRef<HTMLOListElement>();
 
@@ -70,7 +70,7 @@ export class MapRendererLayersListComponent extends React.PureComponent<PropType
       insertPosition: null,
     });
   }
-  public render(): React.ReactHTMLElement<HTMLOListElement> | null
+  public override render(): React.ReactHTMLElement<HTMLOListElement> | null
   {
     const mapMode = this.props.currentMapMode;
     if (!mapMode)

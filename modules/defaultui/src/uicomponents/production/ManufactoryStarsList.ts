@@ -25,14 +25,14 @@ export class ManufactoryStarsListComponent extends React.Component<PropTypes, St
 {
   public displayName = "ManufactoryStarsList";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const highlightedStarIds = new Set(this.props.highlightedStars.map(star => star.id));
 

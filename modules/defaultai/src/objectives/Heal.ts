@@ -12,7 +12,7 @@ import {moveToTarget} from "./common/moveroutines/moveToTarget";
 // @ts-ignore 2417
 export class Heal extends FrontObjective
 {
-  public static readonly type = "Heal";
+  public static override readonly type = "Heal";
   public readonly type = "Heal";
 
   public readonly movePriority = MovePriority.Heal;
@@ -22,15 +22,15 @@ export class Heal extends FrontObjective
     super(score, mapEvaluator, unitEvaluator);
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Heal[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Heal[]
   {
     return [new Heal(1, mapEvaluator, mapEvaluator.unitEvaluator)];
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     return 0.5;
   }
-  protected static updateOngoingObjectivesList(
+  protected static override updateOngoingObjectivesList(
     allOngoingObjectives: Objective[],
     createdObjectives: Heal[],
   ): Objective[]

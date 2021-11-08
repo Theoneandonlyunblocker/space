@@ -12,7 +12,7 @@ import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
 export class Discovery extends TargetedFrontObjective
 {
-  public static readonly type = "Discovery";
+  public static override readonly type = "Discovery";
   public readonly type = "Discovery";
 
   public readonly movePriority = MovePriority.Discovery;
@@ -22,7 +22,7 @@ export class Discovery extends TargetedFrontObjective
     super(score, target, mapEvaluator, unitEvaluator);
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Discovery[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): Discovery[]
   {
     const linksToUnRevealedStars = mapEvaluator.player.getLinksToUnRevealedStars();
 
@@ -40,7 +40,7 @@ export class Discovery extends TargetedFrontObjective
       return new Discovery(score, targetStar, mapEvaluator, mapEvaluator.unitEvaluator);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     return grandStrategyAi.desireForExploration;
   }

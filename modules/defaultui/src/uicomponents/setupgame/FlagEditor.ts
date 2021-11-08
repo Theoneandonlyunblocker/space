@@ -41,7 +41,7 @@ interface StateType
 export class FlagEditorComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "FlagEditor";
-  public state: StateType;
+  public override state: StateType;
 
   private idGenerator = 0;
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
@@ -109,7 +109,7 @@ export class FlagEditorComponent extends React.PureComponent<PropTypes, StateTyp
 
     return flag;
   }
-  public render()
+  public override render()
   {
     const activeEmblemData = this.getActiveEmblemData();
 

@@ -33,12 +33,12 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
     this.props.onChange(this.props.id, newValue);
   }
 
-  shouldComponentUpdate(newProps: PropTypes)
+  public override shouldComponentUpdate(newProps: PropTypes)
   {
     return newProps.value !== this.props.value;
   }
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -51,7 +51,7 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
     this.handleChange = this.handleChange.bind(this);
   }
 
-  render()
+  public override render()
   {
     const option = this.props.option;
     const range = option.range;

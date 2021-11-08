@@ -33,7 +33,7 @@ interface StateType
 export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "GalaxyMap";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly pixiContainer = React.createRef<HTMLDivElement>();
 
@@ -42,7 +42,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
     super(props);
   }
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(
@@ -73,7 +73,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
   }
 
 
-  componentDidMount()
+  public override componentDidMount()
   {
     this.props.renderer.bindRendererView(this.pixiContainer.current);
     this.props.mapRenderer.setMapModeByKey("defaultMapMode");
@@ -85,7 +85,7 @@ export class GalaxyMapComponent extends React.Component<PropTypes, StateType>
     // TODO hack | transparency isn't properly rendered without this
     this.props.mapRenderer.setAllLayersAsDirty();
   }
-  componentWillUnmount()
+  public override componentWillUnmount()
   {
     this.props.renderer.pause();
     this.props.renderer.removeRendererView();

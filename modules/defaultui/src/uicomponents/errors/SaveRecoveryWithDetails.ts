@@ -20,14 +20,14 @@ interface StateType
 export class SaveRecoveryWithDetailsComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SaveRecoveryWithDetails";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

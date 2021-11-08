@@ -12,7 +12,7 @@ import { Resources, getBaseValuablenessOfResources } from "core/src/player/Playe
 // @ts-ignore 2417
 export class ExpandManufactoryCapacity extends EconomicObjective
 {
-  public static readonly type = "ExpandManufactoryCapacity";
+  public static override readonly type = "ExpandManufactoryCapacity";
   public readonly type = "ExpandManufactoryCapacity";
 
   public readonly target: Star;
@@ -27,7 +27,7 @@ export class ExpandManufactoryCapacity extends EconomicObjective
     this.target = target;
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): ExpandManufactoryCapacity[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): ExpandManufactoryCapacity[]
   {
     const starsThatCanExpand = mapEvaluator.player.controlledLocations.filter(star =>
     {
@@ -47,12 +47,12 @@ export class ExpandManufactoryCapacity extends EconomicObjective
       return new ExpandManufactoryCapacity(score, mapEvaluator.player, star);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     // TODO 2017.02.25 | manufacturing demand / manufacturing capacity
     return grandStrategyAi.desireForConsolidation;
   }
-  protected static updateOngoingObjectivesList(
+  protected static override updateOngoingObjectivesList(
     allOngoingObjectives: Objective[],
     createdObjectives: ExpandManufactoryCapacity[],
   ): Objective[]

@@ -23,7 +23,7 @@ interface StateType
 export class EmblemColorPickerComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "EmblemColorPicker";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -32,7 +32,7 @@ export class EmblemColorPickerComponent extends React.Component<PropTypes, State
     this.handleColorChange = this.handleColorChange.bind(this);
   }
 
-  public render()
+  public override render()
   {
     const colorMappingData = this.props.emblemTemplate.colorMappings[this.props.colorIndex];
 

@@ -23,13 +23,13 @@ export class TopBarComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TopBar";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
-  render()
+  public override render()
   {
     const player = this.props.player;
 

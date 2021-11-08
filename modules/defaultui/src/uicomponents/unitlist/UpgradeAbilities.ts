@@ -28,7 +28,7 @@ interface StateType
 export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "UpgradeAbilities";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -48,7 +48,7 @@ export class UpgradeAbilitiesComponent extends React.Component<PropTypes, StateT
     this.learnAbility = this.learnAbility.bind(this);
   }
 
-  render()
+  public override render()
   {
     const canLearnNewAbility = this.props.learnableAbilities.length > 0;
 

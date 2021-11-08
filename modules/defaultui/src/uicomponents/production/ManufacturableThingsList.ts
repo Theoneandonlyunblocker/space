@@ -22,14 +22,14 @@ interface StateType
 export class ManufacturableThingsListComponent<T extends ManufacturableThing> extends React.PureComponent<PropTypes<T>, StateType>
 {
   public displayName = "ManufacturableThingsList";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes<T>)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const manufacturableThings: T[] = this.props.manufacturableThings;
 

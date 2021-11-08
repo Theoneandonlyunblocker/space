@@ -90,7 +90,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   // TODO 2020.07.20 | temporarily disabled
   // tslint:disable:member-ordering
   public displayName: string = "Battle";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly formationsContainer = React.createRef<HTMLDivElement>();
   private readonly abilityTooltip = React.createRef<AbilityTooltipComponent>();
@@ -189,7 +189,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  componentDidMount()
+  public override componentDidMount()
   {
     this.battleStartStartTime = Date.now();
     this.background.current.handleResize();
@@ -533,7 +533,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.props.battle.finishBattle();
   }
 
-  render()
+  public override render()
   {
     const battle = this.props.battle;
 

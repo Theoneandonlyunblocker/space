@@ -17,7 +17,7 @@ interface StateType
 export class VfxEditorDisplayComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "VfxEditorDisplay";
-  public state: StateType;
+  public override state: StateType;
 
   public containerDiv: HTMLDivElement | null;
 
@@ -46,7 +46,7 @@ export class VfxEditorDisplayComponent extends React.Component<PropTypes, StateT
     this.handleResize = this.handleResize.bind(this);
   }
 
-  componentDidMount(): void
+  public override componentDidMount(): void
   {
     this.bindRendererView();
     this.updateRenderer();
@@ -54,7 +54,7 @@ export class VfxEditorDisplayComponent extends React.Component<PropTypes, StateT
     window.addEventListener("resize", this.handleResize, false);
   }
 
-  componentWillUnmount(): void
+  public override componentWillUnmount(): void
   {
     window.removeEventListener("resize", this.handleResize);
   }
@@ -96,7 +96,7 @@ export class VfxEditorDisplayComponent extends React.Component<PropTypes, StateT
   }
 
 
-  render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

@@ -7,7 +7,7 @@ import { linearStep } from "core/src/generic/utility";
 
 let idGenerator = 0;
 
-export abstract class VfxFragment<P>
+export abstract class VfxFragment<P, D extends PIXI.DisplayObject = PIXI.DisplayObject>
 {
   public id: number;
   public abstract key: string;
@@ -20,8 +20,8 @@ export abstract class VfxFragment<P>
   public readonly props: P = <P> {};
 
 
-  protected _displayObject: PIXI.DisplayObject;
-  public get displayObject(): PIXI.DisplayObject
+  protected _displayObject: D;
+  public get displayObject(): D
   {
     return this._displayObject;
   }
@@ -87,7 +87,7 @@ export abstract class VfxFragment<P>
   {
     this.setDefaultProps(initialValues);
   }
-  protected setDisplayObject(newDisplayObject: PIXI.DisplayObject): void
+  protected setDisplayObject(newDisplayObject: D): void
   {
     const oldDisplayObject = this.displayObject;
     if (oldDisplayObject)

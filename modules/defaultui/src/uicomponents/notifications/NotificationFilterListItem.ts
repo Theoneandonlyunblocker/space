@@ -26,7 +26,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
 {
   public displayName = "NotificationFilterListItem";
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -61,7 +61,7 @@ export class NotificationFilterListItemComponent extends React.Component<PropTyp
     eventManager.dispatchEvent("updateNotificationLog");
   }
 
-  render()
+  public override render()
   {
     const inputElements: React.ReactHTMLElement<any>[] = [];
     const filterState = this.state.filterState;

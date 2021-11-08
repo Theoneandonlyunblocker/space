@@ -23,7 +23,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "MapSetup";
 
-  public state: StateType;
+  public override state: StateType;
 
   public readonly mapGenOptionsComponent = React.createRef<MapGenOptionsComponent>();
 
@@ -53,7 +53,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  componentDidMount()
+  public override componentDidMount()
   {
     this.updatePlayerLimits();
   }
@@ -108,7 +108,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  render()
+  public override render()
   {
     const mapGenTemplateOptions: React.ReactHTMLElement<any>[] = [];
     for (let i = 0; i < this.state.templates.length; i++)

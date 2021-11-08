@@ -12,7 +12,7 @@ export class ProtonWithTimeScale extends Proton
     this.timeScale = timeScale;
   }
 
-  public update(): void
+  public override update(): void
   {
     this.dispatchEvent(Proton.PROTON_UPDATE);
 

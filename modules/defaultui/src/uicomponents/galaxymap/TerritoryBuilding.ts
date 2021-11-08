@@ -17,7 +17,7 @@ interface StateType
 export class TerritoryBuildingComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "TerritoryBuilding";
-  public state: StateType;
+  public override state: StateType;
 
   private iconContainer = React.createRef<HTMLDivElement>();
 
@@ -26,15 +26,15 @@ export class TerritoryBuildingComponent extends React.PureComponent<PropTypes, S
     super(props);
   }
 
-  public componentDidMount(): void
+  public override componentDidMount(): void
   {
     this.setIconContent();
   }
-  public componentDidUpdate(): void
+  public override componentDidUpdate(): void
   {
     this.setIconContent();
   }
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

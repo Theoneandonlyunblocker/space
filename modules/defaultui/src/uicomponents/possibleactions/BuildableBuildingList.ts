@@ -26,7 +26,7 @@ interface StateType
 export class BuildableBuildingListComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "BuildableBuildingList";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -48,7 +48,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
     this.forceUpdate();
   }
 
-  render()
+  public override render()
   {
     const buildableBuildings = this.props.buildableBuildings;
 

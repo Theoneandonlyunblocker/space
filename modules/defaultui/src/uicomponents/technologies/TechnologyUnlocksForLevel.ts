@@ -21,14 +21,14 @@ interface StateType
 export class TechnologyUnlocksForLevelComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TechnologyUnlocksForLevel";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     const unlocksByKind = this.props.unlocks.reduce((groupedUnlocks, unlockableThingWithKind) =>
     {

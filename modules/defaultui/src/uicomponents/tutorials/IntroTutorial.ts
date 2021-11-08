@@ -22,7 +22,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
   public displayName: string = "IntroTutorial";
   public popupId: number = null;
 
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -34,7 +34,7 @@ export class IntroTutorialComponent extends React.Component<PropTypes, StateType
     };
   }
 
-  public render()
+  public override render()
   {
     if (!this.state.shouldShow)
     {

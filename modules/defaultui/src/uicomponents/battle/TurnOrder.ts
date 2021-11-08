@@ -46,7 +46,7 @@ interface StateType
 export class TurnOrderComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TurnOrder";
-  public state: StateType;
+  public override state: StateType;
 
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
   private timeoutHandle: number;
@@ -80,13 +80,13 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       animationState: AnimationState.Idle,
     });
   }
-  public componentDidMount(): void
+  public override componentDidMount(): void
   {
     this.setMaxUnits();
 
     window.addEventListener("resize", this.setMaxUnits);
   }
-  public componentWillUnmount(): void
+  public override componentWillUnmount(): void
   {
     window.removeEventListener("resize", this.setMaxUnits);
     if (isFinite(this.timeoutHandle))
@@ -94,7 +94,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
       clearTimeout(this.timeoutHandle);
     }
   }
-  public componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
+  public override componentDidUpdate(prevProps: PropTypes, prevState: StateType): void
   {
     if (this.props.turnIsTransitioning && !prevProps.turnIsTransitioning)
     {
@@ -284,7 +284,7 @@ export class TurnOrderComponent extends React.Component<PropTypes, StateType>
     });
   }
 
-  render()
+  public override render()
   {
     const toRender: React.ReactElement<any>[] = [];
 

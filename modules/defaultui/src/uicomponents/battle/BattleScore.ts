@@ -24,13 +24,13 @@ interface StateType
 export class BattleScoreComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "BattleScore";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
-  render()
+  public override render()
   {
     const evaluationPercentage = 50 + this.props.evaluation * 50;
 

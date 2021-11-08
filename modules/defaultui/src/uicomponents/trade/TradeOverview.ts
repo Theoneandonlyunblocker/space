@@ -36,7 +36,7 @@ interface StateType
 export class TradeOverviewComponent extends React.Component<PropTypes, StateType>
 {
   public displayName: string = "TradeOverview";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -72,7 +72,7 @@ export class TradeOverviewComponent extends React.Component<PropTypes, StateType
     this.bindMethods();
   }
 
-  public render()
+  public override render()
   {
     const hasDragItem = Boolean(this.state.currentDragItemKey);
     const selfPlayerAcceptsDrop = this.state.currentDragItemPlayer === "self";

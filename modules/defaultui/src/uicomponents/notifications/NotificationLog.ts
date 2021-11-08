@@ -28,12 +28,12 @@ interface StateType
 export class NotificationLogComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "NotificationLog";
-  public state: StateType;
+  public override state: StateType;
 
   private updateListener: () => void;
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
 
-  static get defaultProps(): Partial<PropTypes>
+  static override get defaultProps(): Partial<PropTypes>
   {
     return(
     {
@@ -50,20 +50,20 @@ export class NotificationLogComponent extends React.PureComponent<PropTypes, Sta
     this.bindMethods();
   }
 
-  public componentDidMount()
+  public override componentDidMount()
   {
     this.updateListener = eventManager.addEventListener("updateNotificationLog", this.forceUpdate.bind(this));
   }
-  public componentWillUnmount()
+  public override componentWillUnmount()
   {
     eventManager.removeEventListener("updateNotificationLog", this.updateListener);
   }
-  public componentDidUpdate()
+  public override componentDidUpdate()
   {
     const domNode = this.ownDOMNode.current;
     domNode.scrollTop = domNode.scrollHeight;
   }
-  public render()
+  public override render()
   {
     const log = this.props.notificationLog;
     const notifications = log.unreadNotifications.filter(notification =>

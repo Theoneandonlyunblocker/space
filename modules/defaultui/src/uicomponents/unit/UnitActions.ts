@@ -17,14 +17,14 @@ interface StateType
 export class UnitActionsComponent extends React.PureComponent<PropTypes, StateType>
 {
   public displayName = "UnitActions";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  render()
+  public override render()
   {
     const icons: React.ReactHTMLElement<any>[] = [];
 

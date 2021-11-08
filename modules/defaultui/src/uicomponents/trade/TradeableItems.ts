@@ -30,7 +30,7 @@ interface StateType
 export class TradeableItemsComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "TradeableItems";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -39,7 +39,7 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
     this.handleMouseUp = this.handleMouseUp.bind(this);
   }
 
-  public render()
+  public override render()
   {
     const divProps: React.HTMLAttributes<HTMLDivElement> =
     {

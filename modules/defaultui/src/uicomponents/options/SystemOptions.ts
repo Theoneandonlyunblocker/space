@@ -39,14 +39,14 @@ interface StateType
 export class SystemOptionsComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "SystemOptions";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
     super(props);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

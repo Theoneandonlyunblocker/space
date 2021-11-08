@@ -30,7 +30,7 @@ interface StateType
 export class UnitItemComponent<T extends ItemTemplate | Item> extends React.Component<PropTypes<T>, StateType>
 {
   public displayName = "UnitItem";
-  public state: StateType;
+  public override state: StateType;
 
   dragPositioner: DragPositioner<UnitItemComponent<T>>;
   private readonly ownDOMNode = React.createRef<HTMLDivElement>();
@@ -48,7 +48,7 @@ export class UnitItemComponent<T extends ItemTemplate | Item> extends React.Comp
     applyMixins(this, this.dragPositioner);
   }
 
-  public render()
+  public override render()
   {
     if (!this.props.item)
     {

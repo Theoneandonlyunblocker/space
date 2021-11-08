@@ -48,6 +48,7 @@
 
     // does nothing without --strictNullChecks
     // "strictPropertyInitialization": true,
+    "noImplicitOverride": true,
   },
   "files": [
     "external/_lib.extend.d.ts",

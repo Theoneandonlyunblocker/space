@@ -10,7 +10,7 @@ import {Objective} from "./common/Objective";
 // @ts-ignore 2417
 export class DeclareWar extends DiplomaticObjective
 {
-  public static readonly type = "DeclareWar";
+  public static override readonly type = "DeclareWar";
   public readonly type = "DeclareWar";
 
   public readonly target: Player;
@@ -21,7 +21,7 @@ export class DeclareWar extends DiplomaticObjective
     this.target = target;
   }
 
-  protected static createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): DeclareWar[]
+  protected static override createObjectives(mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]): DeclareWar[]
   {
     const metNeighborPlayers = mapEvaluator.player.getNeighboringPlayers().filter(player =>
     {
@@ -41,11 +41,11 @@ export class DeclareWar extends DiplomaticObjective
       return new DeclareWar(score, player, mapEvaluator.player.diplomacy);
     });
   }
-  protected static evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
+  protected static override evaluatePriority(mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi): number
   {
     return grandStrategyAi.desireForWar;
   }
-  protected static updateOngoingObjectivesList(
+  protected static override updateOngoingObjectivesList(
     allOngoingObjectives: Objective[],
     createdObjectives: DeclareWar[],
   ): Objective[]

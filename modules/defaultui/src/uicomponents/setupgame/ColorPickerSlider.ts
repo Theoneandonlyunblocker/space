@@ -18,7 +18,7 @@ interface StateType
 export class ColorPickerSliderComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "ColorPickerSlider";
-  public state: StateType;
+  public override state: StateType;
 
   constructor(props: PropTypes)
   {
@@ -27,7 +27,7 @@ export class ColorPickerSliderComponent extends React.Component<PropTypes, State
     this.handleChangeEvent = this.handleChangeEvent.bind(this);
   }
 
-  public render()
+  public override render()
   {
     return(
       ReactDOMElements.div(

@@ -22,7 +22,7 @@ interface StateType
 export class FleetReorganizationComponent extends React.Component<PropTypes, StateType>
 {
   public displayName = "FleetReorganization";
-  public state: StateType;
+  public override state: StateType;
 
   hasClosed: boolean = false;
 
@@ -88,14 +88,14 @@ export class FleetReorganizationComponent extends React.Component<PropTypes, Sta
     this.props.closeReorganization();
   }
 
-  componentWillUnmount()
+  public override componentWillUnmount()
   {
     if (this.hasClosed) { return; }
 
     eventManager.dispatchEvent("endReorganizingFleets");
   }
 
-  render()
+  public override render()
   {
     const selectedFleets: Fleet[] = this.props.fleets;
     if (!selectedFleets || selectedFleets.length < 1)
