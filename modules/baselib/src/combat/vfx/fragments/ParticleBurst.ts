@@ -36,7 +36,7 @@ export class ParticleBurst<D extends PIXI.DisplayObject> extends VfxFragment<Par
     velocity: new PropInfo.Number(300),
     acceleration: new PropInfo.Number(-5),
     forceOrigin: new PropInfo.Point({x: 0, y: 0}),
-    getParticleDisplayObject: new PropInfo.Function(({}) => <D><any>PIXI.Sprite.from("placeHolder")),
+    getParticleDisplayObject: new PropInfo.Function((particle: PixiParticle) => <D><any>PIXI.Sprite.from("placeHolder")),
     getEmitZone: new PropInfo.Function(() => new Proton.CircleZone(0, 0, 100)),
 
     getKillZone: new PropInfo.Function(undefined),
