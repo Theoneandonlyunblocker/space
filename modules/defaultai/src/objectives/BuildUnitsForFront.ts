@@ -16,6 +16,7 @@ import { coreManufacturableThingKinds } from "core/src/production/coreManufactur
 // can't actually ignore specific errors
 // https://github.com/Microsoft/TypeScript/issues/19139
 // @ts-ignore 2417
+// TODO 2021.11.08 | is this fixable?
 export class BuildUnitsForFront extends EconomicObjective
 {
   public static readonly type = "BuildUnitsForFront";

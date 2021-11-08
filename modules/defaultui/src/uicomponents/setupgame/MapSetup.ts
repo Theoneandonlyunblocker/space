@@ -77,7 +77,7 @@ export class MapSetupComponent extends React.Component<PropTypes, StateType>
 
     return;
   }
-  private setTemplate(template: MapGenTemplate): Promise<MapGenTemplate>
+  private setTemplate(template: MapGenTemplate): Promise<void>
   {
     return new Promise(resolve =>
     {
