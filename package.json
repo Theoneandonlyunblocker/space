@@ -20,7 +20,7 @@
     "voronoi": "1.0.x"
   },
   "devDependencies": {
-    "@types/jest": "24.x",
+    "@types/jest": "27.x",
     "@types/react": "16.x",
     "@types/react-dom": "16.x",
     "@types/react-dom-factories": "1.x",
