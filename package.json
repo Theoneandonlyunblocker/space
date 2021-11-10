@@ -30,7 +30,7 @@
     "concat-with-sourcemaps": "1.1.x",
     "cpr": "3.0.x",
     "glob": "7.1.x",
-    "http-server": "0.11.x",
+    "http-server": "14.0.x",
     "jest": "27.2.x",
     "less": "4.0.x",
     "mkdirp": "0.5.x",
@@ -65,7 +65,7 @@
     "copy-space-assets": "mkdirp dist/modules/space/assets && cpr modules/space/assets dist/modules/space/assets -o",
     "copy-notifications-assets": "mkdirp dist/modules/defaultnotifications/assets && cpr modules/defaultnotifications/assets dist/modules/defaultnotifications/assets -o",
 
-    "start": "http-server --port 9001 -o http://127.0.0.1:9001/",
+    "start": "http-server --port 9001 -o",
 
     "test": "jest",
     "lint": "tslint \"{core,modules}/**/*.ts\"",
