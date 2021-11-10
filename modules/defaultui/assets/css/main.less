@@ -251,7 +251,7 @@ ul, ol
   {
     tr
     {
-      .button-style-no-border;
+      .button-style-no-border();
       &:hover, &:focus
       {
         background-color: grey;
@@ -273,7 +273,7 @@ ul, ol
     {
       &::after
       {
-        .civ-splitter-horizontal;
+        .civ-splitter-horizontal();
       }
     }
   }
@@ -284,7 +284,7 @@ ul, ol
   .base-fancy-table-style(@padding, @min-width);
   .disabled, :disabled
   {
-    .disabled-button-style;
+    .disabled-button-style();
   }
 
   tbody
@@ -294,7 +294,7 @@ ul, ol
       cursor: pointer;
       &:hover, &:focus, &:active
       {
-        .button-style-no-border;
+        .button-style-no-border();
       }
     }
   }
@@ -314,7 +314,7 @@ ul, ol
     {
       &::after
       {
-        .civ-splitter-horizontal;
+        .civ-splitter-horizontal();
       }
     }
   }
@@ -442,7 +442,7 @@ ul, ol
   display: flex;
   flex-flow: column;
   position: relative;
-  .prevent-user-select;
+  .prevent-user-select();
   cursor: default;
   max-height: 100%;
   height: 100%;
@@ -695,7 +695,7 @@ ul, ol
   position: relative;
   height: 100%;
   width: 100%;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
   text-overflow: clip;
 
   transition: background-color 100ms;
@@ -1082,7 +1082,7 @@ ul, ol
   pointer-events: auto;
 
   max-width: 20em;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 @ability-color: fadeout(saturate(darken(
@@ -1242,7 +1242,7 @@ ul, ol
   .unit-style(@friendly-unit-bg, to left);
   .unit-body
   {
-    .unit-border-no-right;
+    .unit-border-no-right();
   }
 }
 
@@ -1251,7 +1251,7 @@ ul, ol
   .unit-style(@enemy-unit-bg, to right);
   .unit-body
   {
-    .unit-border-no-left;
+    .unit-border-no-left();
     left: 0.5px;
   }
 }
@@ -1259,12 +1259,12 @@ ul, ol
 .active-unit.friendly-unit
 {
   .unit-style(@active-unit-bg, to left, @friendly-unit-bg);
-  .active-border;
+  .active-border();
 }
 .active-unit.enemy-unit
 {
   .unit-style(@active-unit-bg, to right, @enemy-unit-bg);
-  .active-border;
+  .active-border();
 }
 
 .target-unit.friendly-unit
@@ -1760,17 +1760,17 @@ ul, ol
     .unsorted::after
     {
       .fa("\f0dc");
-      .sort-icon;
+      .sort-icon();
     }
     .sorted-asc::after
     {
       .fa("\f0de");
-      .sort-icon;
+      .sort-icon();
     }
     .sorted-desc::after
     {
       .fa("\f0dd");
-      .sort-icon;
+      .sort-icon();
     }
   }
 }
@@ -1837,7 +1837,7 @@ ul, ol
     text-align: left;
     overflow: hidden;
     max-width: 100px;
-    .prevent-text-overflow;
+    .prevent-text-overflow();
   }
   .unit-list-unitName
   {
@@ -1904,7 +1904,7 @@ ul, ol
     background-color: @bg-color;
   }
 
-  .prevent-user-select;
+  .prevent-user-select();
 
   .item-list
   {
@@ -2072,7 +2072,7 @@ ul, ol
 .galaxy-map-ui
 {
   z-index: 100;
-  .prevent-user-select;
+  .prevent-user-select();
   pointer-events: none;
   >*
   {
@@ -2083,7 +2083,7 @@ ul, ol
 .game-over-screen
 {
   z-index: 100;
-  .prevent-user-select;
+  .prevent-user-select();
 
   display: flex;
   flex-flow: column;
@@ -2113,7 +2113,7 @@ ul, ol
 
   button
   {
-    .button-style;
+    .button-style();
   }
 }
 
@@ -2125,7 +2125,7 @@ ul, ol
   {
     transition-delay: 0.8s;
     opacity: 0.06;
-    .prevent-pointer-events;
+    .prevent-pointer-events();
   }
 }
 
@@ -2153,7 +2153,7 @@ ul, ol
 {
   max-width: 300px;
   overflow: hidden;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 @top-bar-height: 2em;
@@ -2304,7 +2304,7 @@ ul, ol
 
 .top-menu-items-button
 {
-  .button-style;
+  .button-style();
   margin: 5px;
 }
 
@@ -2366,7 +2366,7 @@ ul, ol
   button
   {
     margin: 1px 2px;
-    .button-style;
+    .button-style();
   }
 }
 
@@ -2393,7 +2393,7 @@ ul, ol
   button
   {
     margin: 1px 2px;
-    .button-style;
+    .button-style();
   }
 }
 
@@ -2450,7 +2450,7 @@ ul, ol
   color: @text-color;
   max-width: 7em;
   cursor: text;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 .fleet-info-strength
@@ -2509,7 +2509,7 @@ ul, ol
   padding: 0;
   color: @text-color;
   width: 100%;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 .fleet-unit-info-icon-container
@@ -2536,7 +2536,7 @@ ul, ol
 
   button
   {
-    .button-style;
+    .button-style();
   }
 }
 
@@ -2691,13 +2691,13 @@ ul, ol
 
 .insert-top
 {
-  .hover-indicator;
+  .hover-indicator();
   border-width: 4px 0 0 0;
 }
 
 .insert-bottom
 {
-  .hover-indicator;
+  .hover-indicator();
   border-width: 0 0 4px 0;
 }
 
@@ -2717,7 +2717,7 @@ ul, ol
 }
 .toggle-map-mode-settings-button
 {
-  .button-style;
+  .button-style();
   margin-bottom: 1em;
 }
 .end-turn-button
@@ -2729,7 +2729,7 @@ ul, ol
   font-size: 1.5em;
   font-weight: bolder;
 
-  .button-style;
+  .button-style();
 }
 .notification-log
 {
@@ -2852,7 +2852,7 @@ ul, ol
   flex-flow: row;
   justify-content: center;
 
-  .button-style;
+  .button-style();
 
   margin: 3px 0;
   padding: 6px;
@@ -2960,7 +2960,7 @@ ul, ol
 
   color: @text-color;
 
-  .prevent-user-select;
+  .prevent-user-select();
 
   .item-list
   {
@@ -3000,7 +3000,7 @@ ul, ol
 .item-list td
 {
   max-width: 10em;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 .reserved-item
@@ -3042,7 +3042,7 @@ ul, ol
 .item-list-unitName
 {
   max-width: 110px;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 .menu-unit-info
@@ -3205,7 +3205,7 @@ ul, ol
   clear: both;
 
   max-width: 20em;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 .skill-style(@color)
@@ -3337,7 +3337,7 @@ ul, ol
 
 .economy-summary-item::after
 {
-  .civ-splitter-horizontal;
+  .civ-splitter-horizontal();
 }
 
 .economy-summary-item
@@ -3408,7 +3408,7 @@ ul, ol
 
 .diplomacy-action-button
 {
-  .button-style;
+  .button-style();
   margin: 5px;
 }
 
@@ -3518,25 +3518,25 @@ ul, ol
   width: 100%;
   cursor: pointer;
 
-  .reset-progress-style;
+  .reset-progress-style();
 
   &::-webkit-slider-thumb
   {
-    .technology-progress-bar-mixin;
+    .technology-progress-bar-mixin();
   }
   &::-moz-range-thumb
   {
-    .technology-progress-bar-mixin;
+    .technology-progress-bar-mixin();
   }
   &::-ms-thumb
   {
-    .technology-progress-bar-mixin;
+    .technology-progress-bar-mixin();
   }
 }
 
 .technology-toggle-priority-lock
 {
-  .button-style;
+  .button-style();
   height: 1.1em;
   &.locked::after
   {
@@ -3604,7 +3604,7 @@ ul, ol
 
 .save-game-button
 {
-  .button-style;
+  .button-style();
 }
 
 .save-list
@@ -3616,7 +3616,7 @@ ul, ol
   {
     &.selected
     {
-      .focused-button-style;
+      .focused-button-style();
     }
   }
 }
@@ -3624,12 +3624,12 @@ ul, ol
 .save-list-name
 {
   max-width: 400px;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 .save-list-delete
 {
-  .button-style;
+  .button-style();
   text-align: center;
   &::after
   {
@@ -3786,7 +3786,7 @@ ul, ol
 
 .reset-options-button
 {
-  .button-style;
+  .button-style();
   margin-left: 1em;
 }
 
@@ -3862,7 +3862,7 @@ ul, ol
 }
 .setup-game-button
 {
-  .button-style;
+  .button-style();
 }
 .setup-game-button-start
 {
@@ -3937,7 +3937,7 @@ ul, ol
 .player-setup-name
 {
   width: 8em;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
   @media(max-width: 650px)
   {
     width: 5em;
@@ -3976,7 +3976,7 @@ ul, ol
 }
 button.player-setup-remove-player
 {
-  .button-style;
+  .button-style();
   &::after
   {
     content: "X";
@@ -3994,7 +3994,7 @@ button.player-setup-remove-player
 
 .setup-game-players-add-new
 {
-  .button-style;
+  .button-style();
 }
 
 .color-setter-display
@@ -4061,33 +4061,33 @@ button.player-setup-remove-player
 }
 .color-picker-slider
 {
-  .reset-progress-style;
+  .reset-progress-style();
   width: 8em;
   height: 24px;
 
   &::-webkit-slider-thumb
   {
-    .color-picker-slider-thumb-mixin;
+    .color-picker-slider-thumb-mixin();
   }
   &::-moz-range-thumb
   {
-    .color-picker-slider-thumb-mixin;
+    .color-picker-slider-thumb-mixin();
   }
   &::-ms-thumb
   {
-    .color-picker-slider-thumb-mixin;
+    .color-picker-slider-thumb-mixin();
   }
   &:active::-webkit-slider-thumb
   {
-    .color-picker-slider-thumb-mixin-active;
+    .color-picker-slider-thumb-mixin-active();
   }
   &:active::-moz-range-thumb
   {
-    .color-picker-slider-thumb-mixin-active;
+    .color-picker-slider-thumb-mixin-active();
   }
   &:active::-ms-thumb
   {
-    .color-picker-slider-thumb-mixin-active;
+    .color-picker-slider-thumb-mixin-active();
   }
 }
 
@@ -4153,7 +4153,7 @@ button.player-setup-remove-player
 
 .add-new-emblem-button
 {
-  .button-style;
+  .button-style();
 
   width: @emblem-size;
   height: @emblem-size;
@@ -4270,7 +4270,7 @@ button.player-setup-remove-player
 .map-gen-option-label
 {
   flex: 1 1 40%;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 .map-gen-slider-thumb-mixin
@@ -4302,7 +4302,7 @@ button.player-setup-remove-player
 
 .map-gen-option-slider
 {
-  .reset-progress-style;
+  .reset-progress-style();
   flex: 0 1 45%;
   min-width: 70px;
 
@@ -4313,28 +4313,28 @@ button.player-setup-remove-player
 
   &::-webkit-slider-thumb
   {
-    .map-gen-slider-thumb-mixin;
+    .map-gen-slider-thumb-mixin();
   }
   &::-moz-range-thumb
   {
-    .map-gen-slider-thumb-mixin;
+    .map-gen-slider-thumb-mixin();
   }
   &::-ms-thumb
   {
-    .map-gen-slider-thumb-mixin;
+    .map-gen-slider-thumb-mixin();
   }
 
   &::-webkit-slider-runnable-track
   {
-    .map-gen-slider-track-mixin;
+    .map-gen-slider-track-mixin();
   }
   &::-moz-range-track
   {
-    .map-gen-slider-track-mixin;
+    .map-gen-slider-track-mixin();
   }
   &::-ms-track
   {
-    .map-gen-slider-track-mixin;
+    .map-gen-slider-track-mixin();
   }
 }
 
@@ -4405,7 +4405,7 @@ button.player-setup-remove-player
 
   button
   {
-    .button-style;
+    .button-style();
   }
 }
 
@@ -4453,13 +4453,13 @@ button.player-setup-remove-player
 
   &.no-manufactory
   {
-    .disabled-button-style;
+    .disabled-button-style();
     color: darken(@text-color, 20%) !important;
   }
 
   &.highlighted
   {
-    .button-style-no-border;
+    .button-style-no-border();
   }
 }
 
@@ -4508,7 +4508,7 @@ button.player-setup-remove-player
 
 .construct-manufactory-button
 {
-  .button-style;
+  .button-style();
 }
 
 .manufacturable-things
@@ -4528,13 +4528,13 @@ button.player-setup-remove-player
 .manufacturable-things-tab-button
 {
   flex: 1 1 50%;
-  .button-style;
+  .button-style();
   border-radius: 5px 5px 0 0;
   outline: none;
 
   &.active-tab
   {
-    .active-button-style;
+    .active-button-style();
   }
 
   +.manufacturable-things-tab-button
@@ -4583,7 +4583,7 @@ button.player-setup-remove-player
 
 .manufactory-upgrade-button
 {
-  .button-style-no-border;
+  .button-style-no-border();
   display: flex;
   flex-flow: column;
   align-items: center;
@@ -4603,7 +4603,7 @@ button.player-setup-remove-player
   display: flex;
   flex-flow: row;
   justify-content: space-between;
-  .button-style-no-border;
+  .button-style-no-border();
   >*
   {
     margin-right: 0.5em;
@@ -4620,7 +4620,7 @@ button.player-setup-remove-player
 .manufacturable-things-list-item-name
 {
   max-width: 10em;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
 }
 
 .trade-overview
@@ -4708,7 +4708,7 @@ button.player-setup-remove-player
 
 .trade-button
 {
-  .button-style;
+  .button-style();
 }
 
 .trade-button-ok
@@ -4727,7 +4727,7 @@ button.player-setup-remove-player
 
   .resource-display-name
   {
-    .prevent-text-overflow;
+    .prevent-text-overflow();
     flex: 1 1 0;
     margin-right: 0.5em;
     padding: 1px 0;
@@ -4885,7 +4885,7 @@ button.player-setup-remove-player
 .vfx-fragment-prop-name
 {
   font-size: 0.8em;
-  .prevent-text-overflow;
+  .prevent-text-overflow();
   flex: 1 1 auto;
 }
 
