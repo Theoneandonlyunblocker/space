@@ -20,11 +20,11 @@ export const warpJammer: PassiveSkillTemplate =
   mapLevelModifiers:
   [
     {
-      key: "addInitialGuardInBattle",
+      key: "addWarpJammerModifier",
       battlePrepEffects:
       [
         {
-          adjustment: {flat: 50},
+          adjustment: {flat: 1},
           effect:
           {
             whenPartOfFormation:
@@ -35,7 +35,8 @@ export const warpJammer: PassiveSkillTemplate =
 
                 if (isAttackingSide)
                 {
-                  battlePrep.defenderFormation.addValidityModifier(makeWarpJammerValidityModifier(unit));
+                  const modifier = makeWarpJammerValidityModifier(unit, strength);
+                  battlePrep.defenderFormation.addValidityModifier(modifier);
                 }
               },
               onRemove: (strength, unit, battlePrep, ownFormation, enemyFormation) =>
@@ -44,7 +45,8 @@ export const warpJammer: PassiveSkillTemplate =
 
                 if (isAttackingSide)
                 {
-                  battlePrep.defenderFormation.removeValidityModifier(makeWarpJammerValidityModifier(unit));
+                  const modifier = makeWarpJammerValidityModifier(unit, strength);
+                  battlePrep.defenderFormation.removeValidityModifier(modifier);
                 }
               },
             },
@@ -62,13 +64,13 @@ export const warpJammer: PassiveSkillTemplate =
   ],
 };
 
-function makeWarpJammerValidityModifier(unit: Unit): FormationValidityModifier
+function makeWarpJammerValidityModifier(unit: Unit, strength: number): FormationValidityModifier
 {
   return {
     sourceType: FormationValidityModifierSourceType.PassiveAbility,
     effect:
     {
-      minUnits: 1,
+      minUnits: strength,
     },
     sourcePassiveAbility:
     {
