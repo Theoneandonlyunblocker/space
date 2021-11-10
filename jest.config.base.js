@@ -4,7 +4,7 @@ module.exports = {
   moduleDirectories: ["node_modules", "<rootDir>"],
   globals: {
     'ts-jest': {
-      tsConfig: '<rootDir>/tsconfig-tests.json'
+      tsconfig: '<rootDir>/tsconfig-tests.json'
     },
   },
 };
