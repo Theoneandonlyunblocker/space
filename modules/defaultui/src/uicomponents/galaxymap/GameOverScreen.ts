@@ -84,7 +84,7 @@ export class GameOverScreenComponent extends React.Component<PropTypes, StateTyp
             title: localize("newGame").toString(),
             handleOk: () =>
             {
-              window.location.reload(false);
+              window.location.reload();
             },
             handleCancel: this.closeNewGamePopup,
           },
