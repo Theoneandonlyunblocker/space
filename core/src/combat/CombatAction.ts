@@ -86,8 +86,8 @@ export class CombatAction
     const cloned = new CombatAction(
     {
       mainAction: this.mainAction,
-      source: clonedUnitsById[this.source.id],
-      target: clonedUnitsById[this.target.id],
+      source: this.source ? clonedUnitsById[this.source.id] : undefined,
+      target: this.target ? clonedUnitsById[this.target.id] : undefined,
       id: this.id,
     });
 
