@@ -3,14 +3,23 @@ import { CombatPhaseInfo } from "./CombatPhaseInfo";
 import { Battle } from "../battle/Battle";
 import { CombatAction } from "./CombatAction";
 import { CorePhase } from "./core/coreCombatPhases";
-
+import { Unit } from "../unit/Unit";
+import { CombatActionFetcher, CombatActionListenerFetcher } from "./CombatActionFetcher";
+import { TemplateCollection } from "../generic/TemplateCollection";
+import { CombatActionListener } from "./CombatActionListener";
+import { flatten2dArray } from "../generic/utility";
+import { activeModuleData } from "../app/activeModuleData";
 
 
 export class CombatManager<Phase extends string = CorePhase>
 {
-  public currentPhase: CombatPhase<Phase>;
   public battle: Battle;
+  public get currentPhase(): CombatPhase<Phase>
+  {
+    return this._currentPhase;
+  }
 
+  private _currentPhase: CombatPhase<Phase>;
   private readonly queuedActions:
   {
     [P in Phase]?: CombatAction[];
@@ -23,7 +32,7 @@ export class CombatManager<Phase extends string = CorePhase>
 
   public setPhase(phaseInfo: CombatPhaseInfo<Phase>): void
   {
-    this.currentPhase = new CombatPhase(phaseInfo, this);
+    this._currentPhase = new CombatPhase(phaseInfo, this);
     if (this.queuedActions[phaseInfo.key])
     {
       this.queuedActions[phaseInfo.key].forEach(queuedAction =>
@@ -32,6 +41,12 @@ export class CombatManager<Phase extends string = CorePhase>
       });
 
       this.queuedActions[phaseInfo.key] = [];
+
+      const listenersToAdd = this.fetchCombatActionListeners(this.battle, this.battle.activeUnit);
+      listenersToAdd.forEach(listener => this.currentPhase.addActionListener(listener));
+
+      const actionsToAdd = this.fetchCombatActions(this.battle, this.battle.activeUnit);
+      actionsToAdd.forEach(action => this.addQueuedAction(this.currentPhase.template, action));
     }
   }
   // TODO 2021.11.12 | rename? either addAction() or queueAction()
@@ -103,6 +118,35 @@ export class CombatManager<Phase extends string = CorePhase>
     }
 
     return null;
+  }
+  private fetchCombatActionListeners(
+    battle: Battle,
+    activeUnit: Unit,
+  ): CombatActionListener<Phase>[]
+  {
+    const relevantFetchers = this.getRelevantFetchersForCurrentPhase(activeModuleData.templates.combatActionListenerFetchers);
+    const allListeners = relevantFetchers.map(fetcher => fetcher.fetch(battle, activeUnit));
+
+    return flatten2dArray(allListeners);
+  }
+  private fetchCombatActions(
+    battle: Battle,
+    activeUnit: Unit,
+  ): CombatAction[]
+  {
+    const relevantFetchers = this.getRelevantFetchersForCurrentPhase(activeModuleData.templates.combatActionFetchers);
+    const allActions = relevantFetchers.map(fetcher => fetcher.fetch(battle, activeUnit));
+
+    return flatten2dArray(allActions);
+  }
+  private getRelevantFetchersForCurrentPhase<T extends CombatActionFetcher<Phase> | CombatActionListenerFetcher<Phase>>(
+    allFetchers: TemplateCollection<T>,
+  ): T[]
+  {
+    return allFetchers.filter(fetcher =>
+    {
+      fetcher.phasesToApplyTo.has(this.currentPhase.template);
+    });
   }
 
   private static spliceAttachedAction(child: CombatAction, parent: CombatAction, actions: CombatAction[]): void
