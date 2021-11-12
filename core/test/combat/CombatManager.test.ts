@@ -153,17 +153,18 @@ describe("CombatManager", () =>
     it("creates a deep clone", () =>
     {
       expect(original).not.toBe(clone);
-      expect(original).toEqual(clone);
 
-      compareCurrentPhaseActions();
+      compareCurrentPhases();
 
       original.setPhase(afterMainPhase);
       clone.setPhase(afterMainPhase);
 
-      compareCurrentPhaseActions();
+      compareCurrentPhases();
 
-      function compareCurrentPhaseActions()
+      function compareCurrentPhases()
       {
+        expect(original.currentPhase).not.toBe(clone.currentPhase);
+
         const originalActions = original.currentPhase.actions;
         const cloneActions = clone.currentPhase.actions;
         expect(originalActions).not.toBe(cloneActions);
