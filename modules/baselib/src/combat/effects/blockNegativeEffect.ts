@@ -1,7 +1,7 @@
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
-import { universalCoreListenerFetchers } from "core/src/combat/core/universalCoreListenerFetchers";
 import { blockNegativeEffects as blockNegativeEffectsListener } from "../actionListeners/blockNegativeEffects";
 import { localizeMessage } from "modules/baselib/localization/localize";
+import { allCoreCombatPhases } from "core/src/combat/core/coreCombatPhases";
 
 
 export const blockNegativeEffect: CombatEffectTemplate =
@@ -26,7 +26,7 @@ export const blockNegativeEffect: CombatEffectTemplate =
   [
     {
       key: "blockNegativeEffect",
-      phasesToApplyTo: new Set(universalCoreListenerFetchers.phasesToApplyTo),
+      phasesToApplyTo: new Set(allCoreCombatPhases),
       fetch: () => [blockNegativeEffectsListener],
     }
   ]
