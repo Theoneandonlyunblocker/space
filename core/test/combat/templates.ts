@@ -91,7 +91,7 @@ export const resultModifiers:
     },
   },
 };
-export function makeDummyCombatAction(source: Unit, target: Unit): CombatAction
+export function makeDummyCombatAction(source?: Unit, target?: Unit): CombatAction
 {
   return new CombatAction(
   {
