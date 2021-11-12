@@ -1,12 +1,12 @@
 import { CombatActionFetcher } from "../../CombatActionFetcher";
 import { addInitialMoveDelay } from "../actions/addInitialMoveDelay";
-import { battleStartPhase } from "../phases/battleStartPhase";
+import { battleInitPhase } from "../phases/battleInitPhase";
 
 
-export const addMoveDelayAtBattleStart: CombatActionFetcher =
+export const addInitialMoveDelayToAllUnits: CombatActionFetcher =
 {
-  key: "addMoveDelayAtBattleStart",
-  phasesToApplyTo: new Set([battleStartPhase]),
+  key: "addInitialMoveDelayToAllUnits",
+  phasesToApplyTo: new Set([battleInitPhase]),
   fetch: (battle) =>
   {
     const addMoveDelayActions = battle.getAllUnits().map(unit => addInitialMoveDelay(unit));
