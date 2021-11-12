@@ -6,6 +6,8 @@ import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { combatEffectFlags } from "modules/baselib/src/combat/combatEffectFlags";
 
 
+jest.mock("modules/baselib/localization/localize.ts", () => {});
+
 const dummyNegativeEffect: CombatEffectTemplate =
 {
   key: "dummyNegativeEffect",
