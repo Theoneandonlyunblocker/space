@@ -1,6 +1,6 @@
 import {PassiveSkillTemplate} from "core/src/templateinterfaces/PassiveSkillTemplate";
 import { localize } from "modules/space/localization/localize";
-import { blockNegativeEffect } from "modules/baseLib/src/combat/effects/blockNegativeEffect";
+import { blockNegativeEffect } from "modules/baselib/src/combat/effects/blockNegativeEffect";
 
 
 export const systemsHardening: PassiveSkillTemplate =
