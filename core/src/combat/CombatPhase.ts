@@ -79,28 +79,27 @@ export class CombatPhase<AllPhases extends string>
 
   private triggerActionListeners(action: CombatAction, event: "onAdd" | "onRemove"): void
   {
-    if (action.mainAction.flags)
+    const allFlags = action.getFlags();
+
+    allFlags.forEach(flag =>
     {
-      action.mainAction.flags.forEach(flag =>
+      if (this.actionListenersByTriggeringFlag[flag])
       {
-        if (this.actionListenersByTriggeringFlag[flag])
+        Object.keys(this.actionListenersByTriggeringFlag[flag]).forEach(listenerKey =>
         {
-          Object.keys(this.actionListenersByTriggeringFlag[flag]).forEach(listenerKey =>
+          const listener = this.actionListenersByTriggeringFlag[flag][listenerKey];
+
+          const isPrevented = listener.flagsWhichPrevent && listener.flagsWhichPrevent.some(preventingFlag =>
           {
-            const listener = this.actionListenersByTriggeringFlag[flag][listenerKey];
-
-            const isPrevented = listener.flagsWhichPrevent && listener.flagsWhichPrevent.some(preventingFlag =>
-            {
-              return action.mainAction.flags.has(preventingFlag);
-            });
-
-            if (!isPrevented && listener[event])
-            {
-              listener[event](action, this.combatManager);
-            }
+            return allFlags.has(preventingFlag);
           });
-        }
-      });
-    }
+
+          if (!isPrevented && listener[event])
+          {
+            listener[event](action, this.combatManager);
+          }
+        });
+      }
+    });
   }
 }

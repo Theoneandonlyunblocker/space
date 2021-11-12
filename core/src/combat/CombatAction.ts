@@ -42,6 +42,7 @@ export class CombatAction
   private isDirty: boolean = true;
   private readonly _modifiers: CombatActionModifier[] = [];
   private readonly _resultModifiers: CombatActionResultModifierWithValue<any>[] = [];
+  private readonly _flags: Set<string> = new Set();
   private cachedResult: CombatActionResults;
 
   constructor(props:
@@ -72,6 +73,19 @@ export class CombatAction
     {
       return this.actionAttachedTo.isConnectedToAction(action);
     }
+  }
+  public getFlags(): Set<string>
+  {
+    const allFlags = new Set<string>();
+
+    this.mainAction.flags?.forEach(flag => allFlags.add(flag));
+    this._flags.forEach(flag => allFlags.add(flag));
+
+    return allFlags;
+  }
+  public setFlag(flag: string): void
+  {
+    this._flags.add(flag);
   }
   public clone(
     allClonedActionsById: {[id: number]: CombatAction},
