@@ -17,6 +17,7 @@ import
   reverseSide,
   shuffleArrayInPlace,
 } from "../generic/utility";
+import { CombatManager } from "../combat/CombatManager";
 
 
 export class Battle
@@ -40,6 +41,7 @@ export class Battle
   public side2Player: Player;
 
   public battleData: BattleData;
+  public readonly combatManager: CombatManager;
 
   public turnOrder: BattleTurnOrder;
   public activeUnit: Unit;
@@ -87,6 +89,7 @@ export class Battle
     side2: Unit[][];
     side1Player: Player;
     side2Player: Player;
+    combatManager: CombatManager;
   })
   {
     this.side1 = props.side1;
@@ -94,6 +97,8 @@ export class Battle
     this.side2 = props.side2;
     this.side2Player = props.side2Player;
     this.battleData = props.battleData;
+    this.combatManager = props.combatManager;
+    this.combatManager.battle = this;
 
     this.turnOrder = new BattleTurnOrder();
   }
@@ -632,7 +637,7 @@ export class Battle
   public makeVirtualClone(): Battle
   {
     const battleData = this.battleData;
-
+    const unitsById: {[id: number]: Unit} = {};
 
     function cloneUnits(units: Unit[][]): Unit[][]
     {
@@ -650,7 +655,9 @@ export class Battle
           }
           else
           {
-            row.push(unit.makeVirtualClone());
+            const clonedUnit = unit.makeVirtualClone();
+            row.push(clonedUnit);
+            unitsById[clonedUnit.id] = clonedUnit;
           }
         }
         clones.push(row);
@@ -672,6 +679,7 @@ export class Battle
       side2: side2,
       side1Player: side1Player,
       side2Player: side2Player,
+      combatManager: this.combatManager.clone(unitsById),
     });
 
     [side1, side2].forEach(side =>

@@ -3,10 +3,13 @@ import { CombatActionResults } from "./CombatActionResults";
 import { applyCombatActionPrimitivesToResult, CombatActionPrimitivesWithValues, resolveCombatActionPrimitiveAdjustments } from "./CombatActionPrimitiveTemplate";
 import { CombatActionModifier } from "./CombatActionModifier";
 import { getOrderedResultModifiers, CombatActionResultModifierWithValue } from "./CombatActionResultModifier";
+import { idGenerators } from "../app/idGenerators";
 
 
 export class CombatAction
 {
+  public readonly id: number;
+
   public readonly mainAction: CombatActionModifier;
   public readonly source: Unit | undefined;
   public readonly target: Unit | undefined;
@@ -46,11 +49,13 @@ export class CombatAction
     mainAction: CombatActionModifier;
     source: Unit | undefined;
     target: Unit | undefined;
+    id?: number;
   })
   {
     this.mainAction = props.mainAction;
     this.source = props.source;
     this.target = props.target;
+    this.id = props.id || idGenerators.combatAction++;
   }
 
   public isConnectedToAction(action: CombatAction): boolean
@@ -67,6 +72,43 @@ export class CombatAction
     {
       return this.actionAttachedTo.isConnectedToAction(action);
     }
+  }
+  public clone(
+    allClonedActionsById: {[id: number]: CombatAction},
+    clonedUnitsById: {[id: number]: Unit},
+  ): CombatAction
+  {
+    if (allClonedActionsById[this.id])
+    {
+      return allClonedActionsById[this.id];
+    }
+
+    const cloned = new CombatAction(
+    {
+      mainAction: this.mainAction,
+      source: clonedUnitsById[this.source.id],
+      target: clonedUnitsById[this.target.id],
+      id: this.id,
+    });
+
+    allClonedActionsById[this.id] = cloned;
+
+    cloned.modifiers.push(...this._modifiers);
+    cloned.resultModifiers.push(...this._resultModifiers);
+
+    if (this.actionAttachedTo)
+    {
+      if (allClonedActionsById[this.actionAttachedTo.id])
+      {
+        cloned.actionAttachedTo = allClonedActionsById[this.actionAttachedTo.id];
+      }
+      else
+      {
+        cloned.actionAttachedTo = this.actionAttachedTo.clone(allClonedActionsById, clonedUnitsById);
+      }
+    }
+
+    return cloned;
   }
 
   private getPrimitiveValues(): CombatActionPrimitivesWithValues<number>

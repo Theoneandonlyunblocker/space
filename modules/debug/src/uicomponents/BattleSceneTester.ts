@@ -11,6 +11,7 @@ import {options} from "core/src/app/Options";
 
 import {activeModuleData} from "core/src/app/activeModuleData";
 import { templateIndexes } from "core/src/app/TemplateIndexes";
+import { CombatManager } from "core/src/combat/CombatManager";
 
 
 export interface PropTypes extends React.Props<any>
@@ -164,6 +165,7 @@ export class BattleSceneTesterComponent extends React.Component<PropTypes, State
           units: props.side2Units,
         },
       },
+      combatManager: new CombatManager(),
 
       side1: this.makeFormation(props.side1Units),
       side2: this.makeFormation(props.side2Units),

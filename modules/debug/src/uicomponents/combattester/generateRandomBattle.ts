@@ -4,6 +4,7 @@ import { Player } from "core/src/player/Player";
 import { randInt } from "core/src/generic/utility";
 import { Star } from "core/src/map/Star";
 import { Unit } from "core/src/unit/Unit";
+import { CombatManager } from "core/src/combat/CombatManager";
 
 
 export function generateRandomBattle(useAiPlayers: boolean): Battle
@@ -49,6 +50,7 @@ export function generateRandomBattle(useAiPlayers: boolean): Battle
         units: side2Units,
       },
     },
+    combatManager: new CombatManager(),
 
     side1: makeFormation(side1Units),
     side2: makeFormation(side2Units),

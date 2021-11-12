@@ -9,7 +9,7 @@ import { CorePhase } from "./core/coreCombatPhases";
 export class CombatManager<Phase extends string = CorePhase>
 {
   public currentPhase: CombatPhase<Phase>;
-  public readonly battle: Battle;
+  public battle: Battle;
 
   private readonly queuedActions:
   {
@@ -34,6 +34,7 @@ export class CombatManager<Phase extends string = CorePhase>
       this.queuedActions[phaseInfo.key] = [];
     }
   }
+  // TODO 2021.11.12 | rename? either addAction() or queueAction()
   public addQueuedAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
   {
     if (this.currentPhase && this.currentPhase.template === phaseInfo)
@@ -67,6 +68,27 @@ export class CombatManager<Phase extends string = CorePhase>
 
     CombatManager.spliceAttachedAction(child, parent, this.queuedActions[phase]);
     child.actionAttachedTo = parent;
+  }
+  public clone(clonedUnitsById: {[id: number]: Unit}): CombatManager<Phase>
+  {
+    const cloned = new CombatManager<Phase>();
+    cloned.setPhase(this.currentPhase.template);
+
+    const clonedActionsById: {[id: number]: CombatAction} = {};
+
+    for (const phase in this.queuedActions)
+    {
+      const actionsForPhase = this.queuedActions[phase];
+      cloned.queuedActions[phase] = actionsForPhase.map(action =>
+      {
+        const clonedAction = action.clone(clonedActionsById, clonedUnitsById);
+        clonedActionsById[action.id] = clonedAction;
+
+        return clonedAction;
+      });
+    }
+
+    return cloned;
   }
 
   private getQueuedActionPhase(action: CombatAction): Phase | null

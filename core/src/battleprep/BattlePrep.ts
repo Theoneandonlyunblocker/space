@@ -14,10 +14,10 @@ import { UnitBattleSide } from "../unit/UnitBattleSide";
 
 
 // tslint:disable-next-line: no-any
-export class BattlePrep<CombatPhase extends string = any>
+export class BattlePrep
 {
   public battleData: BattleData;
-  public combatManager: CombatManager<CombatPhase>;
+  public combatManager: CombatManager;
 
   public attacker: Player;
   public defender: Player;
@@ -111,6 +111,7 @@ export class BattlePrep<CombatPhase extends string = any>
       side2: this.side2Formation.formation.reverse(),
       side1Player: this.side1Formation.player,
       side2Player: this.side2Formation.player,
+      combatManager: this.combatManager,
     });
 
     battle.afterFinishCallbacks = battle.afterFinishCallbacks.concat(this.afterBattleFinishCallbacks);
