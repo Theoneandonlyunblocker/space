@@ -67,7 +67,7 @@
 
     "start": "http-server --port 9001 -o",
 
-    "test": "jest",
+    "test": "jest --expand",
     "lint": "tslint \"{core,modules}/**/*.ts\"",
     "lintfix": "tslint \"{core,modules}/**/*.ts\" --fix"
   },

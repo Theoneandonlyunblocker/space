@@ -1,5 +1,5 @@
 import {CombatAction} from "../../src/combat/CombatAction";
-import { primitives, resultTemplates, resultModifiers } from "./templates";
+import { primitives, resultTemplates, resultModifiers, makeDummyCombatAction } from "./templates";
 import { Unit } from "../../src/unit/Unit";
 
 
@@ -27,22 +27,7 @@ describe("CombatAction", () =>
     sourceUnit = makeDummyUnit();
     targetUnit = makeDummyUnit();
 
-    action = new CombatAction(
-    {
-      mainAction:
-      {
-        primitives:
-        {
-          [primitives.physicalDamage.key]:
-          {
-            primitive: primitives.physicalDamage,
-            value: {flat: 50},
-          },
-        },
-      },
-      source: sourceUnit,
-      target: targetUnit,
-    });
+    action = makeDummyCombatAction(sourceUnit, targetUnit);
   });
 
   it("applies modifiers", () =>

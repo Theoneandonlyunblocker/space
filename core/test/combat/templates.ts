@@ -1,6 +1,8 @@
 import {CombatActionResultTemplate} from "../../src/combat/CombatActionResultTemplate";
 import {CombatActionPrimitiveTemplate} from "../../src/combat/CombatActionPrimitiveTemplate";
 import {CombatActionResultModifier} from "../../src/combat/CombatActionResultModifier";
+import { CombatAction } from "core/src/combat/CombatAction";
+import { Unit } from "core/src/unit/Unit";
 
 
 const flags =
@@ -89,3 +91,22 @@ export const resultModifiers:
     },
   },
 };
+export function makeDummyCombatAction(source: Unit, target: Unit): CombatAction
+{
+  return new CombatAction(
+  {
+    mainAction:
+    {
+      primitives:
+      {
+        [primitives.physicalDamage.key]:
+        {
+          primitive: primitives.physicalDamage,
+          value: {flat: 50},
+        },
+      },
+    },
+    source: source,
+    target: target,
+  });
+}
