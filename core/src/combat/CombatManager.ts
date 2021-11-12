@@ -71,17 +71,18 @@ export class CombatManager<Phase extends string = CorePhase>
     if (this.currentPhase.hasAction(parent))
     {
       CombatManager.spliceAttachedAction(child, parent, this.currentPhase.actions);
-
-      return;
     }
-
-    const phase = this.getQueuedActionPhase(parent);
-    if (!phase)
+    else
     {
-      throw new Error("Tried to attach child action to parent that was not part of combat manager queue.");
+      const phase = this.getQueuedActionPhase(parent);
+      if (!phase)
+      {
+        throw new Error("Tried to attach child action to parent that was not part of combat manager queue.");
+      }
+
+      CombatManager.spliceAttachedAction(child, parent, this.queuedActions[phase]);
     }
 
-    CombatManager.spliceAttachedAction(child, parent, this.queuedActions[phase]);
     child.actionAttachedTo = parent;
   }
   public clone(clonedUnitsById: {[id: number]: Unit}): CombatManager<Phase>
