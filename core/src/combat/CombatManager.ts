@@ -32,22 +32,8 @@ export class CombatManager<Phase extends string = CorePhase>
 
   public setPhase(phaseInfo: CombatPhaseInfo<Phase>): void
   {
-    this._currentPhase = new CombatPhase(phaseInfo, this);
-    if (this.queuedActions[phaseInfo.key])
-    {
-      this.queuedActions[phaseInfo.key].forEach(queuedAction =>
-      {
-        this.currentPhase.addActionToBack(queuedAction);
-      });
-
-      this.queuedActions[phaseInfo.key] = [];
-    }
-
-    const listenersToAdd = this.fetchCombatActionListeners(this.battle, this.battle.activeUnit);
-    listenersToAdd.forEach(listener => this.currentPhase.addActionListener(listener));
-
-    const actionsToAdd = this.fetchCombatActions(this.battle, this.battle.activeUnit);
-    actionsToAdd.forEach(action => this.addQueuedAction(this.currentPhase.template, action));
+    this.switchPhase(phaseInfo);
+    this.initCurrentPhase();
   }
   // TODO 2021.11.12 | rename? either addAction() or queueAction()
   public addQueuedAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
@@ -88,7 +74,7 @@ export class CombatManager<Phase extends string = CorePhase>
   public clone(clonedUnitsById: {[id: number]: Unit}): CombatManager<Phase>
   {
     const cloned = new CombatManager<Phase>();
-    cloned.setPhase(this.currentPhase.template);
+    cloned.switchPhase(this.currentPhase.template);
 
     const clonedActionsById: {[id: number]: CombatAction} = {};
 
@@ -108,6 +94,8 @@ export class CombatManager<Phase extends string = CorePhase>
     {
       cloned.currentPhase.actions.push(action.clone(clonedActionsById, clonedUnitsById));
     });
+
+    // TODO 2021.11.13 | action listeners
 
     return cloned;
   }
@@ -153,6 +141,30 @@ export class CombatManager<Phase extends string = CorePhase>
     {
       return fetcher.phasesToApplyTo.has(this.currentPhase.template);
     });
+  }
+  private switchPhase(phase: CombatPhaseInfo<Phase>): void
+  {
+    this._currentPhase = new CombatPhase(phase, this);
+  }
+  private initCurrentPhase(): void
+  {
+    const phaseInfo = this.currentPhase.template;
+
+    if (this.queuedActions[phaseInfo.key])
+    {
+      this.queuedActions[phaseInfo.key].forEach(queuedAction =>
+      {
+        this.currentPhase.addActionToBack(queuedAction);
+      });
+
+      this.queuedActions[phaseInfo.key] = [];
+    }
+
+    const listenersToAdd = this.fetchCombatActionListeners(this.battle, this.battle.activeUnit);
+    listenersToAdd.forEach(listener => this.currentPhase.addActionListener(listener));
+
+    const actionsToAdd = this.fetchCombatActions(this.battle, this.battle.activeUnit);
+    actionsToAdd.forEach(action => this.addQueuedAction(this.currentPhase.template, action));
   }
 
   private static spliceAttachedAction(child: CombatAction, parent: CombatAction, actions: CombatAction[]): void
