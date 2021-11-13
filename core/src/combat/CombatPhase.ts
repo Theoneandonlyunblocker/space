@@ -63,18 +63,15 @@ export class CombatPhase<AllPhases extends string>
   }
   public addActionListener(listener: CombatActionListener<AllPhases>): void
   {
-    if (listener.flagsWhichTrigger)
+    listener.flagsWhichTrigger.forEach(flag =>
     {
-      listener.flagsWhichTrigger.forEach(flag =>
+      if (!this.actionListenersByTriggeringFlag[flag])
       {
-        if (!this.actionListenersByTriggeringFlag[flag])
-        {
-          this.actionListenersByTriggeringFlag[flag] = {};
-        }
+        this.actionListenersByTriggeringFlag[flag] = {};
+      }
 
-        this.actionListenersByTriggeringFlag[flag][listener.key] = listener;
-      });
-    }
+      this.actionListenersByTriggeringFlag[flag][listener.key] = listener;
+    });
   }
 
   private triggerActionListeners(action: CombatAction, event: "onAdd" | "onRemove"): void

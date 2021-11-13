@@ -9,7 +9,7 @@ export interface CombatActionListener<AllPhases extends string>
   /**
    * f.ex removeAllGuardOnAbilityUse IF flags.abilityUse
    */
-  flagsWhichTrigger?: string[];
+  flagsWhichTrigger: string[];
 
   /**
    * f.ex DO NOT removeAllGuardFromUser IF flags.preserveUserGuard
