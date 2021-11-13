@@ -1,5 +1,6 @@
 import { TemplateCollection } from "core/src/generic/TemplateCollection";
 import { CombatActionFetcher, CombatActionListenerFetcher } from "core/src/combat/CombatActionFetcher";
+import { actionFetchers, actionListenerFetchers, makeDummyCombatAction, makeDummyUnit } from "./templates";
 
 jest.doMock("core/src/app/activeModuleData", () =>
 {
@@ -18,9 +19,12 @@ jest.doMock("core/src/app/activeModuleData", () =>
 import { CombatManager } from "core/src/combat/CombatManager";
 import { mainPhase } from "core/src/combat/core/phases/mainPhase";
 import { afterMainPhase } from "core/src/combat/core/phases/afterMainPhase";
-import { makeDummyCombatAction } from "./templates";
 import { Unit } from "core/src/unit/Unit";
 import { CombatAction } from "core/src/combat/CombatAction";
+import { UnitBattleSide } from "core/src/unit/UnitBattleSide";
+import { Battle } from "core/src/battle/Battle";
+import { activeModuleData } from "core/src/app/activeModuleData";
+import { battleStartPhase } from "core/src/combat/core/phases/battleStartPhase";
 
 
 describe("CombatManager", () =>
@@ -31,16 +35,31 @@ describe("CombatManager", () =>
 
   function makeMockBattle()
   {
-    return <any>{
+    return <Battle><Partial<Battle>>{
       activeUnit: sourceUnit,
+      getUnitsForSide: (side: UnitBattleSide) =>
+      {
+        const units =
+        {
+          side1: [sourceUnit],
+          side2: [targetUnit],
+        };
+
+        return units[side];
+      }
     };
   }
 
   beforeEach(() =>
   {
+    sourceUnit = makeDummyUnit();
+    sourceUnit.id = 0;
+    targetUnit = makeDummyUnit();
+    targetUnit.id = 1;
+
     manager = new CombatManager();
-    manager.setPhase(mainPhase);
     manager.battle = makeMockBattle();
+    manager.setPhase(mainPhase);
   });
 
   describe("addQueuedAction", () =>
@@ -106,14 +125,16 @@ describe("CombatManager", () =>
 
       expect(child.actionAttachedTo).toBe(parent);
     });
+    it("throws when parent is not part of combatManager", () =>
+    {
+      expect(() =>
+      {
+        manager.attachAction(child, parent);
+      }).toThrow();
+    });
   });
   describe("clone", () =>
   {
-    const clonedUnitsById: {[id: number]: Unit} =
-    {
-      0: sourceUnit,
-      1: targetUnit,
-    };
     let original: CombatManager;
     let clone: CombatManager;
 
@@ -136,7 +157,7 @@ describe("CombatManager", () =>
       original.addQueuedAction(afterMainPhase, queuedParentAction);
       original.attachAction(queuedChildAction, queuedParentAction);
 
-      clone = original.clone(clonedUnitsById);
+      clone = original.clone({[sourceUnit.id]: sourceUnit, [targetUnit.id]: targetUnit});
       clone.battle = makeMockBattle();
     });
     describe("current phase", () =>
@@ -154,28 +175,20 @@ describe("CombatManager", () =>
     {
       expect(original).not.toBe(clone);
 
-      compareCurrentPhases();
+      expect(original.currentPhase).not.toBe(clone.currentPhase);
+      expect(original.currentPhase.template).toBe(clone.currentPhase.template);
 
-      original.setPhase(afterMainPhase);
-      clone.setPhase(afterMainPhase);
-
-      compareCurrentPhases();
-
-      function compareCurrentPhases()
+      const originalActions = original.currentPhase.actions;
+      const cloneActions = clone.currentPhase.actions;
+      expect(originalActions).not.toBe(cloneActions);
+      expect(originalActions.length).toBe(cloneActions.length);
+      for (let i = 0; i < originalActions.length; i++)
       {
-        expect(original.currentPhase).not.toBe(clone.currentPhase);
-
-        const originalActions = original.currentPhase.actions;
-        const cloneActions = clone.currentPhase.actions;
-        expect(originalActions).not.toBe(cloneActions);
-        expect(originalActions.length).toBe(cloneActions.length);
-
-        for (let i = 0; i < originalActions.length; i++)
-        {
-          expect(originalActions[i]).not.toBe(cloneActions[i]);
-          expect(originalActions[i]).toEqual(cloneActions[i]);
-        }
+        expect(originalActions[i]).not.toBe(cloneActions[i]);
+        expect(originalActions[i]).toEqual(cloneActions[i]);
       }
+
+      // TODO 2021.11.13 | check action listeners after they're implemented
     });
     describe("links attached actions", () =>
     {
@@ -222,10 +235,38 @@ describe("CombatManager", () =>
   });
   describe("fetchCombatActions", () =>
   {
-    // TODO 2021.11.12 | implement
+    activeModuleData.templates.combatActionFetchers.copyTemplates(actionFetchers);
+    // takePhysicalDamageAfterAction
+    // dealPhysicalDamageToEnemiesAtBattleStart
+
+    it("fetches actions for current phase", () =>
+    {
+      manager.setPhase(battleStartPhase);
+      expect(manager.currentPhase.actions.length).toBe(1);
+    });
+    it("doesn't fetch actions for other phases", () =>
+    {
+      manager.setPhase(mainPhase);
+      expect(manager.currentPhase.actions.length).toBe(0);
+    });
   });
   describe("fetchCombatActionListeners", () =>
   {
-    // TODO 2021.11.12 | implement
+    activeModuleData.templates.combatActionListenerFetchers.copyTemplates(actionListenerFetchers);
+    // duplicateAllBattleStartActions
+    // alwaysBlockSomeDamage
+
+    it("fetches listeners for current phase", () =>
+    {
+      manager.setPhase(battleStartPhase);
+      expect(manager.currentPhase.hasListenerWithKey("blockSomeDamage")).toBeTruthy();
+      expect(manager.currentPhase.hasListenerWithKey("duplicateAction")).toBeTruthy();
+    });
+    it("doesn't fetch listeners for other phases", () =>
+    {
+      manager.setPhase(mainPhase);
+      expect(manager.currentPhase.hasListenerWithKey("blockSomeDamage")).toBeTruthy();
+      expect(manager.currentPhase.hasListenerWithKey("duplicateAction")).toBeFalsy();
+    });
   });
 });

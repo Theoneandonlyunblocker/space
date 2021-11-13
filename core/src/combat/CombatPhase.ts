@@ -70,6 +70,15 @@ export class CombatPhase<AllPhases extends string>
       this.actionListenersByTriggeringFlag[flag].push(listener);
     });
   }
+  public hasListenerWithKey(key: string): boolean
+  {
+    return Object.keys(this.actionListenersByTriggeringFlag).some(flag =>
+    {
+      const listenersForFlag = this.actionListenersByTriggeringFlag[flag];
+
+      return listenersForFlag.some(listener => listener.key === key);
+    });
+  }
 
   private triggerActionListeners(action: CombatAction, event: "onAdd" | "onRemove"): void
   {

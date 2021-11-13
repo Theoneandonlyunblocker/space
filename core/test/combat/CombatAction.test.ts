@@ -1,5 +1,5 @@
 import {CombatAction} from "../../src/combat/CombatAction";
-import { primitives, resultTemplates, resultModifiers, makeDummyCombatAction } from "./templates";
+import { primitives, resultTemplates, resultModifiers, makeDummyCombatAction, makeDummyUnit } from "./templates";
 import { Unit } from "../../src/unit/Unit";
 
 
@@ -8,19 +8,6 @@ describe("CombatAction", () =>
   let action: CombatAction;
   let sourceUnit: Unit;
   let targetUnit: Unit;
-
-  function makeDummyUnit(): Unit
-  {
-    let health: number = 500;
-
-    return <Unit><unknown>{
-      get currentHealth()
-      {
-        return health;
-      },
-      removeHealth: (amount: number) => health -= amount,
-    };
-  }
 
   beforeEach(() =>
   {
