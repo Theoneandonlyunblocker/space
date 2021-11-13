@@ -41,13 +41,13 @@ export class CombatManager<Phase extends string = CorePhase>
       });
 
       this.queuedActions[phaseInfo.key] = [];
-
-      const listenersToAdd = this.fetchCombatActionListeners(this.battle, this.battle.activeUnit);
-      listenersToAdd.forEach(listener => this.currentPhase.addActionListener(listener));
-
-      const actionsToAdd = this.fetchCombatActions(this.battle, this.battle.activeUnit);
-      actionsToAdd.forEach(action => this.addQueuedAction(this.currentPhase.template, action));
     }
+
+    const listenersToAdd = this.fetchCombatActionListeners(this.battle, this.battle.activeUnit);
+    listenersToAdd.forEach(listener => this.currentPhase.addActionListener(listener));
+
+    const actionsToAdd = this.fetchCombatActions(this.battle, this.battle.activeUnit);
+    actionsToAdd.forEach(action => this.addQueuedAction(this.currentPhase.template, action));
   }
   // TODO 2021.11.12 | rename? either addAction() or queueAction()
   public addQueuedAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
