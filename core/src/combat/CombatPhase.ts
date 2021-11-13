@@ -7,10 +7,7 @@ import { CombatActionListener } from "./CombatActionListener";
 
 type ActionListenersByFlag<AllPhases extends string> =
 {
-  [flag: string]:
-  {
-    [listenerKey: string]: CombatActionListener<AllPhases>;
-  };
+  [flag: string]: CombatActionListener<AllPhases>[];
 };
 
 export class CombatPhase<AllPhases extends string>
@@ -67,10 +64,10 @@ export class CombatPhase<AllPhases extends string>
     {
       if (!this.actionListenersByTriggeringFlag[flag])
       {
-        this.actionListenersByTriggeringFlag[flag] = {};
+        this.actionListenersByTriggeringFlag[flag] = [];
       }
 
-      this.actionListenersByTriggeringFlag[flag][listener.key] = listener;
+      this.actionListenersByTriggeringFlag[flag].push(listener);
     });
   }
 
@@ -82,10 +79,8 @@ export class CombatPhase<AllPhases extends string>
     {
       if (this.actionListenersByTriggeringFlag[flag])
       {
-        Object.keys(this.actionListenersByTriggeringFlag[flag]).forEach(listenerKey =>
+        this.actionListenersByTriggeringFlag[flag].forEach(listener =>
         {
-          const listener = this.actionListenersByTriggeringFlag[flag][listenerKey];
-
           const isPrevented = listener.flagsWhichPrevent && listener.flagsWhichPrevent.some(preventingFlag =>
           {
             return allFlags.has(preventingFlag);
