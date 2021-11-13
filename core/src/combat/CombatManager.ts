@@ -151,7 +151,7 @@ export class CombatManager<Phase extends string = CorePhase>
   {
     return allFetchers.filter(fetcher =>
     {
-      fetcher.phasesToApplyTo.has(this.currentPhase.template);
+      return fetcher.phasesToApplyTo.has(this.currentPhase.template);
     });
   }
 

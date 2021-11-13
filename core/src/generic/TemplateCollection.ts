@@ -64,7 +64,7 @@ export class TemplateCollection<T>
   {
     return getRandomProperty(this.items);
   }
-  public filter(filterFn: (value: T) => unknown): T[]
+  public filter(filterFn: (value: T) => boolean): T[]
   {
     return this.getAll().filter(filterFn);
   }
