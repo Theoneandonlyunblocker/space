@@ -7,6 +7,9 @@ import { lifeLeech } from "../primitives/lifeLeech";
 export function leechLife(
   unitLeeching: Unit,
   unitBeingLeechedFrom: Unit,
+  /**
+   * 0.5 = 50%
+   */
   percentageLeeched: number,
 ): CombatAction
 {

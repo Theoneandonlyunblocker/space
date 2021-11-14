@@ -13,7 +13,7 @@ import * as moduleInfo from "../moduleInfo.json";
 import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
 import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
 import { applyIntelligenceToHealing } from "./combat/actionListeners/applyIntelligenceToHealing";
-import {universalCoreListenerFetchers} from "core/src/combat/core/universalCoreListenerFetchers";
+import { allCoreCombatPhases } from "core/src/combat/core/coreCombatPhases";
 
 
 export const baseLib: GameModule =
@@ -50,7 +50,7 @@ export const baseLib: GameModule =
       baseLibCombatActionListenerFetchers:
       {
         key: "baseLibCombatActionListenerFetchers",
-        phasesToApplyTo: new Set(universalCoreListenerFetchers.phasesToApplyTo),
+        phasesToApplyTo: new Set(allCoreCombatPhases),
         fetch: () => [applyIntelligenceToHealing],
       }
     };

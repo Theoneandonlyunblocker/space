@@ -160,6 +160,7 @@ export class CombatManager<Phase extends string = CorePhase>
       this.queuedActions[phaseInfo.key] = [];
     }
 
+    // important to do listeners first
     const listenersToAdd = this.fetchCombatActionListeners(this.battle, this.battle.activeUnit);
     listenersToAdd.forEach(listener => this.currentPhase.addActionListener(listener));
 
