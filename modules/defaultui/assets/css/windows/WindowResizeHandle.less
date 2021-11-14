@@ -6,7 +6,7 @@
 .window-resize-handles(@border-size)
 {
   @resize-handle-size: @border-size * 2;
-  @resize-handle-shift: @border-size / 2 - @resize-handle-size / 2;
+  @resize-handle-shift: (@border-size / 2) - (@resize-handle-size / 2);
 
   ~.window-resize-handle-n
   {
