@@ -139,10 +139,27 @@ export const actionListenerFetchers:
       {
         key: "duplicateAction",
         flagsWhichTrigger: [coreCombatActionFlags.ability],
-        flagsWhichPrevent: [coreCombatActionFlags.duplicated],
+        flagsWhichPrevent: ["duplicated"],
         onAdd: (action, combatManager) =>
         {
-          const duplicated = action.duplicate();
+          function duplicateAction(toDupe: CombatAction)
+          {
+            const duped = new CombatAction(
+            {
+              mainAction: {...toDupe.mainAction},
+              source: toDupe.source,
+              target: toDupe.target,
+            });
+
+            duped.modifiers.push(...toDupe.modifiers);
+            duped.resultModifiers.push(...toDupe.resultModifiers);
+            toDupe.getFlags().forEach(flag => duped.setFlag(flag));
+
+            duped.setFlag("duplicated");
+
+            return duped;
+          }
+          const duplicated = duplicateAction(action);
           combatManager.attachAction(duplicated, action);
         },
       },

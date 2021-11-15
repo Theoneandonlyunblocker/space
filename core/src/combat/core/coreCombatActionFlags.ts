@@ -4,5 +4,4 @@ export const coreCombatActionFlags =
   attack: "attack",
   moveDelay: "moveDelay",
   preserveUserGuard: "preserveUserGuard",
-  duplicated: "duplicated",
 };

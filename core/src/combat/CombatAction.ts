@@ -4,7 +4,6 @@ import { applyCombatActionPrimitivesToResult, CombatActionPrimitivesWithValues, 
 import { CombatActionModifier } from "./CombatActionModifier";
 import { getOrderedResultModifiers, CombatActionResultModifierWithValue } from "./CombatActionResultModifier";
 import { idGenerators } from "../app/idGenerators";
-import { coreCombatActionFlags } from "./core/coreCombatActionFlags";
 
 
 export class CombatAction
@@ -88,28 +87,6 @@ export class CombatAction
   {
     this._flags.add(flag);
   }
-  public duplicate(): CombatAction
-  {
-    const duplicated = new CombatAction(
-    {
-      mainAction: {...this.mainAction},
-      source: this.source,
-      target: this.target,
-    });
-
-    duplicated.modifiers.push(...this._modifiers);
-    duplicated.resultModifiers.push(...this._resultModifiers);
-    this.getFlags().forEach(flag => duplicated.setFlag(flag));
-
-    duplicated.setFlag(coreCombatActionFlags.duplicated);
-
-    return duplicated;
-  }
-  // TODO 2021.11.13 | probably rename this
-  /**
-   * use duplicate() instead to create copies of an action
-   * this is meant for AI simulation
-   */
   public clone(
     allClonedActionsById: {[id: number]: CombatAction},
     clonedUnitsById: {[id: number]: Unit},
