@@ -2,7 +2,7 @@ import { CombatAction } from "./CombatAction";
 import { CombatManager } from "./CombatManager";
 
 
-export interface CombatActionListener<AllPhases extends string>
+export type CombatActionListener<AllPhases extends string> =
 {
   key: string;
 
@@ -16,6 +16,8 @@ export interface CombatActionListener<AllPhases extends string>
    * will override flagsWhichTrigger
    */
   flagsWhichPrevent?: string[];
-  onAdd?: (action: CombatAction, combatManager: CombatManager<AllPhases>) => void;
-  onRemove?: (action: CombatAction, combatManager: CombatManager<AllPhases>) => void;
-}
+} &
+(
+  {onAdd: (action: CombatAction, combatManager: CombatManager<AllPhases>) => void} |
+  {onRemove: (action: CombatAction, combatManager: CombatManager<AllPhases>) => void}
+);
