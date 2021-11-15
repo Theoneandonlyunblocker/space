@@ -32,7 +32,7 @@ export class CombatManager<Phase extends string = CorePhase>
 
   public setPhase(phaseInfo: CombatPhaseInfo<Phase>): void
   {
-    this.switchPhase(phaseInfo);
+    this._currentPhase = new CombatPhase(phaseInfo, this);
     this.initCurrentPhase();
   }
   // TODO 2021.11.12 | rename? either addAction() or queueAction()
@@ -74,7 +74,6 @@ export class CombatManager<Phase extends string = CorePhase>
   public clone(clonedUnitsById: {[id: number]: Unit}): CombatManager<Phase>
   {
     const cloned = new CombatManager<Phase>();
-    cloned.switchPhase(this.currentPhase.template);
 
     const clonedActionsById: {[id: number]: CombatAction} = {};
 
@@ -141,10 +140,6 @@ export class CombatManager<Phase extends string = CorePhase>
     {
       return fetcher.phasesToApplyTo.has(this.currentPhase.template);
     });
-  }
-  private switchPhase(phase: CombatPhaseInfo<Phase>): void
-  {
-    this._currentPhase = new CombatPhase(phase, this);
   }
   private initCurrentPhase(): void
   {
