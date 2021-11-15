@@ -157,6 +157,13 @@ describe("CombatManager", () =>
       original.addQueuedAction(afterMainPhase, queuedParentAction);
       original.attachAction(queuedChildAction, queuedParentAction);
 
+      original.currentPhase.addActionListener(
+      {
+        key: "dummy",
+        flagsWhichTrigger: ["dummy"],
+        onAdd: () => {},
+      });
+
       clone = original.clone({[sourceUnit.id]: sourceUnit, [targetUnit.id]: targetUnit});
       clone.battle = makeMockBattle();
     });
@@ -188,47 +195,30 @@ describe("CombatManager", () =>
         expect(originalActions[i]).toEqual(cloneActions[i]);
       }
 
-      // TODO 2021.11.13 | check action listeners after they're implemented
+      expect(clone.currentPhase.getListenersForTriggeringFlag("dummy").length).toBe(1);
+      expect(clone.currentPhase.hasListenerWithKey("dummy")).toBe(true);
     });
-    describe("links attached actions", () =>
-    {
-      it("in current phase", () =>
-      {
-        const cloneParent = clone.currentPhase.actions[0];
-        const cloneChild = clone.currentPhase.actions[1];
-
-        expect(cloneChild.actionAttachedTo).toBe(cloneParent);
-      });
-      it("in other phases", () =>
-      {
-        manager.setPhase(afterMainPhase);
-        clone.setPhase(afterMainPhase);
-
-        const cloneParent = clone.currentPhase.actions[0];
-        const cloneChild = clone.currentPhase.actions[1];
-
-        expect(cloneChild.actionAttachedTo).toBe(cloneParent);
-      });
-    });
-    describe("links clone child with clone parent", () =>
+    describe("handles attached actions", () =>
     {
       it("in current phase", () =>
       {
         const originalParent = original.currentPhase.actions[0];
+        const cloneParent = clone.currentPhase.actions[0];
         const cloneChild = clone.currentPhase.actions[1];
 
-        expect(cloneChild.actionAttachedTo).not.toBe(originalParent);
+        expect(cloneChild.actionAttachedTo).toBe(cloneParent);
         expect(cloneChild.actionAttachedTo).toEqual(originalParent);
       });
       it("in other phases", () =>
       {
-        manager.setPhase(afterMainPhase);
+        original.setPhase(afterMainPhase);
         clone.setPhase(afterMainPhase);
 
         const originalParent = original.currentPhase.actions[0];
+        const cloneParent = clone.currentPhase.actions[0];
         const cloneChild = clone.currentPhase.actions[1];
 
-        expect(cloneChild.actionAttachedTo).not.toBe(originalParent);
+        expect(cloneChild.actionAttachedTo).toBe(cloneParent);
         expect(cloneChild.actionAttachedTo).toEqual(originalParent);
       });
     });

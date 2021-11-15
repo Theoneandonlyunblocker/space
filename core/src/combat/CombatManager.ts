@@ -89,12 +89,7 @@ export class CombatManager<Phase extends string = CorePhase>
       });
     }
 
-    this.currentPhase.actions.forEach(action =>
-    {
-      cloned.currentPhase.actions.push(action.clone(clonedActionsById, clonedUnitsById));
-    });
-
-    // TODO 2021.11.13 | action listeners
+    cloned._currentPhase = this.currentPhase.clone(cloned, clonedActionsById, clonedUnitsById);
 
     return cloned;
   }

@@ -3,6 +3,7 @@ import { CombatPhaseInfo } from "./CombatPhaseInfo";
 import { CombatManager } from "./CombatManager";
 import { CombatPhaseFinishCallback } from "./CombatPhaseFinishCallback";
 import { CombatActionListener } from "./CombatActionListener";
+import { Unit } from "../unit/Unit";
 
 
 type ActionListenersByFlag<AllPhases extends string> =
@@ -70,6 +71,17 @@ export class CombatPhase<AllPhases extends string>
       this.actionListenersByTriggeringFlag[flag].push(listener);
     });
   }
+  public getListenersForTriggeringFlag(flag: string): CombatActionListener<AllPhases>[]
+  {
+    if (!this.actionListenersByTriggeringFlag[flag])
+    {
+      return [];
+    }
+    else
+    {
+      return this.actionListenersByTriggeringFlag[flag];
+    }
+  }
   public hasListenerWithKey(key: string): boolean
   {
     return Object.keys(this.actionListenersByTriggeringFlag).some(flag =>
@@ -79,6 +91,26 @@ export class CombatPhase<AllPhases extends string>
       return listenersForFlag.some(listener => listener.key === key);
     });
   }
+  public clone(
+    combatManager: CombatManager<AllPhases>,
+    allClonedActionsById: {[id: number]: CombatAction},
+    clonedUnitsById: {[id: number]: Unit},
+  ): CombatPhase<AllPhases>
+  {
+    const cloned = new CombatPhase<AllPhases>(this.template, combatManager);
+
+    this.actions.forEach(action =>
+    {
+      cloned.actions.push(action.clone(allClonedActionsById, clonedUnitsById));
+    });
+
+    Object.keys(this.actionListenersByTriggeringFlag).forEach(flag =>
+    {
+      cloned.actionListenersByTriggeringFlag[flag] = [...this.actionListenersByTriggeringFlag[flag]];
+    });
+
+    return cloned;
+  }
 
   private triggerActionListeners(action: CombatAction, event: "onAdd" | "onRemove"): void
   {
@@ -86,21 +118,19 @@ export class CombatPhase<AllPhases extends string>
 
     allFlags.forEach(flag =>
     {
-      if (this.actionListenersByTriggeringFlag[flag])
+      const listeners = this.getListenersForTriggeringFlag(flag);
+      listeners.forEach(listener =>
       {
-        this.actionListenersByTriggeringFlag[flag].forEach(listener =>
+        const isPrevented = listener.flagsWhichPrevent && listener.flagsWhichPrevent.some(preventingFlag =>
         {
-          const isPrevented = listener.flagsWhichPrevent && listener.flagsWhichPrevent.some(preventingFlag =>
-          {
-            return allFlags.has(preventingFlag);
-          });
-
-          if (!isPrevented && listener[event])
-          {
-            listener[event](action, this.combatManager);
-          }
+          return allFlags.has(preventingFlag);
         });
-      }
+
+        if (!isPrevented && listener[event])
+        {
+          listener[event](action, this.combatManager);
+        }
+      });
     });
   }
 }
