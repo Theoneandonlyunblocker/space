@@ -30,7 +30,7 @@ export const debugAbility: CombatAbilityTemplate =
   use: (user, target, combatManager) =>
   {
     const increaseCaptureChanceAction = increaseCaptureChance(user, target, 1);
-    combatManager.addQueuedAction(mainPhase, increaseCaptureChanceAction);
+    combatManager.addAction(mainPhase, increaseCaptureChanceAction);
   },
   vfx: makePlaceholderVfx("debugAbility"),
 };

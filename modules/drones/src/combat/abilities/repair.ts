@@ -43,7 +43,7 @@ export const repair: CombatAbilityTemplate =
     // TODO 2020.02.20 | need to make shit that scales with troop size
     const healAmount = 200;
 
-    combatManager.addQueuedAction(
+    combatManager.addAction(
       mainPhase,
       healTarget(user, target, healAmount),
     );

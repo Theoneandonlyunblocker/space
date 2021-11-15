@@ -103,10 +103,10 @@ function makeSnipeTemplate(attribute: UnitAttribute): CombatAbilityTemplate
     use: (user, target, combatManager) =>
     {
       const dealDamageAction = dealAttackDamage(user, target, 0.6, physicalDamage);
-      combatManager.addQueuedAction(mainPhase, dealDamageAction);
+      combatManager.addAction(mainPhase, dealDamageAction);
 
       const addCombatEffectAction = increaseSnipeDebuff(user, target, attribute, {flat: 1});
-      combatManager.addQueuedAction(mainPhase, addCombatEffectAction);
+      combatManager.addAction(mainPhase, addCombatEffectAction);
     },
     vfx: battleVfx,
   });

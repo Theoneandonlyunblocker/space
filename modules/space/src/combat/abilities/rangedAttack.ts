@@ -33,7 +33,7 @@ export const rangedAttack: CombatAbilityTemplate =
   use: (user, target, combatManager) =>
   {
     const dealDamageAction = dealAttackDamage(user, target, 1, physicalDamage);
-    combatManager.addQueuedAction(mainPhase, dealDamageAction);
+    combatManager.addAction(mainPhase, dealDamageAction);
   },
   vfx: rocketAttackVfx,
   defaultUpgrades:

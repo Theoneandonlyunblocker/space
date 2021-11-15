@@ -35,8 +35,7 @@ export class CombatManager<Phase extends string = CorePhase>
     this._currentPhase = new CombatPhase(phaseInfo, this);
     this.initCurrentPhase();
   }
-  // TODO 2021.11.12 | rename? either addAction() or queueAction()
-  public addQueuedAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
+  public addAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
   {
     if (this.currentPhase && this.currentPhase.template === phaseInfo)
     {
@@ -155,7 +154,7 @@ export class CombatManager<Phase extends string = CorePhase>
     listenersToAdd.forEach(listener => this.currentPhase.addActionListener(listener));
 
     const actionsToAdd = this.fetchCombatActions(this.battle, this.battle.activeUnit);
-    actionsToAdd.forEach(action => this.addQueuedAction(this.currentPhase.template, action));
+    actionsToAdd.forEach(action => this.addAction(this.currentPhase.template, action));
   }
 
   private static spliceAttachedAction(child: CombatAction, parent: CombatAction, actions: CombatAction[]): void

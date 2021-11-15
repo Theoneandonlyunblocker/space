@@ -56,7 +56,7 @@ export const massRepair: CombatAbilityTemplate =
 
     unitsToHeal.forEach(unitToHeal =>
     {
-      combatManager.addQueuedAction(
+      combatManager.addAction(
         mainPhase,
         healTarget(user, target, healAmount),
       );

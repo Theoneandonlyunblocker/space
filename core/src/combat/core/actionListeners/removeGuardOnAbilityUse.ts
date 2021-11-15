@@ -12,6 +12,6 @@ export const removeGuardOnAbilityUse: CombatActionListener<CorePhase> =
   flagsWhichPrevent: [coreCombatActionFlags.preserveUserGuard],
   onAdd: (action, combatManager) =>
   {
-    combatManager.addQueuedAction(beforeMainPhase, removeAllGuardFromUser(action.source));
+    combatManager.addAction(beforeMainPhase, removeAllGuardFromUser(action.source));
   },
 };

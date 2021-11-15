@@ -17,7 +17,7 @@ export function makeDefenderAdvantageEffect(amount: number): BuildingBattlePrepE
         const adjustmentAmount = strength * sign;
 
         const adjustBattleEvaluationAction = changeBattleEvaluation(adjustmentAmount);
-        battlePrep.combatManager.addQueuedAction(battleStartPhase, adjustBattleEvaluationAction);
+        battlePrep.combatManager.addAction(battleStartPhase, adjustBattleEvaluationAction);
       },
     },
   };

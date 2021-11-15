@@ -35,7 +35,7 @@ export const beamAttack: CombatAbilityTemplate =
     unitsToHit.forEach(unitToHit =>
     {
       const dealDamageAction = dealAttackDamage(user, unitToHit, 0.8, magicalDamage);
-      combatManager.addQueuedAction(mainPhase, dealDamageAction);
+      combatManager.addAction(mainPhase, dealDamageAction);
     });
   },
   vfx: beamVfx,

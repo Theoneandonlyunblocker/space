@@ -48,7 +48,7 @@ export const assimilate: CombatAbilityTemplate =
   use: (user, target, combatManager) =>
   {
     const dealDamageAction = dealAttackDamage(user, target, 0.8, physicalDamage);
-    combatManager.addQueuedAction(mainPhase, dealDamageAction);
+    combatManager.addAction(mainPhase, dealDamageAction);
 
     const lifeLeechAction = leechLife(user, target, 0.1);
     lifeLeechAction.resultModifiers.push({modifier: lifeLeechIncreasesMaxHealth, value: 1});

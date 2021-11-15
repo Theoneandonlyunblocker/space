@@ -50,11 +50,11 @@ export const merge: CombatAbilityTemplate =
     // TODO 2020.02.29 | implement structured vfx
     // vfx: DroneBattleVfx.mergeRelease,
     const damageSelfAction = losePercentMaxHealth(user, user, 0.25);
-    combatManager.addQueuedAction(mainPhase, damageSelfAction);
+    combatManager.addAction(mainPhase, damageSelfAction);
 
     // vfx: DroneBattleVfx.mergeAbsorb,
     const addCombatEffectAction = increaseMergeBuffAmount(user, target, {flat: 1});
-    combatManager.addQueuedAction(mainPhase, addCombatEffectAction);
+    combatManager.addAction(mainPhase, addCombatEffectAction);
 
     const healTargetAction = leechLife(target, user, 1);
     combatManager.attachAction(healTargetAction, damageSelfAction);

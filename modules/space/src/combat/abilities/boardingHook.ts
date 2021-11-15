@@ -32,10 +32,10 @@ export const boardingHook: CombatAbilityTemplate =
   use: (user, target, combatManager) =>
   {
     const dealDamageAction = dealAttackDamage(user, target, 0.8, physicalDamage);
-    combatManager.addQueuedAction(mainPhase, dealDamageAction);
+    combatManager.addAction(mainPhase, dealDamageAction);
 
     const increaseCaptureChanceAction = increaseCaptureChance(user, target, 0.5);
-    combatManager.addQueuedAction(mainPhase, increaseCaptureChanceAction);
+    combatManager.addAction(mainPhase, increaseCaptureChanceAction);
   },
   vfx: boardingHookVfx,
 };

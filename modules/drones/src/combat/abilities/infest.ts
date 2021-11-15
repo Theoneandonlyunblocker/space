@@ -41,7 +41,7 @@ export const infest: CombatAbilityTemplate =
   use: (user, target, combatManager) =>
   {
     const addCombatEffectAction = increaseInfestationAmount(user, target, {flat: 1});
-    combatManager.addQueuedAction(mainPhase, addCombatEffectAction);
+    combatManager.addAction(mainPhase, addCombatEffectAction);
   },
   vfx: makePlaceholderVfx("infest"),
 };

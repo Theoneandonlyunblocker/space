@@ -46,7 +46,7 @@ export const guardRow: CombatAbilityTemplate =
     {
       perAttribute: {intelligence: {flatPerPoint: 20}},
     });
-    combatManager.addQueuedAction(mainPhase, addGuardAction);
+    combatManager.addAction(mainPhase, addGuardAction);
   },
   vfx: guardVfx,
 };

@@ -67,7 +67,7 @@ describe("CombatManager", () =>
     it("can queue actions for an inactive phase", () =>
     {
       const action = makeDummyCombatAction(sourceUnit, targetUnit);
-      manager.addQueuedAction(afterMainPhase, action);
+      manager.addAction(afterMainPhase, action);
 
       expect(manager.currentPhase.hasAction(action)).toBe(false);
 
@@ -77,7 +77,7 @@ describe("CombatManager", () =>
     it("adds actions into current phase", () =>
     {
       const action = makeDummyCombatAction(sourceUnit, targetUnit);
-      manager.addQueuedAction(mainPhase, action);
+      manager.addAction(mainPhase, action);
 
       expect(manager.currentPhase.hasAction(action)).toBe(true);
     });
@@ -87,7 +87,7 @@ describe("CombatManager", () =>
     it("adds queued actions to new phase", () =>
     {
       const action = makeDummyCombatAction(sourceUnit, targetUnit);
-      manager.addQueuedAction(afterMainPhase, action);
+      manager.addAction(afterMainPhase, action);
       manager.setPhase(afterMainPhase);
 
       expect(manager.currentPhase.hasAction(action)).toBe(true);
@@ -105,14 +105,14 @@ describe("CombatManager", () =>
     });
     it("adds action to current phase", () =>
     {
-      manager.addQueuedAction(mainPhase, parent);
+      manager.addAction(mainPhase, parent);
       manager.attachAction(child, parent);
 
       expect(manager.currentPhase.hasAction(child)).toBe(true);
     });
     it("adds action to different phase", () =>
     {
-      manager.addQueuedAction(afterMainPhase, parent);
+      manager.addAction(afterMainPhase, parent);
       manager.attachAction(child, parent);
       manager.setPhase(afterMainPhase);
 
@@ -120,7 +120,7 @@ describe("CombatManager", () =>
     });
     it("sets child.actionAttachedTo to be parent action", () =>
     {
-      manager.addQueuedAction(mainPhase, parent);
+      manager.addAction(mainPhase, parent);
       manager.attachAction(child, parent);
 
       expect(child.actionAttachedTo).toBe(parent);
@@ -149,12 +149,12 @@ describe("CombatManager", () =>
 
       parentAction = makeDummyCombatAction(sourceUnit, targetUnit);
       childAction = makeDummyCombatAction(sourceUnit, targetUnit);
-      original.addQueuedAction(mainPhase, parentAction);
+      original.addAction(mainPhase, parentAction);
       original.attachAction(childAction, parentAction);
 
       queuedParentAction = makeDummyCombatAction(sourceUnit, targetUnit);
       queuedChildAction = makeDummyCombatAction(sourceUnit, targetUnit);
-      original.addQueuedAction(afterMainPhase, queuedParentAction);
+      original.addAction(afterMainPhase, queuedParentAction);
       original.attachAction(queuedChildAction, queuedParentAction);
 
       original.currentPhase.addActionListener(

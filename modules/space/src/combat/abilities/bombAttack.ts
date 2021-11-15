@@ -42,7 +42,7 @@ export const bombAttack: CombatAbilityTemplate =
     unitsToHit.forEach(unitToHit =>
     {
       const dealDamageAction = dealAttackDamage(user, unitToHit, 0.5, physicalDamage);
-      combatManager.addQueuedAction(mainPhase, dealDamageAction);
+      combatManager.addAction(mainPhase, dealDamageAction);
     });
   },
   vfx: rocketAttackVfx,
