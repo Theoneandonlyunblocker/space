@@ -30,13 +30,13 @@ export class OrderedGraph<T>
   }
   public getOrderedNodes(): T[]
   {
-    const startNodes = this.getIndependentNodeKeys();
-
     const ordered: T[] = [];
     const traversed: Nodes<boolean> = {};
 
     const DFS = (currentNodeKey: string, takenPath: string[] = []) =>
     {
+      traversed[currentNodeKey] = true;
+
       Object.keys(this.children[currentNodeKey]).forEach(childOfCurrent =>
       {
         if (!traversed[childOfCurrent])
@@ -49,11 +49,28 @@ export class OrderedGraph<T>
         }
       });
 
-      traversed[currentNodeKey] = true;
       ordered.unshift(this.getNode(currentNodeKey));
     };
 
+    const startNodes = this.getIndependentNodeKeys();
+
     startNodes.forEach(startNode => DFS(startNode));
+
+    const hasUntraversedNodes = Object.keys(traversed).length < Object.keys(this._nodes).length;
+    if (hasUntraversedNodes)
+    {
+      const baseMessage = startNodes.length === 0 ?
+       "No starting node could be found as all nodes have parents." :
+       "Ordered graph has isolated nodes that form a cycle.";
+
+      const untraversedKeys = Object.keys(this._nodes).filter(key => !traversed[key]);
+      throw new Error(`${baseMessage}\n${
+        untraversedKeys.map(key =>
+        {
+          return `${key} => [${Object.keys(this.parents[key]).join(", ")}]`;
+        }).join("\n")
+      }`);
+    }
 
     return ordered;
   }
