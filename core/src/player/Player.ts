@@ -29,7 +29,6 @@ import {eventManager} from "../app/eventManager";
 import {idGenerators} from "../app/idGenerators";
 import
 {
-  extendObject,
   sumObjectValues,
 } from "../generic/utility";
 
@@ -455,8 +454,8 @@ export class Player
   }
   public updateVisibleStars(): void
   {
-    const previousVisibleStars = extendObject(this.visibleStars);
-    const previousDetectedStars = extendObject(this.detectedStars);
+    const previousVisibleStars = {...this.visibleStars};
+    const previousDetectedStars = {...this.detectedStars};
     const newVisibleStars: Star[] = [];
     const newDetectedStars: Star[] = [];
     let visibilityHasChanged: boolean = false;

@@ -6,7 +6,6 @@ import {Unit as UnitObj} from "core/src/unit/Unit";
 import {UnitDisplayData} from "core/src/unit/UnitDisplayData";
 import {activeModuleData} from "core/src/app/activeModuleData";
 import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
-import {shallowExtend} from "core/src/generic/utility";
 import {EmptyUnit} from "../unit/EmptyUnit";
 import
 {
@@ -131,7 +130,12 @@ export class FormationComponent extends React.Component<PropTypes, StateType>
               this.props.activeUnit === unit ? this.props.hoveredAbility.actionsUse : null,
           };
 
-          unitProps = shallowExtend(unitDisplayData, componentProps, displayProps);
+          unitProps =
+          {
+            ...unitDisplayData,
+            ...componentProps,
+            ...displayProps,
+          };
           if (this.props.isFacingRight && this.props.isInBattlePrep)
           {
             unitProps.isFacingRight = true;

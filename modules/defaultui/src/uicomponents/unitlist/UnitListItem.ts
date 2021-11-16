@@ -3,7 +3,6 @@ import * as ReactDOMElements from "react-dom-factories";
 import * as ReactDOM from "react-dom";
 
 import {Unit} from "core/src/unit/Unit";
-import {shallowExtend} from "core/src/generic/utility";
 import {ListItemProps} from "../list/ListItemProps";
 import {Unit as UnitComponentFactory} from "../unit/Unit";
 import {UnitStrength} from "../unit/UnitStrength";
@@ -168,10 +167,11 @@ export class UnitListItemComponent extends React.Component<PropTypes, StateType>
     const container = document.createElement("div");
 
     ReactDOM.render(
-      UnitComponentFactory(shallowExtend(
-        this.props.unit.getDisplayData("battlePrep"),
-        {id: this.props.unit.id},
-      )),
+      UnitComponentFactory(
+      {
+        ...this.props.unit.getDisplayData("battlePrep"),
+        id: this.props.unit.id,
+      }),
       container,
     );
 

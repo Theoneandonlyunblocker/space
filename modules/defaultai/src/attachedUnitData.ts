@@ -2,10 +2,6 @@
 
 import {Unit} from "core/src/unit/Unit";
 import {ValuesByUnit} from "core/src/unit/ValuesByUnit";
-import
-{
-  shallowExtend,
-} from "core/src/generic/utility";
 
 import {Front} from "./mapai/Front";
 import { PartialCoreScriptsWithData } from "core/src/triggeredscripts/AllCoreScriptsWithData";
@@ -39,7 +35,7 @@ class AttachedUnitDataManager
     if (this.byUnit.has(unit))
     {
       const oldData = this.byUnit.get(unit)!;
-      const mergedData = shallowExtend(oldData, data);
+      const mergedData = {...oldData, ...data};
       this.byUnit.set(unit, mergedData);
     }
     else

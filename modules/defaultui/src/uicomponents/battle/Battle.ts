@@ -21,10 +21,6 @@ import
 } from "core/src/abilities/battleAbilityUsage";
 import {AbilityUseEffect} from "core/src/abilities/AbilityUseEffect";
 import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
-import
-{
-  shallowExtend,
-} from "core/src/generic/utility";
 
 import
 {
@@ -425,8 +421,10 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     this.setState(
     {
       previousUnitDisplayDataById: {...this.state.unitDisplayDataById},
-      unitDisplayDataById: shallowExtend(
-        this.state.unitDisplayDataById, effect.changedUnitDisplayData),
+      unitDisplayDataById: {
+        ...this.state.unitDisplayDataById,
+        ...effect.changedUnitDisplayData,
+      },
       battleEvaluation: effect.newEvaluation,
       battleEffectDurationAfterTrigger: this.state.battleEffectDuration -
         (Date.now() - this.vfxStartTime),

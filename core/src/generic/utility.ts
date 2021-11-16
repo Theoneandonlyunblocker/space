@@ -175,8 +175,6 @@ export function stringToHex(text: string)
 
   return parseInt(toParse, 16);
 }
-// TODO 2021.11.08 | many calls to this can be replaced with spread operator I think
-//
 // extends 'from' object with members of 'to'. If 'to' is null, a deep clone of 'from' is returned
 //
 // to[prop] = from[prop] adds a reference instead of actually copying value
@@ -204,29 +202,6 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
   }
 
   return to;
-}
-
-// TODO 2021.11.08 | can this be removed?
-// don't think there's a better way
-export function shallowExtend<T1, T2>(s1: T1, s2: T2): T1 & T2;
-export function shallowExtend<T1, T2, T3>(s1: T1, s2: T2, s3: T3): T1 & T2 & T3;
-export function shallowExtend<T1, T2, T3, T4>(s1: T1, s2: T2, s3: T3, s4: T4): T1 & T2 & T3 & T4;
-export function shallowExtend<T1, T2>(s1: T1, ...s2: T2[]): T1 & T2;
-export function shallowExtend<T1, T2, T3>(s1: T1, s2: T2, ...s3: T3[]): T1 & T2 & T3;
-export function shallowExtend<T>(...sources: any[]): T;
-export function shallowExtend<T>(...sources: any[]): T
-{
-  const merged = <T> {};
-
-  sources.forEach(source =>
-  {
-    for (const key in source)
-    {
-      merged[key] = source[key];
-    }
-  });
-
-  return merged;
 }
 
 // https://github.com/KyleAMathews/deepmerge
@@ -552,7 +527,10 @@ export function mergeReactAttributes<T>(
   ...toMerge: React.HTMLAttributes<T>[]
 ): React.HTMLAttributes<T>
 {
-  const merged = shallowExtend({}, ...toMerge);
+  const merged = toMerge.reduce((allAttributes, currentAttributes) =>
+  {
+    return {...allAttributes, ...currentAttributes};
+  }, {});
 
   const stringProps = ["className", "id"];
   stringProps.forEach(prop =>

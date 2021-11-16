@@ -2,10 +2,6 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
 import {Flag} from "core/src/flag/Flag";
-import
-{
-  shallowExtend,
-} from "core/src/generic/utility";
 
 
 export interface PropTypes extends React.Props<any>
@@ -40,10 +36,11 @@ export class PlayerFlagComponent extends React.PureComponent<PropTypes, StateTyp
   }
   public override render(): React.ReactHTMLElement<any>
   {
-    const props = shallowExtend(this.props.props,
+    const props =
     {
+      ...this.props.props,
       ref: this.containerElement,
-    });
+    };
 
     return(
       ReactDOMElements.div(props,
