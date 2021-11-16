@@ -26,9 +26,10 @@ export function getOrderedResultModifiers(
 
   const orderedGraph = new OrderedGraph<CombatActionResultModifierWithValue<any>>();
 
+  // add & index
   modifiersAndValues.forEach((modifierAndValue, i) =>
   {
-    const id = "" + i;
+    const id = modifierAndValue.modifier.key + "_" + i;
     const modifier = modifierAndValue.modifier;
 
     orderedGraph.addNode(id, modifierAndValue);
@@ -45,9 +46,11 @@ export function getOrderedResultModifiers(
       });
     }
   });
+
+  // order
   modifiersAndValues.forEach((modifierAndValue, i) =>
   {
-    const ownId = "" + i;
+    const ownId = modifierAndValue.modifier.key + "_" + i;
     const modifier = modifierAndValue.modifier;
 
     if (modifier.flagsThatShouldBeExecutedBefore)
