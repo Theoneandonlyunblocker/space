@@ -1,11 +1,6 @@
 import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 
-import
-{
-  shallowCopy,
-} from "core/src/generic/utility";
-
 import {ListColumn} from "./ListColumn";
 import {ListItem} from "./ListItem";
 import {ListOrder} from "./ListOrder";
@@ -274,7 +269,7 @@ export class ListComponent extends React.Component<PropTypes<any>, StateType>
   }
   private getSortingOrderForColumnKeyWithColumnReversed(columnToReverse: ListColumn<any>)
   {
-    const copied = shallowCopy(this.state.sortingOrderForColumnKey);
+    const copied = {...this.state.sortingOrderForColumnKey};
     copied[columnToReverse.key] = ListComponent.reverseListOrder(copied[columnToReverse.key]);
 
     return copied;

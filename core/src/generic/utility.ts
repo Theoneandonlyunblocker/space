@@ -206,11 +206,6 @@ export function extendObject(from: any, to?: any, onlyExtendAlreadyPresent: bool
   return to;
 }
 
-// TODO 2021.11.08 | remove & replace with object spread
-export function shallowCopy<T>(toCopy: T): T
-{
-  return shallowExtend(toCopy);
-}
 // TODO 2021.11.08 | can this be removed?
 // don't think there's a better way
 export function shallowExtend<T1, T2>(s1: T1, s2: T2): T1 & T2;

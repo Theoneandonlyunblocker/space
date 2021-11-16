@@ -1,8 +1,3 @@
-import
-{
-  shallowCopy,
-} from "core/src/generic/utility";
-
 import {PropInfo} from "./PropInfo";
 
 
@@ -15,11 +10,11 @@ export abstract class Primitive<T> extends PropInfo<T>
   }
 }
 
-export abstract class ShallowObject<T> extends PropInfo<T>
+export abstract class ShallowObject<T extends {[key: string]: any}> extends PropInfo<T>
 {
   public copyValue(value: T): T
   {
-    return shallowCopy(value);
+    return {...value};
   }
 }
 

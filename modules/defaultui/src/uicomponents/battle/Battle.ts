@@ -23,7 +23,6 @@ import {AbilityUseEffect} from "core/src/abilities/AbilityUseEffect";
 import {CombatAbilityTemplate} from "core/src/templateinterfaces/CombatAbilityTemplate";
 import
 {
-  shallowCopy,
   shallowExtend,
 } from "core/src/generic/utility";
 
@@ -425,7 +424,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
   {
     this.setState(
     {
-      previousUnitDisplayDataById: shallowCopy(this.state.unitDisplayDataById),
+      previousUnitDisplayDataById: {...this.state.unitDisplayDataById},
       unitDisplayDataById: shallowExtend(
         this.state.unitDisplayDataById, effect.changedUnitDisplayData),
       battleEvaluation: effect.newEvaluation,

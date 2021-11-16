@@ -1,9 +1,3 @@
-import
-{
-  shallowCopy,
-} from "./utility";
-
-
 interface ObjectWithId
 {
   id: number;
@@ -116,7 +110,7 @@ export class IdDictionary<K extends ObjectWithId, V>
   }
   public toObject(): {[id: number]: V}
   {
-    return shallowCopy(this.valuesById);
+    return {...this.valuesById};
   }
   public sort(sortingFN: (a: V, b: V) => number): V[]
   {

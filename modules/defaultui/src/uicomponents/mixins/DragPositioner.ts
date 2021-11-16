@@ -5,7 +5,6 @@ import {Rect} from "core/src/math/Rect";
 import
 {
   recursiveRemoveAttribute,
-  shallowCopy,
 } from "core/src/generic/utility";
 
 import {MixinBase} from "./MixinBase";
@@ -92,7 +91,7 @@ export class DragPositioner<T extends React.Component<any, any>> implements Mixi
   }
   public getStyleAttributes(): Partial<Rect>
   {
-    return shallowCopy(this.position);
+    return {...this.position};
   }
   public handleReactDownEvent(e: React.MouseEvent<any> | React.TouchEvent<any>)
   {
