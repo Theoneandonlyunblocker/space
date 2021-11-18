@@ -59,14 +59,6 @@ export const thePyramids: BuildingTemplate =
                   {
                     return unit.mapLevelModifiers.getSelfModifiers().flags.has("tombGuard");
                   },
-                  // self:
-                  // {
-                  //   adjustments:
-                  //   {
-                  //     vision: {flat: 3},
-                  //     detection: {flat: 20},
-                  //   },
-                  // },
                   propagations:
                   {
                     localStar:
@@ -92,6 +84,19 @@ export const thePyramids: BuildingTemplate =
             key: "ownedPyramids",
             propagations:
             {
+              ownedStars:
+              [
+                {
+                  key: "ownerHasPyramids",
+                  self:
+                  {
+                    income:
+                    {
+                      [testResource3.type]: {flat: 333},
+                    },
+                  },
+                },
+              ],
               ownedUnits:
               [
                 {

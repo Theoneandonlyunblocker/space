@@ -69,11 +69,12 @@ export class UnitModifiersCollection extends MapLevelModifiersCollection<UnitMod
       return passiveSkill.mapLevelModifiers;
     });
     const modifiersFromPassiveSkills = flatten2dArray(allModifiersFromPassiveSkills);
+
     this.addOriginatingModifiers(...modifiersFromPassiveSkills);
 
-    // TODO 2019.11.01 | necessary?
-    this.propagateModifiersOfTypeTo("global", app.game.globalModifiers);
     app.game.globalModifiers.propagateModifiersOfTypeTo("units", this);
+    this.owner.modifiers.propagateModifiersOfTypeTo("ownedUnits", this);
+    this.location.modifiers.propagateModifiersOfTypeTo("localUnits", this);
   }
   public clearModifiersForLocation(): void
   {

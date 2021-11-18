@@ -39,6 +39,7 @@ export function getBaseUnitSelfModifier(): MapLevelModifier<UnitModifierAdjustme
       researchPoints: getBaseAdjustment(),
       ...activeModuleData.mapLevelModifierAdjustments.getBaseAdjustmentsFor("unit"),
     },
+    // TODO 2021.11.18 | any way to disable this? should just propagate to owningPlayer
     income: {},
     flags: new Set(),
   };
