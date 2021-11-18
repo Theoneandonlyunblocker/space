@@ -41,6 +41,7 @@ import { Resources } from "../player/PlayerResources";
 import { UnitModifiersCollection } from "../maplevelmodifiers/UnitModifiersCollection";
 import { applyFlatAndMultiplierAdjustments } from "../generic/FlatAndMultiplierAdjustment";
 import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
+import { applyAdjustmentsObjects } from "../generic/AdjustmentsObject";
 
 
 export class Unit
@@ -620,6 +621,10 @@ export class Unit
     const healAmount = this.maxHealth * healingFactor;
 
     return healAmount;
+  }
+  public getResourceIncome(): Resources
+  {
+    return applyAdjustmentsObjects({}, this.mapLevelModifiers.getSelfModifiers().income);
   }
   public getTotalCost(): Resources
   {

@@ -382,8 +382,12 @@ export class Player
   public getResourceIncome(): Resources
   {
     const locationIncome = sumObjectValues(...this.controlledLocations.map(star => star.getResourceIncome()));
+    const unitIncome = sumObjectValues(...this.units.map(unit => unit.getResourceIncome()));
+    const baseIncome = sumObjectValues(locationIncome, unitIncome);
 
-    return applyAdjustmentsObjects(locationIncome, this.modifiers.getSelfModifiers().income);
+    const selfModifiers = this.modifiers.getSelfModifiers().income;
+
+    return applyAdjustmentsObjects(baseIncome, selfModifiers);
   }
   public getNeighboringStars(): Star[]
   {
