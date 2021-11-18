@@ -18,7 +18,7 @@ const localTitanForgeEffect: PartialMapLevelModifier<StarModifierAdjustments & T
 
 export const titanForge: BuildingTemplate =
 {
-  type: "titanForge",
+  key: "titanForge",
   get displayName()
   {
     return localize("titanForge_displayName");
@@ -31,7 +31,7 @@ export const titanForge: BuildingTemplate =
 
   buildCost:
   {
-    [moneyResource.type]: 1000,
+    [moneyResource.key]: 1000,
   },
   maxBuiltAtLocation: 1,
   canBeBuiltInLocation: location => Boolean(location.manufactory),

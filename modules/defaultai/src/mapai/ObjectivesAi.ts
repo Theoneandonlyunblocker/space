@@ -92,12 +92,12 @@ export class ObjectivesAi
 
     objectives.forEach(objective =>
     {
-      if (!grouped[objective.type])
+      if (!grouped[objective.key])
       {
-        grouped[objective.type] = [];
+        grouped[objective.key] = [];
       }
 
-      grouped[objective.type].push(objective);
+      grouped[objective.key].push(objective);
     });
 
     return grouped;
@@ -210,7 +210,7 @@ export class ObjectivesAi
     const priorities: {[type: string]: number} = {};
     objectiveCreatorTemplates.filter(filterFN).forEach(template =>
     {
-      priorities[template.type] = template.evaluatePriority(this.mapEvaluator, this.grandStrategyAi);
+      priorities[template.key] = template.evaluatePriority(this.mapEvaluator, this.grandStrategyAi);
     });
 
     // calculate relative scores
@@ -220,7 +220,7 @@ export class ObjectivesAi
     // final priority = priority * relative score
     relativeScores.forEach((objective, score) =>
     {
-      objective.finalPriority = score * priorities[objective.type];
+      objective.finalPriority = score * priorities[objective.key];
     });
   }
 }

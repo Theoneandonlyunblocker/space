@@ -37,7 +37,7 @@ const TitanPrototypeListComponent: React.FunctionComponent<PropTypes> = props =>
   ];
   const rows: ListItem<TitanPrototypeListItemProps>[] = props.prototypes.map(prototype =>
   {
-    const key = prototype.wasAiGenerated ? "_____ai_____." : "" + prototype.type;
+    const key = prototype.wasAiGenerated ? "_____ai_____." : "" + prototype.key;
 
     return {
       key: key,

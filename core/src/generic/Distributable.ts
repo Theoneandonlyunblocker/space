@@ -8,7 +8,7 @@ import {DistributionData} from "../templateinterfaces/DistributionData";
 
 export interface Distributable
 {
-  type: string;
+  key: string;
   distributionData: DistributionData;
 }
 

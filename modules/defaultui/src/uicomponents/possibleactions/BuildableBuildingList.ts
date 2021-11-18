@@ -60,7 +60,7 @@ export class BuildableBuildingListComponent extends React.Component<PropTypes, S
 
       rows.push(
       {
-        key: template.type,
+        key: template.key,
         content: BuildableBuilding(
         {
           template: template,

@@ -54,7 +54,7 @@ export class AttitudeModifierListComponent extends React.Component<PropTypes, St
 
       rows.push(
       {
-        key: modifier.template.type,
+        key: modifier.template.key,
         content: AttitudeModifierInfo(
         {
           name: modifier.template.displayName,

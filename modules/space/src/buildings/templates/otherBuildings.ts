@@ -9,7 +9,7 @@ import { coreAvailabilityFlags } from "core/src/templateinterfaces/AvailabilityD
 
 export const commercialPort: BuildingTemplate =
 {
-  type: "commercialPort",
+  key: "commercialPort",
   get displayName()
   {
     return localize("commercialPort_displayName").toString();
@@ -22,7 +22,7 @@ export const commercialPort: BuildingTemplate =
 
   buildCost:
   {
-    [moneyResource.type]: 200,
+    [moneyResource.key]: 200,
   },
   maxBuiltAtLocation: 1,
 
@@ -44,7 +44,7 @@ export const commercialPort: BuildingTemplate =
             {
               income:
               {
-                [moneyResource.type]: {flat: 20},
+                [moneyResource.key]: {flat: 20},
               },
             },
           },
@@ -55,7 +55,7 @@ export const commercialPort: BuildingTemplate =
 };
 export const deepSpaceRadar: BuildingTemplate =
 {
-  type: "deepSpaceRadar",
+  key: "deepSpaceRadar",
   get displayName()
   {
     return localize("deepSpaceRadar_displayName").toString();
@@ -68,7 +68,7 @@ export const deepSpaceRadar: BuildingTemplate =
 
   buildCost:
   {
-    [moneyResource.type]: 200,
+    [moneyResource.key]: 200,
   },
 
   maxBuiltAtLocation: 1,
@@ -110,7 +110,7 @@ export const deepSpaceRadar: BuildingTemplate =
 };
 export const resourceMine: BuildingTemplate =
 {
-  type: "resourceMine",
+  key: "resourceMine",
   get displayName()
   {
     return localize("resourceMine_displayName").toString();
@@ -123,7 +123,7 @@ export const resourceMine: BuildingTemplate =
 
   buildCost:
   {
-    [moneyResource.type]: 500,
+    [moneyResource.key]: 500,
   },
 
   maxBuiltAtLocation: 1,
@@ -161,7 +161,7 @@ export const resourceMine: BuildingTemplate =
 };
 export const reserachLab: BuildingTemplate =
 {
-  type: "reserachLab",
+  key: "reserachLab",
   get displayName()
   {
     return localize("reserachLab_displayName").toString();
@@ -174,7 +174,7 @@ export const reserachLab: BuildingTemplate =
 
   buildCost:
   {
-    [moneyResource.type]: 300,
+    [moneyResource.key]: 300,
   },
 
   maxBuiltAtLocation: 1,

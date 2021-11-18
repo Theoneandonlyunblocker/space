@@ -13,7 +13,7 @@ import { miner } from "../../passiveskills/templates/miner";
 
 export const miningBarge: UnitTemplate =
 {
-  type: "miningBarge",
+  key: "miningBarge",
   get displayName()
   {
     return localize("miningBarge_displayName").toString();
@@ -34,7 +34,7 @@ export const miningBarge: UnitTemplate =
   isSquadron: true,
   buildCost:
   {
-    [moneyResource.type]: 500,
+    [moneyResource.key]: 500,
   },
   maxHealthLevel: 1,
   maxMovePoints: 1,

@@ -145,7 +145,7 @@ export class Manufactory
       ...getBuildableUnitsForRace(this.owner.race),
       ...getBuildableUnitsForRace(this.star.localRace),
     ];
-    const uniqueUnits = getUniqueArrayKeys(allUnits, unit => unit.type);
+    const uniqueUnits = getUniqueArrayKeys(allUnits, unit => unit.key);
 
     const manufacturableUnits = uniqueUnits.filter(unitTemplate =>
     {
@@ -162,7 +162,7 @@ export class Manufactory
       ...getBuildableItemsForRace(this.owner.race),
       ...getBuildableItemsForRace(this.star.localRace),
     ];
-    const uniqueItems = getUniqueArrayKeys(allItems, item => item.type);
+    const uniqueItems = getUniqueArrayKeys(allItems, item => item.key);
 
     const manufacturableItems = uniqueItems.filter(itemTemplate =>
       {

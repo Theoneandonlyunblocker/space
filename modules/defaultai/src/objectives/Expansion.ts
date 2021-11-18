@@ -11,8 +11,8 @@ import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 
 export class Expansion extends TargetedFrontObjective
 {
-  public static override readonly type = "Expansion";
-  public readonly type = "Expansion";
+  public static override readonly key = "Expansion";
+  public readonly key = "Expansion";
 
   public readonly movePriority = MovePriority.Expansion;
 

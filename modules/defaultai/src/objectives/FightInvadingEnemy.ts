@@ -11,8 +11,8 @@ import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 
 export class FightInvadingEnemy extends TargetedFrontObjective
 {
-  public static override readonly type = "FightInvadingEnemy";
-  public readonly type = "FightInvadingEnemy";
+  public static override readonly key = "FightInvadingEnemy";
+  public readonly key = "FightInvadingEnemy";
 
   public readonly movePriority = MovePriority.FightInvadingEnemy;
 

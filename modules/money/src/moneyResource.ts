@@ -4,7 +4,7 @@ import {ResourceTemplate} from "core/src/templateinterfaces/ResourceTemplate";
 
 export const moneyResource: ResourceTemplate =
 {
-  type: "money",
+  key: "money",
   get displayName()
   {
     return localize("money").toString();

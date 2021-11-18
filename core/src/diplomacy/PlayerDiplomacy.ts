@@ -208,17 +208,17 @@ export class PlayerDiplomacy
       if (modifier.shouldEnd(evaluation))
       {
         modifiersForPlayer.splice(i, 1);
-        modifiersRemoved[modifier.template.type] = modifier;
+        modifiersRemoved[modifier.template.key] = modifier;
       }
       else
       {
-        activeModifiers[modifier.template.type] = modifier;
+        activeModifiers[modifier.template.key] = modifier;
       }
     }
 
     allModifiers.forEach(template =>
     {
-      const activeModifier = activeModifiers[template.type];
+      const activeModifier = activeModifiers[template.key];
 
       if (!activeModifier && template.startCondition)
       {
@@ -234,7 +234,7 @@ export class PlayerDiplomacy
           });
 
           modifiersForPlayer.push(newModifier);
-          modifiersAdded[template.type] = newModifier;
+          modifiersAdded[template.key] = newModifier;
         }
       }
       else if (activeModifier)
@@ -270,7 +270,7 @@ export class PlayerDiplomacy
 
     for (let i = 0; i < modifiers.length; i++)
     {
-      if (modifiers[i].template.type === modifier.template.type)
+      if (modifiers[i].template.key === modifier.template.key)
       {
         return modifiers[i];
       }

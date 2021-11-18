@@ -7,7 +7,7 @@ import {localize} from "../localization/localize";
 
 export const neighborStars: AttitudeModifierTemplate =
 {
-  type: "neighborStars",
+  key: "neighborStars",
   get displayName()
   {
     return localize("neighborStars_displayName").toString();
@@ -27,7 +27,7 @@ export const neighborStars: AttitudeModifierTemplate =
 
 export const atWar: AttitudeModifierTemplate =
 {
-  type: "atWar",
+  key: "atWar",
   get displayName()
   {
     return localize("atWar_displayName").toString();
@@ -45,7 +45,7 @@ export const atWar: AttitudeModifierTemplate =
 
 export const baseOpinion: AttitudeModifierTemplate =
 {
-  type: "baseOpinion",
+  key: "baseOpinion",
   get displayName()
   {
     return localize("baseOpinion_displayName").toString();
@@ -55,7 +55,7 @@ export const baseOpinion: AttitudeModifierTemplate =
 
 export const declaredWar: AttitudeModifierTemplate =
 {
-  type: "declaredWar",
+  key: "declaredWar",
   get displayName()
   {
     return localize("declaredWar_displayName").toString();
@@ -69,8 +69,8 @@ export const declaredWar: AttitudeModifierTemplate =
 
 export const attitudeModifierTemplates =
 {
-  [neighborStars.type]: neighborStars,
-  [atWar.type]: atWar,
-  [declaredWar.type]: declaredWar,
-  [baseOpinion.type]: baseOpinion,
+  [neighborStars.key]: neighborStars,
+  [atWar.key]: atWar,
+  [declaredWar.key]: declaredWar,
+  [baseOpinion.key]: baseOpinion,
 };

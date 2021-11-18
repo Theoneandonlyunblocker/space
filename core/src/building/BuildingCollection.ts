@@ -69,18 +69,18 @@ export class BuildingCollection<T extends Building>
   }
   public getBuildingsByFamily(): {[key: string]: T[]}
   {
-    const byFamily: {[familyType: string]: T[]} = {};
+    const byFamily: {[familyKey: string]: T[]} = {};
 
     this.forEach(building =>
     {
       building.template.families.forEach(family =>
       {
-        if (!byFamily[family.type])
+        if (!byFamily[family.key])
         {
-          byFamily[family.type] = [];
+          byFamily[family.key] = [];
         }
 
-        byFamily[family.type].push(building);
+        byFamily[family.key].push(building);
       });
     });
 

@@ -104,7 +104,7 @@ export class Building<T extends BuildingTemplate = BuildingTemplate>
   {
     return(
     {
-      templateType: this.template.type,
+      templateType: this.template.key,
       id: this.id,
 
       locationId: this.location.id,

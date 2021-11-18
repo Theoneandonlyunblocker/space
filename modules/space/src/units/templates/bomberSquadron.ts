@@ -16,7 +16,7 @@ import { rangedAttack } from "../../combat/abilities/rangedAttack";
 
 export const bomberSquadron: UnitTemplate =
 {
-  type: "bomberSquadron",
+  key: "bomberSquadron",
   get displayName()
   {
     return localize("bomberSquadron_displayName").toString();
@@ -36,7 +36,7 @@ export const bomberSquadron: UnitTemplate =
   isSquadron: true,
   buildCost:
 {
-  [moneyResource.type]: 200,
+  [moneyResource.key]: 200,
 },
   getIconSrc: getUnitIconSrc.bind(null, "fb"),
   maxHealthLevel: 0.5,

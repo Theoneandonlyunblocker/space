@@ -9,7 +9,7 @@ import { moneyResource } from "modules/money/src/moneyResource";
 
 export const targetingSupercomputer: TitanComponentTemplate =
 {
-  type: "targetingSupercomputer",
+  key: "targetingSupercomputer",
   get displayName()
   {
     return localize("targetingSupercomputer_displayName");
@@ -25,7 +25,7 @@ export const targetingSupercomputer: TitanComponentTemplate =
   slot: "mid",
   buildCost:
   {
-    [moneyResource.type]: 100,
+    [moneyResource.key]: 100,
   },
   availabilityData:
   {

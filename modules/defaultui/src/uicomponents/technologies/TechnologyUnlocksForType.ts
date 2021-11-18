@@ -53,7 +53,7 @@ export class TechnologyUnlocksForTypeComponent extends React.Component<PropTypes
         {
           return ReactDOMElements.li(
           {
-            key: unlockableThing.type,
+            key: unlockableThing.key,
             className: "technology-unlocks-for-type-list-item",
           },
             TechnologyUnlock(

@@ -32,13 +32,13 @@ const ResourceCostComponent: React.FunctionComponent<PropTypes> = props =>
           return ReactDOMElements.div(
           {
             className: "resource",
-            key: resource.type,
+            key: resource.key,
           },
             ResourceAmount(
             {
               resource: resource,
-              amount: props.cost[resource.type],
-              isInsufficient: Boolean(missingResources && missingResources[resource.type]),
+              amount: props.cost[resource.key],
+              isInsufficient: Boolean(missingResources && missingResources[resource.key]),
             }),
             ResourceIcon({resource: resource}),
           );

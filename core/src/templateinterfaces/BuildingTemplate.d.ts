@@ -10,7 +10,7 @@ import { AvailabilityData } from "./AvailabilityData";
 
 export interface BuildingTemplate extends UnlockableThing
 {
-  type: string;
+  key: string;
   displayName: string;
   description: string;
 

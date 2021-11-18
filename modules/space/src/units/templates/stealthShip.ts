@@ -18,7 +18,7 @@ import { rangedAttack } from "../../combat/abilities/rangedAttack";
 
 export const stealthShip: UnitTemplate =
 {
-  type: "stealthShip",
+  key: "stealthShip",
   get displayName()
   {
     return localize("stealthShip_displayName").toString();
@@ -38,8 +38,8 @@ export const stealthShip: UnitTemplate =
   isSquadron: true,
   buildCost:
 {
-  [moneyResource.type]: 500,
-  [testResource2.type]: 1,
+  [moneyResource.key]: 500,
+  [testResource2.key]: 1,
 },
   getIconSrc: getUnitIconSrc.bind(null, "sc"),
   maxHealthLevel: 0.6,

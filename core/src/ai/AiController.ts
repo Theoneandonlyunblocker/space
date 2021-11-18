@@ -45,7 +45,7 @@ export class AiController<SaveData>
   {
     return(
     {
-      templateType: this.template.type,
+      templateType: this.template.key,
       templateData: this.template.serialize(),
       personality: this.personality,
     });

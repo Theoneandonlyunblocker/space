@@ -137,12 +137,12 @@ export class Front
     {
       const archetype = this.units[i].template.archetype;
 
-      if (!unitCountByArchetype[archetype.type])
+      if (!unitCountByArchetype[archetype.key])
       {
-        unitCountByArchetype[archetype.type] = 0;
+        unitCountByArchetype[archetype.key] = 0;
       }
 
-      unitCountByArchetype[archetype.type]++;
+      unitCountByArchetype[archetype.key]++;
     }
 
     return unitCountByArchetype;

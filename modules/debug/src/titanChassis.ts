@@ -14,7 +14,7 @@ import { rangedAttack } from "modules/space/src/combat/abilities/rangedAttack";
 
 export const debugChassis: TitanChassisTemplate =
 {
-  type: "debugChassis",
+  key: "debugChassis",
   get displayName()
   {
     return localize("debugChassis_displayName");
@@ -34,7 +34,7 @@ export const debugChassis: TitanChassisTemplate =
   isSquadron: false,
   buildCost:
 {
-  [moneyResource.type]: 0,
+  [moneyResource.key]: 0,
 },
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),
   maxHealthLevel: 1,
@@ -78,7 +78,7 @@ export const debugChassis: TitanChassisTemplate =
 };
 export const debugChassis2: TitanChassisTemplate =
 {
-  type: "debugChassis2",
+  key: "debugChassis2",
   get displayName()
   {
     return localize("debugChassis2_displayName");
@@ -98,7 +98,7 @@ export const debugChassis2: TitanChassisTemplate =
   isSquadron: false,
   buildCost:
 {
-  [moneyResource.type]: 0,
+  [moneyResource.key]: 0,
 },
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),
   maxHealthLevel: 1,

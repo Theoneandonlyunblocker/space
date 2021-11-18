@@ -17,7 +17,7 @@ import { availabilityFlags } from "../availabilityFlags";
 
 export const droneCommander: UnitTemplate =
 {
-  type: "droneCommander",
+  key: "droneCommander",
   get displayName()
   {
     return localize("droneCommander_displayName").toString();
@@ -39,7 +39,7 @@ export const droneCommander: UnitTemplate =
   isSquadron: false,
   buildCost:
   {
-    [moneyResource.type]: 200,
+    [moneyResource.key]: 200,
   },
 
   maxHealthLevel: 0.75,

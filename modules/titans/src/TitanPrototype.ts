@@ -20,7 +20,7 @@ export type TitanPrototypeSaveData =
 
 export class TitanPrototype implements ManufacturableThing
 {
-  public readonly type: string;
+  public readonly key: string;
   public readonly name: Name;
   public get displayName()
   {
@@ -45,7 +45,7 @@ export class TitanPrototype implements ManufacturableThing
   {
     const idGenerators = (activeModuleData.nonCoreData.titans as NonCoreModuleData).idGenerators;
 
-    this.type = props.type || "" + idGenerators.titanPrototype++;
+    this.key = props.type || "" + idGenerators.titanPrototype++;
 
     this.wasAiGenerated = props.wasAiGenerated;
     this.name = props.name;
@@ -75,11 +75,11 @@ export class TitanPrototype implements ManufacturableThing
   public serialize(): TitanPrototypeSaveData
   {
     return {
-      type: this.type,
+      type: this.key,
       name: this.name.serialize(),
       wasAiGenerated: this.wasAiGenerated,
-      chassisType: this.chassis.type,
-      componentTypes: this.components.map(component => component.type),
+      chassisType: this.chassis.key,
+      componentTypes: this.components.map(component => component.key),
     };
   }
 }

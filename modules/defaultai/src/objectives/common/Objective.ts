@@ -15,7 +15,7 @@ export abstract class Objective
   // TODO 2017.02.28 | family and type might be a bit confusingly named here
   // type is used like this for templates, so it's used here as well at least for now
   // TODO 2021.11.08 | rename type => key
-  public static readonly type: string;
+  public static readonly key: string;
   public static readonly family: ObjectiveFamily;
 
   protected static createObjectives: (
@@ -33,7 +33,7 @@ export abstract class Objective
    */
   protected static evaluatePriority: (mapEvaluator: MapEvaluator, grandStrategyAi: GrandStrategyAi) => number;
 
-  public abstract readonly type: string;
+  public abstract readonly key: string;
   public abstract readonly family: ObjectiveFamily;
   public readonly id: number;
 
@@ -72,7 +72,7 @@ export abstract class Objective
     // checking these at runtime since we can't actually tag them abstract for the compiler
     // https://github.com/Microsoft/TypeScript/issues/14600
     [
-      {member: this.type, memberIdentifier: "type"},
+      {member: this.key, memberIdentifier: "type"},
       {member: this.family, memberIdentifier: "family"},
       {member: this.createObjectives, memberIdentifier: "createObjectives"},
       {member: this.updateOngoingObjectivesList, memberIdentifier: "updateOngoingObjectivesList"},
@@ -81,13 +81,13 @@ export abstract class Objective
     {
       if (toCheck.member === undefined)
       {
-        throw new Error(`Objective ${this.type || this} lacks required static member ${toCheck.memberIdentifier}`);
+        throw new Error(`Objective ${this.key || this} lacks required static member ${toCheck.memberIdentifier}`);
       }
     });
 
     return(
     {
-      type: this.type,
+      key: this.key,
       family: this.family,
       getUpdatedObjectivesList: (mapEvaluator, allOngoingObjectives) =>
       {
@@ -108,7 +108,7 @@ export abstract class Objective
     {
       if (byTarget.has(objective.target))
       {
-        throw new Error(`Duplicate target id:'${objective.target.id}' for objectives of type '${objective.type}'`);
+        throw new Error(`Duplicate target id:'${objective.target.id}' for objectives of type '${objective.key}'`);
       }
       else
       {
@@ -130,7 +130,7 @@ export abstract class Objective
 
     allOngoingObjectives.forEach(objective =>
     {
-      if (objective.type === this.type)
+      if (objective.key === this.key)
       {
         if (createdObjectivesByTarget.has((<O>objective).target))
         {
@@ -166,7 +166,7 @@ export abstract class Objective
     for (let i = 0; i < allOngoingObjectives.length; i++)
     {
       const objective = allOngoingObjectives[i];
-      if (objective.type === createdObjective.type)
+      if (objective.key === createdObjective.key)
       {
         objective.score = createdObjective.score;
         // don't mark as ongoing, as unique objectives don't need to prioritize ongoing objectives
@@ -187,7 +187,7 @@ export abstract class Objective
   {
     const resultingObjectives = allOngoingObjectives.filter(objective =>
     {
-      return objective.type !== this.type;
+      return objective.key !== this.key;
     });
 
     resultingObjectives.push(...createdObjectives);

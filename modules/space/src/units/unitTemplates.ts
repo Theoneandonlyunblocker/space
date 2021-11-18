@@ -10,12 +10,12 @@ import { miningBarge } from "./templates/miningBarge";
 
 export const unitTemplates =
 {
-  [battleCruiser.type]: battleCruiser,
-  [commandShip.type]: commandShip,
-  [stealthShip.type]: stealthShip,
-  [scout.type]: scout,
-  [bomberSquadron.type]: bomberSquadron,
-  [fighterSquadron.type]: fighterSquadron,
-  [shieldBoat.type]: shieldBoat,
-  [miningBarge.type]: miningBarge,
+  [battleCruiser.key]: battleCruiser,
+  [commandShip.key]: commandShip,
+  [stealthShip.key]: stealthShip,
+  [scout.key]: scout,
+  [bomberSquadron.key]: bomberSquadron,
+  [fighterSquadron.key]: fighterSquadron,
+  [shieldBoat.key]: shieldBoat,
+  [miningBarge.key]: miningBarge,
 };

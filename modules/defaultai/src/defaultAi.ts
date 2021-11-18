@@ -14,7 +14,7 @@ export const defaultAi: GameModule =
   {
     moduleData.templates.aiTemplateConstructors.copyTemplates(
     {
-      [defaultAiConstructor.type]: defaultAiConstructor,
+      [defaultAiConstructor.key]: defaultAiConstructor,
     });
 
     moduleData.scripts.add(attachedUnitDataScripts);

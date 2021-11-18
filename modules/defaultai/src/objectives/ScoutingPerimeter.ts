@@ -13,8 +13,8 @@ import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
 export class ScoutingPerimeter extends TargetedFrontObjective
 {
-  public static override readonly type = "ScoutingPerimeter";
-  public readonly type = "ScoutingPerimeter";
+  public static override readonly key = "ScoutingPerimeter";
+  public readonly key = "ScoutingPerimeter";
 
   public readonly movePriority = MovePriority.ScoutingPerimeter;
 

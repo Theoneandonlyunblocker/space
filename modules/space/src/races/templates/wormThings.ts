@@ -15,7 +15,7 @@ import { availabilityFlags as commonAvailabilityFlags } from "modules/baselib/sr
 
 export const wormThings: RaceTemplate =
 {
-  type: "wormThings",
+  key: "wormThings",
   get displayName()
   {
     return localizeName("wormThings")();

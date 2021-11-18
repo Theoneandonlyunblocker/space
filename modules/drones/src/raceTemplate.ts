@@ -27,7 +27,7 @@ function getBuildableThings<T extends {availabilityData: AvailabilityData}>(temp
 
 export const drones: RaceTemplate =
 {
-  type: "drones",
+  key: "drones",
   get displayName()
   {
     return localizeName("drones")();
@@ -65,5 +65,5 @@ export const drones: RaceTemplate =
 
 export const raceTemplates =
 {
-  [drones.type]: drones,
+  [drones.key]: drones,
 };

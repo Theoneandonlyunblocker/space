@@ -2,7 +2,7 @@ import {DistributionData} from "./DistributionData";
 
 export interface ResourceTemplate
 {
-  type: string;
+  key: string;
   displayName: string;
   getIcon: () => HTMLElement | SVGElement;
   styleTextProps?: (props: React.HTMLProps<HTMLSpanElement>) => void;

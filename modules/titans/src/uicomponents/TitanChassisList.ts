@@ -29,7 +29,7 @@ const TitanChassisListComponent: React.FunctionComponent<PropTypes> = props =>
   const rows: ListItem<TitanChassisListItemProps>[] = props.allChassis.map(chassis =>
   {
     return {
-      key: chassis.type,
+      key: chassis.key,
       content: TitanChassisListItem(
       {
         chassis: chassis,

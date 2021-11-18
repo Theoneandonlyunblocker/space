@@ -3,7 +3,7 @@ import {UnitArchetype} from "core/src/templateinterfaces/UnitArchetype";
 
 export const combat: UnitArchetype =
 {
-  type: "combat",
+  key: "combat",
   idealWeightInBattle: 1,
   idealWeightInFleet: 1,
   rowScores:
@@ -14,7 +14,7 @@ export const combat: UnitArchetype =
 };
 export const utility: UnitArchetype =
 {
-  type: "utility",
+  key: "utility",
   idealWeightInBattle: 0.33,
   idealWeightInFleet: 0.5,
   rowScores:
@@ -25,7 +25,7 @@ export const utility: UnitArchetype =
 };
 export const scouting: UnitArchetype =
 {
-  type: "scouting",
+  key: "scouting",
   idealWeightInBattle: 0.01,
   idealWeightInFleet: 0.2,
   rowScores:
@@ -36,7 +36,7 @@ export const scouting: UnitArchetype =
 };
 export const defence: UnitArchetype =
 {
-  type: "defence",
+  key: "defence",
   idealWeightInBattle: 0.5,
   idealWeightInFleet: 0.5,
   rowScores:
@@ -64,7 +64,7 @@ export const defence: UnitArchetype =
 };
 export const economic: UnitArchetype =
 {
-  type: "economic",
+  key: "economic",
   idealWeightInBattle: 0.01,
   idealWeightInFleet: 0.01,
   rowScores:
@@ -76,9 +76,9 @@ export const economic: UnitArchetype =
 
 export const unitArchetypes =
 {
-  [combat.type]: combat,
-  [utility.type]: utility,
-  [scouting.type]: scouting,
-  [defence.type]: defence,
-  [economic.type]: economic,
+  [combat.key]: combat,
+  [utility.key]: utility,
+  [scouting.key]: scouting,
+  [defence.key]: defence,
+  [economic.key]: economic,
 };

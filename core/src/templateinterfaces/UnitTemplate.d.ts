@@ -12,7 +12,7 @@ import { CombatAbilityTemplate } from "./CombatAbilityTemplate";
 
 export interface UnitTemplate extends ManufacturableThing
 {
-  type: string;
+  key: string;
   displayName: string;
   description: string;
   isSquadron: boolean;

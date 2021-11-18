@@ -22,7 +22,7 @@ const item: ManufacturableThingKind<ItemTemplate, Item, string> =
       builtItem.modifiers.handleConstruct();
     });
   },
-  serialize: (template) => template.type,
+  serialize: (template) => template.key,
   deserialize: (templateType) => activeModuleData.templates.items.get(templateType),
 };
 const unit: ManufacturableThingKind<UnitTemplate, Unit, string> =
@@ -54,7 +54,7 @@ const unit: ManufacturableThingKind<UnitTemplate, Unit, string> =
       builtUnit.mapLevelModifiers.handleConstruct();
     });
   },
-  serialize: (template) => template.type,
+  serialize: (template) => template.key,
   deserialize: (templateType) => activeModuleData.templates.units.get(templateType),
 };
 

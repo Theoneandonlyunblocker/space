@@ -5,7 +5,7 @@ import {droneSwarm} from  "./units/droneSwarm";
 
 export const unitTemplates =
 {
-  [droneSwarm.type]: droneSwarm,
-  [droneCommander.type]: droneCommander,
-  [droneBase.type]: droneBase,
+  [droneSwarm.key]: droneSwarm,
+  [droneCommander.key]: droneCommander,
+  [droneBase.key]: droneBase,
 };

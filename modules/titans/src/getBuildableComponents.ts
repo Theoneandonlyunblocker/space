@@ -12,9 +12,9 @@ export function getBuildableComponentsForRace(race: RaceTemplate): TitanComponen
 {
   const titansModuleData = (activeModuleData.nonCoreData.titans as NonCoreModuleData);
 
-  if (titansModuleData.getBuildableTitanComponentsForRace[race.type])
+  if (titansModuleData.getBuildableTitanComponentsForRace[race.key])
   {
-    return titansModuleData.getBuildableTitanComponentsForRace[race.type]();
+    return titansModuleData.getBuildableTitanComponentsForRace[race.key]();
   }
   else
   {
@@ -32,7 +32,7 @@ export function getBuildableComponents(manufactory: Manufactory): TitanComponent
     ...ownerComponents,
     ...localComponents,
   ];
-  const uniqueComponents = getUniqueArrayKeys(allComponents, component => component.type);
+  const uniqueComponents = getUniqueArrayKeys(allComponents, component => component.key);
 
   const manufacturableComponents = uniqueComponents.filter(component =>
   {

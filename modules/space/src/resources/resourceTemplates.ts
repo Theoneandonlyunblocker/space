@@ -5,7 +5,7 @@ import { getResourceIcon } from "modules/space/assets/resources/resourceAssets";
 
 export const testResource1: ResourceTemplate =
 {
-  type: "testResource1",
+  key: "testResource1",
   get displayName()
   {
     return localize("testResource1").toString();
@@ -21,7 +21,7 @@ export const testResource1: ResourceTemplate =
 };
 export const testResource2: ResourceTemplate =
 {
-  type: "testResource2",
+  key: "testResource2",
   get displayName()
   {
     return localize("testResource2").toString();
@@ -37,7 +37,7 @@ export const testResource2: ResourceTemplate =
 };
 export const testResource3: ResourceTemplate =
 {
-  type: "testResource3",
+  key: "testResource3",
   get displayName()
   {
     return localize("testResource3").toString();
@@ -53,7 +53,7 @@ export const testResource3: ResourceTemplate =
 };
 export const testResource4: ResourceTemplate =
 {
-  type: "testResource4",
+  key: "testResource4",
   get displayName()
   {
     return localize("testResource4").toString();
@@ -69,7 +69,7 @@ export const testResource4: ResourceTemplate =
 };
 export const testResource5: ResourceTemplate =
 {
-  type: "testResource5",
+  key: "testResource5",
   get displayName()
   {
     return localize("testResource5").toString();

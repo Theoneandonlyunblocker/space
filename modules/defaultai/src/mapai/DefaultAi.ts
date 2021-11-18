@@ -22,8 +22,8 @@ import { makeRandomPersonality } from "core/src/ai/makeRandomPersonality";
 
 export class DefaultAi implements AiTemplate<DefaultAiSaveData>
 {
-  public static readonly type: string = "DefaultAi";
-  public readonly type: string = "DefaultAi";
+  public static readonly key: string = "DefaultAi";
+  public readonly key: string = "DefaultAi";
 
   public readonly personality: Personality;
 
@@ -99,12 +99,12 @@ export class DefaultAi implements AiTemplate<DefaultAiSaveData>
 
       const archetype = unit.template.archetype;
       const idealMaxUnitsOfArchetype = Math.ceil(maxUnitsPerSide / archetype.idealWeightInBattle);
-      const unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.type] || 0;
+      const unitsPlacedOfArchetype = unitsPlacedByArchetype[archetype.key] || 0;
       const overMaxOfArchetypeIdeal = Math.max(0, unitsPlacedOfArchetype - idealMaxUnitsOfArchetype);
       const archetypeIdealAdjust = 1 - overMaxOfArchetypeIdeal * 0.15;
 
       const rowUnits = row === "ROW_FRONT" ? formation[1] : formation[0];
-      const rowModifier = archetype.scoreMultiplierForRowFN ?
+      const rowModifier = ("scoreMultiplierForRowFN" in archetype) ?
         archetype.scoreMultiplierForRowFN(row, rowUnits, scoutedUnits, scoutedFormation) :
         archetype.rowScores[row];
 
@@ -158,11 +158,11 @@ export class DefaultAi implements AiTemplate<DefaultAiSaveData>
       }
 
       totalPlaced++;
-      if (!unitsPlacedByArchetype[topScore.unit.template.archetype.type])
+      if (!unitsPlacedByArchetype[topScore.unit.template.archetype.key])
       {
-        unitsPlacedByArchetype[topScore.unit.template.archetype.type] = 0;
+        unitsPlacedByArchetype[topScore.unit.template.archetype.key] = 0;
       }
-      unitsPlacedByArchetype[topScore.unit.template.archetype.type]++;
+      unitsPlacedByArchetype[topScore.unit.template.archetype.key]++;
       unitsToPlace.splice(unitsToPlace.indexOf(topScore.unit), 1);
     }
 

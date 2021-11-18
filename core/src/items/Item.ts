@@ -31,7 +31,7 @@ export class Item
     const data: ItemSaveData =
     {
       id: this.id,
-      templateType: this.template.type,
+      templateType: this.template.key,
     };
 
     if (isFinite(this.positionInUnit))

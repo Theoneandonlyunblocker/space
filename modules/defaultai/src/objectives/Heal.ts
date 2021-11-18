@@ -12,8 +12,8 @@ import {moveToTarget} from "./common/moveroutines/moveToTarget";
 // @ts-ignore 2417
 export class Heal extends FrontObjective
 {
-  public static override readonly type = "Heal";
-  public readonly type = "Heal";
+  public static override readonly key = "Heal";
+  public readonly key = "Heal";
 
   public readonly movePriority = MovePriority.Heal;
 

@@ -16,7 +16,7 @@ import { standby } from "modules/baselib/src/combat/abilities/standby";
 
 export const battleCruiser: UnitTemplate =
 {
-  type: "battleCruiser",
+  key: "battleCruiser",
   get displayName()
   {
     return localize("battleCruiser_displayName").toString();
@@ -36,7 +36,7 @@ export const battleCruiser: UnitTemplate =
   isSquadron: true,
   buildCost:
 {
-  [moneyResource.type]: 200,
+  [moneyResource.key]: 200,
 },
   getIconSrc: getUnitIconSrc.bind(null, "bc"),
   maxHealthLevel: 1,

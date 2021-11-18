@@ -805,13 +805,13 @@ export class Star implements Point
 
       buildings: this.buildings.serialize(),
 
-      raceType: this.localRace.type,
-      terrainType: this.terrain.type,
+      raceType: this.localRace.key,
+      terrainType: this.terrain.key,
     };
 
     if (this.resource)
     {
-      data.resourceType = this.resource.type;
+      data.resourceType = this.resource.key;
     }
 
     if (this.manufactory)
@@ -938,8 +938,8 @@ export class Star implements Point
       const familyLocalLimit = templateFamily.maxBuiltAtLocation || Infinity;
       if (isFinite(familyLocalLimit))
       {
-        const familyLocalBuilt = localBuildingsByFamily[templateFamily.type] ?
-          localBuildingsByFamily[templateFamily.type].length :
+        const familyLocalBuilt = localBuildingsByFamily[templateFamily.key] ?
+          localBuildingsByFamily[templateFamily.key].length :
           0;
 
         const familyLimitModifier = parentBuilding && parentBuilding.isOfFamily(templateFamily) ? 1 : 0;
@@ -970,7 +970,7 @@ export class Star implements Point
       ...getBuildableBuildingsForRace(this.owner.race),
       ...getBuildableBuildingsForRace(this.localRace),
     ];
-    const uniqueBuildings = getUniqueArrayKeys(allBuildings, template => template.type);
+    const uniqueBuildings = getUniqueArrayKeys(allBuildings, template => template.key);
 
     const buildableBuildings = uniqueBuildings.filter(buildingTemplate =>
     {
@@ -1059,7 +1059,7 @@ export class Star implements Point
     else
     {
       return {
-        [this.resource.type]: finalAmount,
+        [this.resource.key]: finalAmount,
       };
     }
   }

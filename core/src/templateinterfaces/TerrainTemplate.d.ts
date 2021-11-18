@@ -1,5 +1,5 @@
 export interface TerrainTemplate
 {
-  type: string;
+  key: string;
   displayName: string;
 }

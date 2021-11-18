@@ -14,7 +14,7 @@ import { makeDefenderAdvantageEffect } from "./battlePrepEffects";
 
 export const sectorCommand: TerritoryBuildingTemplate =
 {
-  type: "sectorCommand",
+  key: "sectorCommand",
   isTerritoryBuilding: true,
   families: [territoryBuildings, sectorCommandFamily],
   get displayName()
@@ -28,7 +28,7 @@ export const sectorCommand: TerritoryBuildingTemplate =
   getIconElement: getBuildingIconElement.bind(null, "sectorCommand"),
   buildCost:
   {
-    [moneyResource.type]: 200,
+    [moneyResource.key]: 200,
   },
 
   maxBuiltAtLocation: 1,
@@ -52,7 +52,7 @@ export const sectorCommand: TerritoryBuildingTemplate =
 };
 export const sectorCommand1: TerritoryBuildingTemplate =
 {
-  type: "sectorCommand1",
+  key: "sectorCommand1",
   isTerritoryBuilding: true,
   families: [territoryBuildings, sectorCommandFamily],
   get displayName()
@@ -66,7 +66,7 @@ export const sectorCommand1: TerritoryBuildingTemplate =
   getIconElement: getBuildingIconElement.bind(null, "sectorCommand"),
   buildCost:
   {
-    [moneyResource.type]: 100,
+    [moneyResource.key]: 100,
   },
 
   maxBuiltAtLocation: 1,
@@ -85,7 +85,7 @@ export const sectorCommand1: TerritoryBuildingTemplate =
 };
 export const sectorCommand2: TerritoryBuildingTemplate =
 {
-  type: "sectorCommand2",
+  key: "sectorCommand2",
   isTerritoryBuilding: true,
   families: [territoryBuildings, sectorCommandFamily],
   get displayName()
@@ -99,7 +99,7 @@ export const sectorCommand2: TerritoryBuildingTemplate =
   getIconElement: getBuildingIconElement.bind(null, "sectorCommand"),
   buildCost:
   {
-    [moneyResource.type]: 200,
+    [moneyResource.key]: 200,
   },
 
   maxBuiltAtLocation: 1,
@@ -118,7 +118,7 @@ export const sectorCommand2: TerritoryBuildingTemplate =
 };
 export const starBase: TerritoryBuildingTemplate =
 {
-  type: "starBase",
+  key: "starBase",
   isTerritoryBuilding: true,
   families: [territoryBuildings],
   get displayName()
@@ -132,7 +132,7 @@ export const starBase: TerritoryBuildingTemplate =
   getIconElement: getBuildingIconElement.bind(null, "starBase"),
   buildCost:
   {
-    [moneyResource.type]: 200,
+    [moneyResource.key]: 200,
   },
 
   mapLevelModifiers:

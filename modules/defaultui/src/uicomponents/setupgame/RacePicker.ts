@@ -32,7 +32,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
     const target = e.currentTarget;
     const newRace = this.props.availableRaces.filter(raceTemplate =>
     {
-      return raceTemplate.type === target.value;
+      return raceTemplate.key === target.value;
     })[0];
 
     this.props.changeRace(newRace);
@@ -44,7 +44,7 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
       ReactDOMElements.select(
       {
         className: "race-picker",
-        value: this.props.selectedRace.type,
+        value: this.props.selectedRace.key,
         onChange: this.handleChangeRace,
         title: this.props.selectedRace.description,
       },
@@ -52,8 +52,8 @@ export class RacePickerComponent extends React.PureComponent<PropTypes, StateTyp
         {
           return ReactDOMElements.option(
           {
-            key: race.type,
-            value: race.type,
+            key: race.key,
+            value: race.key,
             title: race.description,
           },
             race.displayName.toString(),

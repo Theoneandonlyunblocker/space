@@ -12,8 +12,8 @@ import {moveToTarget} from "./common/moveroutines/moveToTarget";
 
 export class Discovery extends TargetedFrontObjective
 {
-  public static override readonly type = "Discovery";
-  public readonly type = "Discovery";
+  public static override readonly key = "Discovery";
+  public readonly key = "Discovery";
 
   public readonly movePriority = MovePriority.Discovery;
 

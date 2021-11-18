@@ -1,6 +1,6 @@
 export interface BuildingFamily
 {
-  type: string;
+  key: string;
 
   maxBuiltAtLocation?: number;
   maxBuiltForPlayer?: number;

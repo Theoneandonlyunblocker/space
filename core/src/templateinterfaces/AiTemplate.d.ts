@@ -4,7 +4,7 @@ import {Unit} from "../unit/Unit";
 
 export interface AiTemplate<SaveData>
 {
-  type: string;
+  key: string;
   personality: Personality;
 
   processTurn(afterFinishedCallback: () => void): void;

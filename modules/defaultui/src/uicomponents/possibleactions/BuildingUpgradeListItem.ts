@@ -67,7 +67,7 @@ export class BuildingUpgradeListItemComponent extends React.Component<PropTypes,
 
     const rowProps: React.HTMLProps<HTMLTableRowElement> =
     {
-      key: upgradeData.template.type,
+      key: upgradeData.template.key,
       className: "building-upgrade-list-item",
       onClick: this.handleClick,
       title: upgradeData.template.description,

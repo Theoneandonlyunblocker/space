@@ -3,7 +3,7 @@ import {TechRequirement} from "./TechRequirement";
 
 export interface UnlockableThing
 {
-  type: string;
+  key: string;
   displayName: string;
   description: string;
 

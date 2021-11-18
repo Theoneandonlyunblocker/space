@@ -18,7 +18,7 @@ import { Building } from "../building/Building";
 
 export interface RaceTemplate
 {
-  type: string;
+  key: string;
   displayName: Name;
   description: string;
   isNotPlayable?: boolean;

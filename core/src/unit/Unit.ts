@@ -819,7 +819,7 @@ export class Unit
   {
     const data: UnitSaveData =
     {
-      templateType: this.template.type,
+      templateType: this.template.key,
       id: this.id,
       name: this.name,
 
@@ -855,7 +855,7 @@ export class Unit
       battleStats: this.battleStats.serialize(),
 
       portraitKey: this.portrait.key,
-      raceKey: this.race.type,
+      raceKey: this.race.key,
     };
 
     if (this.fleet)

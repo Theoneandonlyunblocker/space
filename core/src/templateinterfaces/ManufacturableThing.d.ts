@@ -5,7 +5,7 @@ import { Manufactory } from "../production/Manufactory";
 
 export interface ManufacturableThing extends UnlockableThing
 {
-  type: string;
+  key: string;
   displayName: string;
   description: string;
   buildCost: Resources;

@@ -44,14 +44,14 @@ export class ManufacturableThingsListComponent<T extends ManufacturableThing> ex
     }).map((template, i) =>
     {
 
-      if (!keyByTemplateType[template.type])
+      if (!keyByTemplateType[template.key])
       {
-        keyByTemplateType[template.type] = 0;
+        keyByTemplateType[template.key] = 0;
       }
 
       return ManufacturableThingsListItem(
       {
-        key: template.type + keyByTemplateType[template.type]++,
+        key: template.key + keyByTemplateType[template.key]++,
         template: manufacturableThings[i],
         parentIndex: i,
         onClick: <any>this.props.onClick,

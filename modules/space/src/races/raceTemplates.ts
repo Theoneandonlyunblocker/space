@@ -4,6 +4,6 @@ import {wormThings} from "./templates/wormThings";
 
 export const raceTemplates =
 {
-  [federationAlliance.type]: federationAlliance,
-  [wormThings.type]: wormThings,
+  [federationAlliance.key]: federationAlliance,
+  [wormThings.key]: wormThings,
 };

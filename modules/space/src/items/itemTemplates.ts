@@ -11,7 +11,7 @@ import { poisoned } from "../combat/effects/poisoned";
 
 export const bombLauncher1: ItemTemplate =
 {
-  type: "bombLauncher1",
+  key: "bombLauncher1",
   get displayName()
   {
     return localize("bombLauncher1_displayName").toString();
@@ -24,7 +24,7 @@ export const bombLauncher1: ItemTemplate =
   techLevel: 1,
   buildCost:
   {
-    [moneyResource.type]: 100,
+    [moneyResource.key]: 100,
   },
 
   slot: "high",
@@ -36,7 +36,7 @@ export const bombLauncher1: ItemTemplate =
 };
 export const bombLauncher2: ItemTemplate =
 {
-  type: "bombLauncher2",
+  key: "bombLauncher2",
   get displayName()
   {
     return localize("bombLauncher2_displayName").toString();
@@ -49,7 +49,7 @@ export const bombLauncher2: ItemTemplate =
   techLevel: 2,
   buildCost:
   {
-    [moneyResource.type]: 200,
+    [moneyResource.key]: 200,
   },
 
   attributeAdjustments:
@@ -66,7 +66,7 @@ export const bombLauncher2: ItemTemplate =
 };
 export const bombLauncher3: ItemTemplate =
 {
-  type: "bombLauncher3",
+  key: "bombLauncher3",
   get displayName()
   {
     return localize("bombLauncher3_displayName").toString();
@@ -79,7 +79,7 @@ export const bombLauncher3: ItemTemplate =
   techLevel: 3,
   buildCost:
   {
-    [moneyResource.type]: 300,
+    [moneyResource.key]: 300,
   },
 
   attributeAdjustments:
@@ -97,7 +97,7 @@ export const bombLauncher3: ItemTemplate =
 
 export const afterBurner1: ItemTemplate =
 {
-  type: "afterBurner1",
+  key: "afterBurner1",
   get displayName()
   {
     return localize("afterBurner1_displayName").toString();
@@ -110,7 +110,7 @@ export const afterBurner1: ItemTemplate =
   techLevel: 1,
   buildCost:
   {
-    [moneyResource.type]: 100,
+    [moneyResource.key]: 100,
   },
 
   attributeAdjustments:
@@ -154,7 +154,7 @@ export const afterBurner1: ItemTemplate =
 };
 export const afterBurner2: ItemTemplate =
 {
-  type: "afterBurner2",
+  key: "afterBurner2",
   get displayName()
   {
     return localize("afterBurner2_displayName").toString();
@@ -167,7 +167,7 @@ export const afterBurner2: ItemTemplate =
   techLevel: 2,
   buildCost:
   {
-    [moneyResource.type]: 200,
+    [moneyResource.key]: 200,
   },
 
   attributeAdjustments:
@@ -183,7 +183,7 @@ export const afterBurner2: ItemTemplate =
 };
 export const afterBurner3: ItemTemplate =
 {
-  type: "afterBurner3",
+  key: "afterBurner3",
   get displayName()
   {
     return localize("afterBurner3_displayName").toString();
@@ -196,7 +196,7 @@ export const afterBurner3: ItemTemplate =
   techLevel: 3,
   buildCost:
   {
-    [moneyResource.type]: 300,
+    [moneyResource.key]: 300,
   },
 
   attributeAdjustments:
@@ -213,7 +213,7 @@ export const afterBurner3: ItemTemplate =
 };
 export const shieldPlating1: ItemTemplate =
 {
-  type: "shieldPlating1",
+  key: "shieldPlating1",
   get displayName()
   {
     return localize("shieldPlating1_displayName").toString();
@@ -226,7 +226,7 @@ export const shieldPlating1: ItemTemplate =
   techLevel: 1,
   buildCost:
   {
-    [moneyResource.type]: 100,
+    [moneyResource.key]: 100,
   },
 
   attributeAdjustments:
@@ -242,7 +242,7 @@ export const shieldPlating1: ItemTemplate =
 };
 export const shieldPlating2: ItemTemplate =
 {
-  type: "shieldPlating2",
+  key: "shieldPlating2",
   get displayName()
   {
     return localize("shieldPlating2_displayName").toString();
@@ -255,7 +255,7 @@ export const shieldPlating2: ItemTemplate =
   techLevel: 2,
   buildCost:
   {
-    [moneyResource.type]: 200,
+    [moneyResource.key]: 200,
   },
 
   attributeAdjustments:
@@ -271,7 +271,7 @@ export const shieldPlating2: ItemTemplate =
 };
 export const shieldPlating3: ItemTemplate =
 {
-  type: "shieldPlating3",
+  key: "shieldPlating3",
   get displayName()
   {
     return localize("shieldPlating3_displayName").toString();
@@ -284,7 +284,7 @@ export const shieldPlating3: ItemTemplate =
   techLevel: 3,
   buildCost:
   {
-    [moneyResource.type]: 300,
+    [moneyResource.key]: 300,
   },
 
   attributeAdjustments:
@@ -303,13 +303,13 @@ export const shieldPlating3: ItemTemplate =
 
 export const itemTemplates =
 {
-  [bombLauncher1.type]: bombLauncher1,
-  [bombLauncher2.type]: bombLauncher2,
-  [bombLauncher3.type]: bombLauncher3,
-  [afterBurner1.type]: afterBurner1,
-  [afterBurner2.type]: afterBurner2,
-  [afterBurner3.type]: afterBurner3,
-  [shieldPlating1.type]: shieldPlating1,
-  [shieldPlating2.type]: shieldPlating2,
-  [shieldPlating3.type]: shieldPlating3,
+  [bombLauncher1.key]: bombLauncher1,
+  [bombLauncher2.key]: bombLauncher2,
+  [bombLauncher3.key]: bombLauncher3,
+  [afterBurner1.key]: afterBurner1,
+  [afterBurner2.key]: afterBurner2,
+  [afterBurner3.key]: afterBurner3,
+  [shieldPlating1.key]: shieldPlating1,
+  [shieldPlating2.key]: shieldPlating2,
+  [shieldPlating3.key]: shieldPlating3,
 };

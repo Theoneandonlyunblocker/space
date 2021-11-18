@@ -12,8 +12,8 @@ import { Resources, getBaseValuablenessOfResources } from "core/src/player/Playe
 // @ts-ignore 2417
 export class ExpandManufactoryCapacity extends EconomicObjective
 {
-  public static override readonly type = "ExpandManufactoryCapacity";
-  public readonly type = "ExpandManufactoryCapacity";
+  public static override readonly key = "ExpandManufactoryCapacity";
+  public readonly key = "ExpandManufactoryCapacity";
 
   public readonly target: Star;
 

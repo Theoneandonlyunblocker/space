@@ -69,17 +69,17 @@ export class TradeableItemsComponent extends React.Component<PropTypes, StateTyp
             resourceTypes: Object.keys(this.props.tradeableItems.resources),
             renderResource: resource => TradeResource(
             {
-              key: resource.type,
+              key: resource.key,
               resource: resource,
-              amount: this.props.tradeableItems.resources[resource.type].amount,
+              amount: this.props.tradeableItems.resources[resource.key].amount,
               maxAvailable: this.props.availableItems ?
-                this.props.availableItems.resources[resource.type].amount :
+                this.props.availableItems.resources[resource.key].amount :
                 undefined,
-              onClick: () => this.props.onItemClick("resources", resource.type),
-              onDragStart: () => this.props.onDragStart("resources", resource.type),
+              onClick: () => this.props.onItemClick("resources", resource.key),
+              onDragStart: () => this.props.onDragStart("resources", resource.key),
               onDragEnd: () => this.props.onDragEnd(),
               adjustAmount: this.props.adjustItemAmount ?
-                amount => this.props.adjustItemAmount("resources", resource.type, amount) :
+                amount => this.props.adjustItemAmount("resources", resource.key, amount) :
                 undefined,
             }),
           }),

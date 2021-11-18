@@ -16,7 +16,7 @@ import { closeAttack } from "../../combat/abilities/closeAttack";
 
 export const fighterSquadron: UnitTemplate =
 {
-  type: "fighterSquadron",
+  key: "fighterSquadron",
   get displayName()
   {
     return localize("fighterSquadron_displayName").toString();
@@ -36,7 +36,7 @@ export const fighterSquadron: UnitTemplate =
   isSquadron: true,
   buildCost:
 {
-  [moneyResource.type]: 100,
+  [moneyResource.key]: 100,
 },
   getIconSrc: getUnitIconSrc.bind(null, "fa"),
   maxHealthLevel: 0.7,

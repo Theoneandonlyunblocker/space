@@ -205,7 +205,7 @@ export class Player
 
       race:
       {
-        type: null,
+        key: null,
         description: null,
         displayName: Name.generateDummyName(),
 
@@ -912,7 +912,7 @@ export class Player
       revealedStarIds: revealedStarIds,
       identifiedUnitIds: identifiedUnitIds,
 
-      raceKey: this.race.type,
+      raceKey: this.race.key,
       isDead: this.isDead,
 
       diplomacyData: this.diplomacy ? this.diplomacy.serialize() : null,

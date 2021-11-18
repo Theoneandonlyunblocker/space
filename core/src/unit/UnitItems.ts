@@ -151,7 +151,7 @@ export class UnitItems
 
       if (!this.hasSlotForItem(toAdd))
       {
-        throw new Error(`Tried to add item ${toAdd.template.type} to unit without open slots.`);
+        throw new Error(`Tried to add item ${toAdd.template.key} to unit without open slots.`);
       }
 
       this.items.push(toAdd);

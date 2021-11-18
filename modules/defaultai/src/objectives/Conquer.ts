@@ -11,8 +11,8 @@ import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 
 export class Conquer extends TargetedFrontObjective
 {
-  public static override readonly type = "Conquer";
-  public readonly type = "Conquer";
+  public static override readonly key = "Conquer";
+  public readonly key = "Conquer";
 
   public readonly movePriority = MovePriority.Conquer;
 

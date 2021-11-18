@@ -12,9 +12,9 @@ export function getBuildableChassisForRace(race: RaceTemplate): TitanChassisTemp
 {
   const titansModuleData = (activeModuleData.nonCoreData.titans as NonCoreModuleData);
 
-  if (titansModuleData.getBuildableTitanChassisForRace[race.type])
+  if (titansModuleData.getBuildableTitanChassisForRace[race.key])
   {
-    return titansModuleData.getBuildableTitanChassisForRace[race.type]();
+    return titansModuleData.getBuildableTitanChassisForRace[race.key]();
   }
   else
   {
@@ -32,7 +32,7 @@ export function getBuildableChassis(manufactory: Manufactory): TitanChassisTempl
     ...ownerChassis,
     ...localChassis,
   ];
-  const uniqueChassis = getUniqueArrayKeys(allChassis, chassis => chassis.type);
+  const uniqueChassis = getUniqueArrayKeys(allChassis, chassis => chassis.key);
 
   const manufacturableChassis = uniqueChassis.filter(chassis =>
   {

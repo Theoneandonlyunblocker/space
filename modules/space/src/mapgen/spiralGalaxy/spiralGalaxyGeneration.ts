@@ -361,7 +361,7 @@ export const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOpti
   {
     star.baseIncome =
     {
-      [moneyResource.type]: randInt(4, 6) * 10,
+      [moneyResource.key]: randInt(4, 6) * 10,
     };
   });
 

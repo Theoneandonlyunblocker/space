@@ -25,7 +25,7 @@ const TitanComponentSelectionComponent: React.FunctionComponent<PropTypes> = pro
       {
         return ReactDOMElements.li(
         {
-          key: template.type,
+          key: template.key,
           className: "titan-component-selection-item",
           onClick: () => props.onSelect(template),
           title: `${template.displayName}\n\n${template.description}`

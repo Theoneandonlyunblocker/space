@@ -19,7 +19,7 @@ import {combatAbilityTemplates as spaceAbilities} from "modules/space/src/combat
 
 export const debugShip: UnitTemplate =
 {
-  type: "debugShip",
+  key: "debugShip",
   get displayName()
   {
     return localize("debugShip_displayName");
@@ -39,7 +39,7 @@ export const debugShip: UnitTemplate =
   isSquadron: false,
   buildCost:
 {
-  [moneyResource.type]: 0,
+  [moneyResource.key]: 0,
 },
   getIconSrc: getAssetSrc.bind(null, "placeHolder"),
   maxHealthLevel: 1,

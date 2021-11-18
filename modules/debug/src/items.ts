@@ -7,7 +7,7 @@ import { getItemIcon } from "modules/space/assets/items/itemAssets";
 
 export const debugItem: ItemTemplate =
 {
-  type: "debugItem",
+  key: "debugItem",
   get displayName()
   {
     return localize("debugItem_displayName").toString();
@@ -20,7 +20,7 @@ export const debugItem: ItemTemplate =
   techLevel: 1,
   buildCost:
   {
-    [moneyResource.type]: 0,
+    [moneyResource.key]: 0,
   },
 
   slot: "high",
@@ -42,7 +42,7 @@ export const debugItem: ItemTemplate =
             {
               income:
               {
-                [moneyResource.type]: {flat: 200},
+                [moneyResource.key]: {flat: 200},
               },
             },
           },
@@ -61,7 +61,7 @@ export const debugItem: ItemTemplate =
                   {
                     income:
                     {
-                      [moneyResource.type]: {multiplicativeMultiplier: 1.3333},
+                      [moneyResource.key]: {multiplicativeMultiplier: 1.3333},
                     },
                   },
                 },

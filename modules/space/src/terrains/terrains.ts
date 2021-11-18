@@ -4,7 +4,7 @@ import { localize } from "modules/space/localization/localize";
 
 export const noneTerrain: TerrainTemplate =
 {
-  type: "noneTerrain",
+  key: "noneTerrain",
   get displayName()
   {
     return localize("noneTerrain_displayName").toString();
@@ -13,7 +13,7 @@ export const noneTerrain: TerrainTemplate =
 
 export const asteroidsTerrain: TerrainTemplate =
 {
-  type: "asteroidsTerrain",
+  key: "asteroidsTerrain",
   get displayName()
   {
     return localize("asteroidsTerrain_displayName").toString();

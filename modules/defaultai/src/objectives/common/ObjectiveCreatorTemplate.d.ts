@@ -6,7 +6,7 @@ import {ObjectiveFamily} from "./ObjectiveFamily";
 
 export interface ObjectiveCreatorTemplate
 {
-  type: string;
+  key: string;
   family: ObjectiveFamily;
 
   getUpdatedObjectivesList: (mapEvaluator: MapEvaluator, allOngoingObjectives: Objective[]) => Objective[];

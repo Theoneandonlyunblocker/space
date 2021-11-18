@@ -14,7 +14,7 @@ import { availabilityFlags as commonAvailabilityFlags } from "modules/baselib/sr
 
 export const federationAlliance: RaceTemplate =
 {
-  type: "federationAlliance",
+  key: "federationAlliance",
   get displayName()
   {
     return localizeName("federationAlliance")();

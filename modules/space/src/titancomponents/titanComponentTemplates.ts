@@ -4,6 +4,6 @@ import { targetingSupercomputer } from "./templates/targetingSupercomputer";
 
 export const titanComponentTemplates =
 {
-  [monoblocArmor.type]: monoblocArmor,
-  [targetingSupercomputer.type]: targetingSupercomputer,
+  [monoblocArmor.key]: monoblocArmor,
+  [targetingSupercomputer.key]: targetingSupercomputer,
 };

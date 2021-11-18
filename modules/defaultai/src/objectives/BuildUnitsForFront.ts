@@ -19,8 +19,8 @@ import { coreManufacturableThingKinds } from "core/src/production/coreManufactur
 // TODO 2021.11.08 | is this fixable?
 export class BuildUnitsForFront extends EconomicObjective
 {
-  public static override readonly type = "BuildUnitsForFront";
-  public readonly type = "BuildUnitsForFront";
+  public static override readonly key = "BuildUnitsForFront";
+  public readonly key = "BuildUnitsForFront";
 
   protected override readonly ongoingMultiplier = 1;
 

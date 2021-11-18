@@ -10,8 +10,8 @@ import {Objective} from "./common/Objective";
 // @ts-ignore 2417
 export class DeclareWar extends DiplomaticObjective
 {
-  public static override readonly type = "DeclareWar";
-  public readonly type = "DeclareWar";
+  public static override readonly key = "DeclareWar";
+  public readonly key = "DeclareWar";
 
   public readonly target: Player;
 

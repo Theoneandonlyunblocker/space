@@ -2,7 +2,7 @@ import * as React from "react";
 import * as ReactDOMElements from "react-dom-factories";
 import { CombatEffectEditor } from "./CombatEffectEditor";
 import { Unit } from "core/src/unit/Unit";
-import { UnitEditor } from "../uniteditor/UnitEditor";
+// import { UnitEditor } from "../uniteditor/UnitEditor";
 import { DebugBattle } from "./DebugBattle";
 import { Battle } from "core/src/battle/Battle";
 import { generateRandomBattle } from "./generateRandomBattle";
@@ -33,14 +33,14 @@ const CombatTesterComponent: React.FunctionComponent<PropTypes> = props =>
 
   const tabs: TabInfo[] =
   [
-    {
-      key: "units",
-      label: "Units",
-      render: () => UnitEditor(
-      {
-        unit: selectedUnit,
-      }),
-    },
+    // {
+    //   key: "units",
+    //   label: "Units",
+    //   render: () => UnitEditor(
+    //   {
+    //     unit: selectedUnit,
+    //   }),
+    // },
     {
       key: "effects",
       label: "Effects",

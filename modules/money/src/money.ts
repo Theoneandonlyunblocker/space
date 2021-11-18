@@ -16,7 +16,7 @@ export const money: GameModule =
   {
     moduleData.templates.resources.copyTemplates(
     {
-      [moneyResource.type]: moneyResource,
+      [moneyResource.key]: moneyResource,
     });
   },
   // TODO 2019.10.04 | these never get triggered since this module isn't part of saves
@@ -40,7 +40,7 @@ function convertPlayerMoneyToResources(saveData: any): void
 {
   saveData.gameData.players.forEach((playerSaveData: any) =>
   {
-    playerSaveData.resources[moneyResource.type] = playerSaveData.money;
+    playerSaveData.resources[moneyResource.key] = playerSaveData.money;
     delete playerSaveData.money;
   });
 }
@@ -51,7 +51,7 @@ function convertStarBaseIncomeToResources(saveData: any): void
     const baseMoneyIncome = starSaveData.baseIncome;
     starSaveData.baseIncome =
     {
-      [moneyResource.type]: baseMoneyIncome,
+      [moneyResource.key]: baseMoneyIncome,
     };
   });
 }

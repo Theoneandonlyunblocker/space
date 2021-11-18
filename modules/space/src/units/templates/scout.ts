@@ -15,7 +15,7 @@ import { rangedAttack } from "../../combat/abilities/rangedAttack";
 
 export const scout: UnitTemplate =
 {
-  type: "scout",
+  key: "scout",
   get displayName()
   {
     return localize("scout_displayName").toString();
@@ -35,7 +35,7 @@ export const scout: UnitTemplate =
   isSquadron: true,
   buildCost:
 {
-  [moneyResource.type]: 200,
+  [moneyResource.key]: 200,
 },
   getIconSrc: getUnitIconSrc.bind(null, "sc"),
   maxHealthLevel: 0.6,

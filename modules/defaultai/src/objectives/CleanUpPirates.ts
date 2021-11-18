@@ -11,8 +11,8 @@ import {TargetedFrontObjective} from "./common/TargetedFrontObjective";
 
 export class CleanUpPirates extends TargetedFrontObjective
 {
-  public static override readonly type = "CleanUpPirates";
-  public readonly type = "CleanUpPirates";
+  public static override readonly key = "CleanUpPirates";
+  public readonly key = "CleanUpPirates";
 
   public readonly movePriority = MovePriority.CleanUpPirates;
 

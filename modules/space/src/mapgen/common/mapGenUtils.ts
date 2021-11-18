@@ -364,8 +364,8 @@ export function distributeDistributablesPerSector<T extends Distributable>(
     const distributables = distributablesByDistributionGroup[distributionGroup];
     distributables.forEach(distributable =>
     {
-      probabilityWeights[distributable.type] = distributable.distributionData.weight;
-      allDistributablesByType[distributable.type] = distributable;
+      probabilityWeights[distributable.key] = distributable.distributionData.weight;
+      allDistributablesByType[distributable.key] = distributable;
     });
   }
 
@@ -389,7 +389,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
       return linkedNeighborRegions.some(linkedRegion =>
       {
         return(addedDistributablesByRegionId[linkedRegion.id] &&
-          addedDistributablesByRegionId[linkedRegion.id][candidate.type]);
+          addedDistributablesByRegionId[linkedRegion.id][candidate.key]);
       });
     });
 
@@ -404,7 +404,7 @@ export function distributeDistributablesPerSector<T extends Distributable>(
 
     candidates.forEach(candidate =>
     {
-      candidatesByWeight[candidate.type] = alreadyAddedByWeight[candidate.type];
+      candidatesByWeight[candidate.key] = alreadyAddedByWeight[candidate.key];
     });
 
     const selectedKey = getRandomKeyWithWeights(candidatesByWeight);

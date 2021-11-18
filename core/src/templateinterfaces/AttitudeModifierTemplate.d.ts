@@ -2,7 +2,7 @@ import {DiplomacyEvaluation} from "../diplomacy/DiplomacyEvaluation";
 
 export interface AttitudeModifierTemplate
 {
-  type: string;
+  key: string;
   displayName: string;
   duration: number;
 

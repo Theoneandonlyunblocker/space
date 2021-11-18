@@ -28,15 +28,15 @@ const ResourcesWithIncomeComponent: React.FunctionComponent<PropTypes> = props =
         resourceTypes: allResourceTypes,
         renderResource: resource =>
         {
-          const amount = props.resources[resource.type] || 0;
+          const amount = props.resources[resource.key] || 0;
           const income = props.income ?
-            props.income[resource.type] || 0 :
+            props.income[resource.key] || 0 :
             undefined;
 
           return ReactDOMElements.div(
           {
             className: "resource",
-            key: resource.type,
+            key: resource.key,
           },
             ResourceIcon({resource: resource}),
             ResourceAmount({resource: resource, amount: amount}),

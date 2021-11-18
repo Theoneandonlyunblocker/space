@@ -34,16 +34,16 @@ export const debug: GameModule =
   {
     moduleData.templates.buildings.copyTemplates(
     {
-      [nationalEpic.type]: nationalEpic,
-      [thePyramids.type]: thePyramids,
+      [nationalEpic.key]: nationalEpic,
+      [thePyramids.key]: thePyramids,
     });
     moduleData.templates.units.copyTemplates(
     {
-      [debugShip.type]: debugShip,
+      [debugShip.key]: debugShip,
     });
     moduleData.templates.items.copyTemplates(
     {
-      [debugItem.type]: debugItem,
+      [debugItem.key]: debugItem,
     });
     moduleData.templates.combatAbilities.copyTemplates(
     {
@@ -57,8 +57,8 @@ export const debug: GameModule =
 
     addTitanChassisToModuleData(moduleData,
     {
-      [debugChassis.type]: debugChassis,
-      [debugChassis2.type]: debugChassis2,
+      [debugChassis.key]: debugChassis,
+      [debugChassis2.key]: debugChassis2,
     });
   },
 };

@@ -7,7 +7,7 @@ import { localize } from "../localization/localize";
 
 export const thePyramids: BuildingTemplate =
 {
-  type: "thePyramids",
+  key: "thePyramids",
   get displayName()
   {
     return localize("thePyramids_displayName").toString();
@@ -24,16 +24,16 @@ export const thePyramids: BuildingTemplate =
 
   onBuild: (star, player) =>
   {
-    player.addResources({[moneyResource.type]: 1000});
+    player.addResources({[moneyResource.key]: 1000});
   },
 
   buildCost:
   {
-    [testResource1.type]: 1,
-    [testResource2.type]: 1,
-    [testResource3.type]: 1,
-    [testResource4.type]: 1,
-    [testResource5.type]: 1,
+    [testResource1.key]: 1,
+    [testResource2.key]: 1,
+    [testResource3.key]: 1,
+    [testResource4.key]: 1,
+    [testResource5.key]: 1,
   },
   mapLevelModifiers:
   [
@@ -67,7 +67,7 @@ export const thePyramids: BuildingTemplate =
                         key: "localTombGuard",
                         self:
                         {
-                          income: {[testResource5.type]: {flat: 10}},
+                          income: {[testResource5.key]: {flat: 10}},
                           adjustments: {vision: {flat: 3}},
                         },
                       },
@@ -90,7 +90,7 @@ export const thePyramids: BuildingTemplate =
                               key: "locustSwarm",
                               self:
                               {
-                                income: {[moneyResource.type]: {multiplicativeMultiplier: 0}}
+                                income: {[moneyResource.key]: {multiplicativeMultiplier: 0}}
                               },
                             },
                           ],
@@ -117,7 +117,7 @@ export const thePyramids: BuildingTemplate =
                   {
                     income:
                     {
-                      [testResource3.type]: {flat: 333},
+                      [testResource3.key]: {flat: 333},
                     },
                   },
                 },
@@ -144,7 +144,7 @@ export const thePyramids: BuildingTemplate =
 };
 export const nationalEpic: BuildingTemplate =
 {
-  type: "nationalEpic",
+  key: "nationalEpic",
   get displayName()
   {
     return localize("nationalEpic_displayName").toString();
@@ -163,12 +163,12 @@ export const nationalEpic: BuildingTemplate =
   {
     player.addResources(
     {
-      [moneyResource.type]: 999,
-      [testResource1.type]: 2,
-      [testResource2.type]: 2,
-      [testResource3.type]: 2,
-      [testResource4.type]: 2,
-      [testResource5.type]: 2,
+      [moneyResource.key]: 999,
+      [testResource1.key]: 2,
+      [testResource2.key]: 2,
+      [testResource3.key]: 2,
+      [testResource4.key]: 2,
+      [testResource5.key]: 2,
     });
   },
   mapLevelModifiers:
@@ -185,7 +185,7 @@ export const nationalEpic: BuildingTemplate =
             {
               income:
               {
-                [moneyResource.type]: {multiplicativeMultiplier: 0.5},
+                [moneyResource.key]: {multiplicativeMultiplier: 0.5},
               },
               adjustments:
               {
@@ -202,7 +202,7 @@ export const nationalEpic: BuildingTemplate =
                   {
                     income:
                     {
-                      [testResource1.type]: {flat: 10},
+                      [testResource1.key]: {flat: 10},
                     },
                   },
                 },
@@ -218,7 +218,7 @@ export const nationalEpic: BuildingTemplate =
             {
               income:
               {
-                [testResource2.type]: {flat: 100},
+                [testResource2.key]: {flat: 100},
               },
             },
           },
@@ -229,7 +229,7 @@ export const nationalEpic: BuildingTemplate =
 
   buildCost:
   {
-    [moneyResource.type]: 0,
+    [moneyResource.key]: 0,
   },
 
   maxBuiltAtLocation: 1,

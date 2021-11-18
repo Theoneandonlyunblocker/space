@@ -18,7 +18,7 @@ import { initialGuard } from "../../passiveskills/templates/initialGuard";
 
 export const shieldBoat: UnitTemplate =
 {
-  type: "shieldBoat",
+  key: "shieldBoat",
   get displayName()
   {
     return localize("shieldBoat_displayName").toString();
@@ -38,7 +38,7 @@ export const shieldBoat: UnitTemplate =
   isSquadron: true,
   buildCost:
 {
-  [moneyResource.type]: 200,
+  [moneyResource.key]: 200,
 },
   getIconSrc: getUnitIconSrc.bind(null, "sh"),
   maxHealthLevel: 0.9,

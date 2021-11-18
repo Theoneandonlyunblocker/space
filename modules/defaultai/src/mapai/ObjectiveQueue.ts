@@ -51,7 +51,7 @@ export class ObjectiveQueue
   {
     this.executionFailureTimeoutHandle = setTimeout(() =>
     {
-      console.warn(`Objective of type ${this.currentObjective.type} failed to trigger finish callback for objective execution after ${delay}ms`);
+      console.warn(`Objective of type ${this.currentObjective.key} failed to trigger finish callback for objective execution after ${delay}ms`);
       this.clearExecutionFailureTimeout();
     }, delay);
   }

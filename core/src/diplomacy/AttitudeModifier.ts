@@ -56,7 +56,7 @@ export class AttitudeModifier
     }
     else
     {
-      throw new Error(`Attitude modifier ${this.template.type} couldn't initialize with a strength value.`);
+      throw new Error(`Attitude modifier ${this.template.key} couldn't initialize with a strength value.`);
     }
   }
 
@@ -104,7 +104,7 @@ export class AttitudeModifier
   {
     const data: AttitudeModifierSaveData =
     {
-      templateType: this.template.type,
+      templateType: this.template.key,
       startTurn: this.startTurn,
       endTurn: this.endTurn,
       strength: this.strength,
@@ -126,7 +126,7 @@ export class AttitudeModifier
     }
     else
     {
-      throw new Error(`Attitude modifier ${this.template.type} has no constant effect ` +
+      throw new Error(`Attitude modifier ${this.template.key} has no constant effect ` +
         "or effect from evaluation defined");
     }
 
@@ -142,7 +142,7 @@ export class AttitudeModifier
     {
       if (!isFinite(this.template.decayRate))
       {
-        throw new Error(`Attitude modifier ${this.template.type} has finite duration but no decayRate set.`);
+        throw new Error(`Attitude modifier ${this.template.key} has finite duration but no decayRate set.`);
       }
       else
       {

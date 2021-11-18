@@ -10,7 +10,7 @@ import { AvailabilityData } from "./AvailabilityData";
 
 export interface ItemTemplate extends ManufacturableThing
 {
-  type: string;
+  key: string;
   displayName: string;
   description: string;
   getIcon: () => HTMLElement;
