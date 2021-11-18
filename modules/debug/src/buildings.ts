@@ -74,6 +74,31 @@ export const thePyramids: BuildingTemplate =
                     ],
                   },
                 },
+                {
+                  key: "graveRobber",
+                  propagations:
+                  {
+                    global:
+                    [
+                      {
+                        key: "curseOfTheMummy",
+                        propagations:
+                        {
+                          players:
+                          [
+                            {
+                              key: "locustSwarm",
+                              self:
+                              {
+                                income: {[moneyResource.type]: {multiplicativeMultiplier: 0}}
+                              },
+                            },
+                          ],
+                        },
+                      },
+                    ],
+                  },
+                },
               ],
             },
           },

@@ -23,7 +23,7 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
   {
     const propagations: SimpleMapLevelModifiersPropagation<GlobalModifier>[] = [];
 
-    if (toPropagate.propagations && toPropagate.propagations.stars)
+    if (toPropagate.propagations?.stars)
     {
       this.game.galaxyMap.stars.forEach(location =>
       {
@@ -36,7 +36,7 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
         }));
       });
     }
-    if (toPropagate.propagations && toPropagate.propagations.units)
+    if (toPropagate.propagations?.units)
     {
       this.game.getAllUnits().forEach(unit =>
       {
@@ -45,6 +45,19 @@ export class GlobalModifiersCollection extends MapLevelModifiersCollection<Globa
           return {
             template: modifierTemplate,
             target: unit.mapLevelModifiers,
+          };
+        }));
+      });
+    }
+    if (toPropagate.propagations?.players)
+    {
+      this.game.getLiveMajorPlayers().forEach(player =>
+      {
+        propagations.push(...toPropagate.propagations.players.map(modifierTemplate =>
+        {
+          return {
+            template: modifierTemplate,
+            target: player.modifiers,
           };
         }));
       });
