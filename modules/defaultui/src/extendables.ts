@@ -84,21 +84,21 @@ const extendables: Extendables =
   },
   unlockableThingKinds:
   {
-    building:
+    buildings:
     {
       get displayName()
       {
         return localize("techUnlock_buildings").toString();
       },
     },
-    item:
+    items:
     {
       get displayName()
       {
         return localize("techUnlock_items").toString();
       },
     },
-    unit:
+    units:
     {
       get displayName()
       {
