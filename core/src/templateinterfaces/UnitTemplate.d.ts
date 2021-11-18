@@ -6,7 +6,6 @@ import {ProbabilityDistributions} from "./ProbabilityDistribution";
 import {UnitArchetype} from "./UnitArchetype";
 import {UnitDrawingFunction} from "./UnitDrawingFunction";
 import { Resources } from "../player/PlayerResources";
-import { UnitModifier } from "../maplevelmodifiers/UnitModifier";
 import { AvailabilityData } from "./AvailabilityData";
 import { CombatAbilityTemplate } from "./CombatAbilityTemplate";
 
