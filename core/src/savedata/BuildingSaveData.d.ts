@@ -3,7 +3,7 @@ import { Resources } from "../player/PlayerResources";
 
 export interface BuildingSaveData
 {
-  templateType: string;
+  template: string;
   id: number;
 
   locationId: number;

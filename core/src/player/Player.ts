@@ -912,7 +912,7 @@ export class Player
       revealedStarIds: revealedStarIds,
       identifiedUnitIds: identifiedUnitIds,
 
-      raceKey: this.race.key,
+      race: this.race.key,
       isDead: this.isDead,
 
       diplomacyData: this.diplomacy ? this.diplomacy.serialize() : null,

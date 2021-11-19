@@ -11,11 +11,11 @@ import { NameSaveData } from "core/src/savedata/NameSaveData";
 
 export type TitanPrototypeSaveData =
 {
-  type: string;
+  key: string;
   name: NameSaveData;
   wasAiGenerated: boolean;
-  chassisType: string;
-  componentTypes: string[];
+  chassis: string;
+  components: string[];
 };
 
 export class TitanPrototype implements ManufacturableThing
@@ -36,7 +36,7 @@ export class TitanPrototype implements ManufacturableThing
 
   constructor(props:
   {
-    type?: string;
+    key?: string;
     wasAiGenerated: boolean;
     name: Name;
     chassis: TitanChassisTemplate;
@@ -45,7 +45,7 @@ export class TitanPrototype implements ManufacturableThing
   {
     const idGenerators = (activeModuleData.nonCoreData.titans as NonCoreModuleData).idGenerators;
 
-    this.key = props.type || "" + idGenerators.titanPrototype++;
+    this.key = props.key || "" + idGenerators.titanPrototype++;
 
     this.wasAiGenerated = props.wasAiGenerated;
     this.name = props.name;
@@ -64,22 +64,22 @@ export class TitanPrototype implements ManufacturableThing
 
     return new TitanPrototype(
     {
-      type: saveData.type,
+      key: saveData.key,
       name: Name.fromData(saveData.name),
       wasAiGenerated: saveData.wasAiGenerated,
-      chassis: titansModuleData.titanChassis[saveData.chassisType],
-      components: saveData.componentTypes.map(componentType => titansModuleData.titanComponents[componentType]),
+      chassis: titansModuleData.titanChassis[saveData.chassis],
+      components: saveData.components.map(componentType => titansModuleData.titanComponents[componentType]),
     });
   }
 
   public serialize(): TitanPrototypeSaveData
   {
     return {
-      type: this.key,
+      key: this.key,
       name: this.name.serialize(),
       wasAiGenerated: this.wasAiGenerated,
-      chassisType: this.chassis.key,
-      componentTypes: this.components.map(component => component.key),
+      chassis: this.chassis.key,
+      components: this.components.map(component => component.key),
     };
   }
 }

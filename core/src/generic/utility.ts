@@ -692,3 +692,19 @@ export function loadCss(url: string, baseUrl: string): void
 
   document.getElementsByTagName("head")[0].appendChild(link);
 }
+export function remapObjectKeys<
+  T extends {[key: string]: any},
+  K extends Partial<Record<keyof T, string>>
+>(target: T, keyReplacements: K)
+{
+  Object.keys(keyReplacements).forEach(oldKey =>
+  {
+    const newKey = keyReplacements[oldKey];
+    target[newKey] = target[oldKey];
+  });
+
+  return target as unknown as (
+    Omit<T, keyof K> &
+    {[Prop in keyof T as K[Prop]]: T[Prop]}
+  );
+}

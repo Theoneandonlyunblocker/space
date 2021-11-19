@@ -7,7 +7,7 @@ import { NameSaveData } from "./NameSaveData";
 
 export interface UnitSaveData
 {
-  templateType: string;
+  template: string;
   id: number;
   name: NameSaveData;
   maxHealth: number;
@@ -16,8 +16,8 @@ export interface UnitSaveData
   maxMovePoints: number;
   offensiveBattlesFoughtThisTurn: number;
   baseAttributes: UnitAttributesObject;
-  abilityTypes: string[];
-  passiveSkillTypes: string[];
+  abilities: string[];
+  passiveSkills: string[];
   abilityUpgrades: AbilityUpgradeSaveData[];
   learnableAbilities: string[];
   experienceForCurrentLevel: number;
@@ -26,6 +26,6 @@ export interface UnitSaveData
   battleStats: UnitBattleStatsSaveData;
 
   fleetId?: number;
-  portraitKey?: string;
-  raceKey?: string;
+  portrait?: string;
+  race?: string;
 }

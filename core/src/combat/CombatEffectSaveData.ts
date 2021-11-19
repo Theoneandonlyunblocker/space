@@ -1,6 +1,6 @@
 export interface CombatEffectSaveData
 {
   id: number;
-  templateKey: string;
+  template: string;
   strength: number;
 }

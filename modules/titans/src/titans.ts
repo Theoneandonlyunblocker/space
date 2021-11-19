@@ -3,7 +3,7 @@ import {Extendables as DefaultUiExtendables, ManufacturableThingKindUiData} from
 import {GameModule} from "core/src/modules/GameModule";
 import
 {
-  loadCss,
+  loadCss, remapObjectKeys,
 } from "core/src/generic/utility";
 
 import * as moduleInfo from "../moduleInfo.json";
@@ -16,6 +16,9 @@ import { cssSources } from "../assets/assets";
 import { buildingTemplates } from "./buildings/buildingTemplates";
 import { manufacturableThingKinds } from "./manufacturableThingKinds";
 import {  TitanPrototype } from "./TitanPrototype";
+import * as semver from "core/src/generic/versions";
+import * as debug from "core/src/app/debug";
+import { OutdatedFullSaveData } from "core/src/saves/reviveSaveData";
 
 
 type TitansModuleSaveData =
@@ -63,6 +66,38 @@ export const titans: GameModule<TitansModuleSaveData> =
       getManufacturableThings: manufactory => [],
       render: props => TitanManufacturingOverview(props),
     };
+  },
+  reviveGameData: saveData =>
+  {
+    const dataVersion = saveData.appVersion;
+
+    if (semver.lt(dataVersion, "0.7.0"))
+    {
+      debug.log("saves", `Executing stored core save data reviver function 'remapTitanSaveDataKeys'`);
+      remapTitanSaveDataKeys();
+    }
+
+    function remapTitanSaveDataKeys()
+    {
+      (saveData as OutdatedFullSaveData).gameData.galaxyMap.stars.filter(star =>
+      {
+        return Boolean(star.manufactory);
+      }).forEach(star =>
+      {
+        star.manufactory.buildQueue.filter(queuedThing =>
+        {
+          return queuedThing.kind === manufacturableThingKinds.titanFromPrototype.key;
+        }).forEach(queuedTitanPrototype =>
+        {
+          remapObjectKeys(queuedTitanPrototype.data,
+          {
+            type: "key",
+            chassisType: "chassis",
+            componentTypes: "components",
+          });
+        });
+      });
+    }
   },
   serializeModuleSpecificData: (moduleData) =>
   {

@@ -104,7 +104,7 @@ export class AttitudeModifier
   {
     const data: AttitudeModifierSaveData =
     {
-      templateType: this.template.key,
+      template: this.template.key,
       startTurn: this.startTurn,
       endTurn: this.endTurn,
       strength: this.strength,

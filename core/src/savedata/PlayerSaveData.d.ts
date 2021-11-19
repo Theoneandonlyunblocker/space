@@ -28,7 +28,7 @@ export interface PlayerSaveData
   revealedStarIds: number[];
   identifiedUnitIds: number[];
   researchByTechnology?: PlayerTechnologySaveData;
-  raceKey: string;
+  race: string;
   isDead: boolean;
 
   isAi: boolean;

@@ -5,9 +5,10 @@ import {app} from "../app/App"; // TODO global
 import {FullSaveData} from "../savedata/FullSaveData";
 import * as semver from "../generic/versions";
 import * as debug from "../app/debug";
-import { getFunctionName } from "../generic/utility";
+import { flatten2dArray, getFunctionName } from "../generic/utility";
 import {activeModuleStore} from "../modules/ModuleStore";
 import { ModuleSaveData } from "core/src/modules/GameModule";
+import { AttitudeModifierSaveData } from "../savedata/AttitudeModifierSaveData";
 
 
 // data is cloned at start of reviving process
@@ -19,7 +20,7 @@ export type ReviversByVersion =
   [version: string]: Reviver[];
 };
 
-type OutdatedFullSaveData = FullSaveData; // useful to keep them nominally distinct
+export type OutdatedFullSaveData = FullSaveData; // useful to keep them nominally distinct
 
 export function fetchNeededReviversForData(
   dataVersion: string,
@@ -156,6 +157,100 @@ const coreSaveDataRevivers: ReviversByVersion =
         };
       });
     }
+  ],
+  "0.6.0":
+  [
+    // easier to read and should be implicit anyway
+    // ie templateType => template
+    function removeSuffix_Type_FromSaveDataKeys(saveData: OutdatedFullSaveData)
+    {
+      const units = saveData.gameData.units;
+      const buildings = saveData.gameData.galaxyMap.stars.map(star => star.buildings);
+      const aiControllers = saveData.gameData.players.filter(player =>
+      {
+        return Boolean(player.AiController);
+      }).map(player =>
+      {
+        return player.AiController;
+      });
+      const attitudeModifiers = saveData.gameData.players.filter(player =>
+      {
+        return Boolean(player.diplomacyData);
+      }).map(player =>
+      {
+        const modifiersByPlayer = player.diplomacyData.attitudeModifiersByPlayer;
+
+        return Object.keys(modifiersByPlayer).reduce((allModifiers: AttitudeModifierSaveData[], playerId) =>
+        {
+          const modifiersForPlayer = modifiersByPlayer[playerId];
+
+          return [...allModifiers, ...modifiersForPlayer];
+        }, []);
+      });
+      const items = saveData.gameData.items;
+
+      [
+        ...units,
+        ...aiControllers,
+        ...flatten2dArray(buildings),
+        ...flatten2dArray(attitudeModifiers),
+        ...items,
+      ].forEach((thingWithTemplateType: any) =>
+      {
+        thingWithTemplateType.template = thingWithTemplateType.templateType;
+      });
+
+      saveData.gameData.galaxyMap.stars.forEach((star: any) =>
+      {
+        star.resource = star.resourceType;
+        star.race = star.raceType;
+        star.terrain = star.terrainType;
+      });
+
+      saveData.gameData.units.forEach((unit: any) =>
+      {
+        unit.abilities = unit.abilityTypes;
+        unit.passiveSkills = unit.passiveSkillTypes;
+      });
+    },
+
+    // easier to read and should be implicit anyway
+    // ie portraitKey => portrait
+    function removeSuffix_Key_FromSaveDataKeys(saveData: OutdatedFullSaveData)
+    {
+      saveData.gameData.units.forEach((unit: any) =>
+      {
+        unit.portrait = unit.portraitKey;
+        unit.race = unit.raceKey;
+      });
+
+      saveData.gameData.players.forEach((player: any) =>
+      {
+        player.race = player.raceKey;
+      });
+
+      saveData.gameData.players.forEach((player: any) =>
+      {
+        player.flag.emblems.forEach((emblem: any) =>
+        {
+          emblem.template = emblem.templateKey;
+        });
+      });
+
+      saveData.gameData.units.forEach((unit: any) =>
+      {
+        if (unit.battleStats.queuedAction)
+        {
+          unit.battleStats.queuedAction.ability =
+            unit.battleStats.queuedAction.abilityTemplateKey;
+        }
+      });
+
+      saveData.gameData.notificationStore.notifications.forEach((notification: any) =>
+      {
+        notification.template = notification.templateKey;
+      });
+    },
   ],
 };
 

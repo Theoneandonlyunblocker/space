@@ -1,6 +1,6 @@
 export interface AttitudeModifierSaveData
 {
-  templateType: string;
+  template: string;
   startTurn: number;
   endTurn: number;
   strength: number;

@@ -27,7 +27,7 @@ export class CombatEffectMap<Phase extends string = CorePhase>
     data.effects.forEach(effectSaveData =>
     {
       const effect = CombatEffect.fromData(effectSaveData, effectTemplates);
-      map[effectSaveData.templateKey] = effect;
+      map[effectSaveData.template] = effect;
     });
 
     return map;

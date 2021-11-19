@@ -96,7 +96,7 @@ export class Emblem
     const data: EmblemSaveData =
     {
       colors: this.colors.map(color => color.serialize()),
-      templateKey: this.template.key,
+      template: this.template.key,
     };
 
     return data;

@@ -1,7 +1,7 @@
 export interface NotificationSaveData<P = any>
 {
   id: number;
-  templateKey: string;
+  template: string;
   turn: number;
   involvedPlayerIds: number[];
   locationId: number | undefined;

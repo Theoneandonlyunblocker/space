@@ -15,11 +15,11 @@ export interface StarSaveData
   linksFromIds: number[];
   seed: string;
 
-  resourceType?: string;
+  resource?: string;
   manufactory?: ManufactorySaveData;
 
   buildings: BuildingSaveData[];
 
-  raceType: string;
-  terrainType: string;
+  race: string;
+  terrain: string;
 }

@@ -1,7 +1,7 @@
 export interface ItemSaveData
 {
   id: number;
-  templateType: string;
+  template: string;
 
   positionInUnit?: number;
 }

@@ -1,6 +1,6 @@
 export interface QueuedActionSaveData
 {
-  abilityTemplateKey: string;
+  ability: string;
   targetId: number;
   turnsPrepared: number;
   timesInterrupted: number;

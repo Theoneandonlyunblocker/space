@@ -46,7 +46,7 @@ export class Notification<P = any, D = any>
     const data: NotificationSaveData<D> =
     {
       id: this.id,
-      templateKey: this.template.key,
+      template: this.template.key,
       turn: this.turn,
       involvedPlayerIds: this.involvedPlayers.map(player => player.id),
       locationId: this.location ? this.location.id : undefined,

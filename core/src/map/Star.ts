@@ -805,13 +805,13 @@ export class Star implements Point
 
       buildings: this.buildings.serialize(),
 
-      raceType: this.localRace.key,
-      terrainType: this.terrain.key,
+      race: this.localRace.key,
+      terrain: this.terrain.key,
     };
 
     if (this.resource)
     {
-      data.resourceType = this.resource.key;
+      data.resource = this.resource.key;
     }
 
     if (this.manufactory)

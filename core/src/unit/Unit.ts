@@ -254,7 +254,7 @@ export class Unit
   {
     const unit = new Unit(
     {
-      template: activeModuleData.templatesByImplementation.unitLike.get(data.templateType),
+      template: activeModuleData.templatesByImplementation.unitLike.get(data.template),
 
       id: data.id,
       name: Name.fromData(data.name),
@@ -268,11 +268,11 @@ export class Unit
       maxMovePoints: data.maxMovePoints,
       offensiveBattlesFoughtThisTurn: data.offensiveBattlesFoughtThisTurn,
 
-      abilities: data.abilityTypes.map(templateType =>
+      abilities: data.abilities.map(templateType =>
       {
         return activeModuleData.templates.combatAbilities.get(templateType);
       }),
-      passiveSkills: data.passiveSkillTypes.map(templateType =>
+      passiveSkills: data.passiveSkills.map(templateType =>
       {
         return activeModuleData.templates.passiveSkills.get(templateType);
       }),
@@ -305,11 +305,11 @@ export class Unit
       maxItemSlots: data.items.maxItemSlots,
       items: [],
 
-      portrait: data.portraitKey ?
-        activeModuleData.templates.portraits.get(data.portraitKey) :
+      portrait: data.portrait ?
+        activeModuleData.templates.portraits.get(data.portrait) :
         undefined,
-      race: data.raceKey ?
-        activeModuleData.templates.races.get(data.raceKey) :
+      race: data.race ?
+        activeModuleData.templates.races.get(data.race) :
         undefined,
     });
 
@@ -819,7 +819,7 @@ export class Unit
   {
     const data: UnitSaveData =
     {
-      templateType: this.template.key,
+      template: this.template.key,
       id: this.id,
       name: this.name,
 
@@ -832,8 +832,8 @@ export class Unit
       offensiveBattlesFoughtThisTurn: this.offensiveBattlesFoughtThisTurn,
 
       baseAttributes: this.baseAttributes.serialize(),
-      abilityTypes: this.abilities.map(abilityTemplate => abilityTemplate.key),
-      passiveSkillTypes: this.passiveSkills.map(passiveSkillTemplate => passiveSkillTemplate.key),
+      abilities: this.abilities.map(abilityTemplate => abilityTemplate.key),
+      passiveSkills: this.passiveSkills.map(passiveSkillTemplate => passiveSkillTemplate.key),
 
       abilityUpgrades: Object.keys(this.abilityUpgrades).map(sourceAbilityType =>
       {
@@ -854,8 +854,8 @@ export class Unit
       items: this.items.serialize(),
       battleStats: this.battleStats.serialize(),
 
-      portraitKey: this.portrait.key,
-      raceKey: this.race.key,
+      portrait: this.portrait.key,
+      race: this.race.key,
     };
 
     if (this.fleet)
