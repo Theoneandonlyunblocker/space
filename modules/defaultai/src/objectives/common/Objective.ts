@@ -11,10 +11,6 @@ export abstract class Objective
 {
   // all this static stuff should be abstract and static, but not currently possible in typescript
   // https://github.com/Microsoft/TypeScript/issues/14600
-
-  // TODO 2017.02.28 | family and type might be a bit confusingly named here
-  // type is used like this for templates, so it's used here as well at least for now
-  // TODO 2021.11.08 | rename type => key
   public static readonly key: string;
   public static readonly family: ObjectiveFamily;
 
