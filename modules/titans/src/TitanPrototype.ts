@@ -67,8 +67,8 @@ export class TitanPrototype implements ManufacturableThing
       key: saveData.key,
       name: Name.fromData(saveData.name),
       wasAiGenerated: saveData.wasAiGenerated,
-      chassis: titansModuleData.titanChassis[saveData.chassis],
-      components: saveData.components.map(componentType => titansModuleData.titanComponents[componentType]),
+      chassis: titansModuleData.titanChassis.get(saveData.chassis),
+      components: saveData.components.map(componentType => titansModuleData.titanComponents.get(componentType)),
     });
   }
 
