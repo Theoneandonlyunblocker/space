@@ -66,8 +66,11 @@ export class EmergencySaveGameComponent extends React.Component<PropTypes, State
           ReactDOMElements.form(
           {
             className: "emergency-save-game-form",
-            onSubmit: this.handleSave,
-            action: "javascript:void(0);",
+            onSubmit: e =>
+            {
+              e.preventDefault();
+              this.handleSave();
+            },
           },
             ReactDOMElements.input(
             {

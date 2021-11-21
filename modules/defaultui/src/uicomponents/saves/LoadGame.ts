@@ -96,8 +96,11 @@ export class LoadGameComponent extends React.Component<PropTypes, StateType>
         ReactDOMElements.form(
         {
           className: "save-game-form",
-          onSubmit: this.handleLoad,
-          action: "javascript:void(0);",
+          onSubmit: e =>
+          {
+            e.preventDefault();
+            this.handleLoad();
+          },
         },
           ReactDOMElements.label(
           {
