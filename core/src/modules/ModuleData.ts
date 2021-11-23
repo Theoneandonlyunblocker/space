@@ -45,7 +45,7 @@ import { CombatEffectTemplate } from "../combat/CombatEffectTemplate";
 import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
 import { CombatActionListenerFetcher, CombatActionFetcher } from "../combat/CombatActionFetcher";
 import { coreCombatPhases } from "../combat/core/coreCombatPhases";
-import { coreCombatActionListenerFetchers } from "../combat/core/coreCombatActionListenerFetchers";
+import { coreCombatActionFetchers, coreCombatActionListenerFetchers } from "../combat/core/coreFetchers";
 import { AbilityBase } from "../templateinterfaces/AbilityBase";
 
 
@@ -285,6 +285,7 @@ export class ModuleData
   {
     this.templates.combatPhases.copyTemplates(coreCombatPhases);
     this.templates.combatActionListenerFetchers.copyTemplates(coreCombatActionListenerFetchers);
+    this.templates.combatActionFetchers.copyTemplates(coreCombatActionFetchers);
   }
   public addGameModule(gameModule: GameModule): Promise<void>
   {
