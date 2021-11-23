@@ -14,7 +14,6 @@ export class BattleSimulator
 {
   battle: Battle;
   tree: MCTree;
-  hasEnded: boolean = false;
 
   constructor(battle: Battle)
   {
