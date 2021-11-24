@@ -24,6 +24,7 @@ export class CombatManager<Phase extends string = CorePhase>
   {
     [P in Phase]?: CombatAction[];
   } = {};
+  private executedActionsInCurrentPhase: CombatAction[] = [];
 
   constructor()
   {
@@ -40,7 +41,7 @@ export class CombatManager<Phase extends string = CorePhase>
   {
     while(this.currentPhase.actions.length > 0)
     {
-      const action = this.currentPhase.actions.shift();
+      const action = this.currentPhase.actions[0];
 
       action.result.apply(
         action.source,
@@ -48,6 +49,7 @@ export class CombatManager<Phase extends string = CorePhase>
         <any>this,
         action.actionAttachedTo,
       );
+      this.executedActionsInCurrentPhase.push(this.currentPhase.actions.shift());
 
       if (afterActionUse)
       {
@@ -78,6 +80,10 @@ export class CombatManager<Phase extends string = CorePhase>
     if (this.currentPhase.hasAction(parent))
     {
       CombatManager.spliceAttachedAction(child, parent, this.currentPhase.actions);
+    }
+    else if (this.executedActionsInCurrentPhase.indexOf(parent) !== -1)
+    {
+      this.currentPhase.addActionToBack(child);
     }
     else
     {
@@ -159,6 +165,8 @@ export class CombatManager<Phase extends string = CorePhase>
   }
   private initCurrentPhase(): void
   {
+    this.executedActionsInCurrentPhase = [];
+
     const phaseInfo = this.currentPhase.template;
 
     if (this.queuedActions[phaseInfo.key])
