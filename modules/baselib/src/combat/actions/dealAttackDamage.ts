@@ -5,6 +5,7 @@ import { CombatActionPrimitiveTemplate } from "core/src/combat/CombatActionPrimi
 import { coreCombatActionFlags } from "core/src/combat/core/coreCombatActionFlags";
 
 
+// TODO 2021.11.23 | implement troop scaling
 export function dealAttackDamage(
   source: Unit,
   target: Unit,

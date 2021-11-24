@@ -7,6 +7,7 @@ import { CombatAction } from "./CombatAction";
 
 export class CombatActionResults<Phase extends string = CorePhase>
 {
+  // TODO 2021.11.23 | rename valuesByTemplateKey
   private readonly valuesByKey:
   {
     [key: string]: any;
@@ -41,7 +42,7 @@ export class CombatActionResults<Phase extends string = CorePhase>
     source: Unit,
     target: Unit,
     combatManager: CombatManager<Phase>,
-    parentAction: CombatAction,
+    parentAction: CombatAction | undefined,
   ): void
   {
     Object.keys(this.templatesByKey).forEach(key =>

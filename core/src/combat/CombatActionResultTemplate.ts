@@ -13,6 +13,6 @@ export interface CombatActionResultTemplate<T, Phase extends string = CorePhase>
     source: Unit,
     target: Unit,
     combatManager: CombatManager<Phase>,
-    parentAction: CombatAction,
+    parentAction: CombatAction | undefined,
   ) => void;
 }
