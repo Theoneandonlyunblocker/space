@@ -146,6 +146,7 @@ export class DebugOptionsComponent extends React.Component<PropTypes, StateType>
         init: "initLogging",
         ui: "uiLogging",
         game: "gameLogging",
+        mapgen: "mapgenLogging",
       };
 
       const key = keyForCategory[category];

@@ -111,6 +111,7 @@ const defaultOptionsValues: OptionsValues =
       init: true,
       ui: false,
       game: true,
+      mapgen: true,
     },
   },
   display:

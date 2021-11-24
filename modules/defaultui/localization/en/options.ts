@@ -25,6 +25,7 @@ export const options =
   initLogging: "Init",
   uiLogging: "UI",
   gameLogging: "Game",
+  mapgenLogging: "Map gen",
   alwaysExpandTopRightMenuOnLowResolution: "Always expand top right menu on low resolution",
   messageSettings: "Message settings",
   resetTutorials: "Reset tutorials",

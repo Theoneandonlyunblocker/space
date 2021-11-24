@@ -40,6 +40,7 @@ import {setupIndependents} from "../common/setupIndependents";
 import {SpiralGalaxyOptionValues} from "./SpiralGalaxyOptionValues";
 import {centerRegionTag, generateSpiralPoints} from "./generateSpiralPoints";
 import { moneyResource } from "modules/money/src/moneyResource";
+import * as debug from "core/src/app/debug";
 
 
 // TODO 2018.05.30 | needs to be broken into multiple functions bad
@@ -163,7 +164,7 @@ export const spiralGalaxyGeneration: MapGenFunction = (options: SpiralGalaxyOpti
   const entireMapIsConnected = stars[0].getAllLinkedStars().length === stars.length;
   if (!entireMapIsConnected)
   {
-    console.log("Regenerated map due to insufficient connections");
+    debug.log("mapgen", "Regenerated map due to insufficient connections");
 
     return spiralGalaxyGeneration(options, players);
   }
