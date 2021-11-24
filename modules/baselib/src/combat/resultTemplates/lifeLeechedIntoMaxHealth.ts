@@ -1,7 +1,7 @@
 import { CombatActionResultTemplate } from "core/src/combat/CombatActionResultTemplate";
-import { damageDealt } from "core/src/combat/core/resultTemplates/damageDealt";
 import { restoreHealth } from "../actions/restoreHealth";
 import { increaseMaxHealth } from "../actions/increaseMaxHealth";
+import { lifeLeeched } from "./lifeLeeched";
 
 
 export const lifeLeechedIntoMaxHealth: CombatActionResultTemplate<number> =
@@ -10,8 +10,8 @@ export const lifeLeechedIntoMaxHealth: CombatActionResultTemplate<number> =
   defaultValue: 0,
   applyResult: (value, source, target, combatManager, parentAction) =>
   {
-    const amountOfDamageDealt = parentAction.actionAttachedTo.result.get(damageDealt);
-    const amountToHeal = amountOfDamageDealt * value;
+    const amountOfLifeLeeched = parentAction.result.get(lifeLeeched);
+    const amountToHeal = amountOfLifeLeeched * value;
 
     const increaseMaxHealthAction = increaseMaxHealth(source, source, amountToHeal);
     combatManager.attachAction(increaseMaxHealthAction, parentAction);

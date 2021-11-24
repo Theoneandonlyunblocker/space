@@ -9,7 +9,7 @@ export const lifeLeeched: CombatActionResultTemplate<number> =
   defaultValue: 0,
   applyResult: (value, source, target, combatManager, parentAction) =>
   {
-    const amountOfDamageDealt = parentAction.actionAttachedTo.result.get(damageDealt);
+    const amountOfDamageDealt = parentAction.result.get(damageDealt);
     const amountToHeal = amountOfDamageDealt * value;
 
     const healAction = restoreHealth(source, source, amountToHeal);

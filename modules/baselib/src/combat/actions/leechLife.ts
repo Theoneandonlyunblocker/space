@@ -4,6 +4,7 @@ import { makeSimpleModifier } from "core/src/combat/core/modifiers/makeSimpleMod
 import { lifeLeech } from "../primitives/lifeLeech";
 
 
+// TODO 2021.11.24 | should probably just be a resultmodifier
 export function leechLife(
   unitLeeching: Unit,
   unitBeingLeechedFrom: Unit,
