@@ -939,6 +939,11 @@ export class Player
   {
     this.isDead = true;
 
+    for (let i = this.units.length - 1; i >= 0; i--)
+    {
+      this.units[i].die();
+    }
+
     for (let i = this.fleets.length - 1; i >= 0; i--)
     {
       this.fleets[i].deleteFleet(false);

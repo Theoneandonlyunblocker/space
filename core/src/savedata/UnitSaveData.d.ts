@@ -25,6 +25,8 @@ export interface UnitSaveData
   items: UnitItemsSaveData;
   battleStats: UnitBattleStatsSaveData;
 
+  // TODO 2021.11.24 | when does a unit not have a fleet? when its temporary & created mid-battle?
+  // thats not implemented yet though
   fleetId?: number;
   portrait?: string;
   race?: string;
