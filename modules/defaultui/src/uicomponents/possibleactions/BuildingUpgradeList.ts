@@ -70,7 +70,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
     for (let i = 0; i < sortedParentBuildings.length; i++)
     {
       const parentBuildingId = sortedParentBuildings[i];
-      const upgrades = this.props.buildingUpgrades[parentBuildingId];
+      const upgrades: BuildingUpgradeData[] = this.props.buildingUpgrades[parentBuildingId];
       const parentBuilding: Building = upgrades[0].parentBuilding;
 
       const upgradeElements: React.ReactElement<any>[] = [];
@@ -95,7 +95,7 @@ export class BuildingUpgradeListComponent extends React.Component<PropTypes, Sta
 
         upgradeElements.push(BuildingUpgradeListItem(
         {
-          key: upgrades[j].template.type,
+          key: upgrades[j].template.key,
           player: this.props.player,
           handleUpgrade: this.upgradeBuilding,
           upgradeData: upgrades[j],
