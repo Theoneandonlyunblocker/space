@@ -321,6 +321,7 @@ export class GameLoader
       flag: this.deserializeFlag(data.flag),
 
       resources: data.resources,
+      technologyData: data.researchByTechnology,
     });
 
     // units
