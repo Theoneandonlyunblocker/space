@@ -65,8 +65,6 @@ export class MapGenOptionComponent extends React.Component<PropTypes, StateType>
       }
     });
 
-    // console.log(this.props.id, this.props.value);
-
     return(
       ReactDOMElements.div(
       {

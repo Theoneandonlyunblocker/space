@@ -149,7 +149,6 @@ export class ItemEquipComponent extends React.Component<PropTypes, StateType>
     {
       if (!unit.items.hasItem(item) && unit.items.hasSlotForItem(item))
       {
-        console.log(`Unit list drop ${unit.template.key} => ${item.template.key}`);
         unit.items.addItem(item);
         this.setState(
         {

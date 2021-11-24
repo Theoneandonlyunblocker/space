@@ -91,7 +91,6 @@ export class GalaxyMapUILeftComponent extends React.Component<PropTypes, StateTy
 
             if (isCollapsed)
             {
-              console.log("force overlap");
               this.setState({topAndBottomShouldOverlap: true});
             }
           },
