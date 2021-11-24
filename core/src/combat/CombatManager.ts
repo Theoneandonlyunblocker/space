@@ -35,6 +35,28 @@ export class CombatManager<Phase extends string = CorePhase>
     this._currentPhase = new CombatPhase(phaseInfo, this);
     this.initCurrentPhase();
   }
+  // TODO 2021.11.23 | temporary
+  public advancePhase(afterActionUse?: (action: CombatAction) => void): void
+  {
+    while(this.currentPhase.actions.length > 0)
+    {
+      const action = this.currentPhase.actions.shift();
+
+      action.result.apply(
+        action.source,
+        action.target,
+        <any>this,
+        action.actionAttachedTo,
+      );
+
+      if (afterActionUse)
+      {
+        afterActionUse(action);
+      }
+    }
+
+    this.currentPhase.afterPhaseIsFinished(this);
+  }
   public addAction(phaseInfo: CombatPhaseInfo<Phase>, action: CombatAction): void
   {
     if (this.currentPhase && this.currentPhase.template === phaseInfo)

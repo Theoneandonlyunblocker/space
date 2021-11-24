@@ -198,6 +198,7 @@ export class BattleComponent extends React.Component<PropTypes, StateType>
     }
     else
     {
+      this.props.battle.combatManager.advancePhase();
       this.handleTurnStart();
     }
 

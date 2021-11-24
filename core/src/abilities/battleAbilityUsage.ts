@@ -4,152 +4,77 @@ import {AbilityUseEffect} from "./AbilityUseEffect";
 import {Battle} from "../battle/Battle";
 import {Unit} from "../unit/Unit";
 import {UnitDisplayData} from "../unit/UnitDisplayData";
+import { getTargetOrGuard } from "core/src/abilities/battleAbilityProcessing";
+import { turnEndPhase } from "../combat/core/phases/turnEndPhase";
 
 
-type AbilityEffectData = any;
-type AbilityEffectDataByPhase =
-{
-  beforeUse: AbilityEffectData[];
-  abilityEffects: AbilityEffectData[];
-  afterUse: AbilityEffectData[];
-};
-function getAbilityEffectDataByPhase(...args: any): any
-{
-
-}
+// TODO 2021.11.23 | this is all temporary
+let effectIdGenerator: number = 0;
 
 export function useAbility(
   battle: Battle,
   ability: CombatAbilityTemplate,
   user: Unit,
-  target: Unit,
+  intendedTarget: Unit,
 ): void
 {
-  const effectDataByPhase = getAbilityEffectDataByPhase(battle,
+  const combatManager = battle.combatManager;
+
+  const target = getTargetOrGuard(battle,
   {
     ability: ability,
     user: user,
-    intendedTarget: target,
+    intendedTarget: intendedTarget,
   });
 
-  executeFullAbilityEffects(battle, effectDataByPhase);
+  ability.use(user, target, combatManager);
+
+  while(combatManager.currentPhase.template !== turnEndPhase)
+  {
+    combatManager.advancePhase();
+  }
 }
 export function useAbilityAndGetUseEffects(
   battle: Battle,
   ability: CombatAbilityTemplate,
   user: Unit,
-  target: Unit,
+  intendedTarget: Unit,
 ): AbilityUseEffect[]
 {
-  const effectDataByPhase = getAbilityEffectDataByPhase(battle,
+  const combatManager = battle.combatManager;
+  const abilityUseEffects: AbilityUseEffect[] = [];
+
+  const target = getTargetOrGuard(battle,
   {
     ability: ability,
     user: user,
-    intendedTarget: target,
+    intendedTarget: intendedTarget,
   });
 
-  const useData = executeFullAbilityEffectsAndGetUseEffects(battle, effectDataByPhase);
+  ability.use(user, target, combatManager);
 
-  return useData;
-}
-function executeFullAbilityEffects(battle: Battle, abilityEffectDataByPhase: AbilityEffectDataByPhase): void
-{
-  [
-    abilityEffectDataByPhase.beforeUse,
-    abilityEffectDataByPhase.abilityEffects,
-    abilityEffectDataByPhase.afterUse,
-  ].forEach(effectDataForPhase =>
+  while(combatManager.currentPhase.template !== turnEndPhase)
   {
-    effectDataForPhase.forEach(effectData =>
+    combatManager.advancePhase(action =>
     {
-      executeAbilityEffectData(battle, effectData);
-    });
-  });
-}
-function executeFullAbilityEffectsAndGetUseEffects(
-  battle: Battle,
-  abilityEffectDataByPhase: AbilityEffectDataByPhase,
-): AbilityUseEffect[]
-{
-  const useEffects: AbilityUseEffect[] = [];
-
-  [
-    abilityEffectDataByPhase.beforeUse,
-    abilityEffectDataByPhase.abilityEffects,
-    abilityEffectDataByPhase.afterUse,
-  ].forEach(effectDataForPhase =>
-  {
-    effectDataForPhase.forEach(effectData =>
-    {
-      const useEffect = executeAbilityEffectDataAndGetUseEffect(battle, effectData);
-      if (useEffect)
+      if (action.source && action.target)
       {
-        useEffects.push(useEffect);
+        const changedUnitDisplayData: {[unitId: number]: UnitDisplayData} = {};
+        changedUnitDisplayData[action.source.id] = action.source.getDisplayData("battle");
+        changedUnitDisplayData[action.target.id] = action.target.getDisplayData("battle");
+
+        abilityUseEffects.push(
+        {
+          effectId: "" + effectIdGenerator++,
+          changedUnitDisplayData: changedUnitDisplayData,
+          vfx: ability.vfx,
+          vfxUser: action.source,
+          vfxTarget: action.target,
+          newEvaluation: battle.getEvaluation(),
+        });
       }
     });
-  });
-
-  return useEffects;
-}
-
-function shouldEffectActionTrigger(
-  abilityEffectData: AbilityEffectData,
-  battle: Battle,
-): boolean
-{
-  if (!abilityEffectData.trigger)
-  {
-    return true;
   }
 
-  return abilityEffectData.trigger(
-    abilityEffectData.user,
-    abilityEffectData.target,
-    battle,
-    abilityEffectData.sourceStatusEffect,
-  );
-}
-function executeAbilityEffectData(
-  battle: Battle,
-  abilityEffectData: AbilityEffectData,
-): boolean
-{
-  if (!shouldEffectActionTrigger(abilityEffectData, battle))
-  {
-    return false;
-  }
-
-  abilityEffectData.effectTemplate.executeAction(
-    abilityEffectData.user,
-    abilityEffectData.target,
-    battle,
-    abilityEffectData.sourceStatusEffect,
-  );
-
-  return true;
-}
-function executeAbilityEffectDataAndGetUseEffect(
-  battle: Battle,
-  abilityEffectData: AbilityEffectData,
-): AbilityUseEffect
-{
-  const didTriggerAction = executeAbilityEffectData(battle, abilityEffectData);
-  if (!didTriggerAction)
-  {
-    return null;
-  }
-
-  const changedUnitDisplayData: {[unitId: number]: UnitDisplayData} = {};
-  changedUnitDisplayData[abilityEffectData.user.id] = abilityEffectData.user.getDisplayData("battle");
-  changedUnitDisplayData[abilityEffectData.target.id] = abilityEffectData.target.getDisplayData("battle");
-
-  return(
-  {
-    effectId: abilityEffectData.effectTemplate.id,
-    changedUnitDisplayData: changedUnitDisplayData,
-    vfx: abilityEffectData.effectTemplate.vfx,
-    vfxUser: abilityEffectData.user,
-    vfxTarget: abilityEffectData.target,
-    newEvaluation: battle.getEvaluation(),
-  });
+  return abilityUseEffects;
 }

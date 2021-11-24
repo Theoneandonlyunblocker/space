@@ -18,6 +18,7 @@ import
   shuffleArrayInPlace,
 } from "../generic/utility";
 import { CombatManager } from "../combat/CombatManager";
+import { battleInitPhase } from "../combat/core/phases/battleInitPhase";
 
 
 export class Battle
@@ -128,6 +129,10 @@ export class Battle
     this.currentTurn = 0;
     this.maxTurns = 24;
     this.turnsLeft = this.maxTurns;
+
+    this.combatManager.setPhase(battleInitPhase);
+    this.combatManager.advancePhase();
+
     this.updateTurnOrder();
 
     this.startHealth =
@@ -157,6 +162,8 @@ export class Battle
     this.currentTurn++;
     this.turnsLeft--;
     this.updateTurnOrder();
+
+    this.combatManager.advancePhase();
 
     const shouldEnd = this.shouldEnd();
     if (shouldEnd)
