@@ -1,16 +1,25 @@
-import * as MapLayers from "./allMapLayerTemplates";
+import {nonFillerStars} from  "./maplayertemplates/nonFillerStars";
+import {starLinks} from  "./maplayertemplates/starLinks";
+import {fleets} from  "./maplayertemplates/fleets";
+import {nonFillerVoronoiLines} from  "./maplayertemplates/nonFillerVoronoiLines";
+import {resources} from  "./maplayertemplates/resources";
+import {starOwners} from  "./maplayertemplates/starOwners";
+import {fogOfWar} from  "./maplayertemplates/fogOfWar";
+import {ownerBorders} from  "./maplayertemplates/ownerBorders";
+import {starIncome} from  "./maplayertemplates/starIncome";
+import {terrain} from  "./maplayertemplates/terrain";
 
 
 export const mapLayerTemplates =
 {
-  [MapLayers.nonFillerStars.key]: MapLayers.nonFillerStars,
-  [MapLayers.starLinks.key]: MapLayers.starLinks,
-  [MapLayers.fleets.key]: MapLayers.fleets,
-  [MapLayers.nonFillerVoronoiLines.key]: MapLayers.nonFillerVoronoiLines,
-  [MapLayers.resources.key]: MapLayers.resources,
-  [MapLayers.starOwners.key]: MapLayers.starOwners,
-  [MapLayers.fogOfWar.key]: MapLayers.fogOfWar,
-  [MapLayers.ownerBorders.key]: MapLayers.ownerBorders,
-  [MapLayers.starIncome.key]: MapLayers.starIncome,
-  [MapLayers.terrain.key]: MapLayers.terrain,
+  [nonFillerStars.key]: nonFillerStars,
+  [starLinks.key]: starLinks,
+  [fleets.key]: fleets,
+  [nonFillerVoronoiLines.key]: nonFillerVoronoiLines,
+  [resources.key]: resources,
+  [starOwners.key]: starOwners,
+  [fogOfWar.key]: fogOfWar,
+  [ownerBorders.key]: ownerBorders,
+  [starIncome.key]: starIncome,
+  [terrain.key]: terrain,
 };

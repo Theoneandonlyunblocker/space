@@ -1,6 +1,5 @@
 import {MapRendererMapModeTemplate} from "core/src/templateinterfaces/MapRendererMapModeTemplate";
-
-import * as MapLayers from "../allMapLayerTemplates";
+import { mapLayerTemplates } from "./../mapLayerTemplates";
 import { localize } from "modules/space/localization/localize";
 
 
@@ -13,13 +12,13 @@ export const defaultMapMode: MapRendererMapModeTemplate =
   },
   layers:
   [
-    MapLayers.nonFillerVoronoiLines,
-    MapLayers.starOwners,
-    MapLayers.ownerBorders,
-    MapLayers.starLinks,
-    MapLayers.nonFillerStars,
-    MapLayers.fogOfWar,
-    MapLayers.fleets,
+    mapLayerTemplates.nonFillerVoronoiLines,
+    mapLayerTemplates.starOwners,
+    mapLayerTemplates.ownerBorders,
+    mapLayerTemplates.starLinks,
+    mapLayerTemplates.nonFillerStars,
+    mapLayerTemplates.fogOfWar,
+    mapLayerTemplates.fleets,
   ],
 };
 export const noStatic: MapRendererMapModeTemplate =
@@ -31,11 +30,11 @@ export const noStatic: MapRendererMapModeTemplate =
   },
   layers:
   [
-    MapLayers.starOwners,
-    MapLayers.ownerBorders,
-    MapLayers.nonFillerStars,
-    MapLayers.fogOfWar,
-    MapLayers.fleets,
+    mapLayerTemplates.starOwners,
+    mapLayerTemplates.ownerBorders,
+    mapLayerTemplates.nonFillerStars,
+    mapLayerTemplates.fogOfWar,
+    mapLayerTemplates.fleets,
   ],
 };
 export const income: MapRendererMapModeTemplate =
@@ -47,11 +46,11 @@ export const income: MapRendererMapModeTemplate =
   },
   layers:
   [
-    MapLayers.starIncome,
-    MapLayers.nonFillerVoronoiLines,
-    MapLayers.starLinks,
-    MapLayers.nonFillerStars,
-    MapLayers.fleets,
+    mapLayerTemplates.starIncome,
+    mapLayerTemplates.nonFillerVoronoiLines,
+    mapLayerTemplates.starLinks,
+    mapLayerTemplates.nonFillerStars,
+    mapLayerTemplates.fleets,
   ],
 };
 export const resources: MapRendererMapModeTemplate =
@@ -63,11 +62,11 @@ export const resources: MapRendererMapModeTemplate =
   },
   layers:
   [
-    MapLayers.nonFillerVoronoiLines,
-    MapLayers.starLinks,
-    MapLayers.nonFillerStars,
-    MapLayers.fogOfWar,
-    MapLayers.fleets,
-    MapLayers.resources,
+    mapLayerTemplates.nonFillerVoronoiLines,
+    mapLayerTemplates.starLinks,
+    mapLayerTemplates.nonFillerStars,
+    mapLayerTemplates.fogOfWar,
+    mapLayerTemplates.fleets,
+    mapLayerTemplates.resources,
   ],
 };
