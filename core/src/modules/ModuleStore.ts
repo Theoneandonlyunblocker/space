@@ -114,8 +114,7 @@ export class ModuleStore
         const nextUrlToTry = moduleInfo.moduleBundleUrls[urlIndex + 1];
         if (nextUrlToTry)
         {
-          // TODO 2021.11.24 | why console.log and not debug.log?
-          console.log(`Module file '${moduleInfo.key}' failed to load from ${url}\nTrying ${ModuleStore.processModuleBundleUrl(nextUrlToTry)}`);
+          debug.log("modules", `Module file '${moduleInfo.key}' failed to load from ${url}\nTrying ${ModuleStore.processModuleBundleUrl(nextUrlToTry)}`);
 
           resolve(this.fetchRemoteBundle(moduleInfo, urlIndex + 1));
         }
