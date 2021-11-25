@@ -189,7 +189,6 @@ export class Battle
 
   private initUnit(unit: Unit, side: UnitBattleSide, position: number[]): void
   {
-    unit.resetBattleStats();
     unit.setBattlePosition(side, position);
     this.turnOrder.addUnit(unit);
 
