@@ -35,7 +35,7 @@ export abstract class AddableValueMap<
   }
   public filter(filterFn: (key: Key, value: Value) => boolean): this
   {
-    const filtered = this.constructor();
+    const filtered = this.createInstance();
 
     this.forEach((key, value) =>
     {
@@ -45,7 +45,7 @@ export abstract class AddableValueMap<
       }
     });
 
-    return <any>filtered;
+    return filtered;
   }
 
   // should be abstract and static, but not currently possible in typescript
@@ -59,7 +59,7 @@ export abstract class AddableValueMap<
     mapFn: (key: Key) => NewKey,
   ): AddableValueMap<NewKey, Value, AddableValue>
   {
-    const mapped: AddableValueMap<NewKey, Value, AddableValue> = this.constructor();
+    const mapped: AddableValueMap<NewKey, Value, AddableValue> = this.createInstance();
 
     this.forEach((key, value) =>
     {
@@ -67,5 +67,10 @@ export abstract class AddableValueMap<
     });
 
     return mapped;
+  }
+
+  private createInstance(): any
+  {
+    return new (this.constructor as any)();
   }
 }
