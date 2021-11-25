@@ -14,6 +14,7 @@ import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
 import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
 import { applyIntelligenceToHealing } from "./combat/actionListeners/applyIntelligenceToHealing";
 import { allCoreCombatPhases } from "core/src/combat/core/coreCombatPhases";
+import { combatEffectTemplates } from "./combat/combatEffectTemplates";
 
 
 export const baseLib: GameModule =
@@ -45,6 +46,7 @@ export const baseLib: GameModule =
   addToModuleData: (moduleData) =>
   {
     moduleData.templates.combatAbilities.copyTemplates(combatAbilityTemplates);
+    moduleData.templates.combatEffects.copyTemplates(combatEffectTemplates);
     const actionListenerFetchers =
     {
       baseLibCombatActionListenerFetchers:

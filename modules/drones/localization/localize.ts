@@ -5,6 +5,7 @@ import {MessageFormatLocalizer} from "core/src/localization/MessageFormatLocaliz
 import {formatters as englishFormatters} from "modules/englishlanguage/src/formatters";
 
 import {units as en_units} from "./en/units";
+import {items as en_items} from "./en/items";
 import {abilities as en_abilities} from "./en/abilities";
 
 import {combatEffects as en_combatEffects} from "./en/combatEffects";
@@ -18,6 +19,7 @@ const allStrings =
 {
   ...en_units,
   ...en_abilities,
+  ...en_items,
 };
 
 export const localizer = new StringLocalizer<typeof allStrings>("drones");
