@@ -7,8 +7,7 @@ import { CombatAction } from "./CombatAction";
 
 export class CombatActionResults<Phase extends string = CorePhase>
 {
-  // TODO 2021.11.23 | rename valuesByTemplateKey
-  private readonly valuesByKey:
+  private readonly valuesByTemplate:
   {
     [key: string]: any;
   } = {};
@@ -24,19 +23,19 @@ export class CombatActionResults<Phase extends string = CorePhase>
 
   public get<T>(template: CombatActionResultTemplate<T, Phase>): T
   {
-    if (this.valuesByKey[template.key] === undefined)
+    if (this.valuesByTemplate[template.key] === undefined)
     {
       return template.defaultValue;
     }
     else
     {
-      return this.valuesByKey[template.key];
+      return this.valuesByTemplate[template.key];
     }
   }
   public set<T>(template: CombatActionResultTemplate<T, Phase>, value: T): void
   {
     this.templatesByKey[template.key] = template;
-    this.valuesByKey[template.key] = value;
+    this.valuesByTemplate[template.key] = value;
   }
   public apply(
     source: Unit,
@@ -48,7 +47,7 @@ export class CombatActionResults<Phase extends string = CorePhase>
     Object.keys(this.templatesByKey).forEach(key =>
     {
       this.templatesByKey[key].applyResult(
-        this.valuesByKey[key],
+        this.valuesByTemplate[key],
         source,
         target,
         combatManager,
