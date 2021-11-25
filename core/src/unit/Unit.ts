@@ -305,12 +305,8 @@ export class Unit
       maxItemSlots: data.items.maxItemSlots,
       items: [],
 
-      portrait: data.portrait ?
-        activeModuleData.templates.portraits.get(data.portrait) :
-        undefined,
-      race: data.race ?
-        activeModuleData.templates.races.get(data.race) :
-        undefined,
+      portrait: activeModuleData.templates.portraits.get(data.portrait),
+      race: activeModuleData.templates.races.get(data.race),
     });
 
     return unit;
@@ -854,14 +850,10 @@ export class Unit
       items: this.items.serialize(),
       battleStats: this.battleStats.serialize(),
 
+      fleetId: this.fleet.id,
       portrait: this.portrait.key,
       race: this.race.key,
     };
-
-    if (this.fleet)
-    {
-      data.fleetId = this.fleet.id;
-    }
 
     return data;
   }
