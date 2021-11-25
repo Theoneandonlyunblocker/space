@@ -32,8 +32,7 @@ export const rangedAttack: CombatAbilityTemplate =
   }),
   use: (user, target, combatManager) =>
   {
-    // TODO 2021.11.23 | wrong damage, should be 1
-    const dealDamageAction = dealAttackDamage(user, target, 400, physicalDamage);
+    const dealDamageAction = dealAttackDamage(user, target, 1, physicalDamage);
     combatManager.addAction(mainPhase, dealDamageAction);
   },
   vfx: rocketAttackVfx,
