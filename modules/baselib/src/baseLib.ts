@@ -13,6 +13,7 @@ import * as moduleInfo from "../moduleInfo.json";
 import { englishLanguage } from "modules/englishlanguage/src/englishLanguage";
 import { combatAbilityTemplates } from "./combat/combatAbilityTemplates";
 import { combatEffectTemplates } from "./combat/combatEffectTemplates";
+import { applyIntelligenceToHealing } from "./combat/actionListeners/applyIntelligenceToHealing";
 
 
 export const baseLib: GameModule =
@@ -45,5 +46,6 @@ export const baseLib: GameModule =
   {
     moduleData.templates.combatAbilities.copyTemplates(combatAbilityTemplates);
     moduleData.templates.combatEffects.copyTemplates(combatEffectTemplates);
+    moduleData.globalCombatActionListeners.battleWide.push(applyIntelligenceToHealing);
   },
 };

@@ -47,6 +47,9 @@ import { CombatActionFetcher } from "../combat/CombatActionFetcher";
 import { coreCombatPhases } from "../combat/core/coreCombatPhases";
 import { coreCombatActionFetchers } from "../combat/core/coreFetchers";
 import { AbilityBase } from "../templateinterfaces/AbilityBase";
+import { BattleWideCombatActionListener, SideAttachedCombatActionListener } from "../combat/CombatActionListener";
+import { UnitBattleSide } from "../unit/UnitBattleSide";
+import { coreGlobalActionListeners } from "../combat/core/coreGlobalActionListeners";
 
 
 // tslint:disable:no-any
@@ -219,6 +222,22 @@ export class ModuleData
   public defaultLanguage: Language;
   public uiScenes: Partial<CoreUIScenes> & NonCoreUIScenes = {};
   public readonly mapLevelModifierAdjustments: CustomModifierAdjustments = new CustomModifierAdjustments();
+  public readonly globalCombatActionListeners:
+  {
+    battleWide: BattleWideCombatActionListener<any>[];
+    bySide:
+    {
+      [side in UnitBattleSide]: SideAttachedCombatActionListener<any>[];
+    };
+  } =
+  {
+    battleWide: [],
+    bySide:
+    {
+      side1: [],
+      side2: [],
+    },
+  };
   public readonly templateCollectionsWithUnlockables:
   {
     buildings: TemplateCollection<BuildingTemplate>;
@@ -280,6 +299,7 @@ export class ModuleData
   {
     this.templates.combatPhases.copyTemplates(coreCombatPhases);
     this.templates.combatActionFetchers.copyTemplates(coreCombatActionFetchers);
+    this.globalCombatActionListeners.battleWide.push(...coreGlobalActionListeners);
   }
   public addGameModule(gameModule: GameModule): Promise<void>
   {

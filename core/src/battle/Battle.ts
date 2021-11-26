@@ -45,13 +45,12 @@ export class Battle<CombatPhases extends string = CorePhase>
 
   public battleData: BattleData;
   public readonly combatManager: CombatManager<CombatPhases>;
-  // TODO 2021.11.26 | fetch these from somewhere
   public readonly actionListeners:
   {
     battleWide: BattleWideCombatActionListener<CombatPhases>[];
     bySide:
     {
-      [side in UnitBattleSide]: SideAttachedCombatActionListener<CombatPhases>[]
+      [side in UnitBattleSide]: SideAttachedCombatActionListener<CombatPhases>[];
     };
   } =
   {
@@ -125,6 +124,13 @@ export class Battle<CombatPhases extends string = CorePhase>
   // Separate from constructor because cloned battles (for ai simulation) don't need to call this.
   public init(): void
   {
+    this.actionListeners.battleWide = [...activeModuleData.globalCombatActionListeners.battleWide];
+    this.actionListeners.bySide =
+    {
+      side1: [...activeModuleData.globalCombatActionListeners.bySide.side1],
+      side2: [...activeModuleData.globalCombatActionListeners.bySide.side2],
+    };
+
     unitBattleSides.forEach(sideId =>
     {
       const side = this[sideId];
@@ -708,7 +714,9 @@ export class Battle<CombatPhases extends string = CorePhase>
       combatManager: this.combatManager.clone(unitsById),
     });
 
-    // TODO 2021.11.26 | clone action listeners
+    clone.actionListeners.battleWide = [...this.actionListeners.battleWide];
+    clone.actionListeners.bySide.side1 = [...this.actionListeners.bySide.side1];
+    clone.actionListeners.bySide.side2 = [...this.actionListeners.bySide.side2];
 
     [side1, side2].forEach(side =>
     {
