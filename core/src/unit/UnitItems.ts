@@ -16,9 +16,9 @@ interface CountBySlot
 
 export class UnitItems
 {
-  public items: Item[] = [];
-  public itemSlots: CountBySlot;
+  public readonly itemSlots: CountBySlot;
 
+  private items: Item[] = [];
   private onAdd: (item: Item) => void;
   private onRemove: (item: Item) => void;
   private onUpdate: (changedItem: Item) => void;
@@ -39,7 +39,7 @@ export class UnitItems
 
   public getAllItems(): Item[]
   {
-    return this.items;
+    return [...this.items];
   }
   public getItemsAndEmptySlots(): ItemsBySlot
   {
@@ -195,6 +195,20 @@ export class UnitItems
     {
       item.unit!.fleet.player.removeItem(item);
     });
+  }
+  public makeVirtualClone(): UnitItems
+  {
+    const clone = new UnitItems(
+    {
+      itemSlots: this.itemSlots,
+      onAdd: () => {},
+      onRemove: () => {},
+      onUpdate: () => {},
+    });
+
+    clone.items.push(...this.items);
+
+    return clone;
   }
 
   public serialize(): UnitItemsSaveData

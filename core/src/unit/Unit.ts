@@ -11,7 +11,6 @@ import {VfxParams} from "../templateinterfaces/VfxParams";
 import {UnitTemplate} from "../templateinterfaces/UnitTemplate";
 
 import {Fleet} from "../fleets/Fleet";
-import {Item} from "../items/Item";
 import {Player} from "../player/Player";
 import {Star} from "../map/Star";
 import
@@ -124,7 +123,6 @@ export class Unit
     battleStats?: UnitBattleStats;
 
     maxItemSlots: {[slot: string]: number};
-    items: Item[];
 
     portrait?: PortraitTemplate;
     race?: RaceTemplate;
@@ -164,17 +162,6 @@ export class Unit
     }
 
     this.items = this.makeUnitItems(props.maxItemSlots);
-    props.items.forEach(item =>
-    {
-      if (item.positionInUnit !== undefined)
-      {
-        this.items.addItemAtPosition(item, item.positionInUnit);
-      }
-      else
-      {
-        this.items.addItem(item);
-      }
-    });
 
     this.race = props.race;
     this.portrait = props.portrait;
@@ -242,7 +229,6 @@ export class Unit
       experienceForCurrentLevel: 0,
 
       maxItemSlots: template.itemSlots,
-      items: [],
 
       portrait: race.getUnitPortrait(template, activeModuleData.templates.portraits),
       race: race,
@@ -303,7 +289,6 @@ export class Unit
       battleStats: UnitBattleStats.fromData(data.battleStats),
 
       maxItemSlots: data.items.maxItemSlots,
-      items: [],
 
       portrait: activeModuleData.templates.portraits.get(data.portrait),
       race: activeModuleData.templates.races.get(data.race),
@@ -880,11 +865,12 @@ export class Unit
       battleStats: this.battleStats.clone(),
 
       maxItemSlots: this.items.itemSlots,
-      items: this.items.items,
 
       portrait: this.portrait,
       race: this.race,
     });
+
+    clone.items = this.items.makeVirtualClone();
 
     return clone;
   }
