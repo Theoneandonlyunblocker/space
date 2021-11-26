@@ -1,12 +1,6 @@
 import { addInitialMoveDelayToAllUnits } from "./actionFetchers/addInitialMoveDelayToAllUnits";
-import { universalCoreListenerFetchers } from "./universalCoreListenerFetchers";
 
-
-export const coreCombatActionListenerFetchers =
-{
-  [universalCoreListenerFetchers.key]: universalCoreListenerFetchers,
-};
-
+// TODO 2021.11.26 | rename file
 export const coreCombatActionFetchers =
 {
   [addInitialMoveDelayToAllUnits.key]: addInitialMoveDelayToAllUnits,

@@ -1,7 +1,8 @@
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
-import { blockNegativeEffects as blockNegativeEffectsListener } from "../actionListeners/blockNegativeEffects";
 import { localizeMessage } from "modules/baselib/localization/localize";
 import { allCoreCombatPhases } from "core/src/combat/core/coreCombatPhases";
+import { combatActionFlags } from "../combatActionFlags";
+import { blockNegativeCombatEffectChanges } from "../resultModifiers/blockNegativeCombatEffectChanges";
 
 
 export const blockNegativeEffect: CombatEffectTemplate =
@@ -22,12 +23,21 @@ export const blockNegativeEffect: CombatEffectTemplate =
     max: Infinity,
   },
   roundingFN: Math.round,
-  actionListenerFetchers:
+  actionListeners:
   [
     {
       key: "blockNegativeEffect",
       phasesToApplyTo: new Set(allCoreCombatPhases),
-      fetch: () => [blockNegativeEffectsListener],
-    }
-  ]
+      flagsWhichTrigger: [combatActionFlags.addEffect],
+      shouldActivate: (action, listenerSource) => action.target === listenerSource,
+      onAdd: (action, combatManager) =>
+      {
+        action.resultModifiers.push(
+        {
+          modifier: blockNegativeCombatEffectChanges,
+          value: action.target.battleStats.combatEffects.get(blockNegativeEffect),
+        });
+      },
+    },
+  ],
 };

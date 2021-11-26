@@ -1,12 +1,13 @@
 import { coreCombatActionFlags } from "../coreCombatActionFlags";
 import { guardPhysicalDamageReduction } from "../modifiers/guardPhysicalDamageReduction";
-import { CorePhase } from "../coreCombatPhases";
-import { CombatActionListener } from "../../CombatActionListener";
+import { allCoreCombatPhases, CorePhase } from "../coreCombatPhases";
+import { BattleWideCombatActionListener } from "../../CombatActionListener";
 
 
-export const applyGuardDamageReductionToAttacks: CombatActionListener<CorePhase> =
+export const applyGuardDamageReductionToAttacks: BattleWideCombatActionListener<CorePhase> =
 {
   key: "applyGuardDamageReductionToAttacks",
+  phasesToApplyTo: new Set(allCoreCombatPhases),
   flagsWhichTrigger: [coreCombatActionFlags.attack],
   onAdd: (action, combatManager) =>
   {

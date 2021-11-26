@@ -1,13 +1,14 @@
 import { coreCombatActionFlags } from "../coreCombatActionFlags";
 import { modifyPrimitiveByAttributes } from "../modifiers/modifyPrimitiveByAttributes";
 import { moveDelay } from "../primitives/moveDelay";
-import { CorePhase } from "../coreCombatPhases";
-import { CombatActionListener } from "../../CombatActionListener";
+import { allCoreCombatPhases, CorePhase } from "../coreCombatPhases";
+import { BattleWideCombatActionListener } from "../../CombatActionListener";
 
 
-export const applySpeedToMoveDelay: CombatActionListener<CorePhase> =
+export const applySpeedToMoveDelay: BattleWideCombatActionListener<CorePhase> =
 {
   key: "applySpeedToMoveDelay",
+  phasesToApplyTo: new Set(allCoreCombatPhases),
   flagsWhichTrigger: [coreCombatActionFlags.moveDelay],
   onAdd: (action, combatManager) =>
   {

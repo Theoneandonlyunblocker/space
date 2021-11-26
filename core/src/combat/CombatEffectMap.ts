@@ -4,6 +4,8 @@ import { CombatEffectTemplate } from "./CombatEffectTemplate";
 import { CombatEffectMapSaveData } from "./CombatEffectMapSaveData";
 import { TemplateCollection } from "../generic/TemplateCollection";
 import { UnitAttributeAdjustments } from "../unit/UnitAttributes";
+import { UnitAttachedCombatActionListener } from "./CombatActionListener";
+import { flatten2dArray } from "../generic/utility";
 
 
 export class CombatEffectMap<Phase extends string = CorePhase>
@@ -59,6 +61,18 @@ export class CombatEffectMap<Phase extends string = CorePhase>
     {
       return effect.template.getAttributeAdjustments(effect.strength);
     });
+  }
+  public getActionListeners(): UnitAttachedCombatActionListener<Phase>[]
+  {
+    const allListeners = this.getAllActiveEffects().filter(effect =>
+    {
+      return effect.template.actionListeners;
+    }).map(effectWithListener =>
+    {
+      return effectWithListener.template.actionListeners;
+    });
+
+    return flatten2dArray(allListeners);
   }
   public clone(): CombatEffectMap<Phase>
   {

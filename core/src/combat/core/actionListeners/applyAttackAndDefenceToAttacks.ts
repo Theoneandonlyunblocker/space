@@ -1,13 +1,14 @@
 import { coreCombatActionFlags } from "../coreCombatActionFlags";
 import { modifyPrimitiveByAttributes } from "../modifiers/modifyPrimitiveByAttributes";
 import { physicalDamage } from "../primitives/physicalDamage";
-import { CorePhase } from "../coreCombatPhases";
-import { CombatActionListener } from "../../CombatActionListener";
+import { allCoreCombatPhases, CorePhase } from "../coreCombatPhases";
+import { BattleWideCombatActionListener } from "../../CombatActionListener";
 
 
-export const applyAttackAndDefenceToAttacks: CombatActionListener<CorePhase> =
+export const applyAttackAndDefenceToAttacks: BattleWideCombatActionListener<CorePhase> =
 {
   key: "applyAttackAndDefenceToAttacks",
+  phasesToApplyTo: new Set(allCoreCombatPhases),
   flagsWhichTrigger: [coreCombatActionFlags.attack],
   onAdd: (action, combatManager) =>
   {

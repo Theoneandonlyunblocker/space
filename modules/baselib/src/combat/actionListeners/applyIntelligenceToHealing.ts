@@ -1,13 +1,14 @@
-import { CorePhase } from "core/src/combat/core/coreCombatPhases";
+import { allCoreCombatPhases, CorePhase } from "core/src/combat/core/coreCombatPhases";
 import { modifyPrimitiveByAttributes } from "core/src/combat/core/modifiers/modifyPrimitiveByAttributes";
 import { combatActionFlags } from "../combatActionFlags";
 import { healing } from "../primitives/healing";
-import { CombatActionListener } from "core/src/combat/CombatActionListener";
+import { BattleWideCombatActionListener } from "core/src/combat/CombatActionListener";
 
 
-export const applyIntelligenceToHealing: CombatActionListener<CorePhase> =
+export const applyIntelligenceToHealing: BattleWideCombatActionListener<CorePhase> =
 {
   key: "applyIntelligenceToHealing",
+  phasesToApplyTo: new Set(allCoreCombatPhases),
   flagsWhichTrigger: [combatActionFlags.heal],
   onAdd: (action, combatManager) =>
   {

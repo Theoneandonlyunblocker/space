@@ -1,6 +1,7 @@
 import { CorePhase } from "./core/coreCombatPhases";
 import { UnitAttributeAdjustments } from "../unit/UnitAttributes";
-import { CombatActionFetcher, CombatActionListenerFetcher } from "./CombatActionFetcher";
+import { CombatActionFetcher } from "./CombatActionFetcher";
+import { UnitAttachedCombatActionListener } from "./CombatActionListener";
 
 
 export interface CombatEffectTemplate<Phase extends string = CorePhase>
@@ -24,5 +25,5 @@ export interface CombatEffectTemplate<Phase extends string = CorePhase>
   // TODO 2020.06.08 | not read anywhere
   actionFetchers?: CombatActionFetcher<Phase>[];
   // TODO 2020.06.08 | not read anywhere
-  actionListenerFetchers?: CombatActionListenerFetcher<Phase>[];
+  actionListeners?: UnitAttachedCombatActionListener<Phase>[];
 }

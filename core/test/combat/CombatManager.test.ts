@@ -1,5 +1,5 @@
 import { TemplateCollection } from "core/src/generic/TemplateCollection";
-import { CombatActionFetcher, CombatActionListenerFetcher } from "core/src/combat/CombatActionFetcher";
+import { CombatActionFetcher } from "core/src/combat/CombatActionFetcher";
 import { actionFetchers, actionListenerFetchers, makeDummyCombatAction, makeDummyUnit } from "./templates";
 
 jest.doMock("core/src/app/activeModuleData", () =>
@@ -10,7 +10,6 @@ jest.doMock("core/src/app/activeModuleData", () =>
       templates:
       {
         combatActionFetchers: new TemplateCollection<CombatActionFetcher>("mock"),
-        combatActionListenerFetchers: new TemplateCollection<CombatActionListenerFetcher>("mock"),
       }
     }
   };
@@ -157,13 +156,6 @@ describe("CombatManager", () =>
       original.addAction(afterMainPhase, queuedParentAction);
       original.attachAction(queuedChildAction, queuedParentAction);
 
-      original.currentPhase.addActionListener(
-      {
-        key: "dummy",
-        flagsWhichTrigger: ["dummy"],
-        onAdd: () => {},
-      });
-
       clone = original.clone({[sourceUnit.id]: sourceUnit, [targetUnit.id]: targetUnit});
       clone.battle = makeMockBattle();
     });
@@ -194,9 +186,6 @@ describe("CombatManager", () =>
         expect(originalActions[i]).not.toBe(cloneActions[i]);
         expect(originalActions[i]).toEqual(cloneActions[i]);
       }
-
-      expect(clone.currentPhase.getListenersForTriggeringFlag("dummy").length).toBe(1);
-      expect(clone.currentPhase.hasListenerWithKey("dummy")).toBe(true);
     });
     describe("handles attached actions", () =>
     {
@@ -238,25 +227,6 @@ describe("CombatManager", () =>
     {
       manager.setPhase(mainPhase);
       expect(manager.currentPhase.actions.length).toBe(0);
-    });
-  });
-  describe("fetchCombatActionListeners", () =>
-  {
-    activeModuleData.templates.combatActionListenerFetchers.copyTemplates(actionListenerFetchers);
-    // duplicateAllBattleStartActions
-    // alwaysBlockSomeDamage
-
-    it("fetches listeners for current phase", () =>
-    {
-      manager.setPhase(battleStartPhase);
-      expect(manager.currentPhase.hasListenerWithKey("blockSomeDamage")).toBeTruthy();
-      expect(manager.currentPhase.hasListenerWithKey("duplicateAction")).toBeTruthy();
-    });
-    it("doesn't fetch listeners for other phases", () =>
-    {
-      manager.setPhase(mainPhase);
-      expect(manager.currentPhase.hasListenerWithKey("blockSomeDamage")).toBeTruthy();
-      expect(manager.currentPhase.hasListenerWithKey("duplicateAction")).toBeFalsy();
     });
   });
 });

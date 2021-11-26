@@ -2,14 +2,12 @@ import { CombatAction } from "./CombatAction";
 import { CombatPhaseInfo } from "./CombatPhaseInfo";
 import { CombatManager } from "./CombatManager";
 import { CombatPhaseFinishCallback } from "./CombatPhaseFinishCallback";
-import { CombatActionListener } from "./CombatActionListener";
 import { Unit } from "../unit/Unit";
+import {  CombatActionListenerWithSource, UnitAttachedCombatActionListener } from "./CombatActionListener";
+import { UnitBattleSide, unitBattleSides } from "../unit/UnitBattleSide";
+import { Battle } from "../battle/Battle";
 
 
-type ActionListenersByFlag<AllPhases extends string> =
-{
-  [flag: string]: CombatActionListener<AllPhases>[];
-};
 
 export class CombatPhase<AllPhases extends string>
 {
@@ -22,7 +20,6 @@ export class CombatPhase<AllPhases extends string>
   public afterPhaseIsFinished: CombatPhaseFinishCallback<AllPhases>;
 
   private readonly combatManager: CombatManager<AllPhases>;
-  private readonly actionListenersByTriggeringFlag: ActionListenersByFlag<AllPhases> = {};
 
   constructor(
     template: CombatPhaseInfo<AllPhases>,
@@ -59,38 +56,6 @@ export class CombatPhase<AllPhases extends string>
     this.actions.splice(index, 1);
     this.triggerActionListeners(action, "onRemove");
   }
-  public addActionListener(listener: CombatActionListener<AllPhases>): void
-  {
-    listener.flagsWhichTrigger.forEach(flag =>
-    {
-      if (!this.actionListenersByTriggeringFlag[flag])
-      {
-        this.actionListenersByTriggeringFlag[flag] = [];
-      }
-
-      this.actionListenersByTriggeringFlag[flag].push(listener);
-    });
-  }
-  public getListenersForTriggeringFlag(flag: string): CombatActionListener<AllPhases>[]
-  {
-    if (!this.actionListenersByTriggeringFlag[flag])
-    {
-      return [];
-    }
-    else
-    {
-      return this.actionListenersByTriggeringFlag[flag];
-    }
-  }
-  public hasListenerWithKey(key: string): boolean
-  {
-    return Object.keys(this.actionListenersByTriggeringFlag).some(flag =>
-    {
-      const listenersForFlag = this.actionListenersByTriggeringFlag[flag];
-
-      return listenersForFlag.some(listener => listener.key === key);
-    });
-  }
   public clone(
     combatManager: CombatManager<AllPhases>,
     allClonedActionsById: {[id: number]: CombatAction},
@@ -104,33 +69,131 @@ export class CombatPhase<AllPhases extends string>
       cloned.actions.push(action.clone(allClonedActionsById, clonedUnitsById));
     });
 
-    Object.keys(this.actionListenersByTriggeringFlag).forEach(flag =>
-    {
-      cloned.actionListenersByTriggeringFlag[flag] = [...this.actionListenersByTriggeringFlag[flag]];
-    });
-
     return cloned;
   }
 
+
+  private getUnitAttachedListeners(): CombatActionListenerWithSource<AllPhases, Unit>[]
+  {
+    const battle = this.combatManager.battle;
+    const allListeners: CombatActionListenerWithSource<AllPhases, Unit>[] = [];
+
+    battle.forEachUnit(unit =>
+    {
+      const listenersForUnit = <UnitAttachedCombatActionListener<AllPhases>[]><unknown>
+        unit.battleStats.combatEffects.getActionListeners();
+
+      allListeners.push(...listenersForUnit.map(listener =>
+      {
+        return {
+          source: unit,
+          listener: listener,
+        };
+      }));
+    });
+
+    return allListeners;
+  }
+  private getBattleWideListeners(): CombatActionListenerWithSource<AllPhases, Battle<AllPhases>>[]
+  {
+    const battle = this.combatManager.battle;
+
+    return battle.actionListeners.battleWide.map(listener =>
+    {
+      return {
+        source: battle,
+        listener: listener,
+      };
+    });
+  }
+  private getSideAttachedUnitListeners(): CombatActionListenerWithSource<AllPhases, UnitBattleSide>[]
+  {
+    const battle = this.combatManager.battle;
+    const allListeners: CombatActionListenerWithSource<AllPhases, UnitBattleSide>[] = [];
+
+    unitBattleSides.forEach(side =>
+    {
+      const listenersForSide = battle.actionListeners.bySide[side];
+
+      allListeners.push(...listenersForSide.map(listener =>
+      {
+        return {
+          source: side,
+          listener: listener,
+        };
+      }));
+    });
+
+    return allListeners;
+  }
+  private getAllUnitListeners(): CombatActionListenerWithSource<AllPhases, any>[]
+  {
+    return [
+      ...this.getUnitAttachedListeners(),
+      ...this.getSideAttachedUnitListeners(),
+      ...this.getBattleWideListeners(),
+    ];
+  }
+  private getListenersToTriggerForAction(action: CombatAction): CombatActionListenerWithSource<AllPhases, any>[]
+  {
+    const actionFlags = action.getFlags();
+    const allListeners = this.getAllUnitListeners();
+
+    const listenersWithRightFlags = allListeners.filter(listenerWithSource =>
+    {
+      const listener = listenerWithSource.listener;
+
+      const hasTriggeringFlag = listener.flagsWhichTrigger.some(flag => actionFlags.has(flag));
+      if (hasTriggeringFlag)
+      {
+        const isPrevented = listener.flagsWhichPrevent?.some(flag => actionFlags.has(flag));
+        if (!isPrevented)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    });
+
+    const listenersThatShouldActivate = listenersWithRightFlags.filter(listenerWithSource =>
+    {
+      if (!listenerWithSource.listener.shouldActivate)
+      {
+        return true;
+      }
+
+      return listenerWithSource.listener.shouldActivate(action, listenerWithSource.source);
+    });
+
+    return listenersThatShouldActivate;
+  }
   private triggerActionListeners(action: CombatAction, event: "onAdd" | "onRemove"): void
   {
-    const allFlags = action.getFlags();
+    const listenersToTrigger = this.getListenersToTriggerForAction(action);
 
-    allFlags.forEach(flag =>
+    listenersToTrigger.forEach(listenerWithSource =>
     {
-      const listeners = this.getListenersForTriggeringFlag(flag);
-      listeners.forEach(listener =>
+      const listener = listenerWithSource.listener;
+      switch (event)
       {
-        const isPrevented = listener.flagsWhichPrevent && listener.flagsWhichPrevent.some(preventingFlag =>
+        case "onAdd":
         {
-          return allFlags.has(preventingFlag);
-        });
-
-        if (!isPrevented && listener[event])
-        {
-          listener[event](action, this.combatManager);
+          if (listener.onAdd)
+          {
+            listener.onAdd(action, this.combatManager, listenerWithSource.source);
+          }
+          break;
         }
-      });
+        case "onRemove":
+        {
+          if (listener.onRemove)
+          {
+            listener.onRemove(action, this.combatManager, listenerWithSource.source);
+          }
+          break;
+        }
+      }
     });
   }
 }

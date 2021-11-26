@@ -19,9 +19,11 @@ import
 } from "../generic/utility";
 import { CombatManager } from "../combat/CombatManager";
 import { battleInitPhase } from "../combat/core/phases/battleInitPhase";
+import { CorePhase } from "../combat/core/coreCombatPhases";
+import { BattleWideCombatActionListener, SideAttachedCombatActionListener } from "../combat/CombatActionListener";
 
 
-export class Battle
+export class Battle<CombatPhases extends string = CorePhase>
 {
   public unitsById:
   {
@@ -42,7 +44,24 @@ export class Battle
   public side2Player: Player;
 
   public battleData: BattleData;
-  public readonly combatManager: CombatManager;
+  public readonly combatManager: CombatManager<CombatPhases>;
+  // TODO 2021.11.26 | fetch these from somewhere
+  public readonly actionListeners:
+  {
+    battleWide: BattleWideCombatActionListener<CombatPhases>[];
+    bySide:
+    {
+      [side in UnitBattleSide]: SideAttachedCombatActionListener<CombatPhases>[]
+    };
+  } =
+  {
+    battleWide: [],
+    bySide:
+    {
+      side1: [],
+      side2: [],
+    },
+  };
 
   public turnOrder: BattleTurnOrder;
   public activeUnit: Unit;
@@ -90,7 +109,7 @@ export class Battle
     side2: Unit[][];
     side1Player: Player;
     side2Player: Player;
-    combatManager: CombatManager;
+    combatManager: CombatManager<CombatPhases>;
   })
   {
     this.side1 = props.side1;
@@ -130,7 +149,8 @@ export class Battle
     this.maxTurns = 24;
     this.turnsLeft = this.maxTurns;
 
-    this.combatManager.setPhase(battleInitPhase);
+    // probably should be moved
+    this.combatManager.setPhase(<any>battleInitPhase);
     this.combatManager.advancePhase();
 
     this.updateTurnOrder();
@@ -640,7 +660,7 @@ export class Battle
     }
   }
 
-  public makeVirtualClone(): Battle
+  public makeVirtualClone(): Battle<CombatPhases>
   {
     const battleData = this.battleData;
     const unitsById: {[id: number]: Unit} = {};
@@ -687,6 +707,8 @@ export class Battle
       side2Player: side2Player,
       combatManager: this.combatManager.clone(unitsById),
     });
+
+    // TODO 2021.11.26 | clone action listeners
 
     [side1, side2].forEach(side =>
     {

@@ -10,7 +10,7 @@ import { Unit } from "../unit/Unit";
 export type AllCoreScripts =
 {
   // battle
-  onBattleFinish: (battle: Battle) => void;
+  onBattleFinish: (battle: Battle<any>) => void;
   // diplomacy
   onWarDeclaration: (aggressor: Player, defender: Player, game: Game) => void;
   onFirstMeeting: (a: Player, b: Player, game: Game) => void;

@@ -1,13 +1,14 @@
 import { coreCombatActionFlags } from "../coreCombatActionFlags";
-import { CorePhase } from "../coreCombatPhases";
-import { CombatActionListener } from "../../CombatActionListener";
+import { allCoreCombatPhases, CorePhase } from "../coreCombatPhases";
+import { BattleWideCombatActionListener } from "../../CombatActionListener";
 import { beforeMainPhase } from "../phases/beforeMainPhase";
 import { removeAllGuardFromUser } from "../actions/removeAllGuardFromUser";
 
 
-export const removeGuardOnAbilityUse: CombatActionListener<CorePhase> =
+export const removeGuardOnAbilityUse: BattleWideCombatActionListener<CorePhase> =
 {
   key: "removeGuardOnAbilityUse",
+  phasesToApplyTo: new Set(allCoreCombatPhases),
   flagsWhichTrigger: [coreCombatActionFlags.ability],
   flagsWhichPrevent: [coreCombatActionFlags.preserveUserGuard],
   onAdd: (action, combatManager) =>

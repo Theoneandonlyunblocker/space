@@ -1,7 +1,9 @@
 import { CombatEffectTemplate } from "core/src/combat/CombatEffectTemplate";
 import { localizeMessage } from "modules/baselib/localization/localize";
 import { allCoreCombatPhases } from "core/src/combat/core/coreCombatPhases";
-import { multiplyLifeLeech } from "../actionListeners/multiplyLifeLeech";
+import { combatActionFlags } from "../combatActionFlags";
+import { makeSimpleModifier } from "core/src/combat/core/modifiers/makeSimpleModifier";
+import { lifeLeech } from "../primitives/lifeLeech";
 
 
 export const lifeLeechMultiplier: CombatEffectTemplate =
@@ -22,12 +24,18 @@ export const lifeLeechMultiplier: CombatEffectTemplate =
     max: Infinity,
   },
   roundingFN: strength => strength,
-  actionListenerFetchers:
+  actionListeners:
   [
     {
       key: "lifeLeechMultiplier",
       phasesToApplyTo: new Set(allCoreCombatPhases),
-      fetch: () => [multiplyLifeLeech],
+      flagsWhichTrigger: [combatActionFlags.lifeLeech],
+      shouldActivate: (action, listenerSource) => action.source === listenerSource,
+      onAdd: (action, combatManager) =>
+      {
+        const strength = action.target.battleStats.combatEffects.get(lifeLeechMultiplier).strength;
+        action.modifiers.push(makeSimpleModifier(lifeLeech, {additiveMultiplier: strength}));
+      },
     }
-  ]
+  ],
 };

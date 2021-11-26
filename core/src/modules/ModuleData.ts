@@ -43,9 +43,9 @@ import { coreManufacturableThingKinds } from "../production/coreManufacturableTh
 import { CombatPhaseInfo } from "../combat/CombatPhaseInfo";
 import { CombatEffectTemplate } from "../combat/CombatEffectTemplate";
 import { CombatAbilityTemplate } from "../templateinterfaces/CombatAbilityTemplate";
-import { CombatActionListenerFetcher, CombatActionFetcher } from "../combat/CombatActionFetcher";
+import { CombatActionFetcher } from "../combat/CombatActionFetcher";
 import { coreCombatPhases } from "../combat/core/coreCombatPhases";
-import { coreCombatActionFetchers, coreCombatActionListenerFetchers } from "../combat/core/coreFetchers";
+import { coreCombatActionFetchers } from "../combat/core/coreFetchers";
 import { AbilityBase } from "../templateinterfaces/AbilityBase";
 
 
@@ -57,7 +57,6 @@ interface Templates
   buildings: TemplateCollection<BuildingTemplate>;
   combatAbilities: TemplateCollection<CombatAbilityTemplate>;
   combatActionFetchers: TemplateCollection<CombatActionFetcher<any>>;
-  combatActionListenerFetchers: TemplateCollection<CombatActionListenerFetcher<any>>;
   combatEffects: TemplateCollection<CombatEffectTemplate>;
   combatPhases: TemplateCollection<CombatPhaseInfo<any>>;
   items: TemplateCollection<ItemTemplate>;
@@ -125,10 +124,6 @@ export class ModuleData
     ),
     combatActionFetchers: new TemplateCollection<CombatActionFetcher<any>>(
       "combatActionFetchers",
-      () => this.onTemplatesAdded(),
-    ),
-    combatActionListenerFetchers: new TemplateCollection<CombatActionListenerFetcher<any>>(
-      "combatActionListenerFetchers",
       () => this.onTemplatesAdded(),
     ),
     combatEffects: new TemplateCollection<CombatEffectTemplate>(
@@ -284,7 +279,6 @@ export class ModuleData
   constructor()
   {
     this.templates.combatPhases.copyTemplates(coreCombatPhases);
-    this.templates.combatActionListenerFetchers.copyTemplates(coreCombatActionListenerFetchers);
     this.templates.combatActionFetchers.copyTemplates(coreCombatActionFetchers);
   }
   public addGameModule(gameModule: GameModule): Promise<void>
