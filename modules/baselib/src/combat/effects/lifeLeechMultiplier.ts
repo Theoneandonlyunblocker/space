@@ -33,7 +33,7 @@ export const lifeLeechMultiplier: CombatEffectTemplate =
       shouldActivate: (action, listenerSource) => action.source === listenerSource,
       onAdd: (action, combatManager) =>
       {
-        const strength = action.target.battleStats.combatEffects.get(lifeLeechMultiplier).strength;
+        const strength = action.source.battleStats.combatEffects.get(lifeLeechMultiplier).strength;
         action.modifiers.push(makeSimpleModifier(lifeLeech, {additiveMultiplier: strength}));
       },
     }
